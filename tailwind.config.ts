@@ -11,6 +11,13 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        "bg-blue-11":"#8780FF",
+        "bg-blue-12":"#6158FF",
+        "bg-gray-13":"#6B7280",
+        "bg-blue-14":"#CECBFF"
+      },
+      scale: {
+        '102.5': '1.008', 
       },
     },
   },
