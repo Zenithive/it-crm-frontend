@@ -1,11 +1,12 @@
-import Data1 from "../microComponents/Data1";
+import LeftCardDetails from "./LeftCardDetails";
+
 
 export default  function DashboardPage(){
 
 
 
     return (<>
-   <nav ></nav>
-   <Data1/>
+   
+   <LeftCardDetails/>
     </>)
 }
