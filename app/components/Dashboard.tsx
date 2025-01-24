@@ -1,11 +1,11 @@
-import Data1 from "../microComponents/Data1";
+import Navbar from "./Navbar";
 
 export default  function DashboardPage(){
 
 
 
     return (<>
-   <nav ></nav>
-   <Data1/>
+     <Navbar></Navbar>
+   
     </>)
 }
