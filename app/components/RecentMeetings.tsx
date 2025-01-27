@@ -22,9 +22,9 @@ const RecentMeetings = () => {
 
   return (
     <div className="">
-      <div className="grid grid-cols-2">
+      <div className="flex">
         <div
-          className="w-[420px] h-[297px] border border-bg-blue-11 rounded-lg left-[71px] top-[201px] relative"
+          className="w-[420px] h-[297px] border border-bg-blue-11 rounded-lg relative"
           style={{ backgroundColor: "#F6F5FF" }}
         >
           <div className="p-[10px]">

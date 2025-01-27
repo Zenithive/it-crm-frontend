@@ -1,13 +1,10 @@
-<<<<<<< HEAD
 
 import Data1 from "../microComponents/Content";
 
-=======
 import Box from "../microComponents/Box";
 import Card from "../microComponents/Card";
 import Content from "../microComponents/Content";
 // import Profile from "../microComponents/Profile";
->>>>>>> a79f9dff93ec3b874dcab66990b2ef7f42b6f726
 
 export default function LeftCardDetails() {
 
@@ -17,8 +14,8 @@ export default function LeftCardDetails() {
         { profileImage: 'profileLogo.svg', name: 'Jane Smith', designation: 'HR Manager' },
         { profileImage: 'profileLogo.svg', name: 'Emily Davis', designation: 'Developer' },
     ];
-    return (<>  <div className="grid grid-cols-2">
-        <div className="w-[309px] h-[737px] border border-bg-blue-11 rounded-lg left-[71px] top-[201px] relative " style={{ backgroundColor: "#F6F5FF" }}>
+    return (<>  <div className="">
+        <div className="w-[309px] h-[737px] border border-bg-blue-11 rounded-lg left-[71px] top-[32px] relative " style={{ backgroundColor: "#F6F5FF" }}>
 
             {profiles.map((profile, index) => (
                 <div key={index}>
