@@ -1,6 +1,6 @@
 import Box from "../microComponents/Box";
 import Card from "../microComponents/Card";
-import Data1 from "../microComponents/Content";
+import Content from "../microComponents/Content";
 // import Profile from "../microComponents/Profile";
 
 export default function LeftCardDetails() {
@@ -16,12 +16,10 @@ export default function LeftCardDetails() {
 
             {profiles.map((profile, index) => (
                 <div key={index}>
-                    <div className="pt-[17px] ml-[34px]"> <Data1  profileImage={profile.profileImage}
+                    <div className="pt-[17px] ml-[34px]"> <Content  profileImage={profile.profileImage}
                         name={profile.name}
                         designation={profile.designation} /></div>
                     <div ><hr className=" w-[285px] mx-[12px] mt-[24.5px] border-bg-blue-11 "></hr></div></div>))}
-
-
         </div>
 
         <div><Card/></div></div>
