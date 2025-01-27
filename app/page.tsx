@@ -1,8 +1,9 @@
 'use client';
 import { useRouter } from "next/navigation";
-import Login from "./components/Login";
+
+
 import { useEffect } from "react";
-import DashboardP from "./dashboard/page";
+
 
 export default function Home() {
 

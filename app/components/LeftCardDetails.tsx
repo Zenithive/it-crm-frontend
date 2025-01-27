@@ -1,7 +1,13 @@
+<<<<<<< HEAD
+
+import Data1 from "../microComponents/Content";
+
+=======
 import Box from "../microComponents/Box";
 import Card from "../microComponents/Card";
 import Content from "../microComponents/Content";
 // import Profile from "../microComponents/Profile";
+>>>>>>> a79f9dff93ec3b874dcab66990b2ef7f42b6f726
 
 export default function LeftCardDetails() {
 
@@ -22,12 +28,9 @@ export default function LeftCardDetails() {
                     <div ><hr className=" w-[285px] mx-[12px] mt-[24.5px] border-bg-blue-11 "></hr></div></div>))}
         </div>
 
-        <div><Card/></div></div>
+        </div>
 
-        {/* <div className="w-[309px] h-[737px]">
-         <Box />
-         <Profile profileImage={profiles.profileImage}/>
-            </div> */}
+         
 
     </>)
 }

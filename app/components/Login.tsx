@@ -3,14 +3,14 @@
 'use client';
 import Link from "next/link";
 import { useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Field, ErrorMessage } from 'formik';
  import * as Yup from 'yup';
  
  
 
 
 export default function Login() {
-  const [passwordVisible, setPasswordVisible] = useState(false);
+
   const [formBg, setFormBg] = useState("");
 
   
@@ -91,11 +91,7 @@ export default function Login() {
             
                  
                    <Field
-                  type={passwordVisible ? "text" : "password"}
-                  name="password"
-                  className={`w-full sm:w-[433px] h-[50px] focus:scale-102.5 transition-transform duration-300 ease-in-out focus:outline-none bg-white sm:h-[60px] focus:border-gray-200 border-[1px] md:text-[24px] text-[18px] border-black rounded-[4px] px-4 focus:shadow-lg focus:shadow-bg-blue-14 ${
-                    errors.password && touched.password ? 'border-red-500' : ''
-                  }`}
+                 
                 />
                 <ErrorMessage name="password" component="div" className="text-red-500 text-[16px] text-wrap w-full sm:w-[433px] " />
           </div>
