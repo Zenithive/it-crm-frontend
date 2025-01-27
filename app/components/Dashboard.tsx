@@ -1,19 +1,44 @@
+import Navbar from "./Navbar";
 'use client';
 import { useState } from "react";
 import Card from "../microComponents/Card";
 import LeftCardDetails from "./LeftCardDetails";
+import RecentMeetings from "./RecentMeetings";
+import UnreadMessages from "./UnreadMessages";
+import FollowUps from "./FollowUps";
 
-
-export default  function DashboardPage(){
+export default function DashboardPage() {
     const [isChecked, setIsChecked] = useState(false);
 
 
-        const handleCheckboxChange = (event) => {
-            setIsChecked(event.target.checked);
-        };
+    const handleCheckboxChange = (event) => {
+        setIsChecked(event.target.checked);
+    };
+
+  return (
+    <>
+      <Navbar></Navbar>
+
+      <LeftCardDetails />
+      <div className="flex">
+        <div className="">
+          <RecentMeetings></RecentMeetings>
+        </div>
+        <div className="">
+          <UnreadMessages></UnreadMessages>
+        </div>
+        <div className="">
+          <FollowUps></FollowUps>
+        </div>
+      </div>
+    
+ 
+
+
+   
    
 
-    return (<>
+  
    <div className="flex  gap-[20px]">
    <LeftCardDetails/>
    <div className="cards flex gap-[20px] ">
