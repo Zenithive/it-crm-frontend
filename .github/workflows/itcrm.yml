@@ -31,5 +31,5 @@ jobs:
           application_name: 'it_crm'
           environment_name: 'Itcrm-env'
           version_label: ${{ github.sha }}
-          region: us-east-1
+          region: ap-south-1
           deployment_package: nodejs-app-build.zip
