@@ -1,4 +1,3 @@
-
 import Data1 from "../microComponents/Content";
 
 import Box from "../microComponents/Box";
@@ -23,11 +22,10 @@ export default function LeftCardDetails() {
                         name={profile.name}
                         designation={profile.designation} /></div>
                     <div ><hr className=" w-[285px] mx-[12px] mt-[24.5px] border-bg-blue-11 "></hr></div></div>))}
+  
+ 
         </div>
-
-        </div>
-
-         
-
-    </>)
+      </div>
+    </>
+  );
 }
