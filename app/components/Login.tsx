@@ -39,7 +39,7 @@ export default function Login() {
   };
 
   return (
-    <> <div className="grid grid-cols-1 px-4 place-items-center sm:px-6 md:px-10 lg:px-20 mt-[88px]">
+    <> <div className="grid grid-cols-1 px-4 place-items-center sm:px-6 md:px-10 lg:px-20 mt-[88px] " data-testid="login-1">
      <div>
           <img
             src="logo.svg"
@@ -78,6 +78,7 @@ export default function Login() {
                   <Field
                   type="email"
                   name="email"
+                  data-testid="email"
                   className={`w-full sm:w-[433px] h-[50px] focus:scale-102.5 transition-transform duration-300 ease-in-out focus:outline-none focus:border-gray-200 bg-white sm:h-[60px] border-[1px] border-black rounded-[4px] px-4 text-[18px] focus:shadow-lg focus:shadow-bg-blue-14 ${
                     errors.email && touched.email ? 'border-red-500' : ''
                   }`}
@@ -91,7 +92,12 @@ export default function Login() {
             
                  
                    <Field
-                 
+                  type="password"
+                  name="password"
+                   data-testid="pass"
+                  className={`w-full sm:w-[433px] h-[50px] focus:scale-102.5 transition-transform duration-300 ease-in-out focus:outline-none focus:border-gray-200 bg-white sm:h-[60px] border-[1px] border-black rounded-[4px] px-4 text-[18px] focus:shadow-lg focus:shadow-bg-blue-14 ${
+                    errors.password && touched.password ? 'border-red-500' : ''
+                  }`}
                 />
                 <ErrorMessage name="password" component="div" className="text-red-500 text-[16px] text-wrap w-full sm:w-[433px] " />
           </div>
@@ -99,6 +105,7 @@ export default function Login() {
             <button
               type="button"
               onClick={handleNextClick}
+              data-testid="nextButton"
               className="btn bg-bg-blue-12 hover:bg-bg-blue-11 text-white w-full   p-3 rounded-md"
             >
               <span className=" text-[18px] md:text-[24px]">Next</span>
