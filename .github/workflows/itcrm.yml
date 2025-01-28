@@ -3,7 +3,7 @@ name: CICD
 on:
   push:
     branches:
-      - harshpatel
+      - arati
 
 jobs:
   build-and-deploy:
