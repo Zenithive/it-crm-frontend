@@ -16,7 +16,6 @@ export default {
         "bg-gray-13":"#6B7280",
         "bg-blue-14":"#CECBFF" ,
         "bg-gray-11":"#F6F5FF",
-        "bg-blue-14":"#CECBFF",
         "bg-red":"#FFE5E4",
         "text-red":"#E53935",
         "follow_ups_yellow":"#FFC107",
