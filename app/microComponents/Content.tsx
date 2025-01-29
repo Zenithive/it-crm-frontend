@@ -1,21 +1,23 @@
 
 import Image from 'next/image'
-interface Data1Props {
+export interface Data1Props {
     profileImage?: string;
     name: string;
     designation: string;
     nameStyle?: string;
     otherStyle?: string;
+    imageHeight?: string;  
+    imageWidth?: string; 
     
 }
 
-export default function Content({ profileImage, name, designation,nameStyle,otherStyle,}:Data1Props){
+export default function Content({ profileImage, name, designation,nameStyle,otherStyle,imageHeight,imageWidth}:Data1Props){
 
  
     return(
     <div className="flex items-center gap-[14px]">
       {profileImage && (
-         <div><img src={profileImage} style={{width:'40px',height:'40px'}}></img></div>
+         <div><img src={profileImage} style={{width:imageWidth,height:imageHeight}}></img></div>
       )}
        
         <div className="flex flex-col">

@@ -10,8 +10,6 @@ interface Data {
     lastTextColor?: string;
    
 }
-
-
 export default function Card({ logo, task,lastText,children,lastTextColor }:Data) {
     return (
       <div className="w-[310px] h-[260px] border border-bg-blue-11 rounded-lg bg-blue-111" >

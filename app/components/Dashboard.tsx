@@ -6,8 +6,13 @@ import LeftCardDetails from "./LeftCardDetails";
 import RecentMeetings from "./RecentMeetings";
 import UnreadMessages from "./UnreadMessages";
 import FollowUps from "./FollowUps";
+import Title from "../microComponents/Title";
+import { title } from "process";
+
+
 
 export default function DashboardPage() {
+
   const [checkedState, setCheckedState] = useState<{
     task1: boolean,
     task2: boolean,
@@ -23,25 +28,26 @@ export default function DashboardPage() {
       ...prevState,
       [taskName]: !prevState[taskName],
     }));
+
+
+  const title = [
+    {
+      titleName:'CRM DashBoard', button:"Lead"
+    }
+  ]
+
+ 
   };
 
   return (
     <>
       <Navbar></Navbar>
 
-      {/* <LeftCardDetails /> */}
-      <div className="flex">
-        <div className="">
-          <RecentMeetings></RecentMeetings>
-        </div>
-        <div className="">
-          <UnreadMessages></UnreadMessages>
-        </div>
-        <div className="">
-          <FollowUps></FollowUps>
-        </div>
-      </div>
 
+     
+   <div className="">
+        <Title title={title[0].titleName} button={title[0].button}></Title>
+      </div>
       <div className="flex  gap-[20px]">
         <LeftCardDetails />
         <div className="cards flex gap-[20px] ">
@@ -207,8 +213,22 @@ export default function DashboardPage() {
               </div>
             </div>
           </Card>
+           <div className="flex gap-[20px]">
+            <div className="mt-[20px]">
+              <RecentMeetings></RecentMeetings>
+            </div>
+            <div className="mt-[20px]">
+              <UnreadMessages></UnreadMessages>
+            </div>
+            <div className="mt-[20px]">
+              <FollowUps></FollowUps>
+            </div>
+          </div>
+
         </div>
-      </div>
+        </div>
+
+   
     </>
   );
 }
