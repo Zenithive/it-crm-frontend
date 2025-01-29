@@ -3,6 +3,7 @@
 'use client';
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Formik, Field, ErrorMessage } from 'formik';
  import * as Yup from 'yup';
  
@@ -13,7 +14,8 @@ export default function Login() {
 
   const [formBg, setFormBg] = useState("");
 
-  
+  const router = useRouter();
+
 
   const validationSchema = Yup.object().shape({
     email: Yup.string()
@@ -36,6 +38,7 @@ export default function Login() {
 
   const handleNextClick = () => {
     setFormBg("#F6F5FF");
+    router.push('/dashboard');
   };
 
   return (
