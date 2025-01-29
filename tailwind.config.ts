@@ -14,7 +14,6 @@ export default {
         "bg-blue-11":"#8780FF",
         "bg-blue-12":"#6158FF",
         "bg-gray-13":"#6B7280",
-        // storybook
         "bg-blue-14":"#CECBFF" ,
         "bg-gray-11":"#F6F5FF",
         "bg-red":"#FFE5E4",
