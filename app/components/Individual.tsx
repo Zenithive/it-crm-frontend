@@ -33,17 +33,16 @@ const Individual = () => {
     },
     {
       name: "Lead Type",
-      subtitle: ""
+      subtitle: "Qualified Lead",
     },
     {
       name: "Assigned Owner",
-      subtitle: ""
+      subtitle: "Johnson",
     },
     {
       name: "Created Date",
-      subtitle: "Jan 15,2024"
-    }
-    
+      subtitle: "Jan 15,2024",
+    },
   ];
 
   const title = [
@@ -176,26 +175,26 @@ const Individual = () => {
                   text="View All"
                 >
                   <div className="space-y-3 mt-[20px] ml-[20px] ">
-                  <Content
-                    profileImage={profile[1].profileImage}
-                    name={profile[1].name}
-                    designation={profile[1].subtitle}
-                  />
-                   <Content
-                    profileImage={profile[2].profileImage}
-                    name={profile[2].name}
-                    designation={profile[2].subtitle}
-                  />
-                   <Content
-                    profileImage={profile[3].profileImage}
-                    name={profile[3].name}
-                    designation={profile[3].subtitle}
-                  />
-                   <Content
-                    profileImage={profile[4].profileImage}
-                    name={profile[4].name}
-                    designation={profile[4].subtitle}
-                  />
+                    <Content
+                      profileImage={profile[1].profileImage}
+                      name={profile[1].name}
+                      designation={profile[1].subtitle}
+                    />
+                    <Content
+                      profileImage={profile[2].profileImage}
+                      name={profile[2].name}
+                      designation={profile[2].subtitle}
+                    />
+                    <Content
+                      profileImage={profile[3].profileImage}
+                      name={profile[3].name}
+                      designation={profile[3].subtitle}
+                    />
+                    <Content
+                      profileImage={profile[4].profileImage}
+                      name={profile[4].name}
+                      designation={profile[4].subtitle}
+                    />
                   </div>
                 </Container>
               </div>
@@ -220,8 +219,6 @@ const Individual = () => {
                     name={profile[7].name}
                     designation={profile[7].subtitle}
                   />
-                  
-
                 </Container>
               </div>
 
@@ -231,7 +228,36 @@ const Individual = () => {
                   logo={container.logo2}
                   containerWidth="401px"
                   containerHeight="213px"
-                />
+                >
+                  <div className="flex justify-between items-center w-full p-3">
+                    <div className="flex items-center gap-2">
+                      <img src="proposal_logo.svg" alt="Proposal Logo" />
+                      <div className="text-black font-normal">Proposal.pdf</div>
+                    </div>
+
+                    <div className="text-bg-blue-12 font-normal">View</div>
+                  </div>
+                  <hr></hr>
+
+                  <div className="flex justify-between items-center w-full p-3">
+                    <div className="flex items-center gap-2">
+                      <img src="proposal_logo.svg" alt="Proposal Logo" />
+                      <div className="text-black font-normal">Proposal.pdf</div>
+                    </div>
+
+                    <div className="text-bg-blue-12 font-normal">View</div>
+                  </div>
+                  <hr ></hr>
+
+                  <div className="flex justify-between items-center w-full p-3">
+                    <div className="flex items-center gap-2">
+                      <img src="proposal_logo.svg" alt="Proposal Logo" />
+                      <div className="text-black font-normal">Proposal.pdf</div>
+                    </div>
+
+                    <div className="text-bg-blue-12 font-normal">View</div>
+                  </div>
+                </Container>
               </div>
 
               <div className="mt-5">
@@ -241,10 +267,12 @@ const Individual = () => {
                   containerWidth="401px"
                   containerHeight="213px"
                 >
+                 <div className="p-4">
                   <div
-                    className="bg-bg-gray-11 border-2 border-individuals_border rounded-lg text-bg-blue-12 font-semibold text-[16px]"
+                    className=" bg-bg-gray-11 border-2 border-individuals_border rounded-lg text-bg-gray-13 font-normal text-[16px]"
                     style={{ height: "126px", width: "364px" }}
-                  ></div>
+                  >Add a notes...</div>
+                  </div>
                 </Container>
               </div>
             </div>

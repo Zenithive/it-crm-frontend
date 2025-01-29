@@ -7,27 +7,28 @@ import Content from "../microComponents/Content";
 // import Profile from "../microComponents/Profile";
 
 export default function LeftCardDetails() {
-
     const profiles = [
-        { profileImage: 'profileLogo.svg',name: 'John Doe', designation: 'Marketing Head'},
-        { profileImage: 'profileLogo.svg', name: 'John Doe', designation: 'Marketing Head' },
-        { profileImage: 'profileLogo.svg', name: 'Jane Smith', designation: 'HR Manager' },
-        { profileImage: 'profileLogo.svg', name: 'Emily Davis', designation: 'Developer' },
+      { profileImage: 'profileLogo.svg', name: 'John Doe', designation: 'Marketing Head' },
+      { profileImage: 'profileLogo.svg', name: 'John Doe', designation: 'Marketing Head' },
+      { profileImage: 'profileLogo.svg', name: 'Jane Smith', designation: 'HR Manager' },
+      { profileImage: 'profileLogo.svg', name: 'Emily Davis', designation: 'Developer' },
     ];
-    return (<>  <div className="">
-        <div className="w-[309px] h-[737px] border border-bg-blue-11 rounded-lg left-[71px] top-[32px] relative " style={{ backgroundColor: "#F6F5FF" }}>
-
+  
+    return (
+      <div className="w-full">
+        <div className="w-full bg-[#F6F5FF] border border-bg-blue-11 rounded-lg">
+          <div className="divide-y divide-bg-blue-11">
             {profiles.map((profile, index) => (
-                <div key={index}>
-                    <div className="pt-[17px] ml-[34px]"> <Content  profileImage={profile.profileImage}
-                        name={profile.name}
-                        designation={profile.designation} /></div>
-                    <div ><hr className=" w-[285px] mx-[12px] mt-[24.5px] border-bg-blue-11 "></hr></div></div>))}
+              <div key={index} className="p-4 sm:p-6">
+                <Content
+                  profileImage={profile.profileImage}
+                  name={profile.name}
+                  designation={profile.designation}
+                />
+              </div>
+            ))}
+          </div>
         </div>
-
-        </div>
-
-         
-
-    </>)
-}
+      </div>
+    );
+  }
