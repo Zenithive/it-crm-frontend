@@ -8,10 +8,11 @@ export interface Data1Props {
     otherStyle?: string;
     imageHeight?: string;  
     imageWidth?: string; 
+    children?:string;
     
 }
 
-export default function Content({ profileImage, name, designation,nameStyle,otherStyle,imageHeight,imageWidth}:Data1Props){
+export default function Content({ profileImage, name, designation,nameStyle,otherStyle,imageHeight,imageWidth,children}:Data1Props){
 
  
     return(
@@ -23,6 +24,7 @@ export default function Content({ profileImage, name, designation,nameStyle,othe
         <div className="flex flex-col">
 
             <span className={`font-normal ${nameStyle}`} style={{color:'#333333'}}>{name}</span>
+            <>{children}</>
             {/* font size 18px removed */}
             <span className={`font-normal ${otherStyle}`} style={{color:'#6B7280'}}>{designation}</span> 
             {/* //text size 20px removed */}
