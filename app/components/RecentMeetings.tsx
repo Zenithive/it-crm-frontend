@@ -27,14 +27,16 @@ const RecentMeetings = () => {
           className="w-[420px] h-[297px] border border-bg-blue-11 rounded-lg relative"
           style={{ backgroundColor: "#F6F5FF" }}
         >
-          <div className="p-[10px]">
+          <div className="mt-[10px] ml-[10px]">
           <div className="flex mb-[17px]">
             <div className="">
               <img src="icon_1.svg" alt="Recent Meetings"></img>
             </div>
             <div className="ml-2">Recent Meetings</div>
           </div>
-
+        </div>
+          <hr className="w-[420px]  border-bg-blue-11"></hr>
+          <div className=" ml-[10px]">
           {recent_meetings.map((profile, index) => (
             <div key={index}>
               <div className="flex ">

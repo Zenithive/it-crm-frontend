@@ -18,11 +18,8 @@ const FollowUps = () => {
       },
   ];
 
-  // Define a function to get background color based on the index
-  const getDotColor = (index: number) => {
-    const colors = ["bg-follow_ups_yellow", "bg-text-red", "bg-follow_ups_green"]; 
-    return colors[index % colors.length]; // Cycle through the colors array
-  };
+  
+
 
   return (
     <div className="">
@@ -38,13 +35,14 @@ const FollowUps = () => {
               </div>
               <div className="ml-2">Follow-ups</div>
             </div>
+            <hr className="w-[254px] mt-[10px]  border-bg-blue-11"></hr>
 
             {followups.map((profile, index) => (
               <div key={index}>
                 <div className="flex items-center">
                   {/* Apply the dynamic color */}
                   <div
-                    className={`w-3 h-3 rounded-full mt-3 ${getDotColor(index)} ml-[23px]`}
+                    className={`w-3 h-3 rounded-full mt-3 bg-bg-blue-12 ml-[23px]`}
                   ></div>
                   <div className="pt-[30px] ml-[14px]">
                     <Content

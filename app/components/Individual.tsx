@@ -31,6 +31,18 @@ const Individual = () => {
       name: "Note Added",
       subtitle: "Added meeting notes and action items",
     },
+    {
+      name: "Lead Type",
+      subtitle: ""
+    },
+    {
+      name: "Assigned Owner",
+      subtitle: ""
+    },
+    {
+      name: "Created Date",
+      subtitle: "Jan 15,2024"
+    }
     
   ];
 
@@ -195,7 +207,22 @@ const Individual = () => {
                   title={container.title4}
                   containerWidth="401px"
                   containerHeight="235px"
-                />
+                >
+                  <Content
+                    name={profile[5].name}
+                    designation={profile[5].subtitle}
+                  />
+                  <Content
+                    name={profile[6].name}
+                    designation={profile[6].subtitle}
+                  />
+                  <Content
+                    name={profile[7].name}
+                    designation={profile[7].subtitle}
+                  />
+                  
+
+                </Container>
               </div>
 
               <div className="mt-5">
