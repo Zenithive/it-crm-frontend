@@ -1,6 +1,5 @@
 "use client";
 import Navbar from "./Navbar";
-
 import { useState } from "react";
 import Card from "../microComponents/Card";
 import LeftCardDetails from "./LeftCardDetails";
