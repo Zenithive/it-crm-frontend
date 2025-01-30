@@ -2,7 +2,7 @@ import React from "react";
 
 interface Data {
   title: string;
-  button: string;
+  button?: string;
 }
 
 const Title = ({ title, button }: Data) => {

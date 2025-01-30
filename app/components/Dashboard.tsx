@@ -8,8 +8,16 @@ import UnreadMessages from "./UnreadMessages";
 import FollowUps from "./FollowUps";
 import Title from "../microComponents/Title";
 
+import { title } from "process";
+import TodayTaskCard from "./TodayTaskCard";
+import TodayMettingCard from "./TodayMettingCard";
+import TimeCard from "./TimeCard";
+
+
+
+
 export default function DashboardPage() {
-  const [isChecked, setIsChecked] = useState(false);
+ 
 
   const title = [
     {
@@ -18,9 +26,7 @@ export default function DashboardPage() {
     }
   ];
 
-  const handleCheckboxChange = (event:any) => {
-    setIsChecked(event.target.checked);
-  };
+ 
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -30,11 +36,13 @@ export default function DashboardPage() {
         <Title title={title[0].titleName} button={title[0].button} />
       </div>
 
+
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left sidebar */}
           <div className="lg:col-span-3">
             <LeftCardDetails />
+
           </div>
 
           {/* Main content */}
