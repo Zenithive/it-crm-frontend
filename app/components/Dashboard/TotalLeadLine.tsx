@@ -13,34 +13,36 @@ const TotalLeadLine = () => {
   const DynamicChart = dynamic(
     () =>
       import("recharts").then((recharts) => {
-        const { LineChart, Line, XAxis, YAxis } = recharts;
+        const { LineChart, Line, XAxis, YAxis, ResponsiveContainer } = recharts;
         return function Chart({ data }) {
           return (
-            <LineChart width={640} height={200} data={data}>
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Line
-                type="monotone"
-                dataKey="linkedin"
-                stroke="#6366F1"
-                strokeWidth={2}
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="upwork"
-                stroke="#22C55E"
-                strokeWidth={2}
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="webform"
-                stroke="#94A3B8"
-                strokeWidth={2}
-                dot={false}
-              />
-            </LineChart>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={data}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Line
+                  type="monotone"
+                  dataKey="linkedin"
+                  stroke="#6366F1"
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="upwork"
+                  stroke="#22C55E"
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="webform"
+                  stroke="#94A3B8"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           );
         };
       }),
@@ -48,28 +50,31 @@ const TotalLeadLine = () => {
   );
 
   return (
-    <div>
-      <div className="bg-white rounded-xl p-6 shadow-sm">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="font-medium text-gray-800">Total Monthly Lead</h3>
+    <div className="w-full">
+      <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
+        <div className="flex justify-between items-center mb-4 md:mb-6">
+          <h3 className="font-semibold text-bg-blue-12 text-lg md:text-xl">
+            Total Monthly Lead
+          </h3>
           <ChevronDown className="h-4 w-4 text-gray-500" />
         </div>
-        <div className="h-48">
+        <div className="h-40 md:h-48">
           {mounted && <DynamicChart data={chartData} />}
         </div>
-        <div className="mt-4 flex justify-between px-4">
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-[#6366F1] rounded-full mr-2" />
-            <span className="text-sm">LinkedIn</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-[#22C55E] rounded-full mr-2" />
-            <span className="text-sm">Upwork</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-[#94A3B8] rounded-full mr-2" />
-            <span className="text-sm">Website Form</span>
-          </div>
+        <div className="mt-4 flex flex-wrap justify-center md:justify-between gap-4 px-2 md:px-4">
+          {[
+            { label: "LinkedIn", color: "#6366F1" },
+            { label: "Upwork", color: "#22C55E" },
+            { label: "Website Form", color: "#94A3B8" },
+          ].map((item, index) => (
+            <div key={index} className="flex items-center">
+              <div
+                className="w-3 h-3 rounded-full mr-2"
+                style={{ backgroundColor: item.color }}
+              />
+              <span className="text-xs md:text-sm">{item.label}</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

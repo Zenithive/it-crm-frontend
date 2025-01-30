@@ -139,23 +139,27 @@ const CRMDashboard = () => {
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <main className="p-8">
+      <main className="p-4 md:p-6 lg:p-8">
         <Dashboard_Title />
 
-        <div className="mb-6"></div>
+        <div className="mb-4 md:mb-6"></div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-6 space-y-6">
+        {/* Main Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
+          {/* Left Column */}
+          <div className="lg:col-span-6 space-y-4 md:space-y-6">
             <Task />
             <Meetings />
           </div>
 
-          <div className="lg:col-span-6 space-y-6">
-            <div className="flex space-x-6">
-              <div className="w-1/2">
+          {/* Right Column */}
+          <div className="lg:col-span-6 space-y-4 md:space-y-6">
+            {/* Stats Cards */}
+            <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
+              <div className="w-full sm:w-1/2">
                 <MonthlyLead />
               </div>
-              <div className="w-1/2">
+              <div className="w-full sm:w-1/2">
                 <UnreadMessages />
               </div>
             </div>

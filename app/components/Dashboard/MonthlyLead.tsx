@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { ChevronDown } from "lucide-react";
 
 const data = [
@@ -10,65 +10,68 @@ const data = [
   { name: "Lead", value: 15, color: "#333" },
 ];
 
-const MonthlyLead = () => {
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.6;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm ">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <h3 className="font-medium text-gray-800">Total Monthly Lead</h3>
-        <ChevronDown className="h-4 w-4 text-gray-500" />
-      </div>
-
-      {/* Pie Chart */}
-      <div className="flex justify-center">
-        <PieChart width={250} height={250}>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            outerRadius={100}
-            fill="#8884d8"
-            dataKey="value"
-            label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-              const RADIAN = Math.PI / 180;
-              const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-              const x = cx + radius * Math.cos(-midAngle * RADIAN);
-              const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-              return (
-                <text
-                  x={x}
-                  y={y}
-                  fill="white"
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  className="text-sm font-bold"
-                >
-                  {`${(percent * 100).toFixed(0)}%`}
-                </text>
-              );
-            }}
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-          <Tooltip />
-          <Legend />
-        </PieChart>
-      </div>
-
-      {/* Legends */}
-      {/* <div className="mt-6 flex justify-between px-4">
-        {data.map((item, index) => (
-          <div key={index} className="flex items-center">
-            <div className="w-3 h-3 rounded-full mr-2" style={{ background: item.color }} />
-            <span className="text-sm">{item.name}</span>
-          </div>
-        ))}
-      </div> */}
-    </div>
+    <text
+      x={x}
+      y={y}
+      fill="white"
+      textAnchor="middle"
+      dominantBaseline="central"
+      className="text-sm font-semibold"
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
   );
 };
 
+const MonthlyLead = () => {
+  return (
+    <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm w-full flex flex-col">
+      <div className="flex justify-between items-center">
+        <h3 className="text-bg-blue-12 text-lg md:text-xl font-semibold">
+          Total Monthly Lead
+        </h3>
+        <ChevronDown className="h-4 w-4 text-gray-500" />
+      </div>
+
+      <div className="flex-grow flex justify-center">
+        <ResponsiveContainer width="100%" height={180}>
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              outerRadius={60}
+              labelLine={false}
+              label={renderCustomizedLabel}
+              dataKey="value"
+            >
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="flex flex-wrap justify-center gap-4 mt-4">
+        {data.map((item, index) => (
+          <div key={index} className="flex items-center space-x-2">
+            <span
+              className="w-3 h-3 rounded-full"
+              style={{ background: item.color }}
+            ></span>
+            <span className="text-xs md:text-sm text-gray-600">{item.name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 export default MonthlyLead;
