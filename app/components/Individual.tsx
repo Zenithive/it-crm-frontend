@@ -52,7 +52,6 @@ const Individual = () => {
     },
   ];
 
-  // Flatten the container data structure for easier use
   const container = {
     title1: "Contact Details",
     logo1: "edit_icon.svg",
@@ -64,217 +63,165 @@ const Individual = () => {
     title6: "Notes",
   };
 
-  const content = {};
-
   return (
-    <div>
-      <div>
-        <Navbar />
-        <Title title={title[0].titleName} button={title[0].button} />
-        <div className="ml-[98px]">
-          <div className="mt-[32px]">
+    <div className="min-h-screen bg-white">
+      <Navbar />
+      <div className="px-4 sm:px-6 lg:px-8">
+        <Title title={title[0].titleName}  />
+        
+        <div className="max-w-7xl mx-auto">
+          {/* Profile Section */}
+          <div className="mt-8">
             <Content
               profileImage={profile[0].profileImage}
-              imageHeight="80px"
-              imageWidth="80px"
+              imageHeight="h-16 sm:h-20"
+              imageWidth="w-16 sm:w-20"
               name={profile[0].name}
-              nameStyle="text-[30px] font-bold"
+              nameStyle="text-xl sm:text-2xl lg:text-3xl font-bold"
               designation={profile[0].subtitle}
-              otherStyle="text-[16px] font-normal"
+              otherStyle="text-sm sm:text-base font-normal"
             />
           </div>
 
-          <div className="flex gap-[20px] mt-[10px] ml-[85px]">
-            <div className="flex">
-              <div className="mt-1">
-                <img src="call_icon.svg" alt="Call" />
-              </div>
-              <div className="ml-1">Call</div>
-            </div>
-            <div className="flex">
-              <div className="mt-1">
-                <img src="email_icon.svg" alt="Email" />
-              </div>
-              <div className="ml-1">Email</div>
-            </div>
-            <div className="flex">
-              <div className="mt-1">
-                <img src="clock_icon.svg" alt="Schedule Meeting" />
-              </div>
-              <div className="ml-1">Schedule Meeting</div>
-            </div>
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-4 mt-4 sm:mt-6">
+            <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
+              <img src="call_icon.svg" alt="Call" className="w-4 h-4" />
+              <span>Call</span>
+            </button>
+            <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
+              <img src="email_icon.svg" alt="Email" className="w-4 h-4" />
+              <span>Email</span>
+            </button>
+            <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100">
+              <img src="clock_icon.svg" alt="Schedule Meeting" className="w-4 h-4" />
+              <span>Schedule Meeting</span>
+            </button>
           </div>
 
-          <div className="flex mb-[100px]">
-            <div>
-              <div className="mt-5">
-                <Container
-                  title={container.title1}
-                  logo={container.logo1}
-                  containerWidth="823px"
-                  containerHeight="210px"
-                >
-                  <div className="flex justify-between ml-[20px] mt-[17px]">
-                    <div className="">
-                      <div className="text-[16px] font-normal">Email</div>
-                      <div className="flex">
-                        <img src="email_icon.svg"></img>
-                        <div className="text-text_color font-normal text-[12px] ml-2">
-                          zenithive17@gmail.com
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mr-[191px]">
-                      <div className="text-[16px] font-normal">Phone</div>
-                      <div className="flex">
-                        <img src="call_icon.svg"></img>
-                        <div className="text-text_color font-normal text-[12px] ml-2">
-                          +91 256232561
-                        </div>
-                      </div>
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+            {/* Left Column - Takes up 2/3 on large screens */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Contact Details */}
+              <Container
+                title={container.title1}
+                logo={container.logo1}
+                containerWidth="w-full"
+                containerHeight="auto"
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-4">
+                  <div>
+                    <div className="text-base font-normal mb-2">Email</div>
+                    <div className="flex items-center">
+                      <img src="email_icon.svg" alt="Email" className="w-4 h-4" />
+                      <span className="text-gray-600 text-sm ml-2">zenithive17@gmail.com</span>
                     </div>
                   </div>
-
-                  <div className="flex justify-between mt-[32px] ml-[20px]">
-                    <div className="">
-                      <div className="text-[16px] font-normal">Company</div>
-                      <div className="flex">
-                        <img src="company_icon.svg"></img>
-                        <div className="text-text_color font-normal text-[12px] ml-2">
-                          Zen Corporation
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mr-[175px]">
-                      <div className="text-[16px] font-normal">Location</div>
-                      <div className="flex">
-                        <img src="location_icon.svg"></img>
-                        <div className="text-text_color font-normal text-[12px] ml-2">
-                          India, Ahmedabad
-                        </div>
-                      </div>
+                  <div>
+                    <div className="text-base font-normal mb-2">Phone</div>
+                    <div className="flex items-center">
+                      <img src="call_icon.svg" alt="Phone" className="w-4 h-4" />
+                      <span className="text-gray-600 text-sm ml-2">+91 256232561</span>
                     </div>
                   </div>
-                </Container>
-              </div>
-              <div className="mt-5">
-                <Container
-                  title={container.title2}
-                  containerWidth="823px"
-                  containerHeight="208px"
-                />
-              </div>
-
-              <div className="mt-5">
-                <Container
-                  title={container.title3}
-                  containerWidth="823px"
-                  containerHeight="315px"
-                  text="View All"
-                >
-                  <div className="space-y-3 mt-[20px] ml-[20px] ">
-                    <Content
-                      profileImage={profile[1].profileImage}
-                      name={profile[1].name}
-                      designation={profile[1].subtitle}
-                    />
-                    <Content
-                      profileImage={profile[2].profileImage}
-                      name={profile[2].name}
-                      designation={profile[2].subtitle}
-                    />
-                    <Content
-                      profileImage={profile[3].profileImage}
-                      name={profile[3].name}
-                      designation={profile[3].subtitle}
-                    />
-                    <Content
-                      profileImage={profile[4].profileImage}
-                      name={profile[4].name}
-                      designation={profile[4].subtitle}
-                    />
+                  <div>
+                    <div className="text-base font-normal mb-2">Company</div>
+                    <div className="flex items-center">
+                      <img src="company_icon.svg" alt="Company" className="w-4 h-4" />
+                      <span className="text-gray-600 text-sm ml-2">Zen Corporation</span>
+                    </div>
                   </div>
-                </Container>
-              </div>
+                  <div>
+                    <div className="text-base font-normal mb-2">Location</div>
+                    <div className="flex items-center">
+                      <img src="location_icon.svg" alt="Location" className="w-4 h-4" />
+                      <span className="text-gray-600 text-sm ml-2">India, Ahmedabad</span>
+                    </div>
+                  </div>
+                </div>
+              </Container>
+
+              {/* Pipeline Stages */}
+              <Container
+                title={container.title2}
+                containerWidth="w-full"
+                containerHeight="auto min-h-[208px]"
+              />
+
+              {/* Activity Timeline */}
+              <Container
+                title={container.title3}
+                containerWidth="w-full"
+                containerHeight="auto"
+                text="View All"
+              >
+                <div className="space-y-4 p-4">
+                  {profile.slice(1, 5).map((item, index) => (
+                    <Content
+                      key={index}
+                      profileImage={item.profileImage}
+                      name={item.name}
+                      designation={item.subtitle}
+                    />
+                  ))}
+                </div>
+              </Container>
             </div>
 
-            <div className="ml-5">
-              <div className="mt-5">
-                <Container
-                  title={container.title4}
-                  containerWidth="401px"
-                  containerHeight="235px"
-                >
-                  <Content
-                    name={profile[5].name}
-                    designation={profile[5].subtitle}
-                  />
-                  <Content
-                    name={profile[6].name}
-                    designation={profile[6].subtitle}
-                  />
-                  <Content
-                    name={profile[7].name}
-                    designation={profile[7].subtitle}
-                  />
-                </Container>
-              </div>
+            {/* Right Column - Takes up 1/3 on large screens */}
+            <div className="space-y-6">
+              {/* Lead Information */}
+              <Container
+                title={container.title4}
+                containerWidth="w-full"
+                containerHeight="auto"
+              >
+                <div className="p-4 space-y-4">
+                  {profile.slice(5, 8).map((item, index) => (
+                    <Content
+                      key={index}
+                      name={item.name}
+                      designation={item.subtitle}
+                    />
+                  ))}
+                </div>
+              </Container>
 
-              <div className="mt-5">
-                <Container
-                  title={container.title5}
-                  logo={container.logo2}
-                  containerWidth="401px"
-                  containerHeight="213px"
-                >
-                  <div className="flex justify-between items-center w-full p-3">
-                    <div className="flex items-center gap-2">
-                      <img src="proposal_logo.svg" alt="Proposal Logo" />
-                      <div className="text-black font-normal">Proposal.pdf</div>
+              {/* Documents */}
+              <Container
+                title={container.title5}
+                logo={container.logo2}
+                containerWidth="w-full"
+                containerHeight="auto"
+              >
+                <div className="divide-y">
+                  {[1, 2, 3].map((_, index) => (
+                    <div key={index} className="flex justify-between items-center p-4">
+                      <div className="flex items-center gap-2">
+                        <img src="proposal_logo.svg" alt="Proposal" className="w-5 h-5" />
+                        <span className="text-black font-normal">Proposal.pdf</span>
+                      </div>
+                      <button className="text-blue-600 font-normal">View</button>
                     </div>
+                  ))}
+                </div>
+              </Container>
 
-                    <div className="text-bg-blue-12 font-normal">View</div>
-                  </div>
-                  <hr></hr>
-
-                  <div className="flex justify-between items-center w-full p-3">
-                    <div className="flex items-center gap-2">
-                      <img src="proposal_logo.svg" alt="Proposal Logo" />
-                      <div className="text-black font-normal">Proposal.pdf</div>
-                    </div>
-
-                    <div className="text-bg-blue-12 font-normal">View</div>
-                  </div>
-                  <hr ></hr>
-
-                  <div className="flex justify-between items-center w-full p-3">
-                    <div className="flex items-center gap-2">
-                      <img src="proposal_logo.svg" alt="Proposal Logo" />
-                      <div className="text-black font-normal">Proposal.pdf</div>
-                    </div>
-
-                    <div className="text-bg-blue-12 font-normal">View</div>
-                  </div>
-                </Container>
-              </div>
-
-              <div className="mt-5">
-                <Container
-                  title={container.title6}
-                  logo={container.logo2}
-                  containerWidth="401px"
-                  containerHeight="213px"
-                >
-                 <div className="p-4">
-                  <div
-                    className=" bg-bg-gray-11 border-2 border-individuals_border rounded-lg text-bg-gray-13 font-normal text-[16px]"
-                    style={{ height: "126px", width: "364px" }}
-                  >Add a notes...</div>
-                  </div>
-                </Container>
-              </div>
+              {/* Notes */}
+              <Container
+                title={container.title6}
+                logo={container.logo2}
+                containerWidth="w-full"
+                containerHeight="auto"
+              >
+                <div className="p-4">
+                  <textarea
+                    className="w-full h-32 p-3 bg-gray-50 border-2 border-gray-200 rounded-lg text-gray-600 font-normal text-base resize-none"
+                    placeholder="Add a note..."
+                  />
+                </div>
+              </Container>
             </div>
           </div>
         </div>
