@@ -1,21 +1,17 @@
 
-import Data1 from "../microComponents/Content";
+import Data1 from "../../microComponents/Content";
 
-import Box from "../microComponents/Box";
-import Card from "../microComponents/Card";
-import Content from "../microComponents/Content";
+import Box from "../../microComponents/Box";
+import Card from "../../microComponents/Card";
+import Content from "../../microComponents/Content";
+import {profiles} from "../Path/TaskData";
 // import Profile from "../microComponents/Profile";
 
 export default function LeftCardDetails() {
-    const profiles = [
-      { profileImage: 'profileLogo.svg', name: 'John Doe', designation: 'Marketing Head' },
-      { profileImage: 'profileLogo.svg', name: 'John Doe', designation: 'Marketing Head' },
-      { profileImage: 'profileLogo.svg', name: 'Jane Smith', designation: 'HR Manager' },
-      { profileImage: 'profileLogo.svg', name: 'Emily Davis', designation: 'Developer' },
-    ];
+    
   
     return (
-      <div className="w-full">
+      <div className="w-full max-w-[309px] md:max-w-[750px] lg:max-w-[309px]">
         <div className="w-full bg-[#F6F5FF] border border-bg-blue-11 rounded-lg">
           <div className="divide-y divide-bg-blue-11">
             {profiles.map((profile, index) => (
