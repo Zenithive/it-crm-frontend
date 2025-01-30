@@ -51,19 +51,19 @@ export default function Login() {
             validationSchema={validationSchema}
             onSubmit={(values) => console.log(values)}
           >
-            {({ errors, touched, handleSubmit }) => (
+            {({ errors, touched, handleSubmit,isValid }) => (
               <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
                 <div className="flex flex-col gap-1 font-semibold">
-                  <label className="text-[18px] sm:text-[24px] text-bg-blue-11">Email</label>
-                  <Field type="email" name="email" data-testid="email" className={`w-full sm:w-[433px] h-[50px] sm:h-[60px] border-[1px] border-black rounded-[4px] px-4 text-[18px] bg-white focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 transition-transform duration-300 ease-in-out ${errors.email && touched.email ? 'border-red-500' : ''}`} />
-                  <ErrorMessage name="email" component="div" className="text-red-500 text-[16px]" />
+                  <label htmlFor="email" className="text-[18px] sm:text-[24px] text-bg-blue-11">Email</label>
+                  <Field type="email" name="email"  id="email" data-testid="email" className={`w-full sm:w-[433px] h-[50px] sm:h-[60px] border-[1px] border-black rounded-[4px] px-4 text-[18px] bg-white focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 transition-transform duration-300 ease-in-out ${errors.email && touched.email ? 'border-red-500' : ''}`} />
+                  <ErrorMessage name="email" data-testid="errorEmail" component="div" className="text-red-500 text-[16px]" />
                 </div>
                 <div className="flex flex-col gap-1 font-semibold">
-                  <label className="text-[18px] sm:text-[24px] text-bg-blue-11">Password</label>
-                  <Field type="password" name="password" data-testid="pass" className={`w-full sm:w-[433px] h-[50px] sm:h-[60px] border-[1px] border-black rounded-[4px] px-4 text-[18px] bg-white focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 transition-transform duration-300 ease-in-out ${errors.password && touched.password ? 'border-red-500' : ''}`} />
-                  <ErrorMessage name="password" component="div" className="text-red-500 text-[16px] text-wrap w-full sm:w-[433px]" />
+                  <label htmlFor="password" className="text-[18px] sm:text-[24px] text-bg-blue-11">Password</label>
+                  <Field type="password" name="password" data-testid="pass" id="password" className={`w-full sm:w-[433px] h-[50px] sm:h-[60px] border-[1px] border-black rounded-[4px] px-4 text-[18px] bg-white focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 transition-transform duration-300 ease-in-out ${errors.password && touched.password ? 'border-red-500' : ''}`} />
+                  <ErrorMessage name="password"  data-testid="errorPass" component="div" className="text-red-500 text-[16px] text-wrap w-full sm:w-[433px]" />
                 </div>
-                <button type="submit" data-testid="nextButton" onClick={handleNextClick} className="btn bg-bg-blue-12 hover:bg-bg-blue-11 text-white w-full p-3 rounded-md">
+                <button type="submit" data-testid="nextButton" onClick={()=>isValid?handleNextClick():''} className="btn bg-bg-blue-12 hover:bg-bg-blue-11 text-white w-full p-3 rounded-md">
                   <span className="text-[18px] md:text-[24px]">Next</span>
                 </button>
               </form>
