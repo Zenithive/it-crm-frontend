@@ -1,11 +1,14 @@
+
+
 "use client";
 import Link from "next/link";
 import { useState } from "react";
 import * as React from "react";
-
 import { useRouter } from "next/navigation";
 import { Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import HeaderOfLogin from "./HeaderOfLogin";
+
 
 export default function Login() {
   const [formBg, setFormBg] = useState("");
@@ -35,112 +38,140 @@ export default function Login() {
   };
 
   return (
-    <div
-      className="grid grid-cols-1 px-4 place-items-center sm:px-6 md:px-10 lg:px-20 mt-[88px]"
-      data-testid="login-1"
-    >
-      <div>
-        <img
-          src="logo.svg"
-          alt="Logo"
-          className="w-[200px] sm:w-[320px] h-auto"
-        />
-      </div>
-      <div className="pt-5 sm:pt-8 text-center">
-        <p className="text-[24px] sm:text-[32px] md:text-[42px] font-semibold">
-          Login faster and safer to your{" "}
-          <span className="text-bg-blue-12">Clarvion</span> account😊
-        </p>
-      </div>
-      <div className="w-full sm:w-auto">
-        <div
-          className={`container mx-auto px-5 sm:px-10 md:px-20 lg:px-40 xl:px-64 rounded-[10px] mt-[45px] py-[35px]`}
-          style={{ backgroundColor: formBg }}
-        >
-          <Formik
-            initialValues={{ email: "", password: "" }}
-            validationSchema={validationSchema}
-            onSubmit={(values) => console.log(values)}
-          >
-            {({ errors, touched, handleSubmit }) => (
-              <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
-                <div className="flex flex-col gap-1 font-semibold">
-                  <label className="text-[18px] sm:text-[24px] text-bg-blue-11">
-                    Email
-                  </label>
-                  <Field
-                    type="email"
-                    name="email"
-                    data-testid="email"
-                    className={`w-full sm:w-[433px] h-[50px] sm:h-[60px] border-[1px] border-black rounded-[4px] px-4 text-[18px] bg-white focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 transition-transform duration-300 ease-in-out ${
-                      errors.email && touched.email ? "border-red-500" : ""
-                    }`}
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="text-red-500 text-[16px]"
-                  />
-                </div>
-                <div className="flex flex-col gap-1 font-semibold">
-                  <label className="text-[18px] sm:text-[24px] text-bg-blue-11">
-                    Password
-                  </label>
-                  <Field
-                    type="password"
-                    name="password"
-                    data-testid="pass"
-                    className={`w-full sm:w-[433px] h-[50px] sm:h-[60px] border-[1px] border-black rounded-[4px] px-4 text-[18px] bg-white focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 transition-transform duration-300 ease-in-out ${
-                      errors.password && touched.password
-                        ? "border-red-500"
-                        : ""
-                    }`}
-                  />
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="text-red-500 text-[16px] text-wrap w-full sm:w-[433px]"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  data-testid="nextButton"
-                  onClick={handleNextClick}
-                  className="btn bg-bg-blue-12 hover:bg-bg-blue-11 text-white w-full p-3 rounded-md"
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="w-full max-w-6xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
+        <HeaderOfLogin/>
+
+        <div className="grid md:grid-cols-2 gap-8 p-4 md:p-8 lg:p-12">
+        
+          <div className="flex flex-col items-center justify-center space-y-6 p-4">
+            <div className="w-full max-w-md">
+              <img
+                src="Loginpic.svg"
+                alt="login"
+                className="w-full h-auto max-w-[376px] mx-auto"
+              />
+            </div>
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-medium text-center">
+              Login faster and safer to your{" "}
+              <span className="text-bg-blue-12">Clarvion</span> account😊
+            </h2>
+          </div>
+
+        
+          <div className="w-full max-w-xl mx-auto">
+            <div className="border border-bg-blue-11 border-opacity-30 rounded-2xl p-4">
+              <div
+                className="w-full rounded-xl p-6"
+                style={{ backgroundColor: formBg || "white" }}
+              >
+                <Formik
+                  initialValues={{ email: "", password: "" }}
+                  validationSchema={validationSchema}
+                  onSubmit={(values) => console.log(values)}
                 >
-                  <span className="text-[18px] md:text-[24px]">Next</span>
-                </button>
-              </form>
-            )}
-          </Formik>
-          <div className="flex flex-col gap-5 mt-6">
-            <Link
-              href="#"
-              className="flex items-center gap-[45px] bg-white border-[0.8px] rounded-md border-black p-3 hover:shadow-lg hover:shadow-bg-blue-14"
-            >
-              <img src="google.svg" className="w-6 h-6" alt="Google" />
-              <span className="text-[16px] sm:text-[20px]">
-                Login with Google
-              </span>
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-[39px] bg-white border-[0.8px] rounded-md border-black p-3 hover:shadow-lg hover:shadow-bg-blue-14"
-            >
-              <img src="linkedin.svg" className="w-8 h-8" alt="LinkedIn" />
-              <span className="text-[16px] sm:text-[20px]">
-                Login with LinkedIn
-              </span>
-            </Link>
+                  {({ errors, touched, handleSubmit }) => (
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="block text-lg font-semibold">
+                          Email
+                        </label>
+                        <Field
+                          type="email"
+                          name="email"
+                          data-testid="email"
+                          className={`w-full h-12 px-4 border rounded-xl text-base transition-all focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
+                            errors.email && touched.email
+                              ? "border-red-500"
+                              : "border-bg-blue-12"
+                          }`}
+                        />
+                        <ErrorMessage
+                          name="email"
+                          component="div"
+                          data-testid="errorEmail"
+                          className="text-red-500 text-sm"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-lg font-semibold">
+                          Password
+                        </label>
+                        <Field
+                          type="password"
+                          name="password"
+                          data-testid="pass"
+                          className={`w-full h-12 px-4 border rounded-xl text-base transition-all focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
+                            errors.password && touched.password
+                              ? "border-red-500"
+                              : "border-bg-blue-12"
+                          }`}
+                        />
+                        <ErrorMessage
+                          name="password"
+                          component="div"
+                          data-testid="errorPass"
+                          className="text-red-500 text-sm"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        data-testid="nextButton"
+                        onClick={handleNextClick}
+                        className="w-full h-12 bg-bg-blue-12 hover:bg-bg-blue-11 text-white rounded-xl font-bold text-lg md:text-xl transition-colors"
+                      >
+                        Next
+                      </button>
+                    </form>
+                  )}
+                </Formik>
+
+                <div className="flex justify-between mt-4 text-sm md:text-base">
+                  <span className="text-bg-gray-13 font-semibold">2FA</span>
+                  <span className="text-black font-semibold">
+                    Forgot Password?
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-center my-6">
+                  <span className="text-xl font-semibold">OR</span>
+                </div>
+
+                <div className="space-y-4">
+                  <Link
+                    href="#"
+                    data-testid="googleLogin"
+                    className="flex items-center justify-center gap-4 p-3 border border-bg-blue-12 rounded-xl hover:shadow-lg hover:shadow-bg-blue-14 transition-shadow"
+                  >
+                    <img src="google.svg" className="w-6 h-6" alt="Google" />
+                    <span className="text-base md:text-lg text-bg-blue-12">
+                      Login with Google
+                    </span>
+                  </Link>
+                  <Link
+                    href="#"
+                    data-testid="linkedinLogin"
+                    className="flex items-center justify-center gap-4 p-3 border border-bg-blue-12 rounded-xl hover:shadow-lg hover:shadow-bg-blue-14 transition-shadow"
+                  >
+                    <img src="linkedin.svg" className="w-8 h-8" alt="LinkedIn" />
+                    <span className="text-base md:text-lg text-bg-blue-12">
+                      Login with LinkedIn
+                    </span>
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <footer className="mt-12 text-[14px] sm:text-[20px] text-center">
-          ©2024 Clarvion, Inc. All Rights Reserved.{" "}
-          <span className="text-bg-blue-12 cursor-pointer font-semibold">
-            Privacy Policy & Manage Cookies
-          </span>
-        </footer>
       </div>
     </div>
   );
 }
+
+
+
+
+
+
