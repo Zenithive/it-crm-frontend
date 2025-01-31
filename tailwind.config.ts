@@ -21,6 +21,7 @@ export default {
         "text-red":"#E53935",
         "follow_ups_yellow":"#FFC107",
         "follow_ups_green":"#28A745"
+       
       },
       scale: {
         '102.5': '1.008', 

@@ -1,5 +1,180 @@
 
 
+// "use client";
+// import Link from "next/link";
+// import { useState } from "react";
+// import * as React from "react";
+// import { useRouter } from "next/navigation";
+// import { Formik, Field, ErrorMessage } from "formik";
+// import * as Yup from "yup";
+// import HeaderOfLogin from "./HeaderOfLogin";
+
+
+// export default function Login() {
+//   const [formBg, setFormBg] = useState("");
+//   const router = useRouter();
+
+//   const validationSchema = Yup.object().shape({
+//     email: Yup.string()
+//       .max(50, "Email is too long")
+//       .email("Enter Valid Email ID")
+//       .matches(
+//         /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+//         "Please provide a valid email address (example@domain.com)"
+//       )
+//       .required("Email is required"),
+//     password: Yup.string()
+//       .min(6, "Should be at least 6 characters")
+//       .matches(
+//         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/,
+//         "Must contain 6 characters, one uppercase, one lowercase, one number, and one special character"
+//       )
+//       .required("Enter Valid Password"),
+//   });
+
+//   const handleNextClick = () => {
+//     setFormBg("#F6F5FF");
+//     router.push("/dashboard");
+//   };
+
+//   return (
+//     <div className="min-h-screen flex items-center justify-center p-4">
+//       <div className="w-full max-w-6xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
+//         <HeaderOfLogin/>
+
+//         <div className="grid md:grid-cols-2 gap-8 p-4 md:p-8 lg:p-12">
+        
+//           <div className="flex flex-col items-center justify-center space-y-6 p-4">
+//             <div className="w-full max-w-md">
+//               <img
+//                 src="Loginpic.svg"
+//                 alt="login"
+//                 className="w-full h-auto max-w-[376px] mx-auto"
+//               />
+//             </div>
+//             <h2 className="text-xl md:text-2xl lg:text-3xl font-medium text-center">
+//               Login faster and safer to your{" "}
+//               <span className="text-bg-blue-12">Clarvion</span> account😊
+//             </h2>
+//           </div>
+
+        
+//           <div className="w-full max-w-xl mx-auto">
+//             <div className="border border-bg-blue-11 border-opacity-30 rounded-2xl p-4">
+//               <div
+//                 className="w-full rounded-xl p-6"
+//                 style={{ backgroundColor: formBg || "white" }}
+//               >
+//                 <Formik
+//                   initialValues={{ email: "", password: "" }}
+//                   validationSchema={validationSchema}
+//                   onSubmit={(values) => console.log(values)}
+//                 >
+//                   {({ errors, touched, handleSubmit }) => (
+//                     <form onSubmit={handleSubmit} className="space-y-4">
+//                       <div className="space-y-2">
+//                         <label className="block text-lg font-semibold">
+//                           Email
+//                         </label>
+//                         <Field
+//                           type="email"
+//                           name="email"
+//                           data-testid="email"
+//                           className={`w-full h-12 px-4 border rounded-xl text-base transition-all focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
+//                             errors.email && touched.email
+//                               ? "border-red-500"
+//                               : "border-bg-blue-12"
+//                           }`}
+//                         />
+//                         <ErrorMessage
+//                           name="email"
+//                           component="div"
+//                           data-testid="errorEmail"
+//                           className="text-red-500 text-sm"
+//                         />
+//                       </div>
+
+//                       <div className="space-y-2">
+//                         <label className="block text-lg font-semibold">
+//                           Password
+//                         </label>
+//                         <Field
+//                           type="password"
+//                           name="password"
+//                           data-testid="pass"
+//                           className={`w-full h-12 px-4 border rounded-xl text-base transition-all focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
+//                             errors.password && touched.password
+//                               ? "border-red-500"
+//                               : "border-bg-blue-12"
+//                           }`}
+//                         />
+//                         <ErrorMessage
+//                           name="password"
+//                           component="div"
+//                           data-testid="errorPass"
+//                           className="text-red-500 text-sm"
+//                         />
+//                       </div>
+
+//                       <button
+//                         type="submit"
+//                         data-testid="nextButton"
+//                         onClick={handleNextClick}
+//                         className="w-full h-12 bg-bg-blue-12 hover:bg-bg-blue-11 text-white rounded-xl font-bold text-lg md:text-xl transition-colors"
+//                       >
+//                         Next
+//                       </button>
+//                     </form>
+//                   )}
+//                 </Formik>
+
+//                 <div className="flex justify-between mt-4 text-sm md:text-base">
+//                   <span className="text-bg-gray-13 font-semibold">2FA</span>
+//                   <span className="text-black font-semibold">
+//                     Forgot Password?
+//                   </span>
+//                 </div>
+
+//                 <div className="flex items-center justify-center my-6">
+//                   <span className="text-xl font-semibold">OR</span>
+//                 </div>
+
+//                 <div className="space-y-4">
+//                   <Link
+//                     href="#"
+//                     data-testid="googleLogin"
+//                     className="flex items-center justify-center gap-4 p-3 border border-bg-blue-12 rounded-xl hover:shadow-lg hover:shadow-bg-blue-14 transition-shadow"
+//                   >
+//                     <img src="google.svg" className="w-6 h-6" alt="Google" />
+//                     <span className="text-base md:text-lg text-bg-blue-12">
+//                       Login with Google
+//                     </span>
+//                   </Link>
+//                   <Link
+//                     href="#"
+//                     data-testid="linkedinLogin"
+//                     className="flex items-center justify-center gap-4 p-3 border border-bg-blue-12 rounded-xl hover:shadow-lg hover:shadow-bg-blue-14 transition-shadow"
+//                   >
+//                     <img src="linkedin.svg" className="w-8 h-8" alt="LinkedIn" />
+//                     <span className="text-base md:text-lg text-bg-blue-12">
+//                       Login with LinkedIn
+//                     </span>
+//                   </Link>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
 "use client";
 import Link from "next/link";
 import { useState } from "react";
@@ -8,7 +183,6 @@ import { useRouter } from "next/navigation";
 import { Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import HeaderOfLogin from "./HeaderOfLogin";
-
 
 export default function Login() {
   const [formBg, setFormBg] = useState("");
@@ -19,14 +193,14 @@ export default function Login() {
       .max(50, "Email is too long")
       .email("Enter Valid Email ID")
       .matches(
-        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 
         "Please provide a valid email address (example@domain.com)"
       )
       .required("Email is required"),
     password: Yup.string()
       .min(6, "Should be at least 6 characters")
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/,
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/, 
         "Must contain 6 characters, one uppercase, one lowercase, one number, and one special character"
       )
       .required("Enter Valid Password"),
@@ -38,127 +212,77 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-6xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden">
-        <HeaderOfLogin/>
-
-        <div className="grid md:grid-cols-2 gap-8 p-4 md:p-8 lg:p-12">
-        
-          <div className="flex flex-col items-center justify-center space-y-6 p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 overflow-hidden">
+      <div className="w-full max-w-6xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col">
+        <HeaderOfLogin />
+        <div className="grid md:grid-cols-2 gap-6 p-4 md:p-6 lg:p-8">
+          <div className="flex flex-col items-center justify-center space-y-4 p-4">
             <div className="w-full max-w-md">
-              <img
-                src="Loginpic.svg"
-                alt="login"
-                className="w-full h-auto max-w-[376px] mx-auto"
-              />
+              <img src="Loginpic.svg" alt="login" className="w-full h-auto max-w-[320px] mx-auto" />
             </div>
-            <h2 className="text-xl md:text-2xl lg:text-3xl font-medium text-center">
-              Login faster and safer to your{" "}
-              <span className="text-bg-blue-12">Clarvion</span> account😊
+            <h2 className="text-lg md:text-xl lg:text-2xl font-medium text-center">
+              Login faster and safer to your <span className="text-bg-blue-12">Clarvion</span> account😊
             </h2>
           </div>
-
-        
-          <div className="w-full max-w-xl mx-auto">
+          <div className="w-full max-w-md mx-auto">
             <div className="border border-bg-blue-11 border-opacity-30 rounded-2xl p-4">
-              <div
-                className="w-full rounded-xl p-6"
-                style={{ backgroundColor: formBg || "white" }}
-              >
+              <div className="w-full rounded-xl p-6" style={{ backgroundColor: formBg || "white" }}>
                 <Formik
                   initialValues={{ email: "", password: "" }}
                   validationSchema={validationSchema}
                   onSubmit={(values) => console.log(values)}
                 >
                   {({ errors, touched, handleSubmit }) => (
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div className="space-y-2">
-                        <label className="block text-lg font-semibold">
-                          Email
-                        </label>
+                    <form onSubmit={handleSubmit} className="space-y-3">
+                      <div className="space-y-1">
+                        <label className="block text-[18px]  font-semibold">Email</label>
                         <Field
                           type="email"
                           name="email"
-                          data-testid="email"
-                          className={`w-full h-12 px-4 border rounded-xl text-base transition-all focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
-                            errors.email && touched.email
-                              ? "border-red-500"
-                              : "border-bg-blue-12"
+                           data-testid="email"
+                          className={`w-full h-[40px] px-3 border rounded-xl text-sm focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
+                            errors.email && touched.email ? "border-red-500" : "border-bg-blue-12"
                           }`}
                         />
-                        <ErrorMessage
-                          name="email"
-                          component="div"
-                          data-testid="errorEmail"
-                          className="text-red-500 text-sm"
-                        />
+                        <ErrorMessage  data-testid="errorEmail" name="email" component="div" className="text-red-500 text-xs" />
                       </div>
-
-                      <div className="space-y-2">
-                        <label className="block text-lg font-semibold">
-                          Password
-                        </label>
+                      <div className="space-y-1 ">
+                        <label className="block text-[18px]  font-semibold">Password</label>
                         <Field
                           type="password"
                           name="password"
-                          data-testid="pass"
-                          className={`w-full h-12 px-4 border rounded-xl text-base transition-all focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
-                            errors.password && touched.password
-                              ? "border-red-500"
-                              : "border-bg-blue-12"
+                           data-testid="pass"
+                          className={`w-full h-10 px-3 border rounded-xl text-sm focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
+                            errors.password && touched.password ? "border-red-500" : "border-bg-blue-12"
                           }`}
                         />
-                        <ErrorMessage
-                          name="password"
-                          component="div"
-                          data-testid="errorPass"
-                          className="text-red-500 text-sm"
-                        />
+                        <ErrorMessage  data-testid="errorPass" name="password" component="div" className="text-red-500 text-xs" />
                       </div>
-
                       <button
                         type="submit"
-                        data-testid="nextButton"
                         onClick={handleNextClick}
-                        className="w-full h-12 bg-bg-blue-12 hover:bg-bg-blue-11 text-white rounded-xl font-bold text-lg md:text-xl transition-colors"
+                        className="w-full h-[40px] bg-bg-blue-12 hover:bg-bg-blue-11 text-white rounded-xl font-bold text-[18px] transition-colors"
                       >
                         Next
                       </button>
                     </form>
                   )}
                 </Formik>
-
-                <div className="flex justify-between mt-4 text-sm md:text-base">
+                <div className="flex justify-between mt-3 text-xs md:text-sm">
                   <span className="text-bg-gray-13 font-semibold">2FA</span>
-                  <span className="text-black font-semibold">
-                    Forgot Password?
-                  </span>
+                  <span className="text-black font-semibold">Forgot Password?</span>
                 </div>
-
-                <div className="flex items-center justify-center my-6">
-                  <span className="text-xl font-semibold">OR</span>
+                <div className="flex items-center justify-center my-4">
+                  <span className="text-[18px] font-semibold">OR</span>
                 </div>
-
-                <div className="space-y-4">
-                  <Link
-                    href="#"
-                    data-testid="googleLogin"
-                    className="flex items-center justify-center gap-4 p-3 border border-bg-blue-12 rounded-xl hover:shadow-lg hover:shadow-bg-blue-14 transition-shadow"
-                  >
-                    <img src="google.svg" className="w-6 h-6" alt="Google" />
-                    <span className="text-base md:text-lg text-bg-blue-12">
-                      Login with Google
-                    </span>
+                <div className="space-y-3">
+                  <Link href="#" data-testid="googleLogin" className="flex items-center justify-center gap-3 p-2 border border-bg-blue-12 rounded-xl">
+                    <img src="google.svg" className="w-5 h-5" alt="Google" />
+                    <span className="text-[18px] text-bg-blue-12">Login with Google</span>
                   </Link>
-                  <Link
-                    href="#"
-                    data-testid="linkedinLogin"
-                    className="flex items-center justify-center gap-4 p-3 border border-bg-blue-12 rounded-xl hover:shadow-lg hover:shadow-bg-blue-14 transition-shadow"
-                  >
-                    <img src="linkedin.svg" className="w-8 h-8" alt="LinkedIn" />
-                    <span className="text-base md:text-lg text-bg-blue-12">
-                      Login with LinkedIn
-                    </span>
+                  <Link href="#"  data-testid="linkedinLogin" className="flex items-center justify-center gap-3 p-2 border border-bg-blue-12 rounded-xl ">
+                    <img src="linkedin.svg" className="w-6 h-6" alt="LinkedIn" />
+                    <span className="text-[18px] text-bg-blue-12">Login with LinkedIn</span>
                   </Link>
                 </div>
               </div>
@@ -169,9 +293,3 @@ export default function Login() {
     </div>
   );
 }
-
-
-
-
-
-
