@@ -1,5 +1,5 @@
 import React ,{useState} from "react";
-import { tasks,unread_messages } from "../Path/TaskData";
+import { tasks,followup } from "../Path/TaskData";
 // import { ChevronDown } from "lucide-react";
 
 const Task = () => {
@@ -31,7 +31,7 @@ const Task = () => {
 
         {activeView === "today" ? (
           // Today's Tasks View
-          <div className="space-y-3 mt-2">
+          <div className="space-y-3 mt-4 max-h-[200px] overflow-y-auto ">
             {tasks.map((task, index) => (
               <div
                 key={index}
@@ -54,12 +54,12 @@ const Task = () => {
           </div>
         ) : (
           // Follow-ups View
-          <div className="space-y-4">
-            {unread_messages.map((msg, index) => (
+          <div className="space-y-4 mt-4 max-h-[200px] overflow-y-auto ">
+            {followup.map((msg, index) => (
               <div
                 key={index}
                 className={`flex items-center justify-between pb-4 ${
-                  index !== unread_messages.length - 1
+                  index !== followup.length - 1
                     ? "border-b border-gray-300"
                     : ""
                 }`}

@@ -19,7 +19,8 @@ export default {
         "bg-red":"#FFE5E4",
         "text-red":"#E53935",
         "follow_ups_yellow":"#FFC107",
-        "follow_ups_green":"#28A745"
+        "follow_ups_green":"#28A745",
+        "blue_shadow":"#F2F1FF"
        
       },
       scale: {

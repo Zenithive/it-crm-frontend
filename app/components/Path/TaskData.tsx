@@ -2,9 +2,85 @@ export const tasks = [
   { title: "Follow up with Client ABC", dueTime: "Due in 2 hours" },
   { title: "Follow up with Client ABC", dueTime: "Due in 2 hours" },
   { title: "Follow up with Client ABC", dueTime: "Due in 2 hours" },
+  { title: "Follow up with Client ABC", dueTime: "Due in 2 hours" },
+  { title: "Follow up with Client ABC", dueTime: "Due in 2 hours" },
+  { title: "Follow up with Client ABC", dueTime: "Due in 2 hours" },
+  { title: "Follow up with Client ABC", dueTime: "Due in 2 hours" },
+
 ];
 
+export const followup =[
+  {
+    profileImage: "profileLogo.svg",
+    name: "Sachin Tend",
+    message: "Hello, I wanted to follow up ...",
+  },
+  {
+    profileImage: "profileLogo.svg",
+    name: "Sachin Tend",
+    message: "Hello, I wanted to follow up ...",
+  },
+  {
+    profileImage: "profileLogo.svg",
+    name: "Sachin Tend",
+    message: "Hello, I wanted to follow up ...",
+  },
+  {
+    profileImage: "profileLogo.svg",
+    name: "Sachin Tend",
+    message: "Hello, I wanted to follow up ...",
+  },
+  {
+    profileImage: "profileLogo.svg",
+    name: "Sachin Tend",
+    message: "Hello, I wanted to follow up ...",
+  },
+]
+
+export const recent=[
+  {
+    profileImage: "profileLogo.svg",
+    name: "Sachin Tend",
+    message: "Hello, I wanted to follow up ...",
+  },
+  {
+    profileImage: "profileLogo.svg",
+    name: "Sachin Tend",
+    message: "Hello, I wanted to follow up ...",
+  },
+  {
+    profileImage: "profileLogo.svg",
+    name: "Sachin Tend",
+    message: "Hello, I wanted to follow up ...",
+  },
+  {
+    profileImage: "profileLogo.svg",
+    name: "Sachin Tend",
+    message: "Hello, I wanted to follow up ...",
+  },
+  {
+    profileImage: "profileLogo.svg",
+    name: "Sachin Tend",
+    message: "Hello, I wanted to follow up ...",
+  },
+]
+
 export const unread_messages = [
+  {
+    profileImage: "profileLogo.svg",
+    name: "Sachin Tend",
+    message: "Hello, I wanted to follow up ...",
+  },
+  {
+    profileImage: "profileLogo.svg",
+    name: "Sachin Tend",
+    message: "Hello, I wanted to follow up ...",
+  },
+  {
+    profileImage: "profileLogo.svg",
+    name: "Sachin Tend",
+    message: "Hello, I wanted to follow up ...",
+  },
   {
     profileImage: "profileLogo.svg",
     name: "Sachin Tend",
