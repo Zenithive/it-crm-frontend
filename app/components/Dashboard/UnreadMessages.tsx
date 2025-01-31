@@ -1,7 +1,5 @@
 import React from "react";
-import Content from "../../microComponents/Content";
 import { unread_messages } from "../Path/TaskData";
-import { ChevronDown } from "lucide-react";
 
 const UnreadMessages = () => {
   return (
@@ -13,13 +11,13 @@ const UnreadMessages = () => {
           </div>
 
           {unread_messages.length > 0 && (
-            <div className="bg-blue_shadow text-bg-blue-12 text-xs font-bold rounded-full w-8 h-8 flex items-center justify-center">
+            <div className="unread_icon">
               {unread_messages.length}
             </div>
           )}
         </div>
 
-        <div className="space-y-4 max-h-[220px] overflow-y-auto  ">
+        <div className="scrollable_view">
           {unread_messages.map((msg, index) => (
             <div
               key={index}

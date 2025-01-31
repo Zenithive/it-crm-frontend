@@ -1,6 +1,6 @@
 import React ,{useState} from "react";
 import { tasks,followup } from "../Path/TaskData";
-// import { ChevronDown } from "lucide-react";
+import "./Dashboard.css";
 
 const Task = () => {
   const [activeView, setActiveView] = useState("today"); // 'today' or 'followup'
@@ -31,7 +31,7 @@ const Task = () => {
 
         {activeView === "today" ? (
           // Today's Tasks View
-          <div className="space-y-3 mt-4 max-h-[200px] overflow-y-auto ">
+          <div className="scrollable_view">
             {tasks.map((task, index) => (
               <div
                 key={index}
@@ -40,21 +40,21 @@ const Task = () => {
                 }`}
               >
                 <div className="min-w-0 flex-1 pr-4">
-                  <h3 className="font-medium text-gray-800 text-sm md:text-base truncate">
+                  <h3 className="task_title">
                     {task.title}
                   </h3>
                   <p className="text-xs md:text-sm text-gray-500">{task.dueTime}</p>
                 </div>
                 <input
                   type="checkbox"
-                  className="h-4 w-4 md:h-5 md:w-5 rounded-md border-gray-300 flex-shrink-0"
+                  className="task_checkbox"
                 />
               </div>
             ))}
           </div>
         ) : (
           // Follow-ups View
-          <div className="space-y-4 mt-4 max-h-[200px] overflow-y-auto ">
+          <div className="scrollable_view">
             {followup.map((msg, index) => (
               <div
                 key={index}

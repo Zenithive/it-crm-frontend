@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { meetings, recent } from "../Path/TaskData";
-import { Settings } from "lucide-react";
 
 const Meetings = () => {
   const [recentView, setRecentView] = useState("today");
@@ -33,7 +32,7 @@ const Meetings = () => {
           </div>
         </div>
         {recentView === "today" ? (
-          <div className="space-y-4 mt-4 max-h-[220px] overflow-y-auto">
+          <div className="scrollable_view">
             {meetings.map((meeting, index) => (
               <div
                 key={index}
@@ -44,8 +43,7 @@ const Meetings = () => {
                 }`}
               >
                 <div className="flex items-center space-x-3 md:space-x-4 min-w-0">
-                  <div className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-white border border-bg-blue-12 flex items-center justify-center flex-shrink-0">
-                    {/* <Settings className="h-4 w-4 md:h-5 md:w-5 text-[#6366F1]" /> */}
+                  <div className="clock_icon">
                     <img src="clock.svg" alt="Clock"></img>
                   </div>
                   <div className="min-w-0 flex-1">
@@ -57,14 +55,14 @@ const Meetings = () => {
                     </p>
                   </div>
                 </div>
-                <button className="bg-[#6366F1] text-white px-4 md:px-6 py-1.5 rounded-lg text-xs md:text-sm flex-shrink-0 ml-2">
+                <button className="join_button">
                   Join
                 </button>
               </div>
             ))}
           </div>
         ) : (
-          <div className="space-y-4 mt-4 max-h-[220px] overflow-y-auto ">
+          <div className="scrollable_view">
             {recent.map((msg, index) => (
               <div
                 key={index}

@@ -1,6 +1,5 @@
 import React from "react";
 import Title from "../../microComponents/Title";
-import { ChevronDown, Settings } from "lucide-react";
 import { Dashboardtitle } from "../Path/TitlePaths";
 
 
@@ -12,7 +11,7 @@ const Dashboard_Title = () => {
         
         <div className="flex items-center space-x-4">
             
-        <div className="bg-white flex p-4 rounded-xl h-12 space-x-4">
+        <div className="bg-white flex p-4 rounded-xl h-12 space-x-4 shadow-custom">
           <div className="flex items-center ">
             <img src="flag_india.svg" alt="flag" className="mr-1" />
             <img src="vector(1).svg" alt="dropdown" className="h-4 w-4 text-gray-500 ml-3" />
@@ -21,7 +20,7 @@ const Dashboard_Title = () => {
           <div className="text-gray-600 flex justify-center items-center">12:00 PM</div>
           </div>
 
-          <button className="bg-[#6366F1] text-white px-4 py-1.5 rounded-lg text-sm flex items-center h-11 ">
+          <button className="lead_button">
             <img src="lead_icon.svg" alt="icon" className="p-2"></img>
             Lead
           </button>
