@@ -12,7 +12,7 @@ interface Data {
 }
 export default function Card({ logo, task,lastText,children,lastTextColor }:Data) {
     return (
-      <div className="w-[310px] h-[260px] border border-bg-blue-11 rounded-lg" style={{ backgroundColor: "#F6F5FF" }}>
+      <div className="w-[310px] h-[260px] border border-bg-blue-11 rounded-lg bg-blue-111" >
         <div className="flex px-[10px] justify-between pt-[8px]">
           <div className="flex gap-2 justify-center items-center">
             <img
