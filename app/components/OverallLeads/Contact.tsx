@@ -1,38 +1,51 @@
+"use client";
+import { useState } from "react";
+import Title from "../../microComponents/Title";
+import Navbar from "../Navbar";
+import Pagination from "../Pagination";
 
 export default function Contact() {
-    const data = [
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+    const dataOf = [
         { name: "Sachin T", company: "TechCorp", stage: "New Lead", owner: "Zenithive", source: "Website", type: "Enterprise", campaign: "Xyz", profileImage: "profileLogo.svg" },
-        { name: "Sachin T", company: "TechCorp", stage: "Qualified", owner: "Zenithive", source: "Referral", type: "Enterprise", campaign: "Xyz",  profileImage: "profileLogo.svg" },
-        { name: "Sachin T", company: "TechCorp", stage: "Negotiation", owner: "Zenithive", source: "Linkedin", type: "Enterprise", campaign: "Xyz",  profileImage: "profileLogo.svg"  },
-        { name: "Sachin T", company: "TechCorp", stage: "New Lead", owner: "Zenithive", source: "Up-work", type: "Enterprise", campaign: "Xyz",  profileImage: "profileLogo.svg"  }
+        
+        
       ];
+
+
+      const data = Array(50).fill(dataOf).map((item, index) => ({
+        ...item,
+        id: index + 1, 
+        name: "Sachin T", company: "TechCorp", stage: "New Lead", owner: "Zenithive", source: "Website", type: "Enterprise", campaign: "Xyz", profileImage: "profileLogo.svg"
+      }));
+  
+ 
+  const totalItems = data.length;
+
+ 
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentItems = data.slice(startIndex, endIndex);
     return (
       <>
-      <div className="px-[70px]">
-        <div className="flex justify-between items-center  ">
-       
-        <div className="flex items-center bg-bg-gray-14 rounded-lg px-3 w-[420px] h-[44px] shadow-sm">
-  <img src="search_icon.svg" alt="Search" className="w-4 h-4 text-gray-400 mr-2" />
-  <input
-    type="text"
-    name="search"
-    value="Search Leads..."
-    className="w-full border-none outline-none bg-transparent text-gray-700 placeholder-transparent"
-  />
-</div>
 
-  
-          <div className="ml-4">
-            <button className="border border-bg-blue-11 text-black font-normal px-[10px] py-[10px] w-[91px] h-[44px] rounded-md flex items-center gap-[10px]">
-                <span><img src='filterC.svg' className=''></img></span>
-                <span>Filters</span>
-              
-            </button>
-          </div>
-        </div>
-  
-      <div className="flex flex-col gap-[10px] mt-[37px]">
-        <div className="flex gap-5 items-center justify-start">
+      <Navbar/>
+<div className="pt-[43px]">  <Title title="Lead" /></div>
+<div className="pt-[48px] flex justify-between items-center px-[70px] ">
+<div className="flex gap-[48px] items-center  ">
+       
+       <div className="flex items-center bg-bg-blue-15 rounded-lg px-3 w-[420px] h-[44px] shadow-sm">
+ <img src="search_icon.svg" alt="Search" className="w-4 h-4 text-gray-400 mr-2" />
+ <input
+   type="text"
+   name="search"
+   value="Search Leads..."
+   className="w-full border-none outline-none bg-transparent text-gray-700 placeholder-transparent"
+ />
+</div>
+<div className="flex gap-5 items-center justify-start">
           <div className="flex items-center cursor-pointer w-[108px] h-[43px] border-bg-blue-11 rounded-md gap-[10px] px-1 border">
            <div><img src="list.svg" alt="list view"  /></div> 
             <div className="  font-medium text-[14px]" style={{color:'#333333'}}>List View</div>
@@ -44,6 +57,32 @@ export default function Contact() {
             <img src="list3.svg" alt="detailed view" className="w-6 h-6 cursor-pointer" />
           </div>
         </div>
+ 
+        
+       </div>
+
+       <div className="flex items-center gap-[15px]">
+       <button className="border border-bg-blue-11 text-black font-normal px-[10px] py-[10px] w-[124px] h-[44px] rounded-md flex items-center ">
+                <span><img src='plusIcon.svg' className=''></img></span>
+                <div className="text-[16px] ">Add Lead</div>
+              
+            </button>
+            <button className="border border-bg-blue-11 text-black font-normal px-[10px] py-[10px] w-[91px] h-[44px] rounded-md flex items-center gap-[10px]">
+                <span><img src='filterC.svg' className=''></img></span>
+                <span>Filters</span>
+              
+            </button>
+
+       </div>
+      
+
+</div>
+    
+      <div className="px-[70px]">
+      
+  
+      <div className="flex flex-col gap-[10px] mt-[37px]">
+     
   
 
           <div className="overflow-x-auto">
@@ -95,7 +134,7 @@ export default function Contact() {
           </tr>
         </thead>
         <tbody>
-          {data.map((row, index) => (
+          {currentItems.map((row, index) => (
             <tr className="hover:bg-gray-50 border-b border-bg-blue-11" key={index}>
               <td className="pl-[45px]">
                 <div className="flex items-center gap-[5px]">
@@ -119,22 +158,24 @@ export default function Contact() {
       </table>
     </div>
         </div>
-        <div className="flex justify-between items-center p-4  mt-4 rounded-lg absolute bottom-[65px] left-0 right-0">
+        
+       
 
 
-    
-       <div className="flex gap-[14px] items-center ">
-          <div className="text-black w-[141px] h-[34px] border border-bg-blue-11 flex justify-center items-center gap-[9px] rounded-md"><span>10 per page</span><span><img src='dropdown.svg'></img></span></div>
-          <div className="text-bg-gray-15">Showing 1 to 10 out of 234</div></div>
-          <div className="flex gap-2 ">
-            <img src='leftArrow.svg'></img>
-            <button className="px-2      bg-gray-200  text-black w-[28px] h-[28px] text-[18px]">1</button>
-            <button className="px-2  bg-gray-200  text-black w-[28px] h-[28px] text-[18px]">2</button>
-            <button className="px-2  bg-gray-200  text-black w-[28px] h-[28px] text-[18px]">3</button>
-           <img src='rightArrow.svg'></img>
+<div className="flex justify-between items-center p-4 mt-[95px] rounded-lg">
+         
+
+<Pagination
+        totalItems={totalItems}
+        initialItemsPerPage={itemsPerPage}
+        onPageChange={(page) => setCurrentPage(page)}
+        onItemsPerPageChange={(newItemsPerPage) => {
+          setItemsPerPage(newItemsPerPage);
+          setCurrentPage(1); 
+        }}
+      />
           </div>
-        </div>
-        </div>
+          </div>
       </>
     );
   }
