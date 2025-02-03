@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 
 const UnreadMessages = () => {
   return (
-    <div className="w-full relative">
+    <div className="w-full relative" data-testid="unread-messages-section">
       <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
         <div className="flex justify-between items-center mb-4 md:mb-6 relative">
           <div className="font-semibold text-bg-blue-12 text-lg md:text-xl">
