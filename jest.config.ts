@@ -1,37 +1,30 @@
-// import type { Config } from 'jest'
-// import nextJest from 'next/jest.js'
+import type { Config } from 'jest'
+import nextJest from 'next/jest.js'
  
-
-
-// const createJestConfig = nextJest({
-//   // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
-//   dir: './',
-// })
- 
-// // Add any custom config to be passed to Jest
-// const config: Config = {
-//   coverageProvider: 'v8',
-//   testEnvironment: 'jsdom',
-//   // Add more setup options before each test is run
-//   // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
-// }
- 
-// // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-// export default createJestConfig(config)
-
-
-const nextJest = require("next/jest");
-
 const createJestConfig = nextJest({
-  dir: "./",
-});
-
-const customJestConfig = {
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-  testEnvironment: "jest-environment-jsdom",
+  // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
+  dir: './',
+})
+ 
+// Add any custom config to be passed to Jest
+const config: Config = {
+  coverageProvider: 'v8',
+  testEnvironment: 'jsdom',
+ 
+ 
+  // Add more setup options before each test is run
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/src/$1",
+    '^lucide-react$': '<rootDir>/__mocks__/lucide-react.js',
   },
-};
 
-module.exports = createJestConfig(customJestConfig);
+  transform: {
+    '^.+\\.(ts|tsx)?$': 'ts-jest',}
+    
+
+  
+  
+}
+ 
+// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
+export default createJestConfig(config)

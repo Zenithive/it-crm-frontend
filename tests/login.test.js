@@ -36,6 +36,10 @@ test('renders login form and components', () => {
 
 
 test('displays email validation error on invalid email', async () => {
+  
+  const mockPush = jest.fn();
+  useRouter.mockImplementation(() => ({ push: mockPush }));
+
   render(<Login />);
 
   
@@ -66,6 +70,8 @@ test('displays email validation error on invalid email', async () => {
 });
 
 test('displays password validation error on invalid password', async () => {
+  const mockPush = jest.fn();
+  useRouter.mockImplementation(() => ({ push: mockPush }));
   render(<Login />);
 
 
@@ -90,8 +96,9 @@ test('displays password validation error on invalid password', async () => {
 
 
 
+  await userEvent.type(passwordInput, "abcdef");
     
-    fireEvent.change(passwordInput, { target: { value: "abcdef" } }); 
+  
     fireEvent.click(nextButton); 
   
    

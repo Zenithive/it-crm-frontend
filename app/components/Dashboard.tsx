@@ -140,7 +140,7 @@ const CRMDashboard = () => {
       <Navbar />
 
       <main className="p-4 md:p-6 lg:p-8">
-        <Dashboard_Title />
+        <Dashboard_Title data-testid="dashboard-title"/>
 
         <div className="mb-4 md:mb-6"></div>
 
@@ -148,8 +148,8 @@ const CRMDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
           {/* Left Column */}
           <div className="lg:col-span-6 space-y-4 md:space-y-6">
-            <Task />
-            <Meetings />
+            <Task data-testid="task-section"/>
+            <Meetings data-testid="meetings-section"/>
           </div>
 
           {/* Right Column */}
@@ -157,10 +157,10 @@ const CRMDashboard = () => {
             {/* Stats Cards */}
             <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
               <div className="w-full sm:w-1/2">
-                <MonthlyLead />
+                <MonthlyLead data-testid="monthly-lead-section"/>
               </div>
               <div className="w-full sm:w-1/2">
-                <UnreadMessages />
+                <UnreadMessages data-testid="unread-messages-section"/>
               </div>
             </div>
 

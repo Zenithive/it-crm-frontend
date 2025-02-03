@@ -2,7 +2,7 @@
 
 import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { ChevronDown } from "lucide-react";
+
 
 const data = [
   { name: "Closed", value: 60, color: "#6366F1" },
@@ -37,7 +37,7 @@ const MonthlyLead = () => {
         <h3 className="text-bg-blue-12 text-lg md:text-xl font-semibold">
           Total Monthly Lead
         </h3>
-        <ChevronDown className="h-4 w-4 text-gray-500" />
+        {/* <ChevronDown className="h-4 w-4 text-gray-500" /> */}
       </div>
 
       <div className="flex-grow flex justify-center">

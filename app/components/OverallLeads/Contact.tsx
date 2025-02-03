@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Title from "../../microComponents/Title";
 import Navbar from "../Navbar";
-import Pagination from "../Pagination";
+import Pagination from "./Pagination";
 
 export default function Contact() {
   const [currentPage, setCurrentPage] = useState(1);

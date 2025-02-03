@@ -1,0 +1,8 @@
+ "compilerOptions": {
+    "target": "ESNext",  // Ensure ESNext target for ESModules
+    "module": "ESNext",  // Use ESNext module system
+    "moduleResolution": "node",  // Resolve modules in Node.js style
+    "esModuleInterop": true,  // Ensure compatibility between CJS and ESM
+    "skipLibCheck": true,
+    "strict": true
+  },
