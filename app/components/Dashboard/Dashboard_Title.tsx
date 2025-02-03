@@ -1,4 +1,4 @@
-import React from "react";
+
 import Title from "../../microComponents/Title";
 import { ChevronDown, Settings } from "lucide-react";
 import { Dashboardtitle } from "../Path/TitlePaths";
@@ -7,7 +7,7 @@ import { Dashboardtitle } from "../Path/TitlePaths";
 const Dashboard_Title = () => {
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center" data-testid="dashboard-title">
         <Title title={Dashboardtitle[0].titleName} />
         
         <div className="flex items-center space-x-4">

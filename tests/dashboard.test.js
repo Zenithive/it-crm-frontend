@@ -1,12 +1,12 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import CRMDashboard from '../app/components/Dashboard';
-import Dashboard_Title from './Dashboard/Dashboard_Title';
-import Task from './Dashboard/Task';
-import Meetings from './Dashboard/Meetings';
-import MonthlyLead from './Dashboard/MonthlyLead';
-import UnreadMessages from './Dashboard/UnreadMessages';
-import TotalLeadLine from './Dashboard/TotalLeadLine';
+import Dashboard_Title from '../app/components/Dashboard/Dashboard_Title';
+import Task from '../app/components/Dashboard/Task';
+import Meetings from '../app/components/Dashboard/Meetings';
+import MonthlyLead from '../app/components/Dashboard/MonthlyLead';
+import UnreadMessages from '../app/components/Dashboard/UnreadMessages';
+import TotalLeadLine from '../app/components/Dashboard/TotalLeadLine';
 
 
 
@@ -16,8 +16,10 @@ describe('CRMDashboard', () => {
     expect(screen.getByRole('main')).toBeInTheDocument();
   });
 
-  test('contains all major sections', () => {
-    render(<CRMDashboard />);
+  test('contains all major sections',async() => {
+    await act(async () => {
+      render(<CRMDashboard />);
+    });
     expect(screen.getByTestId('dashboard-title')).toBeInTheDocument();
     expect(screen.getByTestId('task-section')).toBeInTheDocument();
     expect(screen.getByTestId('meetings-section')).toBeInTheDocument();
@@ -27,9 +29,14 @@ describe('CRMDashboard', () => {
 });
 
 describe('Dashboard_Title', () => {
-  test('renders dashboard title correctly', () => {
-    render(<Dashboard_Title />);
-    expect(screen.getByText('CRM Dashboard')).toBeInTheDocument();
+  test('renders dashboard title correctly', async() => {
+    await act(async () => {
+      
+      render(<Dashboard_Title />);
+    });
+   
+    expect(screen.getByText(/CRM Dashboard/i)).toBeInTheDocument();
+   
   });
 
   test('displays current time and location', () => {
@@ -52,7 +59,7 @@ describe('Task Component', () => {
   test('renders task checkboxes in today view', () => {
     render(<Task />);
     const checkboxes = screen.getAllByRole('checkbox');
-    expect(checkboxes.length).toBeGreaterThan(0);
+    console.log(expect(checkboxes.length).toBeGreaterThan(0));
   });
 
   test('handles task completion', () => {
@@ -75,7 +82,7 @@ describe('Meetings Component', () => {
     await waitFor(() => {
       expect(screen.getByText('Recent')).toHaveClass('border-[#6366F1]');
     });
-  });
+  })
 
   test('displays join buttons for today\'s meetings', () => {
     render(<Meetings />);

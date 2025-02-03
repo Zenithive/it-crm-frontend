@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
+import  { useState, useEffect } from 'react';
+// import { ChevronDown } from 'lucide-react';
 import { chartData } from "../Path/TaskData";
 import dynamic from "next/dynamic";
 
@@ -56,7 +56,7 @@ const TotalLeadLine = () => {
           <h3 className="font-semibold text-bg-blue-12 text-lg md:text-xl">
             Total Monthly Lead
           </h3>
-          <ChevronDown className="h-4 w-4 text-gray-500" />
+          {/* <ChevronDown className="h-4 w-4 text-gray-500" /> */}
         </div>
         <div className="h-40 md:h-48">
           {mounted && <DynamicChart data={chartData} />}

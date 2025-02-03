@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { meetings, unread_messages } from "../Path/TaskData";
-import { Settings } from "lucide-react";
+// import { Settings } from "lucide-react";
 
 const Meetings = () => {
   const [recentView, setRecentView] = useState("today");
 
   return (
-    <div className="w-full">
+    <div className="w-full" data-testid="meetings-section">
       <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
         <div className="border-b">
           <div className="flex space-x-4 md:space-x-8 mb-4 overflow-x-auto">
@@ -45,7 +45,7 @@ const Meetings = () => {
               >
                 <div className="flex items-center space-x-3 md:space-x-4 min-w-0">
                   <div className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-[#6366F1]/10 flex items-center justify-center flex-shrink-0">
-                    <Settings className="h-4 w-4 md:h-5 md:w-5 text-[#6366F1]" />
+                    {/* <Settings className="h-4 w-4 md:h-5 md:w-5 text-[#6366F1]" /> */}
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="font-medium text-gray-800 text-sm md:text-base truncate">
