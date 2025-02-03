@@ -1,6 +1,6 @@
-import  { useState } from "react";
-import { meetings, unread_messages } from "../Path/TaskData";
-// import { Settings } from "lucide-react";
+import React, { useState } from "react";
+import { meetings, recent } from "../Path/TaskData";
+import { Settings } from "lucide-react";
 
 const Meetings = () => {
   const [recentView, setRecentView] = useState("today");
@@ -33,7 +33,7 @@ const Meetings = () => {
           </div>
         </div>
         {recentView === "today" ? (
-          <div className="space-y-4 mt-4">
+          <div className="space-y-4 mt-4 max-h-[220px] overflow-y-auto">
             {meetings.map((meeting, index) => (
               <div
                 key={index}
@@ -44,8 +44,9 @@ const Meetings = () => {
                 }`}
               >
                 <div className="flex items-center space-x-3 md:space-x-4 min-w-0">
-                  <div className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-[#6366F1]/10 flex items-center justify-center flex-shrink-0">
+                  <div className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-white border border-bg-blue-12 flex items-center justify-center flex-shrink-0">
                     {/* <Settings className="h-4 w-4 md:h-5 md:w-5 text-[#6366F1]" /> */}
+                    <img src="clock.svg" alt="Clock"></img>
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="font-medium text-gray-800 text-sm md:text-base truncate">
@@ -63,12 +64,12 @@ const Meetings = () => {
             ))}
           </div>
         ) : (
-          <div className="space-y-4">
-            {unread_messages.map((msg, index) => (
+          <div className="space-y-4 mt-4 max-h-[220px] overflow-y-auto ">
+            {recent.map((msg, index) => (
               <div
                 key={index}
                 className={`flex items-center justify-between pb-4 ${
-                  index !== unread_messages.length - 1
+                  index !== recent.length - 1
                     ? "border-b border-gray-300"
                     : ""
                 }`}

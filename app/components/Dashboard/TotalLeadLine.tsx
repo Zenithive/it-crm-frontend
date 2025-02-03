@@ -56,7 +56,9 @@ const TotalLeadLine = () => {
           <h3 className="font-semibold text-bg-blue-12 text-lg md:text-xl">
             Total Monthly Lead
           </h3>
-          {/* <ChevronDown className="h-4 w-4 text-gray-500" /> */}
+          <button className="">
+            <img src="details_logo.svg" alt="details"></img>
+          </button>
         </div>
         <div className="h-40 md:h-48">
           {mounted && <DynamicChart data={chartData} />}
