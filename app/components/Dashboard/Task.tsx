@@ -1,8 +1,7 @@
 import React ,{useState} from "react";
-import { tasks,followup } from "../Path/TaskData";
 import "./Dashboard.css";
 
-const Task = () => {
+const Task = ({tasks= [],followup=[]}) => {
   const [activeView, setActiveView] = useState("today"); // 'today' or 'followup'
 
   return (

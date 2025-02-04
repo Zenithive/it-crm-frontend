@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { meetings, recent } from "../Path/TaskData";
 
-const Meetings = () => {
+const Meetings = ({ meetings = [], recent = [] }) => {
   const [recentView, setRecentView] = useState("today");
 
   return (
@@ -22,11 +21,11 @@ const Meetings = () => {
               Today
             </button>
             <button
-                 className={`text-black text-base md:text-lg font-semibold whitespace-nowrap pb-2  ${
-                  recentView === "recent" ? "border-b-2 border-[#6366F1]" : ""
-                }`}
-                onClick={() => setRecentView("recent")}
-              >
+              className={`text-black text-base md:text-lg font-semibold whitespace-nowrap pb-2  ${
+                recentView === "recent" ? "border-b-2 border-[#6366F1]" : ""
+              }`}
+              onClick={() => setRecentView("recent")}
+            >
               Recent
             </button>
           </div>
@@ -55,9 +54,7 @@ const Meetings = () => {
                     </p>
                   </div>
                 </div>
-                <button className="join_button">
-                  Join
-                </button>
+                <button className="join_button">Join</button>
               </div>
             ))}
           </div>
@@ -67,9 +64,7 @@ const Meetings = () => {
               <div
                 key={index}
                 className={`flex items-center justify-between pb-4 ${
-                  index !== recent.length - 1
-                    ? "border-b border-gray-300"
-                    : ""
+                  index !== recent.length - 1 ? "border-b border-gray-300" : ""
                 }`}
               >
                 <img

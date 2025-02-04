@@ -3,7 +3,7 @@ import Title from "../../microComponents/Title";
 import { Dashboardtitle } from "../Path/TitlePaths";
 
 
-const Dashboard_Title = () => {
+const Dashboard_Title = ({Dashboardtitle}) => {
   return (
     <div>
       <div className="flex justify-between items-center">

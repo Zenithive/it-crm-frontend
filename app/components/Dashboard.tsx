@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import MonthlyLead from "./Dashboard/MonthlyLead";
 import Navbar from "./Navbar";
@@ -7,6 +7,15 @@ import Task from "./Dashboard/Task";
 import Meetings from "./Dashboard/Meetings";
 import UnreadMessages from "./Dashboard/UnreadMessages";
 import TotalLeadLine from "./Dashboard/TotalLeadLine";
+import {
+  unread_messages,
+  tasks,
+  followup,
+  chartData,
+  recent,
+  meetings,
+} from "../components/Path/TaskData";
+import { Dashboardtitle } from "../components/Path/TitlePaths";
 
 const CRMDashboard = () => {
   return (
@@ -14,31 +23,27 @@ const CRMDashboard = () => {
       <Navbar />
 
       <main className="p-4 md:p-6 lg:p-8">
-        <Dashboard_Title />
+        <Dashboard_Title Dashboardtitle={Dashboardtitle} />
 
         <div className="mb-4 md:mb-6"></div>
 
-        {/* Main Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
-          {/* Left Column */}
           <div className="lg:col-span-6 space-y-4 md:space-y-6">
-            <Task />
-            <Meetings />
+            <Task tasks={tasks} followup={followup} />
+            <Meetings meetings={meetings} recent={recent} />
           </div>
 
-          {/* Right Column */}
           <div className="lg:col-span-6 space-y-4 md:space-y-6">
-            {/* Stats Cards */}
             <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
               <div className="w-full sm:w-1/2">
                 <MonthlyLead />
               </div>
               <div className="w-full sm:w-1/2">
-                <UnreadMessages />
+                <UnreadMessages unread_messages={unread_messages} />
               </div>
             </div>
 
-            <TotalLeadLine />
+            <TotalLeadLine chartData={chartData} />
           </div>
         </div>
       </main>

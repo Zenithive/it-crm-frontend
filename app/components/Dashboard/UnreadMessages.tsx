@@ -1,7 +1,7 @@
 import React from "react";
-import { unread_messages } from "../Path/TaskData";
 
-const UnreadMessages = () => {
+
+const UnreadMessages = ({ unread_messages = [] }) => {
   return (
     <div className="w-full relative">
       <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
@@ -11,9 +11,7 @@ const UnreadMessages = () => {
           </div>
 
           {unread_messages.length > 0 && (
-            <div className="unread_icon">
-              {unread_messages.length}
-            </div>
+            <div className="unread_icon">{unread_messages.length}</div>
           )}
         </div>
 
@@ -40,7 +38,9 @@ const UnreadMessages = () => {
                   {msg.message}
                 </p>
               </div>
-              <img src="arrow.svg" alt="Arrow"></img>
+              <button>
+                <img src="arrow.svg" alt="Arrow"></img>
+              </button>
             </div>
           ))}
         </div>

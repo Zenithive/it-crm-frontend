@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { chartData } from "../Path/TaskData";
 import dynamic from "next/dynamic";
 
-const TotalLeadLine = () => {
+const TotalLeadLine = ({chartData=[]}) => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
