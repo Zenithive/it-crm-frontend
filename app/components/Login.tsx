@@ -11,6 +11,8 @@ import { Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import HeaderOfLogin from "./HeaderOfLogin";
 import {loginUser} from "../../graphQl/queries/login.query";
+import { useDispatch, UseDispatch } from "react-redux";
+import { loginSuccess } from "../redux/actions/authReducer";
 
 export default function Login() {
   const [formBg, setFormBg] = useState("");

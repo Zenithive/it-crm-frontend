@@ -12,10 +12,10 @@ const meta: Meta<typeof Title> = {
       control: 'text',
       description: 'Main title text to display',
     },
-    button: {
-      control: 'text',
-      description: 'Text to display inside the button (if any)',
-    },
+    // button: {
+    //   control: 'text',
+    //   description: 'Text to display inside the button (if any)',
+    // },
   },
 };
 
@@ -27,7 +27,7 @@ type Story = StoryObj<typeof Title>;
 export const Dashboard: Story = {
   args: {
     title: 'Dashboard Title', 
-    button: 'Click Me', 
+   
   },
 };
 

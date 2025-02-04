@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Common CSS */
+.scrollable_view{
+    @apply space-y-3 mt-4 max-h-[200px] overflow-y-auto scrollbar-none
+}
+
+/* For DashBoard_Title */
+.lead_button{
+    @apply bg-[#6366F1] text-white px-4 py-1.5 rounded-lg text-sm flex items-center h-11 
+}
+
+/* For Task */
+.task_title{
+   @apply font-medium text-gray-800 text-sm md:text-base truncate
+}
+
+.task_checkbox{
+   @apply h-4 w-4 md:h-5 md:w-5 rounded-md border-gray-300 flex-shrink-0
+}
+
+
+
+/* For Meetings */
+.clock_icon{
+  @apply h-8 w-8 md:h-10 md:w-10 rounded-lg bg-white border border-bg-blue-12 flex items-center justify-center flex-shrink-0
+}
+.join_button{
+    @apply bg-[#6366F1] text-white px-4 md:px-6 py-1.5 rounded-lg text-xs md:text-sm flex-shrink-0 ml-2
+}
+
+/* For UnreadMessages */
+.unread_icon{
+    @apply bg-blue_shadow text-bg-blue-12 text-xs font-bold rounded-full w-8 h-8 flex items-center justify-center
+}
+
+/* For TotalLeadLine */
+.position_linechart{
+    @apply mt-4 flex flex-wrap justify-center md:justify-between gap-4 px-2 md:px-4
+}
