@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { chartData } from "../Path/TaskData";
 import dynamic from "next/dynamic";
 
-const TotalLeadLine = () => {
+const TotalLeadLine = ({chartData=[]}) => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -63,7 +61,7 @@ const TotalLeadLine = () => {
         <div className="h-40 md:h-48">
           {mounted && <DynamicChart data={chartData} />}
         </div>
-        <div className="mt-4 flex flex-wrap justify-center md:justify-between gap-4 px-2 md:px-4">
+        <div className="position_linechart">
           {[
             { label: "LinkedIn", color: "#6366F1" },
             { label: "Upwork", color: "#22C55E" },
