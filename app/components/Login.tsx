@@ -10,9 +10,12 @@ import { useRouter } from "next/navigation";
 import { Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import HeaderOfLogin from "./HeaderOfLogin";
+import {loginUser} from "../../graphQl/queries/login.query";
 
 export default function Login() {
   const [formBg, setFormBg] = useState("");
+  
+  const [error, setError] = useState(null);
   const router = useRouter();
 
   const validationSchema = Yup.object().shape({
@@ -33,10 +36,23 @@ export default function Login() {
       .required("Enter Valid Password"),
   });
 
-  const handleNextClick = () => {
-    setFormBg("#F6F5FF");
-    router.push("/dashboard");
-  };
+  const handleNextClick = async (values) => {
+    setError(null);
+    
+    const data = await loginUser(values.email, values.password); 
+    console.log("Login Response:", data);
+  
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      router.push("/dashboard");
+    } 
+  
+    else{
+      setError(data.error);
+    }
+  }
+    
+
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 overflow-hidden">
@@ -57,9 +73,9 @@ export default function Login() {
                 <Formik
                   initialValues={{ email: "", password: "" }}
                   validationSchema={validationSchema}
-                  onSubmit={(values) => console.log(values)}
+                  onSubmit={handleNextClick}
                 >
-                  {({ errors, touched, handleSubmit }) => (
+                  {({ errors, touched, handleSubmit,setFieldValue }) => (
                     <form onSubmit={handleSubmit} className="space-y-3">
                       <div className="space-y-1">
                         <label className="block text-[18px]  font-semibold">Email</label>
@@ -67,6 +83,10 @@ export default function Login() {
                           type="email"
                           name="email"
                            data-testid="email"
+                           onChange={(e) => {
+                            setFieldValue("email", e.target.value);
+                            setError(null);
+                          }}
                           className={`w-full h-[40px] px-3 border rounded-xl text-sm focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
                             errors.email && touched.email ? "border-red-500" : "border-bg-blue-12"
                           }`}
@@ -79,15 +99,21 @@ export default function Login() {
                           type="password"
                           name="password"
                            data-testid="pass"
+                           onChange={(e) => {
+                            setFieldValue("password", e.target.value);
+                            setError(null);
+                          }}
                           className={`w-full h-10 px-3 border rounded-xl text-sm focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
                             errors.password && touched.password ? "border-red-500" : "border-bg-blue-12"
                           }`}
                         />
                         <ErrorMessage  data-testid="errorPass" name="password" component="div" className="text-red-500 text-xs" />
+            
                       </div>
+                      {error && <p className="text-red-500">{error}</p>}
                       <button
                         type="submit"
-                        onClick={handleNextClick}
+                      
                         className="w-full h-[40px] bg-bg-blue-12 hover:bg-bg-blue-11 text-white rounded-xl font-bold text-[18px] transition-colors"
                       >
                         Next
