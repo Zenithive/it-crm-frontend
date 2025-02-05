@@ -2,7 +2,6 @@
 
   import React from "react";
   import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-  import { ChevronDown } from "lucide-react";
 
   const data = [
     { name: "Closed", value: 60, color: "#6366F1" },

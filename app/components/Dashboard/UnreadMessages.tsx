@@ -1,9 +1,7 @@
 import React from "react";
-import Content from "../../microComponents/Content";
-import { unread_messages } from "../Path/TaskData";
-import { ChevronDown } from "lucide-react";
 
-const UnreadMessages = () => {
+
+const UnreadMessages = ({ unread_messages = [] }) => {
   return (
     <div className="w-full relative" data-testid="unread-messages-section">
       <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
@@ -13,13 +11,11 @@ const UnreadMessages = () => {
           </div>
 
           {unread_messages.length > 0 && (
-            <div className="bg-blue_shadow text-bg-blue-12 text-xs font-bold rounded-full w-8 h-8 flex items-center justify-center">
-              {unread_messages.length}
-            </div>
+            <div className="unread_icon">{unread_messages.length}</div>
           )}
         </div>
 
-        <div className="space-y-4 max-h-[220px] overflow-y-auto  ">
+        <div className="scrollable_view">
           {unread_messages.map((msg, index) => (
             <div
               key={index}
@@ -42,7 +38,9 @@ const UnreadMessages = () => {
                   {msg.message}
                 </p>
               </div>
-              <img src="arrow.svg" alt="Arrow"></img>
+              <button>
+                <img src="arrow.svg" alt="Arrow"></img>
+              </button>
             </div>
           ))}
         </div>
