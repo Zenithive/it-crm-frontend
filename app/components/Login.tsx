@@ -1,7 +1,3 @@
-
-
-
-
 "use client";
 import Link from "next/link";
 import { useState } from "react";
@@ -10,14 +6,16 @@ import { useRouter } from "next/navigation";
 import { Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import HeaderOfLogin from "./HeaderOfLogin";
-import {loginUser} from "../../graphQl/queries/login.query";
+
+import { useLoginUser} from "../../graphQl/queries/login.query";
 import { useDispatch, UseDispatch } from "react-redux";
 import { loginSuccess } from "../redux/actions/authReducer";
 
 export default function Login() {
   const [formBg, setFormBg] = useState("");
+  const { loginUser,error:apiError,reset} = useLoginUser();
   
-  const [error, setError] = useState(null);
+  
   const router = useRouter();
 
   const validationSchema = Yup.object().shape({
@@ -38,22 +36,24 @@ export default function Login() {
       .required("Enter Valid Password"),
   });
 
-  const handleNextClick = async (values) => {
-    setError(null);
+ 
     
-    const data = await loginUser(values.email, values.password); 
-    console.log("Login Response:", data);
-  
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      router.push("/dashboard");
-    } 
-  
-    else{
-      setError(data.error);
-    }
-  }
+
+
+  const handleNextClick= async (values: { email: string; password: string }) => {
+   
+
+ 
+      const response = await loginUser(values.email, values.password);
+      if (response?.token) {
+        localStorage.setItem("token", response.token);
+     
+        router.push("/dashboard"); 
+      }
+     
+
     
+  };
 
 
   return (
@@ -77,7 +77,7 @@ export default function Login() {
                   validationSchema={validationSchema}
                   onSubmit={handleNextClick}
                 >
-                  {({ errors, touched, handleSubmit,setFieldValue }) => (
+                  {({ errors, touched, handleSubmit,setFieldValue,setFieldTouched }) => (
                     <form onSubmit={handleSubmit} className="space-y-3">
                       <div className="space-y-1">
                         <label className="block text-[18px]  font-semibold">Email</label>
@@ -87,8 +87,16 @@ export default function Login() {
                            data-testid="email"
                            onChange={(e) => {
                             setFieldValue("email", e.target.value);
-                            setError(null);
+
+
+                            if (apiError) {
+                        
+                              reset();
+                            }
+                          
                           }}
+                         
+                         
                           className={`w-full h-[40px] px-3 border rounded-xl text-sm focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
                             errors.email && touched.email ? "border-red-500" : "border-bg-blue-12"
                           }`}
@@ -103,8 +111,13 @@ export default function Login() {
                            data-testid="pass"
                            onChange={(e) => {
                             setFieldValue("password", e.target.value);
-                            setError(null);
+                            if (apiError) {
+                          
+                          reset();
+                            }
+                          
                           }}
+                        
                           className={`w-full h-10 px-3 border rounded-xl text-sm focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
                             errors.password && touched.password ? "border-red-500" : "border-bg-blue-12"
                           }`}
@@ -112,7 +125,7 @@ export default function Login() {
                         <ErrorMessage  data-testid="errorPass" name="password" component="div" className="text-red-500 text-xs" />
             
                       </div>
-                      {error && <p className="text-red-500">{error}</p>}
+                      {apiError && <p className="text-red-500">{apiError.message}</p>}
                       <button
                         type="submit"
                       
