@@ -7,7 +7,7 @@ import { Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import HeaderOfLogin from "./HeaderOfLogin";
 
-import { useLoginUser} from "../../graphQl/queries/login.query";
+import { useLoginUser} from "../../graphQl/functions/login.function";
 import { useDispatch, UseDispatch } from "react-redux";
 import { loginSuccess } from "../redux/actions/authReducer";
 
