@@ -18,6 +18,8 @@ import {
 import { Dashboardtitle } from "../components/Path/TitlePaths";
 
 const CRMDashboard = () => {
+
+  
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />

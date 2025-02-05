@@ -1,7 +1,3 @@
-
-
-
-
 "use client";
 import Link from "next/link";
 import { useState } from "react";
@@ -10,11 +6,16 @@ import { useRouter } from "next/navigation";
 import { Formik, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import HeaderOfLogin from "./HeaderOfLogin";
+
+import { useLoginUser} from "../../graphQl/queries/login.query";
 import { useDispatch, UseDispatch } from "react-redux";
 import { loginSuccess } from "../redux/actions/authReducer";
 
 export default function Login() {
   const [formBg, setFormBg] = useState("");
+  const { loginUser,error:apiError,reset} = useLoginUser();
+  
+  
   const router = useRouter();
 
   const validationSchema = Yup.object().shape({
@@ -35,10 +36,25 @@ export default function Login() {
       .required("Enter Valid Password"),
   });
 
-  const handleNextClick = () => {
-    setFormBg("#F6F5FF");
-    router.push("/dashboard");
+ 
+    
+
+
+  const handleNextClick= async (values: { email: string; password: string }) => {
+   
+
+ 
+      const response = await loginUser(values.email, values.password);
+      if (response?.token) {
+        localStorage.setItem("token", response.token);
+     
+        router.push("/dashboard"); 
+      }
+     
+
+    
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 overflow-hidden">
@@ -59,9 +75,9 @@ export default function Login() {
                 <Formik
                   initialValues={{ email: "", password: "" }}
                   validationSchema={validationSchema}
-                  onSubmit={(values) => console.log(values)}
+                  onSubmit={handleNextClick}
                 >
-                  {({ errors, touched, handleSubmit }) => (
+                  {({ errors, touched, handleSubmit,setFieldValue,setFieldTouched }) => (
                     <form onSubmit={handleSubmit} className="space-y-3">
                       <div className="space-y-1">
                         <label className="block text-[18px]  font-semibold">Email</label>
@@ -69,6 +85,18 @@ export default function Login() {
                           type="email"
                           name="email"
                            data-testid="email"
+                           onChange={(e) => {
+                            setFieldValue("email", e.target.value);
+
+
+                            if (apiError) {
+                        
+                              reset();
+                            }
+                          
+                          }}
+                         
+                         
                           className={`w-full h-[40px] px-3 border rounded-xl text-sm focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
                             errors.email && touched.email ? "border-red-500" : "border-bg-blue-12"
                           }`}
@@ -81,15 +109,26 @@ export default function Login() {
                           type="password"
                           name="password"
                            data-testid="pass"
+                           onChange={(e) => {
+                            setFieldValue("password", e.target.value);
+                            if (apiError) {
+                          
+                          reset();
+                            }
+                          
+                          }}
+                        
                           className={`w-full h-10 px-3 border rounded-xl text-sm focus:outline-none focus:border-gray-200 focus:shadow-lg focus:shadow-bg-blue-14 ${
                             errors.password && touched.password ? "border-red-500" : "border-bg-blue-12"
                           }`}
                         />
                         <ErrorMessage  data-testid="errorPass" name="password" component="div" className="text-red-500 text-xs" />
+            
                       </div>
+                      {apiError && <p className="text-red-500">{apiError.message}</p>}
                       <button
                         type="submit"
-                        onClick={handleNextClick}
+                      
                         className="w-full h-[40px] bg-bg-blue-12 hover:bg-bg-blue-11 text-white rounded-xl font-bold text-[18px] transition-colors"
                       >
                         Next
