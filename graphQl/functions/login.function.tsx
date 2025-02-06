@@ -24,7 +24,7 @@ export const useLoginUser = () => {
     }
   
     } catch (err: any) {
-      console.error("Login Error:", err.message);
+      // console.error("Login Error:", err.message);
       throw new Error(err.message);
     }
   };

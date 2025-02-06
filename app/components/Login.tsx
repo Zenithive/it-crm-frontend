@@ -8,14 +8,14 @@ import * as Yup from "yup";
 import HeaderOfLogin from "./HeaderOfLogin";
 
 import { useLoginUser} from "../../graphQl/functions/login.function";
-import { useDispatch, UseDispatch } from "react-redux";
-import { loginSuccess } from "../redux/actions/authReducer";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../redux/slice/authSlice";
 
 export default function Login() {
   const [formBg, setFormBg] = useState("");
   const { loginUser,error:apiError,reset} = useLoginUser();
   
-  
+  const dispatch = useDispatch();
   const router = useRouter();
 
   const validationSchema = Yup.object().shape({
@@ -48,11 +48,16 @@ export default function Login() {
       if (response?.token) {
         localStorage.setItem("token", response.token);
      
+        const userData = {
+          id: response.user.id,
+          name: response.user.name,
+          email: response.user.email,
+          role: response.user.role,
+          token: response.token,
+        };
+        dispatch(loginSuccess(userData));
         router.push("/dashboard"); 
       }
-     
-
-    
   };
 
 
