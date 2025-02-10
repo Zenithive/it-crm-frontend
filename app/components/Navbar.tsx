@@ -32,7 +32,7 @@ const Navbar = () => {
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="p-2 hover:bg-gray-100 rounded-lg"
           >
-            <img src="hamburger.svg" alt="menu" className="h-6 w-6" />
+            {/* <img src="hamburger.svg" alt="menu" className="h-6 w-6" /> */}
           </button>
         </div>
 
