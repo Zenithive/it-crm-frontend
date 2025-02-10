@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <>
 
-<p>Loading...</p>; 
+<p>Loading...</p>
 
    
     </>
