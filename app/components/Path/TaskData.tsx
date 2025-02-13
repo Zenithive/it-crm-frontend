@@ -142,3 +142,11 @@ export const messages = [
   { name: "Sachin Teni", message: "Hello, I wanted to follow up..." },
   { name: "Sachin Teni", message: "Hello, I wanted to follow up..." },
 ];
+
+export const search = [
+  {searchText:"Search Resource"}
+]
+
+export const headerbutton = [
+  {button1text: "Filters",button1img: "filterC.svg",button2text:"Add Resource",button2img:"plus.svg"}
+]

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 interface PaginationProps {
   totalItems: number;
@@ -11,7 +11,7 @@ interface PaginationProps {
 
 const Pagination = ({
   totalItems,
-  initialItemsPerPage = 10,
+  initialItemsPerPage = 3,
   onPageChange,
   onItemsPerPageChange,
 }: PaginationProps) => {
@@ -31,7 +31,7 @@ const Pagination = ({
 
   const handleItemsPerPageChange = (value: number) => {
     setItemsPerPage(value);
-    setCurrentPage(1); 
+    setCurrentPage(1);
     onItemsPerPageChange?.(value);
   };
 
@@ -58,18 +58,18 @@ const Pagination = ({
             onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
             className="text-black w-36 h-9 border border-gray-300 rounded-md px-3 appearance-none cursor-pointer"
           >
-            <option value={10}>10 per page</option>
-            <option value={20}>20 per page</option>
-            <option value={50}>50 per page</option>
-            <option value={100}>100 per page</option>
+            <option value={3}>3 per page</option>
+            <option value={6}>6 per page</option>
+            <option value={9}>9 per page</option>
+            {/* <option value={100}>100 per page</option> */}
           </select>
           <div className="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2">
             <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
-              <path 
-                d="M1 1L5 5L9 1" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
+              <path
+                d="M1 1L5 5L9 1"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
                 strokeLinejoin="round"
               />
             </svg>
@@ -88,11 +88,11 @@ const Pagination = ({
           aria-label="Previous page"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path 
-              d="M12 4L6 10L12 16" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
+            <path
+              d="M12 4L6 10L12 16"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
               strokeLinejoin="round"
             />
           </svg>
@@ -104,11 +104,11 @@ const Pagination = ({
             onClick={() => handlePageChange(pageNum)}
             className={`px-2 w-7 h-7 rounded text-sm ${
               currentPage === pageNum
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-black hover:bg-gray-300'
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-black hover:bg-gray-300"
             }`}
             aria-label={`Page ${pageNum}`}
-            aria-current={currentPage === pageNum ? 'page' : undefined}
+            aria-current={currentPage === pageNum ? "page" : undefined}
           >
             {pageNum}
           </button>
@@ -121,11 +121,11 @@ const Pagination = ({
           aria-label="Next page"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path 
-              d="M8 4L14 10L8 16" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
+            <path
+              d="M8 4L14 10L8 16"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
               strokeLinejoin="round"
             />
           </svg>

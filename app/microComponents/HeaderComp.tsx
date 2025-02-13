@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface Data {
   title?: string;
@@ -16,16 +16,27 @@ type HeaderProps = {
   onViewChange?: (view: string) => void;
 };
 
-const HeaderComp: React.FC<HeaderProps> = ({ data, onSearchChange, onAddLead, onFilter, onViewChange }) => {
+const HeaderComp: React.FC<HeaderProps> = ({
+  data,
+  onSearchChange,
+  onAddLead,
+  onFilter,
+  onViewChange,
+}) => {
   return (
     <div className="pt-[48px] flex justify-between items-center px-[70px]">
       <div className="flex gap-[20px] items-center">
-       
-        <div className="text-bg-blue-12 font-bold text-[30px]">{data.title}</div>
+        <div className="text-bg-blue-12 font-bold text-[30px]">
+          {data.title}
+        </div>
 
         <div className="flex gap-[48px] items-center">
           <div className="flex items-center bg-white rounded-[10px] px-3 w-[420px] h-[44px]  shadow-custom border gap-[6px]">
-            <img src="/SearchIcon.svg" alt="Search" className=" text-gray-400 mr-2" />
+            <img
+              src="/SearchIcon.svg"
+              alt="Search"
+              className=" text-gray-400 mr-2"
+            />
             <input
               type="text"
               name="search"
@@ -40,17 +51,22 @@ const HeaderComp: React.FC<HeaderProps> = ({ data, onSearchChange, onAddLead, on
               className="flex items-center cursor-pointer w-[108px] h-[43px] border border-bg-blue-11 rounded-md gap-[10px] px-1"
               onClick={() => onViewChange?.("list")}
             >
-              <img src="/list.svg" alt="List View" />
-              <div className="font-medium text-[14px]" style={{ color: "#333333" }}>List View</div>
+              <img src={data.Listlogo} alt="List View" />
+              <div
+                className="font-medium text-[14px]"
+                style={{ color: "#333333" }}
+              >
+                List View
+              </div>
             </div>
             <img
-              src="/list1.svg"
+              src={data.List2logo}
               alt="Grid View"
               className="w-6 h-6 cursor-pointer"
               onClick={() => onViewChange?.("grid")}
             />
             <img
-              src="/list3.svg"
+              src={data.List3logo}
               alt="Detailed View"
               className="w-6 h-6 cursor-pointer"
               onClick={() => onViewChange?.("detailed")}
@@ -64,7 +80,7 @@ const HeaderComp: React.FC<HeaderProps> = ({ data, onSearchChange, onAddLead, on
           className="border bg-bg-blue-12 text-white font-normal px-[10px] py-[10px] w-[124px] h-[44px] rounded-[12px] flex items-center justify-center gap-2"
           onClick={onAddLead}
         >
-          <img src="/plus.svg" alt="Add" className="w-[14px] h-[14px]"/>
+          <img src="/plus.svg" alt="Add" className="w-[14px] h-[14px]" />
           <div className="text-[14px]">Add Lead</div>
         </button>
 
