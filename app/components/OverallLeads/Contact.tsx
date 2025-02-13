@@ -3,10 +3,13 @@ import { useState } from "react";
 import Title from "../../microComponents/Title";
 import Navbar from "../Navbar";
 import Pagination from "../Pagination";
+import HeaderComp from "../../microComponents/HeaderComp";
 
 export default function Contact() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+
 
     const dataOf = [
         { name: "Sachin T", company: "TechCorp", stage: "New Lead", owner: "Zenithive", source: "Website", type: "Enterprise", campaign: "Xyz", profileImage: "profileLogo.svg" },
@@ -28,55 +31,41 @@ export default function Contact() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentItems = data.slice(startIndex, endIndex);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("Search Input:", e.target.value);
+  };
+
+  const handleAddLead = () => {
+    console.log("Add Lead clicked");
+  };
+
+  const handleFilter = () => {
+    console.log("Filter clicked");
+  };
+
+  const handleViewChange = (view: string) => {
+    console.log("View changed to:", view);
+  };
     return (
       <>
 
       <Navbar/>
-<div className="pt-[43px]">  <Title title="Lead" /></div>
-<div className="pt-[48px] flex justify-between items-center px-[70px] ">
-<div className="flex gap-[48px] items-center  ">
-       
-       <div className="flex items-center bg-bg-blue-15 rounded-lg px-3 w-[420px] h-[44px] shadow-sm">
- <img src="search_icon.svg" alt="Search" className="w-4 h-4 text-gray-400 mr-2" />
- <input
-   type="text"
-   name="search"
-   value="Search Leads..."
-   className="w-full border-none outline-none bg-transparent text-gray-700 placeholder-transparent"
- />
-</div>
-<div className="flex gap-5 items-center justify-start">
-          <div className="flex items-center cursor-pointer w-[108px] h-[43px] border-bg-blue-11 rounded-md gap-[10px] px-1 border">
-           <div><img src="list.svg" alt="list view"  /></div> 
-            <div className="  font-medium text-[14px]" style={{color:'#333333'}}>List View</div>
-          </div>
-          <div>
-            <img src="list1.svg" alt="grid view" className="w-6 h-6 cursor-pointer" />
-          </div>
-          <div>
-            <img src="list3.svg" alt="detailed view" className="w-6 h-6 cursor-pointer" />
-          </div>
-        </div>
- 
-        
-       </div>
 
-       <div className="flex items-center gap-[15px]">
-       <button className="border border-bg-blue-11 text-black font-normal px-[10px] py-[10px] w-[124px] h-[44px] rounded-md flex items-center ">
-                <span><img src='plusIcon.svg' className=''></img></span>
-                <div className="text-[16px] ">Add Lead</div>
-              
-            </button>
-            <button className="border border-bg-blue-11 text-black font-normal px-[10px] py-[10px] w-[91px] h-[44px] rounded-md flex items-center gap-[10px]">
-                <span><img src='filterC.svg' className=''></img></span>
-                <span>Filters</span>
-              
-            </button>
 
-       </div>
-      
 
-</div>
+<HeaderComp
+        data={{
+          title: "Lead",
+          Listlogo:'list.svg',
+          List2logo:'list1.svg',
+          List3logo:'list3.svg',
+          searchText: "Search Leads...",
+        }}
+        onSearchChange={handleSearchChange}
+        onAddLead={handleAddLead}
+        onFilter={handleFilter}
+        onViewChange={handleViewChange}
+      />
     
       <div className="px-[70px]">
       
