@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 
-import HeaderOfLogin from "./HeaderOfLogin";
+import HeaderOfLogin from "./Login/HeaderOfLogin";
 
 import Form from "./Login/Form";
 
