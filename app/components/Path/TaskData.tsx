@@ -144,9 +144,11 @@ export const messages = [
 ];
 
 export const search = [
-  {searchText:"Search Resource"}
+  {searchText:"Search Resource"},
+  {searchText:"Search by name or skills..."}
 ]
 
 export const headerbutton = [
-  {button1text: "Filters",button1img: "filterC.svg",button2text:"Add Resource",button2img:"plus.svg"}
+  {button1text: "Filters",button1img: "filterC.svg",button2text:"Add Resource",button2img:"plus.svg"},
+  {button1text: "Filters",button1img: "filterC.svg",button2text:"Add Case Study",button2img:"plus.svg"}
 ]

@@ -4,8 +4,10 @@ import Search from "../microComponents/Search";
 import HeaderButtons from "../microComponents/HeaderButtons";
 import { headerbutton, search } from "./Path/TaskData";
 import ResourceContainer from "./ResourceList/ResourceContainer";
+import {resourceListData} from "./Path/OverallCaseStudyData"
 
 const ResourceList = () => {
+    const [itemsPerPage, setItemsPerPage] = useState(9);
   return (
     <div className="min-h-screen w-full">
       <Navbar />
@@ -27,7 +29,12 @@ const ResourceList = () => {
           </div>
         </div>
       </div>
-      <ResourceContainer></ResourceContainer>
+      <ResourceContainer
+  resources={resourceListData}
+  itemsPerPage={itemsPerPage}
+  setItemsPerPage={setItemsPerPage}
+  isResourceList={true}
+/>
     </div>
   );
 };
