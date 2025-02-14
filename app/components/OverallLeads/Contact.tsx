@@ -1,48 +1,55 @@
+
+
 "use client";
 import { useState } from "react";
 import Title from "../../microComponents/Title";
 import Navbar from "../Navbar";
 import Pagination from "../../microComponents/Pagination";
 import HeaderComp from "../../microComponents/HeaderComp";
+import MicroTable from "../../microComponents/Tabel";
+import KanbanView from "./KanbanView"
+
+
+
 
 export default function Contact() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const dataOf = [
-    {
-      name: "Sachin T",
-      company: "TechCorp",
-      stage: "New Lead",
-      owner: "Zenithive",
-      source: "Website",
-      type: "Enterprise",
-      campaign: "Xyz",
-      profileImage: "profileLogo.svg",
-    },
+  const [activeView, setActiveView] = useState("list");
+
+  const columnDefs = [
+    { headerName: 'Name', field: 'name', sortable: true, filter: true, cellRenderer: 'customCellRenderer',flex:1 },
+    { headerName: 'Company', field: 'company', sortable: true, filter: true,flex:1, cellRenderer: 'customCellRenderer' },
+    { headerName: 'Stage', field: 'stage', sortable: true, filter: true, cellRenderer: 'stageCellRenderer',flex:1 },
+    { headerName: 'Owner', field: 'owner', sortable: true, filter: true,flex:1, cellRenderer: 'customCellRenderer'  },
+    { headerName: 'Source', field: 'source', sortable: true, filter: true,flex:1, cellRenderer: 'customCellRenderer'  },
+    { headerName: 'Type', field: 'type', sortable: true, filter: true,flex:1, cellRenderer: 'customCellRenderer'  },
+    { headerName: 'Campaign', field: 'campaign', sortable: true, filter: true,flex:1 , cellRenderer: 'customCellRenderer' }
   ];
 
-  const data = Array(50)
-    .fill(dataOf)
-    .map((item, index) => ({
-      ...item,
-      id: index + 1,
-      name: "Sachin T",
-      company: "TechCorp",
-      stage: "New Lead",
-      owner: "Zenithive",
-      source: "Website",
-      type: "Enterprise",
-      campaign: "Xyz",
-      profileImage: "profileLogo.svg",
-    }));
+  const dataOf = [
+    {
+      name: 'Aryan K',
+      company: 'TechCorp',
+      stage: 'New Lead',
+      // stage: 'Qualified',
+      // stage: 'negotiator',
+      owner: 'Zenithive',
+      source: 'Website',
+      type: 'Enterprise',
+      campaign: 'Xyz',
+      profileImage: 'profileLogo.svg'
+    }
+  ];
 
-  const totalItems = data.length;
+  const rowData = Array.from({ length: 50 }, (_, index) => ({
+    ...dataOf[0],
+    id: index + 1
+  }));
+  const totalItems = rowData.length;
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentItems = data.slice(startIndex, endIndex);
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (e) => {
     console.log("Search Input:", e.target.value);
   };
 
@@ -54,20 +61,28 @@ export default function Contact() {
     console.log("Filter clicked");
   };
 
-  const handleViewChange = (view: string) => {
+  const handleViewChange = (view) => {
+    setActiveView(view);
     console.log("View changed to:", view);
   };
+
+
+ 
+
+  
+
   return (
     <>
       <Navbar />
 
+     
       <HeaderComp
         data={{
           title: "Lead",
-          Listlogo: "list.svg",
-          List2logo: "list1.svg",
-          List3logo: "list3.svg",
-          searchText: "Search Leads...",
+          Listlogo: "viewList.svg",
+          List2logo: "kanban.svg",
+          
+          searchText: "Search Leads..."
         }}
         onSearchChange={handleSearchChange}
         onAddLead={handleAddLead}
@@ -75,105 +90,27 @@ export default function Contact() {
         onViewChange={handleViewChange}
       />
 
-      <div className="px-[70px]">
-        <div className="flex flex-col gap-[10px] mt-[37px]">
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border-collapse border border-bg-blue-11">
-              <thead>
-                <tr className=" bg-bg-blue-11 text-white">
-                  <th className="pl-[72px] font-semibold">
-                    <div className="flex gap-2 items-center">
-                      <span>Name</span>
-                      <span>
-                        <img src="rename.svg" alt="Filter Icon" />
-                      </span>
-                    </div>
-                  </th>
-                  <th className="p-4 font-semibold">
-                    <div className="flex gap-2 items-center">
-                      <span>Company</span>
-                      <img src="rename.svg" alt="Filter Icon" />
-                    </div>
-                  </th>
-                  <th className="p-4 font-semibold">
-                    <div className="flex gap-2 items-center">
-                      <span>Stage</span>
-                      <img src="rename.svg" alt="Filter Icon" />
-                    </div>
-                  </th>
-                  <th className="p-4 font-semibold">
-                    <div className="flex gap-2 items-center">
-                      <span>Owner</span>
-                      <img src="rename.svg" alt="Filter Icon" />
-                    </div>
-                  </th>
-                  <th className="p-4 font-semibold">
-                    <div className="flex gap-2 items-center">
-                      <span>Source</span>
-                      <img src="rename.svg" alt="Filter Icon" />
-                    </div>
-                  </th>
-                  <th className="p-4 font-semibold">
-                    <div className="flex gap-2 items-center">
-                      <span>Type</span>
-                      <img src="rename.svg" alt="Filter Icon" />
-                    </div>
-                  </th>
-                  <th className="font-semibold">
-                    <div className="flex gap-2 items-center">
-                      <span>Campaign</span>
-                      <img src="rename.svg" alt="Filter Icon" />
-                    </div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((row, index) => (
-                  <tr
-                    className="hover:bg-gray-50 border-b border-bg-blue-11"
-                    key={index}
-                  >
-                    <td className="pl-[45px]">
-                      <div className="flex items-center gap-[5px]">
-                        <img
-                          src={row.profileImage}
-                          alt="Profile"
-                          className="w-[38px] h-[38px] rounded-[4px] "
-                        />
-                        {row.name}
-                      </div>
-                    </td>
-                    <td className="p-4">{row.company}</td>
-                    <td className="p-4">
-                      <button className=" h-[28px] w-[114px] text-green-11 border-green-11 border rounded-md px-[8px] flex items-center justify-center">
-                        {row.stage}
-                      </button>
-                    </td>
-                    <td className="p-4">{row.owner}</td>
-                    <td className="p-4">{row.source}</td>
-                    <td className="p-4">{row.type}</td>
-                    <td className="p-4 items-center justify-center flex">
-                      {row.campaign}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center p-4 mt-[95px] rounded-lg">
-          <Pagination
-            totalItems={totalItems}
-            initialItemsPerPage={itemsPerPage}
-            onPageChange={(page) => setCurrentPage(page)}
-            onItemsPerPageChange={(newItemsPerPage) => {
-              setItemsPerPage(newItemsPerPage);
-              setCurrentPage(1);
-            }}
-          />
-        </div>
+<div className="pt-[40px]">
+        {activeView === "list" ? (
+          <MicroTable rowData={rowData} columnDefs={columnDefs} />
+        ) : (
+          <KanbanView/>
+        )}
       </div>
+      
     </>
   );
 }
+
+{/* 
+      <div className="flex justify-between items-center p-4 relative bott rounded-lg">
+        <Pagination
+          totalItems={totalItems}
+          initialItemsPerPage={itemsPerPage}
+          onPageChange={(page) => setCurrentPage(page)}
+          onItemsPerPageChange={(newItemsPerPage) => {
+            setItemsPerPage(newItemsPerPage);
+            setCurrentPage(1);
+          }}
+        />
+      </div> */}

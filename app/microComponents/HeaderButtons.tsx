@@ -23,7 +23,7 @@ const HeaderButtons = ({
       <button
         className={`border shadow-sm bg-white text-bg-blue-12 font-normal h-[40px] rounded-xl 
                    flex items-center justify-center gap-2 w-full sm:w-auto 
-                   ${button1width} min-w-[109px]`}
+                   ${button1width} min-w-[100px]`}
       >
         <img src={button1img} className="w-4 sm:w-auto" alt="" />
         <div className="text-[12px] sm:text-[14px] whitespace-nowrap">{button1Text}</div>
@@ -32,7 +32,7 @@ const HeaderButtons = ({
       <button
         className={`bg-bg-blue-12 text-white font-normal h-[40px] rounded-xl 
                    flex items-center justify-center gap-[10px] w-full sm:w-auto 
-                   ${button2width} min-w-[160px]`}
+                   ${button2width} min-w-[120px]`}
       >
         <img src={button2img} className="w-4 sm:w-auto" alt="" />
         <span className="text-[12px] sm:text-[14px] whitespace-nowrap">{button2Text}</span>
