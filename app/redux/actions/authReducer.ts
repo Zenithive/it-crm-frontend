@@ -1,38 +1,29 @@
-// Initial State
-const initialState = {
-    user: null, // Store user details after login
-    token: null, // Store authentication token
-    isAuthenticated: false, // Track if user is logged in
-  };
-  
-  // Action Types
-  const LOGIN_SUCCESS = "LOGIN_SUCCESS";
-  const LOGOUT = "LOGOUT";
-  
-  // Reducer Function
-  export const authReducer = (state = initialState, action) => {
-    switch (action.type) {
-      case LOGIN_SUCCESS:
-        return {
-          ...state,
-          user: action.payload.user,
-          token: action.payload.token,
-          isAuthenticated: true,
-        };
-      case LOGOUT:
-        return initialState;
-      default:
-        return state;
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../slice/authSlice"; // Import Redux action
+import { useLoginUser } from "../../../graphQl/functions/login.function"; // Import GraphQL login function
+import { useRouter } from "next/navigation"; // Import Next.js router
+
+export default function Login() {
+  const dispatch = useDispatch();
+  const { loginUser, error: apiError, reset } = useLoginUser();
+  const router = useRouter();
+
+  const handleNextClick = async (values: { email: string; password: string }) => {
+    const response = await loginUser(values.email, values.password);
+    
+    if (response?.token) {
+      localStorage.setItem("token", response.token);
+
+      // Dispatch user data to Redux
+      dispatch(loginSuccess({
+        id: response.user.id,
+        name: response.user.name,
+        email: response.user.email,
+        role: response.user.role,
+        token: response.token,
+      }));
+
+      router.push("/dashboard");
     }
   };
-  
-  // Action Creators
-  export const loginSuccess = (user, token) => ({
-    type: LOGIN_SUCCESS,
-    payload: { user, token },
-  });
-  
-  export const logout = () => ({
-    type: LOGOUT,
-  });
-  
+}

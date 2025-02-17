@@ -6,7 +6,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ApolloProvider } from "@apollo/client";
 import client from "../lib/appoloClient"; 
-
+import { Provider } from "react-redux";
+import { store } from "./redux/store/store";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,9 +28,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Provider store={store}>
         <ApolloProvider client={client}>
           {children}
         </ApolloProvider>
+        </Provider>
       </body>
     </html>
   );
