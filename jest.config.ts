@@ -17,14 +17,14 @@ const config: Config = {
   moduleNameMapper: {
     '^lucide-react$': '<rootDir>/__mocks__/lucide-react.js',
   },
-
+  preset: 'ts-jest',
   transform: {
-    '^.+\\.(ts|tsx)?$': 'ts-jest',}
-    
-
+      '^.+\\.(ts|tsx)?$': 'ts-jest',
+    },
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node']
   
   
 }
- 
+
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
 export default createJestConfig(config)

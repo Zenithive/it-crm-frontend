@@ -127,6 +127,7 @@ export default function Form() {
                   )}
                   <button
                     type="submit"
+                    data-testid="nextButton"
                     className="w-full h-[40px] bg-bg-blue-12 hover:bg-bg-blue-11 text-white rounded-xl font-bold text-[18px] transition-colors"
                   >
                     Next
@@ -135,7 +136,7 @@ export default function Form() {
               )}
             </Formik>
             <div className="flex justify-between mt-3 text-xs md:text-sm">
-              <span className="text-bg-gray-13 font-semibold">2FA</span>
+              <span className="text-bg-gray-13 font-semibold"></span>
               <span className="text-black font-semibold">Forgot Password?</span>
             </div>
             <div className="flex items-center justify-center my-4">

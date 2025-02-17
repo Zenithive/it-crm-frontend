@@ -6,19 +6,28 @@ import '@testing-library/jest-dom';
 
 import userEvent from "@testing-library/user-event";
 import { useRouter } from 'next/navigation';
-
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import authReducer from '../app/redux/slice/authSlice';
+import { useLoginUser } from "../graphql/functions/useLoginUser";
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
 
 
-
+const mockStore = createStore(authReducer);
  
 
-
+jest.mock(useLoginUser);
 test('renders login form and components', () => {
-  render(<Login />);
+
+  render(
+    <Provider store={mockStore}>
+      <Login />
+    </Provider>
+  );
+  // render(<Login />);
 
   
  
@@ -40,7 +49,11 @@ test('displays email validation error on invalid email', async () => {
   const mockPush = jest.fn();
   useRouter.mockImplementation(() => ({ push: mockPush }));
 
-  render(<Login />);
+  render(
+    <Provider store={mockStore}>
+      <Login />
+    </Provider>
+  );
 
   
 
@@ -72,7 +85,12 @@ test('displays email validation error on invalid email', async () => {
 test('displays password validation error on invalid password', async () => {
   const mockPush = jest.fn();
   useRouter.mockImplementation(() => ({ push: mockPush }));
-  render(<Login />);
+  render(
+    <Provider store={mockStore}>
+      <Login />
+    </Provider>
+  );
+
 
 
 
@@ -116,10 +134,25 @@ test('displays password validation error on invalid password', async () => {
 
 
 test('redirects to the dashboard on valid form submission', async () => {
-  const mockPush = jest.fn();
-  useRouter.mockImplementation(() => ({ push: mockPush }));
+  const push = jest.fn(); 
 
-  render(<Login />);
+
+  useRouter.mockReturnValue({ push });
+
+
+  useLoginUser.mockReturnValue({
+    loginUser: jest.fn().mockResolvedValue({
+      token: 'mockToken',
+      user: { id: '1', name: 'John', email: 'john@example.com', role: 'admin' },
+    }),
+  });
+
+  render(
+    <Provider store={mockStore}>
+      <Login />
+    </Provider>
+  );
+
 
   const emailInput = screen.getByTestId("email");
   await userEvent.type(emailInput, 'arati@gmail.com'); 
@@ -131,7 +164,14 @@ test('redirects to the dashboard on valid form submission', async () => {
   fireEvent.click(nextButton); 
 
   
+
+  
   await waitFor(() => {
-    expect(mockPush).toHaveBeenCalledWith('/dashboard');
+    expect(push).toHaveBeenCalledWith('/dashboard');
   });
+
+  const state = mockStore.getState();
+    expect(state.id).toBe('1');
+    expect(state.name).toBe('John');
+    expect(state.token).toBe('mockToken');
 });

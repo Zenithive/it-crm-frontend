@@ -4,6 +4,7 @@ import * as React from "react";
 import HeaderOfLogin from "./Login/HeaderOfLogin";
 
 import Form from "./Login/Form";
+import { ApolloTestProvider } from "../../__mocks__/test_utills";
 
 export default function Login() {
   return (
@@ -24,7 +25,9 @@ export default function Login() {
               <span className="text-bg-blue-12">Clarvion</span> account😊
             </h2>
           </div>
+          <ApolloTestProvider>
           <Form />
+          </ApolloTestProvider>
         </div>
       </div>
     </div>
