@@ -9,7 +9,7 @@ interface CardProps {
   export const LeadCard = ({ id, title, subtitle, className = '' }: CardProps) => {
     return (
       <div 
-        className={`p-4 mb-3 bg-bg-blue-16 rounded-lg transition-shadow ${className}`}
+        className={`p-3 mb-3 bg-blue_shadow rounded-lg transition-shadow ${className} `}
         data-card-id={id}
       >
         <h3 className="text-indigo-500 font-medium">{title}</h3>

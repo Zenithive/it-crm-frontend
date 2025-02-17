@@ -3,7 +3,7 @@
 export const columns = [
   {
     title: 'New Lead',
-    items: Array.from({ length: 5 }, (_, i) => ({
+    items: Array.from({ length: 10 }, (_, i) => ({
       id: `new-${i + 1}`,
       title: 'Aryan K',
       subtitle: 'Tech Corp'

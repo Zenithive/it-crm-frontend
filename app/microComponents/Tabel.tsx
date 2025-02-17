@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, Button } from 'antd';
 import { FilterFilled } from '@ant-design/icons';
 import 'antd/dist/reset.css';
@@ -6,6 +6,17 @@ import 'antd/dist/reset.css';
 
 
 const MicroTable = ({ rowData, columnDefs }) => {
+
+    const [ready, setReady] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setReady(true), 100); 
+        return () => clearTimeout(timer);
+    }, [])
+
+    if (!ready) {
+        return <div className="text-center p-6">Loading table...</div>;
+    }
     const columns = columnDefs.map((col) => ({
         title: col.headerName,
         dataIndex: col.field,
@@ -84,14 +95,17 @@ const MicroTable = ({ rowData, columnDefs }) => {
                     background: white !important;
                 }
             `}</style>
-            <Table
-                dataSource={rowData}
-                columns={columns}
-                pagination={{ pageSize: 5 }}
-                rowKey={(record) => record.id || Math.random()}
-                scroll={{ x: 'max-content' }}
-                className="custom-ant-table s"
-            />
+       
+    <Table
+        dataSource={rowData}
+        columns={columns}
+        pagination={{ pageSize: 5 }}
+        rowKey={(record) => record.id || Math.random()}
+        scroll={{ x: 'max-content' }}
+        className="custom-ant-table"
+    />
+
+
         </div>
     );
 };

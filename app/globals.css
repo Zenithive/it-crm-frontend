@@ -24,9 +24,13 @@ body {
 /* Full-width header with Tailwind background */
 .custom-ant-table .ant-table-thead > tr > th {
   @apply bg-bg-blue-12 text-white text-center font-bold;
+
 }
 .custom-ant-table .ant-table,
 .custom-ant-table .ant-table-container {
     border: none;
+  
+
+    
   
 }
