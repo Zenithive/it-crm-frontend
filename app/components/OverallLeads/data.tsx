@@ -27,3 +27,28 @@ export const columns = [
   }
 ];
 
+
+export const columnDefs = [
+  { headerName: 'Name', field: 'name', sortable: true, filter: true, cellRenderer: 'customCellRenderer',flex:1 },
+  { headerName: 'Company', field: 'company', sortable: true, filter: true,flex:1, cellRenderer: 'customCellRenderer' },
+  { headerName: 'Stage', field: 'stage', sortable: true, filter: true, cellRenderer: 'stageCellRenderer',flex:1 },
+  { headerName: 'Owner', field: 'owner', sortable: true, filter: true,flex:1, cellRenderer: 'customCellRenderer'  },
+  { headerName: 'Source', field: 'source', sortable: true, filter: true,flex:1, cellRenderer: 'customCellRenderer'  },
+  { headerName: 'Type', field: 'type', sortable: true, filter: true,flex:1, cellRenderer: 'customCellRenderer'  },
+  { headerName: 'Campaign', field: 'campaign', sortable: true, filter: true,flex:1 , cellRenderer: 'customCellRenderer' }
+];
+
+export const dataOf = [
+  {
+    name: 'Aryan K',
+    company: 'TechCorp',
+    stage: 'New Lead',
+    // stage: 'Qualified',
+    // stage: 'negotiator',
+    owner: 'Zenithive',
+    source: 'Website',
+    type: 'Enterprise',
+    campaign: 'Xyz',
+    profileImage: 'profileLogo.svg'
+  }
+];

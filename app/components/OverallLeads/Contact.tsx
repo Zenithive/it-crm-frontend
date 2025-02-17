@@ -8,6 +8,7 @@ import Pagination from "../../microComponents/Pagination";
 import HeaderComp from "../../microComponents/HeaderComp";
 import MicroTable from "../../microComponents/Tabel";
 import KanbanView from "./KanbanView"
+import { dataOf, columnDefs } from "./data";
 
 
 
@@ -18,30 +19,9 @@ export default function Contact() {
 
   const [activeView, setActiveView] = useState("list");
 
-  const columnDefs = [
-    { headerName: 'Name', field: 'name', sortable: true, filter: true, cellRenderer: 'customCellRenderer',flex:1 },
-    { headerName: 'Company', field: 'company', sortable: true, filter: true,flex:1, cellRenderer: 'customCellRenderer' },
-    { headerName: 'Stage', field: 'stage', sortable: true, filter: true, cellRenderer: 'stageCellRenderer',flex:1 },
-    { headerName: 'Owner', field: 'owner', sortable: true, filter: true,flex:1, cellRenderer: 'customCellRenderer'  },
-    { headerName: 'Source', field: 'source', sortable: true, filter: true,flex:1, cellRenderer: 'customCellRenderer'  },
-    { headerName: 'Type', field: 'type', sortable: true, filter: true,flex:1, cellRenderer: 'customCellRenderer'  },
-    { headerName: 'Campaign', field: 'campaign', sortable: true, filter: true,flex:1 , cellRenderer: 'customCellRenderer' }
-  ];
 
-  const dataOf = [
-    {
-      name: 'Aryan K',
-      company: 'TechCorp',
-      stage: 'New Lead',
-      // stage: 'Qualified',
-      // stage: 'negotiator',
-      owner: 'Zenithive',
-      source: 'Website',
-      type: 'Enterprise',
-      campaign: 'Xyz',
-      profileImage: 'profileLogo.svg'
-    }
-  ];
+
+
 
   const rowData = Array.from({ length: 50 }, (_, index) => ({
     ...dataOf[0],
