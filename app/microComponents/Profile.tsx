@@ -1,21 +1,21 @@
-import Image from 'next/image'
-interface Data1Props {
-    profileImage: string;
-    // name: string;
-    // designation: string;
-}
+// import Image from 'next/image'
+// interface Data1Props {
+//     profileImage: string;
+//     // name: string;
+//     // designation: string;
+// }
 
-export default function Profile({ profileImage }:Data1Props){
+// export default function Profile({ profileImage }:Data1Props){
 
  
-    return(<>
+//     return(<>
     
-    <div className="">
-        <div><img src={profileImage} style={{width:'40px',height:'40px'}}></img></div>
-    </div>
+//     <div className="">
+//         <div><img src={profileImage} style={{width:'40px',height:'40px'}}></img></div>
+//     </div>
     
 
         
     
-    </>)
-}
+//     </>)
+// }
