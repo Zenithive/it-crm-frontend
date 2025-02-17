@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Title from "../microComponents/Title";
 import { OverallCaseStudytitle } from "./Path/TitlePaths";
-import { headerbutton, search } from "./Path/TaskData";
+import { headerbutton, search, nav } from "./Path/TaskData";
 import HeaderButtons from "../microComponents/HeaderButtons";
 import Search from "../microComponents/Search";
 import Navbar from "./Navbar";
@@ -15,12 +15,12 @@ const OverallCaseStudy = () => {
   const [itemsPerPage, setItemsPerPage] = useState(9);
 
   const handleLayoutChange = () => {
-    router.push('/tableviewoverallcase'); // Replace with your actual route
+    router.push("/tableviewoverallcase"); // Replace with your actual route
   };
 
   return (
     <div>
-      <Navbar />
+      <Navbar nav={nav[0]} />
       <div className="w-full px-4 sm:px-6 lg:px-[70px] mt-6">
         <div className="flex justify-between items-center w-full">
           <div className="">
@@ -40,21 +40,18 @@ const OverallCaseStudy = () => {
         <div className="mt-6">
           <div className="flex justify-between">
             <Search searchText={search[1].searchText} />
-            
+
             <div className="flex space-x-4">
               <button className="w-7 h-7">
-                <img 
-                  src="/overallCaseStudy.svg" 
+                <img
+                  src="/overallCaseStudy.svg"
                   alt="Overall View"
                   className="w-full h-full"
                 />
               </button>
-              <button 
-                onClick={handleLayoutChange}
-                className="w-7 h-7"
-              >
-                <img 
-                  src="/tabler_layout-list.svg" 
+              <button onClick={handleLayoutChange} className="w-7 h-7">
+                <img
+                  src="/tabler_layout-list.svg"
                   alt="List View"
                   className="w-full h-full"
                 />

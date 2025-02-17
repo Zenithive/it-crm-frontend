@@ -2,7 +2,7 @@
 import React from "react";
 import MonthlyLead from "./Dashboard/MonthlyLead";
 import Navbar from "./Navbar";
-import Dashboard_Title from "./Dashboard/Dashboard_Title";
+import Dashboard_Title from "./Dashboard/DashboardTitle";
 import Task from "./Dashboard/Task";
 import Meetings from "./Dashboard/Meetings";
 import UnreadMessages from "./Dashboard/UnreadMessages";
@@ -15,6 +15,7 @@ import {
   chartData,
   recent,
   meetings,
+  nav
 } from "../components/Path/TaskData";
 import { Dashboardtitle } from "../components/Path/TitlePaths";
 import { useSelector } from "react-redux";
@@ -25,7 +26,7 @@ const CRMDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <Navbar nav={nav[0]}/>
     {/* <div>
       <h1>Welcome, {user?.name || "Guest"}!</h1> 
     </div> */}

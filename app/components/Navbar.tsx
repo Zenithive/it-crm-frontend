@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Search } from "lucide-react";
+import {nav} from '../components/Path/TaskData'
 
-const Navbar = () => {
+const Navbar = ({nav}) => {
+  const {name,designation} = nav || {}; 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
@@ -70,9 +72,9 @@ const Navbar = () => {
             <div className="flex items-center">
               <div className="ml-2">
                 <p className="text-sm font-semibold text-gray-700">
-                  Johny Larsen
+                  {nav.name}
                 </p>
-                <p className="text-xs text-gray-500">Admin</p>
+                <p className="text-xs text-gray-500">{nav.designation}</p>
               </div>
               <div className="flex items-center ml-4">
                 <img
