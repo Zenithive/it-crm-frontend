@@ -6,8 +6,8 @@ import { Dashboardtitle } from "../Path/TitlePaths";
 const Dashboard_Title = ({Dashboardtitle}) => {
   return (
     <div>
-      <div className="flex justify-between items-center" data-testid="dashboard-title">
-        <Title title={Dashboardtitle[0].titleName} />
+      <div className="flex justify-between items-center"  data-testid="dashboard-title" >
+        <Title title={Dashboardtitle[0].titleName}/>
         
         <div className="flex items-center space-x-4">
             

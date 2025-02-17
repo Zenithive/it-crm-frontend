@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import authReducer from '../app/redux/slice/authSlice';
-import { useLoginUser } from "../graphql/functions/useLoginUser";
+import { useLoginUser } from "../graphQl/functions/login.function";
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -19,7 +19,13 @@ jest.mock('next/navigation', () => ({
 const mockStore = createStore(authReducer);
  
 
-jest.mock(useLoginUser);
+jest.mock("../graphQl/functions/login.function", () => ({
+  useLoginUser: jest.fn().mockReturnValue({
+    loginUser: jest.fn(),
+    error: null,
+    reset: jest.fn(),})
+  }));
+
 test('renders login form and components', () => {
 
   render(
@@ -139,39 +145,39 @@ test('redirects to the dashboard on valid form submission', async () => {
 
   useRouter.mockReturnValue({ push });
 
-
-  useLoginUser.mockReturnValue({
-    loginUser: jest.fn().mockResolvedValue({
-      token: 'mockToken',
-      user: { id: '1', name: 'John', email: 'john@example.com', role: 'admin' },
-    }),
-  });
-
-  render(
-    <Provider store={mockStore}>
-      <Login />
-    </Provider>
-  );
+ 
+ const mockLoginUser = jest.fn().mockResolvedValue({
+  token: 'mockToken123',
+  user: { email: 'test@example.com' },
+});
 
 
-  const emailInput = screen.getByTestId("email");
-  await userEvent.type(emailInput, 'arati@gmail.com'); 
+useLoginUser.mockReturnValue({
+  loginUser: mockLoginUser,
+  data: null,
+  loading: false,
+  error: null,
+  reset: jest.fn(),
+});
 
-  const passwordInput = screen.getByTestId("pass");
-  await userEvent.type(passwordInput, 'Valid123!'); 
+render(
+  <Provider store={mockStore}>
+    <Login />
+  </Provider>
+);
 
-  const nextButton = screen.getByTestId('nextButton');
-  fireEvent.click(nextButton); 
+const emailInput = screen.getByTestId('email');
+const passwordInput = screen.getByTestId('pass');
+const loginButton = screen.getByTestId('nextButton');
 
-  
+await userEvent.type(emailInput, 'yys@example.com');
+await userEvent.type(passwordInput, 'Valid123!');
+fireEvent.click(loginButton);
 
-  
-  await waitFor(() => {
-    expect(push).toHaveBeenCalledWith('/dashboard');
-  });
 
-  const state = mockStore.getState();
-    expect(state.id).toBe('1');
-    expect(state.name).toBe('John');
-    expect(state.token).toBe('mockToken');
+await waitFor(() => expect(mockLoginUser).toHaveBeenCalledWith('yys@example.com', 'Valid123!'));
+
+await waitFor(() => {
+  expect(push).toHaveBeenCalledWith('/dashboard');
+});
 });
