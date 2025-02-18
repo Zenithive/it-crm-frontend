@@ -26,7 +26,7 @@ const CRMDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar nav={nav[0]}/>
+      {/* <Navbar nav={nav[0]}/> */}
     {/* <div>
       <h1>Welcome, {user?.name || "Guest"}!</h1> 
     </div> */}

@@ -1,87 +1,75 @@
-import React from 'react'
-import { Mail, Phone, Building2, Users, Linkedin, ChevronDown, Edit, Search, Plus, Reply, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { apiServiceIndividual } from "../../api/apiService/apiServiceIndividual";
+import { jsonServiceIndividual } from "../../api/jsonService/jsonServiceIndividual";
+import "../Dashboard/Dashboard.css";
+
+const flag = false; // Change to false to use JSON instead of API
 
 const LeftSide = () => {
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const fetchedData = flag ? await apiServiceIndividual() : await jsonServiceIndividual();
+        setData(fetchedData);
+      } catch (err) {
+        setError("Error fetching left-side data");
+        console.error(err);
+        // Fallback to JSON data if API fails
+        setData(await jsonServiceIndividual());
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
-    <div>
-       <div className="">
-            <div className="bg-white rounded-lg shadow-custom p-6">
-              <div className="space-y-4">
-                {/* Lead Status */}
-                <div>
-                  <h2 className="text-lg font-semibold text-bg-blue-12 mb-2">Location</h2>
-                  <p className="text-gray-700">India, Ahemdabad</p>
+    <div className="rounded-lg shadow-custom bg-white p-1">
+      <div className="scrollbar-custom overflow-y-auto h-screen">
+        <div className="space-y-4 mt-3">
+          {isLoading ? (
+            <p className="text-center text-gray-500">Loading...</p>
+          ) : error ? (
+            <p className="text-center text-red-500">{error}</p>
+          ) : (
+            data.map((item, index) => (
+              <div key={index} className="ml-4">
+                {/* Always Show Label */}
+                <h2 className="text-lg font-semibold text-bg-blue-12 mb-2">{item.label}</h2>
+                <div className="flex items-center gap-2 text-gray-700">
+                  {item.icon && <img src={item.icon} alt={item.label} />}
+                  {item.value ? ( // Only show value if available
+                    item.isLink ? (
+                      <a
+                        href={item.value}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="break-all text-blue-600 hover:underline"
+                      >
+                        {item.value}
+                      </a>
+                    ) : (
+                      <div>{item.value}</div>
+                    )
+                  ) : (
+                    <div className="text-gray-400">N/A</div> // Show placeholder when value is missing
+                  )}
                 </div>
-
-                <div className="border border-bg-blue-12-[1.19px]"></div>
-
-                {/* Assigned Owner */}
-                <div>
-                  <h2 className="text-lg font-semibold text-bg-blue-12 mb-2">Assigned Owner</h2>
-                  <p className="text-gray-700">Johnson</p>
-                </div>
-
-                <div className="border border-bg-blue-12-[1.19px]"></div>
-                {/* Contact Details */}
-                <div>
-                  <h2 className="text-lg font-semibold text-bg-blue-12 mb-2">Email</h2>
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Mail size={16} />
-                    <span>zenithive17@gmail.com</span>
-                  </div>
-                </div>
-
-                <div className="border border-bg-blue-12-[1.19px]"></div>
-
-                <div>
-                  <h2 className="text-lg font-semibold text-bg-blue-12 mb-2">Phone</h2>
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Phone size={16} />
-                    <span>+91 256232561</span>
-                  </div>
-                </div>
-
-                <div className="border border-bg-blue-12-[1.19px]"></div>
-
-                <div>
-                  <h2 className="text-lg font-semibold text-bg-blue-12 mb-2">Company</h2>
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Building2 size={16} />
-                    <span>Zen Corporation</span>
-                  </div>
-                </div>
-
-                <div className="border border-bg-blue-12-[1.19px]"></div>
-
-                <div>
-                  <h2 className="text-lg font-semibold text-bg-blue-12 mb-2">Industry</h2>
-                  <p className="text-gray-700">IT Company</p>
-                </div>
-
-                <div className="border border-bg-blue-12-[1.19px]"></div>
-
-                <div>
-                  <h2 className="text-lg font-semibold text-bg-blue-12 mb-2">Employee Count</h2>
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Users size={16} />
-                    <span>250</span>
-                  </div>
-                </div>
-
-                <div className="border border-bg-blue-12-[1.19px]"></div>
-
-                <div>
-                  <h2 className="text-lg font-semibold text-bg-blue-12 mb-2">LinkedIn</h2>
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <Linkedin size={16} />
-                    <span>zenithive</span>
-                  </div>
-                </div>
+                {/* Always Show Divider */}
+                <div className="border border-bg-blue-12-[1.19px] mt-4 mr-4"></div>
               </div>
-            </div>
-          </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default LeftSide
+export default LeftSide;

@@ -11,6 +11,7 @@ export default {
     extend: {
       boxShadow: {
         'custom': '0 0px 0px rgba(0, 0, 0, 0), 0 0px 3px rgba(0, 0, 0, 0.40)',
+        'navbar-shadow' : '0px 4px 6px 0px #0000000D'
       },
       backgroundImage:{
         'navbar-custom-gradient': 'linear-gradient(90deg, #ffffff 0%, #6158FF 46%, #ffffff 100%)',
@@ -30,6 +31,7 @@ export default {
         follow_ups_yellow: "#FFC107",
         follow_ups_green: "#28A745",
         blue_shadow: "#F2F1FF",
+        "gray-background": "#F9F8FF"
       },
       scale: {
         "102.5": "1.008",
