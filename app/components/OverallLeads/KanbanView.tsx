@@ -1,66 +1,79 @@
 
+import React, { useState } from 'react';
+import { columns as initialColumns } from './OverallLeadsData';
+import './overallLeads.css';
+import LeadCardDnD from './DragAndDrop';
+import { useDrop } from 'react-dnd';
+import ColumnComponent from './KanbanColComp';
+
+type Item = {
+  id: string;
+  title: string;
+  subtitle: string;
+};
+
+type Column = {
+  title: string;
+  number: number;
+  items: Item[];
+};
 
 
-import { LeadCard } from "../../microComponents/LeadCard";
-import Pagination from "../../microComponents/Pagination";
-import { columns } from "./data";
 
- 
-  
-  export default function KanbanView() {
-    return (<>
-      <main className="p-6 rounded-lg relative">
-        <div className="flex flex-col md:flex-row gap-6 rounded-lg justify-center  ">
-          {columns.map((column, columnIndex) => (
-            
-            <div 
-              key={`column-${columnIndex}`}
-              className=" min-w-[350px] h-[500px] bg-gray-50 rounded-lg shadow-prim mx-2 overflow-y-auto scrollbar-none "
-            >
-              <h2 className="text-xl font-semibold mb-4 text-white bg-bg-blue-12 p-3 rounded-t-lg border sticky top-0 z-50 ">
-                {column.title}
-              </h2>
-              <div className="space-y-2 px-4 py-2 rounded-lg relative">
-                {column.items.map((item) => (
-                  <LeadCard
-                    key={item.id}
-                    id={item.id}
-                    title={item.title}
-                    subtitle={item.subtitle}
-                
-                  />
-                ))}
-              </div>
-            </div>
-           
-          ))}
-        </div>
-        <div className="flex justify-center">
+const KanbanView: React.FC = () => {
+  const [columns, setColumns] = useState<Column[]>(initialColumns);
+  const [visibleCards, setVisibleCards] = useState<number>(3);
 
-        <button 
-          className="md:absolute mt-10 md:mt-0 top-1/2 md:right-6 transform -translate-y-1/2 w-9 h-9 md:w-14 md:h-14 bg-bg-blue-12 text-white rounded-[12px] shadow-lg hover:bg-indigo-600 flex items-center justify-center text-xl md:text-2xl"
-          aria-label="Add new item"
-        >
+  const handleAddCard = () => {
+    if (visibleCards < columns.length) {
+      setVisibleCards(visibleCards + 1);
+    }
+  };
+
+  const moveCard = (draggedId: string, sourceColumnId: string, targetColumnId: string) => {
+    setColumns((prevColumns) => {
+      const sourceColumn = prevColumns.find((col) => col.title === sourceColumnId);
+      const targetColumn = prevColumns.find((col) => col.title === targetColumnId);
+      if (!sourceColumn || !targetColumn) return prevColumns;
+
+      const cardToMove = sourceColumn.items.find((item) => item.id === draggedId);
+      if (!cardToMove) return prevColumns;
+
+      const updatedSource = {
+        ...sourceColumn,
+        items: sourceColumn.items.filter((item) => item.id !== draggedId),
+      };
+
+      const updatedTarget = {
+        ...targetColumn,
+        items: [...targetColumn.items, cardToMove],
+      };
+
+      return prevColumns.map((col) => {
+        if (col.title === sourceColumnId) return updatedSource;
+        if (col.title === targetColumnId) return updatedTarget;
+        return col;
+      });
+    });
+  };
+
+  const cardWidth = `${80 / visibleCards}%`;
+
+  return (
+    <main className="p-6 rounded-lg relative">
+      <div className="flex gap-6 rounded-lg justify-center overflow-x-hidden scrollbar-none pb-6 w-full" style={{ width: '100%', scrollBehavior: 'smooth' }}>
+        {columns.slice(0, visibleCards).map((column, columnIndex) => (
+          <ColumnComponent key={columnIndex} column={column} moveCard={moveCard} cardWidth={cardWidth} />
+        ))}
+      </div>
+
+      <div className="flex justify-center mt-4">
+        <button onClick={handleAddCard} className="plus_icon bg-bg-blue-12 text-white px-4 py-2 rounded-[12px] hover:bg-blue-700" aria-label="Add new item">
           +
         </button>
+      </div>
+    </main>
+  );
+};
 
-        </div>
-   
-        
-      </main>
-
-
-<div className="flex justify-between items-center p-4  bott rounded-lg">
-<Pagination
-  totalItems={10}
-  initialItemsPerPage={3}
-//   onPageChange={(page) => setCurrentPage(page)}
-  onItemsPerPageChange={(newItemsPerPage) => {
-    // setItemsPerPage(newItemsPerPage);
-    // setCurrentPage(1);
-  }}
-/>
-</div> 
-      </>
-    );
-  }
+export default KanbanView;

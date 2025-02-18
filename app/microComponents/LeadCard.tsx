@@ -12,8 +12,8 @@ interface CardProps {
         className={`p-3 mb-3 bg-blue_shadow rounded-lg transition-shadow ${className} `}
         data-card-id={id}
       >
-        <h3 className="text-indigo-500 font-medium">{title}</h3>
-        <p className="text-gray-600 text-sm">{subtitle}</p>
+        <h3 className="text-indigo-500 font-medium text-[17px]">{title}</h3>
+        <p className="text-black text-[12.5px] font-normal">{subtitle}</p>
       </div>
     );
   };

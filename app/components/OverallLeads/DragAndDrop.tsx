@@ -1,0 +1,43 @@
+// src/microComponents/LeadCardDnD.tsx
+import { useDrag, useDrop } from 'react-dnd';
+import { LeadCard } from '../../microComponents/LeadCard';
+
+
+
+type LeadCardDnDProps = {
+  id: string;
+  title: string;
+  subtitle: string;
+  index: number;
+  columnId: string;
+  moveCard: (draggedId: string, targetId: string) => void;
+};
+
+const ItemType = 'LEAD_CARD';
+
+const LeadCardDnD: React.FC<LeadCardDnDProps> = ({ id, title, subtitle,  columnId, moveCard }) => {
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: ItemType,
+    item: { id, columnId },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }));
+
+  const [, drop] = useDrop(() => ({
+    accept: ItemType,
+    drop: (item: { id: string; columnId: string }) => {
+      if (item.columnId !== columnId) {
+        moveCard(item.id, id);
+      }
+    },
+  }));
+
+  return (
+    <div ref={(node) => { if (node) drag(drop(node)); }} style={{ opacity: isDragging ? 0.5 : 1 }}>
+      <LeadCard id={id} title={title} subtitle={subtitle} />
+    </div>
+  );
+};
+
+export default LeadCardDnD;

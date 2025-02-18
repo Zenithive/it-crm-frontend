@@ -1,6 +1,6 @@
 
 
-export default function HeaderOfLogin() {
+ const HeaderOfLogin=()=> {
 
 
     return (<>
@@ -12,3 +12,6 @@ export default function HeaderOfLogin() {
         </div>
         
         </>)}
+
+
+export default HeaderOfLogin;

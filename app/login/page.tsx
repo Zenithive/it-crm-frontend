@@ -6,7 +6,7 @@ import { useState } from "react";
 import Login from "../components/Login";
 
 
-export default function LoginPage() {
+const LoginPage=()=> {
 
 
   return (
@@ -15,3 +15,4 @@ export default function LoginPage() {
     </>
   );
 }
+export default LoginPage;

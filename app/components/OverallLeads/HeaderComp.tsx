@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import Title from "./Title";
-import Search from "./Search";
-import HeaderButtons from "./HeaderButtons";
+import Title from "../../microComponents/Title";
+import Search from "../../microComponents/Search";
+import HeaderButtons from "../../microComponents/HeaderButtons";
 
 interface Data {
   title?: string;
   Listlogo?: string;
-  List2logo?: string;
+  Kanbanlogo?: string;
  
   searchText?: string;
 }
@@ -59,7 +59,7 @@ const HeaderComp: React.FC<HeaderProps> = ({
         className={`flex items-center cursor-pointer px-[20px] py-[7px] rounded-[12px] gap-[10px] ${activeView === 'kanban' ? 'border border-1 shadow-custom rounded-[12px]' : ''}`}
         onClick={() => handleViewChange('kanban')}
       >
-        <img src={data.List2logo} alt="Kanban View"  className={`h-7 w-7 ${activeView === 'kanban' ? 'opacity-100' : 'opacity-50'}`} />
+        <img src={data.Kanbanlogo} alt="Kanban View"  className={`h-7 w-7 ${activeView === 'kanban' ? 'opacity-100' : 'opacity-50'}`} />
         {activeView === 'kanban' && (
           <div className="font-semibold text-[15px] text-[#333333]">Kanban View</div>
         )}

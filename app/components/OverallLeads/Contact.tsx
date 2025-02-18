@@ -1,35 +1,38 @@
 
 
 "use client";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Title from "../../microComponents/Title";
 import Navbar from "../Navbar";
 import Pagination from "../../microComponents/Pagination";
-import HeaderComp from "../../microComponents/HeaderComp";
+import HeaderComp from "./HeaderComp";
 import MicroTable from "../../microComponents/Tabel";
 import KanbanView from "./KanbanView"
-import { dataOf, columnDefs } from "./data";
+import { columnDefs, dataOf } from "./OverallLeadsData";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
+
+type ViewType = "list" | "kanban";
+
+
+ const Contact=()=> {
+
+
+  const [activeView, setActiveView] = useState<ViewType>("list");
 
 
 
 
-export default function Contact() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-
-  const [activeView, setActiveView] = useState("list");
 
 
-
-
-
-  const rowData = Array.from({ length: 50 }, (_, index) => ({
+  const rowData = Array.from({ length: 30 }, (_, index) => ({
     ...dataOf[0],
     id: index + 1
   }));
   const totalItems = rowData.length;
 
-  const handleSearchChange = (e) => {
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     console.log("Search Input:", e.target.value);
   };
 
@@ -41,7 +44,7 @@ export default function Contact() {
     console.log("Filter clicked");
   };
 
-  const handleViewChange = (view) => {
+  const handleViewChange = (view: ViewType) => {
     setActiveView(view);
     console.log("View changed to:", view);
   };
@@ -60,7 +63,7 @@ export default function Contact() {
         data={{
           title: "Lead",
           Listlogo: "viewList.svg",
-          List2logo: "kanban.svg",
+          Kanbanlogo: "kanban.svg",
           
           searchText: "Search Leads..."
         }}
@@ -74,7 +77,10 @@ export default function Contact() {
         {activeView === "list" ? (
           <MicroTable rowData={rowData} columnDefs={columnDefs} />
         ) : (
-          <KanbanView/>
+          // <KanbanView/>
+          <DndProvider backend={HTML5Backend}>
+      <KanbanView />
+    </DndProvider>
         )}
       </div>
       
@@ -82,15 +88,5 @@ export default function Contact() {
   );
 }
 
-{/* 
-      <div className="flex justify-between items-center p-4 relative bott rounded-lg">
-        <Pagination
-          totalItems={totalItems}
-          initialItemsPerPage={itemsPerPage}
-          onPageChange={(page) => setCurrentPage(page)}
-          onItemsPerPageChange={(newItemsPerPage) => {
-            setItemsPerPage(newItemsPerPage);
-            setCurrentPage(1);
-          }}
-        />
-      </div> */}
+
+export default Contact;
