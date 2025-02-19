@@ -7,8 +7,8 @@ import { validationSchema } from "./ValidationSchema";
 import { loginSuccess } from "../../redux/slice/authSlice";
 import { useDispatch } from "react-redux";
 
-export default function Form() {
-  const [formBg, setFormBg] = useState("");
+ const Form=()=> {
+  const [formBg, setFormBg] = useState<string>("");
   const { loginUser, error: apiError, reset } = useLoginUser();
 
 
@@ -135,8 +135,8 @@ export default function Form() {
                 </form>
               )}
             </Formik>
-            <div className="flex justify-between mt-3 text-xs md:text-sm">
-              <span className="text-bg-gray-13 font-semibold"></span>
+            <div className="flex justify-end mt-3 text-xs md:text-sm">
+
               <span className="text-black font-semibold">Forgot Password?</span>
             </div>
             <div className="flex items-center justify-center my-4">
@@ -170,3 +170,6 @@ export default function Form() {
     </>
   );
 }
+
+
+export default Form;

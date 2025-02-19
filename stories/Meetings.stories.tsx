@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import Meetings from "../app/components/Dashboard/Meetings"; // Adjust the path as needed
 
-
 // Sample Data for Storybook
 const meetingsData = [
   { title: "Team Standup", time: "10:00 AM" },
