@@ -2,22 +2,8 @@ import React, { useState } from "react";
 import Title from "../../microComponents/Title";
 import Search from "../../microComponents/Search";
 import HeaderButtons from "../../microComponents/HeaderButtons";
+import{HeaderProps} from "./OverallLeadsData"
 
-interface Data {
-  title?: string;
-  Listlogo?: string;
-  Kanbanlogo?: string;
- 
-  searchText?: string;
-}
-
-type HeaderProps = {
-  data: Data;
-  onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onAddLead?: () => void;
-  onFilter?: () => void;
-  onViewChange?: (view: string) => void;
-};
 
 const HeaderComp: React.FC<HeaderProps> = ({
   data,

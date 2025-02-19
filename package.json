@@ -21,7 +21,6 @@
     "@types/testing-library__jest-dom": "^5.14.9",
     "ag-grid-community": "^33.1.0",
     "ag-grid-react": "^33.1.0",
-
     "antd": "^5.24.1",
     "axios": "^1.7.9",
     "formik": "^2.4.6",

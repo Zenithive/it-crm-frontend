@@ -2,9 +2,7 @@
 
 "use client";
 import { ChangeEvent, useEffect, useState } from "react";
-import Title from "../../microComponents/Title";
-import Navbar from "../Navbar";
-import Pagination from "../../microComponents/Pagination";
+
 import HeaderComp from "./HeaderComp";
 import MicroTable from "../../microComponents/Tabel";
 import KanbanView from "./KanbanView"

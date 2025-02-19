@@ -4,25 +4,9 @@ import './overallLeads.css';
 import React from 'react';
 import LeadCardDnD from './DragAndDrop';
 
-type Item = {
-    id: string;
-    title: string;
-    subtitle: string;
-  };
-type Column = {
-    id: string;
-    title: string;
-    number: number;
-    items: Item[];
-  };
-  
-type ColumnProps = {
-  column: Column;
-  moveCard: (draggedId: string, sourceColumnId: string, targetColumnId: string) => void;
-  cardWidth: string;
-};
+import {ColumnPropsForKanban} from './OverallLeadsData';
 
-const ColumnComponent: React.FC<ColumnProps> = ({ column, moveCard, cardWidth }) => {
+const ColumnComponent: React.FC<ColumnPropsForKanban> = ({ column, moveCard, cardWidth }) => {
 
   const [{ isOver }, drop] = useDrop({
     accept: 'LEAD_CARD',
@@ -46,7 +30,7 @@ const ColumnComponent: React.FC<ColumnProps> = ({ column, moveCard, cardWidth })
   return (
     <div
       ref={dropRef}
-      className={`h-[500px] bg-gray-50 rounded-lg shadow-prim mx-2 mainCard ${isOver ? 'bg-blue-300' : ''}`}
+      className={`h-[500px] bg-gray-50 rounded-lg shadow-prim mx-2 mainCard ${isOver ? 'bg-blue-400' : ''}`}
       style={{ flex: `0 0 ${cardWidth}` }}
     >
       <h2 className="font-semibold mb-4 text-white bg-bg-blue-12 p-3 title_set">

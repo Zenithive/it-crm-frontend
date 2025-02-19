@@ -1,17 +1,10 @@
 // src/microComponents/LeadCardDnD.tsx
 import { useDrag, useDrop } from 'react-dnd';
 import { LeadCard } from '../../microComponents/LeadCard';
+import { LeadCardDnDProps } from './OverallLeadsData'; 
 
 
 
-type LeadCardDnDProps = {
-  id: string;
-  title: string;
-  subtitle: string;
-  index: number;
-  columnId: string;
-  moveCard: (draggedId: string, targetId: string) => void;
-};
 
 const ItemType = 'LEAD_CARD';
 

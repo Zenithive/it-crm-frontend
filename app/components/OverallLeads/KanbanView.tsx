@@ -6,26 +6,14 @@ import React, { useEffect, useState } from 'react';
 import { fetchFromAPIForKanbanView } from "../../api/apiService/OverallLeadApiService";
 import { fetchFromJSONForKanbanView } from "../../api/jsonService/OverallLeadsJsonService";
 import './overallLeads.css';
+import {ColumnForKanbanView} from './OverallLeadsData';
 
 import ColumnComponent from './KanbanColComp';
-
-type Item = {
-  id: string;
-  title: string;
-  subtitle: string;
-};
-
-type Column = {
-  id: string;
-  title: string;
-  number: number;
-  items: Item[];
-};
 
 
 
 const KanbanView: React.FC = () => {
-  const [columns, setColumns] = useState<Column[]>([]);
+  const [columns, setColumns] = useState<ColumnForKanbanView[]>([]);
   const [visibleCards, setVisibleCards] = useState<number>(3);
 
 
@@ -87,9 +75,9 @@ const KanbanView: React.FC = () => {
       maxHeight: window.innerWidth < 768 ? "80vh" : "auto", // Add max height for vertical scrolling
     }}
   >
-    {columns.slice(0, visibleCards).map((column, columnIndex) => (
+    {Array.isArray(columns) ? columns.slice(0, visibleCards).map((column, columnIndex) => (
       <ColumnComponent key={columnIndex} column={column} moveCard={moveCard} cardWidth={cardWidth} />
-    ))}
+    )):<p>No columns available</p>}
   </div>
 
   <div className="flex justify-center mt-4">
