@@ -11,6 +11,7 @@ export default {
     extend: {
       boxShadow: {
         'custom': '0 0px 0px rgba(0, 0, 0, 0), 0 0px 3px rgba(0, 0, 0, 0.40)',
+        'navbar-shadow' : '0px 4px 6px 0px #0000000D',
         'prim':' 0 0 10px rgba(0, 0, 0, 0.3)'
       },
       backgroundImage:{
@@ -40,6 +41,7 @@ export default {
         follow_ups_yellow: "#FFC107",
         follow_ups_green: "#28A745",
         blue_shadow: "#F2F1FF",
+        "gray-background": "#F9F8FF"
       },
      
       scale: {

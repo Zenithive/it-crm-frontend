@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Navbar from "./Navbar";
 import Search from "../microComponents/Search";
 import HeaderButtons from "../microComponents/HeaderButtons";
-import { headerbutton, search } from "./Path/TaskData";
+import { headerbutton, search,nav } from "./Path/TaskData";
 import ResourceContainer from "./ResourceList/ResourceContainer";
 import { dynamicResources } from "./Path/OverallCaseStudyData";
 import { OverallCaseStudytitle } from "./Path/TitlePaths";
@@ -16,12 +16,12 @@ const TableViewOverallCase = () => {
   const [itemsPerPage, setItemsPerPage] = useState(9);
 
   const handleLayoutChange = () => {
-    router.push("/overallcasestudy"); // Replace with your actual route
+    router.push("/overallcasestudy"); 
   };
 
   return (
     <div>
-      <Navbar />
+      <Navbar nav={nav[0]}/>
       <div className="w-full px-4 sm:px-6 lg:px-[70px] mt-6">
         <div className="flex justify-between items-center w-full">
           <div className="">
