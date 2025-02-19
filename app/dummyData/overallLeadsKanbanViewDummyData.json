@@ -1,0 +1,61 @@
+[
+    {
+      "title": "New Lead",
+      "number": 20,
+      "items": [
+        { "id": "new-1", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "new-2", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "new-3", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "new-4", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "new-5", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "new-6", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "new-7", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "new-8", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "new-9", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "new-10", "title": "Aryan K", "subtitle": "Tech Corp" }
+      ]
+    },
+    {
+      "title": "Qualified",
+      "number": 60,
+      "items": [
+        { "id": "qualified-1", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "qualified-2", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "qualified-3", "title": "Aryan K", "subtitle": "Tech Corp" }
+      ]
+    },
+    {
+      "title": "Negotiation",
+      "number": 40,
+      "items": [
+        { "id": "negotiation-1", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "negotiation-2", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "negotiation-3", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "negotiation-4", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "negotiation-5", "title": "Aryan K", "subtitle": "Tech Corp" }
+      ]
+    },
+    {
+      "title": "Closed Win",
+      "number": 10,
+      "items": [
+        { "id": "closed-win-1", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "closed-win-2", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "closed-win-3", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "closed-win-4", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "closed-win-5", "title": "Aryan K", "subtitle": "Tech Corp" }
+      ]
+    },
+    {
+      "title": "Lost",
+      "number": 9,
+      "items": [
+        { "id": "lost-1", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "lost-2", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "lost-3", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "lost-4", "title": "Aryan K", "subtitle": "Tech Corp" },
+        { "id": "lost-5", "title": "Aryan K", "subtitle": "Tech Corp" }
+      ]
+    }
+  ]
+  

@@ -1,9 +1,12 @@
 
-import React, { useState } from 'react';
-import { columns as initialColumns } from './OverallLeadsData';
+import React, { useEffect, useState } from 'react';
+
+
+
+import { fetchFromAPIForKanbanView } from "../../api/apiService/OverallLeadApiService";
+import { fetchFromJSONForKanbanView } from "../../api/jsonService/OverallLeadsJsonService";
 import './overallLeads.css';
-import LeadCardDnD from './DragAndDrop';
-import { useDrop } from 'react-dnd';
+
 import ColumnComponent from './KanbanColComp';
 
 type Item = {
@@ -13,6 +16,7 @@ type Item = {
 };
 
 type Column = {
+  id: string;
   title: string;
   number: number;
   items: Item[];
@@ -21,8 +25,19 @@ type Column = {
 
 
 const KanbanView: React.FC = () => {
-  const [columns, setColumns] = useState<Column[]>(initialColumns);
+  const [columns, setColumns] = useState<Column[]>([]);
   const [visibleCards, setVisibleCards] = useState<number>(3);
+
+
+   const useAPI = process.env.NEXT_PUBLIC_USE_API === "false";
+    useEffect(() => {
+      const fetchData = async () => {
+        const data = useAPI ? await fetchFromAPIForKanbanView() : await fetchFromJSONForKanbanView();
+        setColumns(data);
+      };
+  
+      fetchData();
+    }, [useAPI]);
 
   const handleAddCard = () => {
     if (visibleCards < columns.length) {
@@ -60,19 +75,34 @@ const KanbanView: React.FC = () => {
   const cardWidth = `${80 / visibleCards}%`;
 
   return (
-    <main className="p-6 rounded-lg relative">
-      <div className="flex gap-6 rounded-lg justify-center overflow-x-hidden scrollbar-none pb-6 w-full" style={{ width: '100%', scrollBehavior: 'smooth' }}>
-        {columns.slice(0, visibleCards).map((column, columnIndex) => (
-          <ColumnComponent key={columnIndex} column={column} moveCard={moveCard} cardWidth={cardWidth} />
-        ))}
-      </div>
+  
 
-      <div className="flex justify-center mt-4">
-        <button onClick={handleAddCard} className="plus_icon bg-bg-blue-12 text-white px-4 py-2 rounded-[12px] hover:bg-blue-700" aria-label="Add new item">
-          +
-        </button>
-      </div>
-    </main>
+    <main className="p-6 rounded-lg relative">
+  <div
+    className="flex gap-6 rounded-lg justify-center pb-6 w-full overflow-auto scrollbar-none "
+    style={{
+      width: "100%",
+      scrollBehavior: "smooth",
+      flexDirection: window.innerWidth < 768 ? "column" : "row", // Change direction based on screen size
+      maxHeight: window.innerWidth < 768 ? "80vh" : "auto", // Add max height for vertical scrolling
+    }}
+  >
+    {columns.slice(0, visibleCards).map((column, columnIndex) => (
+      <ColumnComponent key={columnIndex} column={column} moveCard={moveCard} cardWidth={cardWidth} />
+    ))}
+  </div>
+
+  <div className="flex justify-center mt-4">
+    <button
+      onClick={handleAddCard}
+      className="plus_icon bg-bg-blue-12 text-white px-4 py-2 rounded-[12px] hover:bg-blue-700"
+      aria-label="Add new item"
+    >
+      +
+    </button>
+  </div>
+</main>
+
   );
 };
 

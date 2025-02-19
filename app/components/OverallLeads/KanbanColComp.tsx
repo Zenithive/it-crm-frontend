@@ -1,7 +1,7 @@
 import { useDrop } from 'react-dnd';
-import { columns as initialColumns } from './OverallLeadsData';
+import './overallLeads.css';
 
-import React, { useState } from 'react';
+import React from 'react';
 import LeadCardDnD from './DragAndDrop';
 
 type Item = {
@@ -10,6 +10,7 @@ type Item = {
     subtitle: string;
   };
 type Column = {
+    id: string;
     title: string;
     number: number;
     items: Item[];
@@ -22,14 +23,20 @@ type ColumnProps = {
 };
 
 const ColumnComponent: React.FC<ColumnProps> = ({ column, moveCard, cardWidth }) => {
+
   const [{ isOver }, drop] = useDrop({
     accept: 'LEAD_CARD',
+    canDrop: (item: { id: string; columnId: string }) => {
+      // Prevent dropping onto the same column
+      return item.columnId !== column.title;
+    },
     drop: (item: { id: string; columnId: string }) => {
-      console.log('Dropped item:', item);
-      moveCard(item.id, item.columnId, column.title);
+      if (item.columnId !== column.title) {
+        moveCard(item.id, item.columnId, column.title);
+      }
     },
     collect: (monitor) => ({
-      isOver: monitor.isOver(),
+      isOver: monitor.isOver() && monitor.canDrop(),
     }),
   });
 
@@ -39,7 +46,7 @@ const ColumnComponent: React.FC<ColumnProps> = ({ column, moveCard, cardWidth })
   return (
     <div
       ref={dropRef}
-      className={`h-[500px] bg-gray-50 rounded-lg shadow-prim mx-2 mainCard ${isOver ? 'bg-blue-200' : ''}`}
+      className={`h-[500px] bg-gray-50 rounded-lg shadow-prim mx-2 mainCard ${isOver ? 'bg-blue-300' : ''}`}
       style={{ flex: `0 0 ${cardWidth}` }}
     >
       <h2 className="font-semibold mb-4 text-white bg-bg-blue-12 p-3 title_set">

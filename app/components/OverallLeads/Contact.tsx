@@ -1,16 +1,19 @@
 
 
 "use client";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Title from "../../microComponents/Title";
 import Navbar from "../Navbar";
 import Pagination from "../../microComponents/Pagination";
 import HeaderComp from "./HeaderComp";
 import MicroTable from "../../microComponents/Tabel";
 import KanbanView from "./KanbanView"
-import { columnDefs, dataOf } from "./OverallLeadsData";
+import { columnDefs, } from "./OverallLeadsData";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+
+import { fetchFromAPIForListView } from "../../api/apiService/OverallLeadApiService";
+import { fetchFromJSONForListView } from "../../api/jsonService/OverallLeadsJsonService";
 
 
 type ViewType = "list" | "kanban";
@@ -20,33 +23,39 @@ type ViewType = "list" | "kanban";
 
 
   const [activeView, setActiveView] = useState<ViewType>("list");
+  const [rowData, setRowData] = useState<any[]>([]);
+  const useAPI = process.env.NEXT_PUBLIC_USE_API === "false";
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = useAPI ? await fetchFromAPIForListView() : await fetchFromJSONForListView();
+      setRowData(data);
+    };
+
+    fetchData();
+  }, [useAPI]);
 
 
 
 
 
 
-  const rowData = Array.from({ length: 30 }, (_, index) => ({
-    ...dataOf[0],
-    id: index + 1
-  }));
-  const totalItems = rowData.length;
+  
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log("Search Input:", e.target.value);
+    // console.log("Search Input:", e.target.value);
   };
 
   const handleAddLead = () => {
-    console.log("Add Lead clicked");
+    // console.log("Add Lead clicked");
   };
 
   const handleFilter = () => {
-    console.log("Filter clicked");
+    // console.log("Filter clicked");
   };
 
   const handleViewChange = (view: ViewType) => {
     setActiveView(view);
-    console.log("View changed to:", view);
+    // console.log("View changed to:", view);
   };
 
 
@@ -56,7 +65,7 @@ type ViewType = "list" | "kanban";
 
   return (
     <>
-      <Navbar />
+      
 
      
       <HeaderComp

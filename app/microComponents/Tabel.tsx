@@ -118,7 +118,7 @@ const MicroTable: React.FC<MicroTableProps> = ({ rowData, columnDefs }) => {
                         iconSrc = '/meetgoogle.svg';
                         break;
                     default:
-                        iconSrc = '';
+                        iconSrc = '/gmail.svg';
                 }
 
                 return (
