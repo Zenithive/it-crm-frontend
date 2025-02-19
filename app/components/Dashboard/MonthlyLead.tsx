@@ -31,7 +31,7 @@
 
   const MonthlyLead = () => {
     return (
-      <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm w-full flex flex-col">
+      <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm w-full flex flex-col" data-testid="monthly-lead-section">
         <div className="flex justify-between items-center">
           <h3 className="text-bg-blue-12 text-lg md:text-xl font-semibold">
             Total Monthly Lead

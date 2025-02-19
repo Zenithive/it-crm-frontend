@@ -3,20 +3,37 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import Login from '.././app/components/Login';
 import '@testing-library/jest-dom';
-import { useRouter } from 'next/router'; 
 
+import userEvent from "@testing-library/user-event";
+import { useRouter } from 'next/navigation';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import authReducer from '../app/redux/slice/authSlice';
+import { useLoginUser } from "../graphQl/functions/login.function";
 
-jest.mock('next/router', () => ({
+jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
 }));
 
 
-
+const mockStore = createStore(authReducer);
  
 
+jest.mock("../graphQl/functions/login.function", () => ({
+  useLoginUser: jest.fn().mockReturnValue({
+    loginUser: jest.fn(),
+    error: null,
+    reset: jest.fn(),})
+  }));
 
 test('renders login form and components', () => {
-  render(<Login />);
+
+  render(
+    <Provider store={mockStore}>
+      <Login />
+    </Provider>
+  );
+  // render(<Login />);
 
   
  
@@ -24,8 +41,8 @@ test('renders login form and components', () => {
  
 
  
-  expect(screen.getByLabelText('Email')).toBeInTheDocument();
-  expect(screen.getByLabelText('Password')).toBeInTheDocument();
+  expect(screen.getByText('Email')).toBeInTheDocument();
+  expect(screen.getByText('Password')).toBeInTheDocument();
 
   expect(screen.getByText('Next')).toBeInTheDocument();
   expect(screen.getByText('Login with Google')).toBeInTheDocument();
@@ -34,29 +51,87 @@ test('renders login form and components', () => {
 
 
 test('displays email validation error on invalid email', async () => {
-  render(<Login />);
+  
+  const mockPush = jest.fn();
+  useRouter.mockImplementation(() => ({ push: mockPush }));
 
-  fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'invalidemail' } });
-  fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'Valid123!' } });
-  fireEvent.click(screen.getByText(/next/i));
+  render(
+    <Provider store={mockStore}>
+      <Login />
+    </Provider>
+  );
+
+  
+
+  const emailInput = screen.getByTestId('email');
+  await userEvent.type(emailInput, 'a');  
+
+ 
+  const passwordInput = screen.getByTestId('pass');
+  await userEvent.type(passwordInput, 'Valid123!');
+
+ 
+  const nextButton = screen.getByTestId('nextButton');
+  fireEvent.click(nextButton); 
 
   
   await waitFor(() => {
-    expect(screen.getByText('Please provide a valid email address (example@domain.com)')).toBeInTheDocument();
+    expect(screen.getByTestId("errorEmail")).toHaveTextContent(/Enter Valid Email ID/i);
   });
+  
+
+  await userEvent.type(emailInput, 'a@h');
+  await waitFor(() => {
+    expect(screen.getByTestId("errorEmail")).toHaveTextContent("Please provide a valid email address (example@domain.com)");
+  });
+   
+  
 });
 
 test('displays password validation error on invalid password', async () => {
-  render(<Login />);
+  const mockPush = jest.fn();
+  useRouter.mockImplementation(() => ({ push: mockPush }));
+  render(
+    <Provider store={mockStore}>
+      <Login />
+    </Provider>
+  );
 
-  fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@domain.com' } });
-  fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'short' } });
-  fireEvent.click(screen.getByText(/next/i));
 
+
+
+  const emailInput = screen.getByTestId('email');
+  await userEvent.type(emailInput, 'a@gmail.com');  
+
+ 
+  const passwordInput = screen.getByTestId('pass');
+  await userEvent.type(passwordInput, "a");
+
+ 
+  const nextButton = screen.getByTestId('nextButton');
+  fireEvent.click(nextButton); 
+
+
+ 
 
   await waitFor(() => {
-    expect(screen.getByText('Must contain 6 characters, one uppercase, one lowercase, one number, and one special character')).toBeInTheDocument();
+    expect(screen.getByTestId("errorPass")).toHaveTextContent(/Should be at least 6 characters/i);
   });
+
+
+
+  await userEvent.type(passwordInput, "abcdef");
+    
+  
+    fireEvent.click(nextButton); 
+  
+   
+    await waitFor(() => {
+
+      expect(screen.getByTestId("errorPass")).toHaveTextContent(
+        /Must contain 6 characters, one uppercase, one lowercase, one number, and one special character/i
+      );
+    });
 });
 
 
@@ -65,18 +140,44 @@ test('displays password validation error on invalid password', async () => {
 
 
 test('redirects to the dashboard on valid form submission', async () => {
-  const mockPush = jest.fn();
-  useRouter.mockImplementation(() => ({ push: mockPush }));
+  const push = jest.fn(); 
 
-  render(<Login />);
 
-  
-  fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@domain.com' } });
-  fireEvent.change(screen.getByLabelText(/password/i), { target: { value: 'Valid123!' } });
-  fireEvent.click(screen.getByText(/next/i));
+  useRouter.mockReturnValue({ push });
 
-  
-  await waitFor(() => {
-    expect(mockPush).toHaveBeenCalledWith('/dashboard');
-  });
+ 
+ const mockLoginUser = jest.fn().mockResolvedValue({
+  token: 'mockToken123',
+  user: { email: 'test@example.com' },
+});
+
+
+useLoginUser.mockReturnValue({
+  loginUser: mockLoginUser,
+  data: null,
+  loading: false,
+  error: null,
+  reset: jest.fn(),
+});
+
+render(
+  <Provider store={mockStore}>
+    <Login />
+  </Provider>
+);
+
+const emailInput = screen.getByTestId('email');
+const passwordInput = screen.getByTestId('pass');
+const loginButton = screen.getByTestId('nextButton');
+
+await userEvent.type(emailInput, 'yys@example.com');
+await userEvent.type(passwordInput, 'Valid123!');
+fireEvent.click(loginButton);
+
+
+await waitFor(() => expect(mockLoginUser).toHaveBeenCalledWith('yys@example.com', 'Valid123!'));
+
+await waitFor(() => {
+  expect(push).toHaveBeenCalledWith('/dashboard');
+});
 });

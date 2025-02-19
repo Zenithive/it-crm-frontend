@@ -4,7 +4,7 @@ const Meetings = ({ meetings = [], recent = [] }) => {
   const [recentView, setRecentView] = useState("today");
 
   return (
-    <div className="w-full">
+    <div className="w-full" data-testid="meetings-section">
       <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
         <div className="border-b">
           <div className="flex space-x-4 md:space-x-8 mb-4 overflow-x-auto">

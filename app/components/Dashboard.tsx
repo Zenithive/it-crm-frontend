@@ -32,20 +32,20 @@ const CRMDashboard = () => {
     </div> */}
 
       <main className="p-4 md:p-6 lg:p-8">
-        <Dashboard_Title Dashboardtitle={Dashboardtitle} />
+        <Dashboard_Title data-testid="dashboard-title"Dashboardtitle={Dashboardtitle} />
 
         <div className="mb-4 md:mb-6"></div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
           <div className="lg:col-span-6 space-y-4 md:space-y-6">
-            <Task tasks={tasks} followup={followup} />
-            <Meetings meetings={meetings} recent={recent} />
+            <Task data-testid="task-section"tasks={tasks} followup={followup} />
+            <Meetings data-testid="meetings-section"meetings={meetings} recent={recent} />
           </div>
 
           <div className="lg:col-span-6 space-y-4 md:space-y-6">
             <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
               <div className="w-full sm:w-1/2">
-                <MonthlyLead />
+                <MonthlyLead data-testid="monthly-lead-section"/>
               </div>
               <div className="w-full sm:w-1/2">
                 <UnreadMessages unread_messages={unread_messages} />
