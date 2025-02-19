@@ -4,21 +4,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { Table } from 'antd';
+import { MicroTablePropsForListView } from './InterfaceAndTypeData';
 
 
 
-interface ColumnDef {
-    field: string;
-    headerName: string;
-    cellRenderer?: string;
-}
 
-interface MicroTableProps {
-    rowData: any[];
-    columnDefs: ColumnDef[];
-}
-
-const MicroTable: React.FC<MicroTableProps> = ({ rowData, columnDefs }) => {
+const MicroTable: React.FC<MicroTablePropsForListView> = ({ rowData, columnDefs }) => {
     const [ready, setReady] = useState<boolean>(false);
 
     useEffect(() => {
