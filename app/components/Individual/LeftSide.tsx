@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { apiServiceIndividual } from "../../api/apiService/apiServiceIndividual";
-import { jsonServiceIndividual } from "../../api/jsonService/jsonServiceIndividual";
+import { apiServiceLeftSide } from "../../api/apiService/individualApiService";
+import { jsonServiceLeftSide } from "../../api/jsonService/individualJsonService";
 import "../Dashboard/Dashboard.css";
 
-const flag = false; // Change to false to use JSON instead of API
+const flag = process.env.NEXT_PUBLIC_USE_DUMMY_DATA === "true"; // Change to false to use JSON instead of API
 
 const LeftSide = () => {
   const [data, setData] = useState([]);
@@ -14,20 +14,20 @@ const LeftSide = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const fetchedData = flag ? await apiServiceIndividual() : await jsonServiceIndividual();
+        const fetchedData = flag ? await apiServiceLeftSide() : await jsonServiceLeftSide();
         setData(fetchedData);
       } catch (err) {
         setError("Error fetching left-side data");
         console.error(err);
         // Fallback to JSON data if API fails
-        setData(await jsonServiceIndividual());
+        setData(await jsonServiceLeftSide());
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [flag]);
 
   return (
     <div className="rounded-lg shadow-custom bg-white p-1">

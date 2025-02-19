@@ -1,7 +1,8 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
 import { ChevronDown, Reply } from "lucide-react";
-import axios from "axios";
+import { jsonServiceTimeLine } from "../../api/jsonService/individualJsonService";
+import { apiServiceTimeline } from "../../api/apiService/individualApiService";
 
 interface TimelineItem {
   type: "email" | "deal";
@@ -16,63 +17,27 @@ interface TimelineItem {
   status?: string;
 }
 
-// Static data
-const staticTimelineData: TimelineItem[] = [
-  {
-    type: "email",
-    date: "7 Feb 2020 at 4:20 AM GMT+13",
-    content: "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen",
-    sender: "Sachin Tendu",
-  },
-  {
-    type: "deal",
-    date: "7 Feb 2020 at 4:20 AM GMT+13",
-    content: "moved to integration - Won by API",
-    sender: "Sachin Tendu",
-    dealNumber: "#1111",
-  },
-  {
-    type: "email",
-    date: "7 Feb 2020 at 4:20 AM GMT+13",
-    content: "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen",
-    sender: "Sachin Tendu",
-  },
-  {
-    type: "email",
-    date: "7 Feb 2020 at 4:20 AM GMT+13",
-    content: "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen",
-    sender: "Sachin Tendu",
-  },
-  {
-    type: "email",
-    date: "7 Feb 2020 at 4:20 AM GMT+13",
-    content: "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen",
-    sender: "Sachin Tendu",
-  }
-];
 
 const TimeLine: React.FC = () => {
   const [timelineData, setTimelineData] = useState<TimelineItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // Flag to toggle between static and API data
-  const flag = true; // You can also use: process.env.NEXT_PUBLIC_USE_DUMMY_DATA === "true"
+
+
+  const flag = (process.env.NEXT_PUBLIC_USE_DUMMY_DATA).toLowerCase() === "true";
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        if (flag) {
-          setTimelineData(staticTimelineData);
-        } else {
-          const response = await axios.get("your-api-endpoint");
-          setTimelineData(response.data);
-        }
+        const fetchedData = flag
+          ? await apiServiceTimeline()
+          : await jsonServiceTimeLine();
+        setTimelineData(fetchedData);
       } catch (err) {
         setError("Error fetching timeline data");
         // Fallback to static data on error
-        setTimelineData(staticTimelineData);
+        // setTimelineData(fetchData);
       } finally {
         setIsLoading(false);
       }
@@ -170,7 +135,7 @@ const TimeLine: React.FC = () => {
               <img src="/SearchIcon.svg" alt="Search" />
             </button>
           </div>
-          
+
           {error && (
             <div className="p-4 text-red-600 bg-red-50 rounded-md m-4">
               {error}

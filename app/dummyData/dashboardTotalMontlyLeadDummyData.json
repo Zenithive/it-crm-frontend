@@ -1,0 +1,5 @@
+[
+    { "name": "Closed", "value": 60, "color": "#6366F1" },
+    { "name": "Prospect", "value": 25, "color": "#8B5CF6" },
+    { "name": "Lead", "value": 15, "color": "#333" }
+  ]

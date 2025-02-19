@@ -9,12 +9,7 @@ import UnreadMessages from "./Dashboard/UnreadMessages";
 import TotalLeadLine from "./Dashboard/TotalLeadLine";
 import { RootState } from "../redux/store/store";
 import {
-  unread_messages,
-  tasks,
-  followup,
-  chartData,
-  recent,
-  meetings,
+  
   nav
 } from "../components/Path/TaskData";
 import { Dashboardtitle } from "../components/Path/TitlePaths";
@@ -38,8 +33,8 @@ const CRMDashboard = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6">
           <div className="lg:col-span-6 space-y-4 md:space-y-6">
-            <Task tasks={tasks} followup={followup} />
-            <Meetings meetings={meetings} recent={recent} />
+            <Task/>
+            <Meetings />
           </div>
 
           <div className="lg:col-span-6 space-y-4 md:space-y-6">
@@ -48,11 +43,11 @@ const CRMDashboard = () => {
                 <MonthlyLead />
               </div>
               <div className="w-full sm:w-1/2">
-                <UnreadMessages unread_messages={unread_messages} />
+                <UnreadMessages />
               </div>
             </div>
 
-            <TotalLeadLine chartData={chartData} />
+            <TotalLeadLine />
           </div>
         </div>
       </main>
