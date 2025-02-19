@@ -1,3 +1,10 @@
+export const nav = [
+  {
+    name: "Johny Larsen",
+    designation:"Admin"
+  }
+]
+
 export const tasks = [
   { title: "Follow up with Client ABC", dueTime: "Due in 2 hours" },
   { title: "Follow up with Client ABC", dueTime: "Due in 2 hours" },
