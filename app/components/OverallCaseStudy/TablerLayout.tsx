@@ -1,6 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Pagination from "../../microComponents/Pagination";
+import { overallcasestudyDataApi } from "../../api/apiService/overallcasestudyApiService"; 
+import { overallcasestudyDataJson } from "../../api/jsonService/overallcasestudyJsonService"
 
 interface Resource {
   title: string;
@@ -8,25 +10,39 @@ interface Resource {
   tags: string[];
 }
 
-interface TablerLayoutProps {
-  resources: Resource[];
-  itemsPerPage: number;
-  setItemsPerPage: (value: number) => void;
-  onItemClick?: (resource: Resource) => void;
-  isResourceList?: boolean;
-}
-
-const TablerLayout: React.FC<TablerLayoutProps> = ({
-  resources,
-  itemsPerPage,
-  setItemsPerPage,
-  onItemClick,
-}) => {
+const TablerLayout=()=> {
   const [currentPage, setCurrentPage] = useState(1);
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentItems = resources.slice(startIndex, endIndex);
+  const [resources, setResources] = useState<Resource[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [itemsPerPage, setItemsPerPage] = useState(9); 
+      const useDummyData = process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
+    
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            setLoading(true);
+            const response = useDummyData
+              ? await overallcasestudyDataApi()
+              : overallcasestudyDataJson();
+              
+            setResources(response ?? []);
+          } catch (err) {
+            console.error("Error fetching resources:", err);
+            setError("Failed to load resources");
+          } finally {
+            setLoading(false);
+          }
+        };
+    
+        fetchData();
+      }, [useDummyData]);
+
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const currentItems = resources.slice(startIndex, endIndex);
+
   
   return (
     <div>
@@ -39,8 +55,8 @@ const TablerLayout: React.FC<TablerLayoutProps> = ({
             >
               {/* Left side content */}
               <div className="flex-1">
-                <div className="mb-4 max-w-[250px]">
-                  <h3 className="text-bg-blue-12 text-lg sm:text-xl lg:text-2xl  font-medium">
+                <div className="mb-4 max-w-[300px]">
+                  <h3 className="text-bg-blue-12 text-lg sm:text-xl lg:text-2xl font-semibold">
                     {resource.title}
                   </h3>
                 </div>

@@ -1,35 +1,29 @@
-import dashboardTaskDummyData from "../../dummyData/dashboardTaskDummyData.json"
-import dashboardFollowupDummyData from "../../dummyData/dashboardFollowupDummyData.json"
-import dashboardMeetingsDummyData from "../../dummyData/dashboardMeetingsDummyData.json"
-import dashboardRecentDummyData from "../../dummyData/dashboardRecentDummyData.json"
-import dashboardUnreadDummyData from "../../dummyData/dashboardUnreadDummyData.json"
-import dashboardTotalMontlyLeadDummyData from "../../dummyData/dashboardTotalMontlyLeadDummyData.json"
-import dashboardTotalLeadLineDummyData from "../../dummyData/dashboardTotalLeadLineDummyData.json"
+import dashboardDummyData from "../../dummyData/dashboardDummyData.json"
 
 export const dashboardTaskJson = () =>{
-    return dashboardTaskDummyData;
+    return dashboardDummyData.task;
 }
 
 export const dashboardFollowupJson = () =>{
-    return dashboardFollowupDummyData;
+    return dashboardDummyData.followup;
 }
 
 export const dashboardMeetingsJson = () =>{
-    return dashboardMeetingsDummyData;
+    return dashboardDummyData.meetings;
 }
 
 export const dashboardRecentJson = () =>{
-    return dashboardRecentDummyData;
+    return dashboardDummyData.recent;
 }
 
 export const dashboardUnreadMessagesJson = ()=>{
-    return dashboardUnreadDummyData;
+    return dashboardDummyData.unreadmessages;
 } 
 
 export const dashboardTotalLeadJson = () =>{
-    return dashboardTotalMontlyLeadDummyData;
+    return dashboardDummyData.totalmonthlylead;
 }
 
 export const dashboardTotalLeadLineJson = () =>{
-    return dashboardTotalLeadLineDummyData;
+    return dashboardDummyData.totalleadline;
 }

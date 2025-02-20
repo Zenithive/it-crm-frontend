@@ -1,0 +1,82 @@
+{
+  "leftside": [
+    {
+      "label": "Location",
+      "icon": "/location_icon.svg",
+      "value": "India, Ahmedabad"
+    },
+    { "label": "Assigned Owner", "value": "Johnson" },
+    {
+      "label": "Email",
+      "icon": "/email_icon.svg",
+      "value": "zenithive17@gmail.com"
+    },
+    { "label": "Phone", "icon": "/phone_icon.svg", "value": "+91 256232561" },
+    {
+      "label": "Company",
+      "icon": "/company_icon.svg",
+      "value": "Zen Corporation"
+    },
+    { "label": "Industry", "value": "IT Company" },
+    { "label": "Employee Count", "value": "250" },
+    { "label": "LinkedIn", "value": "zenithive" },
+    {
+      "label": "Company LinkedIn",
+      "value": "http://www.LinkedIn.com/in/zenithive.com",
+      "isLink": true
+    },
+    {
+      "label": "Company Website",
+      "value": "http://zenithive.com",
+      "isLink": true
+    },
+    { "label": "Created Date", "value": "Jan 15, 2024" }
+  ],
+
+
+  "rightside": [
+    { "name": "Proposal.pdf", "url": "https://example.com/proposal.pdf" },
+    { "name": "Contract.pdf", "url": "https://example.com/contract.pdf" },
+    { "name": "Invoice.pdf", "url": "https://example.com/invoice.pdf" },
+    {
+      "name": "Presentation.pptx",
+      "url": "https://example.com/presentation.pptx"
+    },
+    { "name": "Report.docx", "url": "https://example.com/report.docx" }
+  ],
+
+  
+  "timeline": [
+    {
+      "type": "email",
+      "date": "7 Feb 2020 at 4:20 AM GMT+13",
+      "content": "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen",
+      "sender": "Sachin Tendu"
+    },
+    {
+      "type": "deal",
+      "date": "7 Feb 2020 at 4:20 AM GMT+13",
+      "content": "moved to integration - Won by API",
+      "sender": "Sachin Tendu",
+      "dealNumber": "#1111"
+    },
+    {
+      "type": "email",
+      "date": "7 Feb 2020 at 4:20 AM GMT+13",
+      "content": "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen",
+      "sender": "Sachin Tendu"
+    },
+    {
+      "type": "email",
+      "date": "7 Feb 2020 at 4:20 AM GMT+13",
+      "content": "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen",
+      "sender": "Sachin Tendu"
+    },
+    {
+      "type": "email",
+      "date": "7 Feb 2020 at 4:20 AM GMT+13",
+      "content": "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen",
+      "sender": "Sachin Tendu"
+    }
+  ]
+}

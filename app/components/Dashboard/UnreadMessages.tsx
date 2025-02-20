@@ -36,16 +36,16 @@ const UnreadMessages = () => {
           )}
         </div>
 
-        <div className="scrollable_view">
+        <div className="scrollbar-custom overflow-y-auto max-h-[200px]">
           {unreadMessages.length > 0 ? (
             unreadMessages.map((msg, index) => (
               <div
                 key={index}
-                className={`flex items-center justify-between pb-4 ${
+                className={`flex items-center justify-between pb-4 mr-4 ${
                   index !== unreadMessages.length - 1 ? "border-b border-gray-300" : ""
                 }`}
               >
-                <div className="flex-1 min-w-0 mx-3">
+                <div className="flex-1 min-w-0 mx-3 mt-4">
                   <h4 className="font-medium text-gray-800 text-sm md:text-base truncate">
                     {msg.name}
                   </h4>

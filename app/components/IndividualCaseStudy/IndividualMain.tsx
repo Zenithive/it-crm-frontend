@@ -1,7 +1,6 @@
 import React from "react";
 import LeftCaseStudy from "./LeftCaseStudy";
 import RightCaseStudy from "./RightCaseStudy";
-import { companydata, outcome, project, technologies } from "../Path/IndividualCaseStudyData";
 
 const IndividualMain = () => {
   return (
@@ -24,9 +23,9 @@ const IndividualMain = () => {
 
           {/* Project Details Grid */}
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-            <LeftCaseStudy companydata={companydata[0]} project={project[0]} technologies={technologies}/>
+            <LeftCaseStudy />
             <div className="hidden lg:block border-l border-bg-blue-12"></div>
-            <RightCaseStudy outcome={outcome[0]}/>
+            <RightCaseStudy/>
           </div>
         </div>
       </div>

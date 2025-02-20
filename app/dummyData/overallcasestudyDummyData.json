@@ -1,0 +1,48 @@
+{"overallcasestudydata":[
+    {
+      "title": "Advanced React Patterns",
+      "company": "Frontend Masters",
+      "tags": ["React", "JavaScript", "Design Patterns"]
+    },
+    {
+      "title": "Node.js Best Practices",
+      "company": "Node.js Community",
+      "tags": ["Node.js", "Backend", "Best Practices"]
+    },
+    {
+      "title": "Modern CSS Techniques",
+      "company": "CSS-Tricks",
+      "tags": ["CSS", "Frontend", "UI/UX"]
+    },
+    {
+      "title": "Scaling Applications with AWS",
+      "company": "Amazon Web Services",
+      "tags": ["AWS", "Cloud", "Scalability"]
+    },
+    {
+      "title": "GraphQL vs REST: Which to Choose?",
+      "company": "Apollo GraphQL",
+      "tags": ["GraphQL", "REST API", "Backend"]
+    },
+    {
+      "title": "WebRTC in Real-Time Communication",
+      "company": "Google Developers",
+      "tags": ["WebRTC", "Video Calling", "P2P"]
+    },
+    {
+      "title": "Mastering TypeScript",
+      "company": "Microsoft",
+      "tags": ["TypeScript", "JavaScript", "Strong Typing"]
+    },
+    {
+      "title": "Progressive Web Apps (PWA)",
+      "company": "Google Developers",
+      "tags": ["PWA", "Offline Support", "Mobile"]
+    },
+    {
+      "title": "Introduction to Docker and Kubernetes",
+      "company": "Docker",
+      "tags": ["Docker", "Kubernetes", "DevOps"]
+    }
+  ]
+  }
