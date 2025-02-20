@@ -20,6 +20,42 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Storybook
+
+This project uses [Storybook](https://storybook.js.org/) for UI component development and testing. To start Storybook, run:
+
+```bash
+npm run storybook
+# or
+yarn storybook
+# or
+pnpm storybook
+```
+
+Open [http://localhost:6006](http://localhost:6006) with your browser to view the Storybook interface.
+
+## Running Tests
+
+This project uses [Jest](https://jestjs.io/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) for unit and integration tests. To run the tests, use:
+
+```bash
+npm test
+# or
+yarn test
+# or
+pnpm test
+```
+
+To run tests in watch mode, use:
+
+```bash
+npm run test:watch
+# or
+yarn test:watch
+# or
+pnpm test:watch
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
