@@ -5,7 +5,7 @@ import HeaderOfLogin from "./Login/HeaderOfLogin";
 
 import Form from "./Login/Form";
 
-export default function Login() {
+ const Login=()=> {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 overflow-hidden">
       <div className="w-full max-w-6xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col">
@@ -30,3 +30,5 @@ export default function Login() {
     </div>
   );
 }
+
+export default Login;

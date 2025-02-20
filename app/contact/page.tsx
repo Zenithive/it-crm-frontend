@@ -1,5 +1,7 @@
 import Contacts from "../components/OverallLeads/Contact";
 
-export default function Home() {
+ const  Home=()=> {
   return <div><Contacts/></div>;
 }
+
+export default Home;

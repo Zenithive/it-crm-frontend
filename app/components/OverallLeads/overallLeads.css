@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom_scrollbar {
+  @apply overflow-y-auto scrollbar-thin scrollbar-track-white scrollbar-thumb-bg-blue-12;
+}
+
+.title_set {
+  @apply rounded-t-lg border sticky top-0 z-50 flex justify-between items-center;
+}
+
+

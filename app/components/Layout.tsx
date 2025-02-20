@@ -1,5 +1,10 @@
+
+
+"use client";
+
 import React from "react";
-import Navbar from "./Navbar"; // Import your Navbar component
+import { usePathname } from "next/navigation";
+import Navbar from "./Navbar"; 
 import { nav } from "./Path/TaskData";
 
 interface LayoutProps {
@@ -7,10 +12,22 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const pathname = usePathname();
+  
+
+  const hiddenNavbarPaths = ["/login"];
+
+ 
+  const shouldHideNavbar = hiddenNavbarPaths.includes(pathname);
+
   return (
-    <div className="min-h-screen flex flex-col ">
-       <Navbar nav={nav[0]}/>
-      <main className="flex-1 container">{children}</main>
+    <div className="min-h-screen flex flex-col">
+     
+      {!shouldHideNavbar && <Navbar nav={nav[0]} />}
+      
+      <main className="flex-1 mx-auto container">
+        {children}
+      </main>
     </div>
   );
 };

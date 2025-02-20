@@ -13,3 +13,51 @@ body {
   background: var(--background);
   font-family: 'Segoe UI', sans-serif;
 }
+
+
+.custom-ant-table .ant-table-thead > tr > th {
+  @apply bg-bg-blue-12 text-white text-center font-semibold text-[16px];
+
+}
+
+
+
+
+.plus_icon{
+  @apply md:absolute mt-10 md:mt-0 top-1/2 md:right-6 transform -translate-y-1/2 w-9 h-9 md:w-14 md:h-14 bg-bg-blue-12 text-white rounded-[12px] shadow-lg hover:bg-indigo-600 flex items-center justify-center text-xl md:text-2xl
+}
+
+/* globals.css or style.css */
+
+.custom-ant-table {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+}
+
+.custom-ant-table .ant-table {
+  border-radius: 8px;
+}
+
+.custom-ant-table .ant-table-thead > tr > th {
+  background: #4f46e5 !important;
+  color: white !important;
+}
+
+.custom-ant-table .ant-table-thead > tr > th::before {
+  display: none !important;
+}
+
+.custom-ant-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.custom-ant-table .ant-table-tbody > tr:last-child > td {
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.custom-ant-table .ant-table-cell-fix-right {
+  background: white !important;
+}
+
+
+

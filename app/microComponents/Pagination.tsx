@@ -1,13 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { PaginationProps } from "./InterfaceAndTypeData";
 
-interface PaginationProps {
-  totalItems: number;
-  initialItemsPerPage?: number;
-  onPageChange?: (page: number) => void;
-  onItemsPerPageChange?: (itemsPerPage: number) => void;
-}
 
 const Pagination = ({
   totalItems,
