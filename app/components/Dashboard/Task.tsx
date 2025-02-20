@@ -1,15 +1,46 @@
-import React ,{useState} from "react";
+import React, { useState, useEffect } from "react";
 import "./Dashboard.css";
+import {
+  dashboardTaskJson,
+  dashboardFollowupJson,
+} from "../../api/jsonService/dashboardJsonService";
+import {
+  dashboardTaskApi,
+  dashboardFollowupApi,
+} from "../../api/apiService/dashboardApiService";
 
-const Task = ({tasks= [],followup=[]}) => {
+const Task = () => {
+  const [tasks, setTasks] = useState([]);
+  const [followup, setFollowup] = useState([]);
   const [activeView, setActiveView] = useState("today"); // 'today' or 'followup'
 
+  const useDummyData =
+    process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+      
+          const [taskData, followupData] = useDummyData
+            ? await Promise.all([dashboardTaskApi(), dashboardFollowupApi()]) // API data
+            : [dashboardTaskJson(), dashboardFollowupJson()]; // JSON data
+  
+          setTasks(useDummyData ? taskData.tasks ?? [] : taskData ?? []);
+          setFollowup(useDummyData ? followupData.followup ?? [] : followupData ?? []);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+  
+      fetchData();
+    }, [useDummyData]);
+  
   return (
     <div className="w-full">
       <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
         <div className="border-b">
           <div className="flex space-x-4 md:space-x-8 mb-4 overflow-x-auto">
-            <button 
+            <button
               className={`text-black text-base md:text-lg font-semibold whitespace-nowrap pb-2 ${
                 activeView === "today" ? "border-b-2 border-[#6366F1]" : ""
               }`}
@@ -17,7 +48,7 @@ const Task = ({tasks= [],followup=[]}) => {
             >
               Today Task
             </button>
-            <button 
+            <button
               className={`text-black text-base md:text-lg font-semibold whitespace-nowrap pb-2 ${
                 activeView === "followup" ? "border-b-2 border-[#6366F1]" : ""
               }`}
@@ -29,7 +60,6 @@ const Task = ({tasks= [],followup=[]}) => {
         </div>
 
         {activeView === "today" ? (
-          // Today's Tasks View
           <div className="scrollable_view">
             {tasks.map((task, index) => (
               <div
@@ -39,20 +69,16 @@ const Task = ({tasks= [],followup=[]}) => {
                 }`}
               >
                 <div className="min-w-0 flex-1 pr-4">
-                  <h3 className="task_title">
-                    {task.title}
-                  </h3>
-                  <p className="text-xs md:text-sm text-gray-500">{task.dueTime}</p>
+                  <h3 className="task_title">{task.title}</h3>
+                  <p className="text-xs md:text-sm text-gray-500">
+                    {task.dueTime}
+                  </p>
                 </div>
-                <input
-                  type="checkbox"
-                  className="task_checkbox"
-                />
+                <input type="checkbox" className="task_checkbox" />
               </div>
             ))}
           </div>
         ) : (
-          // Follow-ups View
           <div className="scrollable_view">
             {followup.map((msg, index) => (
               <div
@@ -64,7 +90,7 @@ const Task = ({tasks= [],followup=[]}) => {
                 }`}
               >
                 <img
-                  src="image.svg"
+                  src={msg.profileImage}
                   alt={msg.name}
                   className="w-8 h-8 md:w-10 md:h-10 mt-1 flex-shrink-0"
                 />
@@ -76,7 +102,9 @@ const Task = ({tasks= [],followup=[]}) => {
                     {msg.message}
                   </p>
                 </div>
-                <></>
+                <button>
+                <img src="arrow.svg" alt="Arrow"></img>
+              </button>
               </div>
             ))}
           </div>

@@ -1,12 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import { dashboardTotalLeadLineApi } from "../../api/apiService/dashboardApiService";  // API Service
+import { dashboardTotalLeadLineJson } from "../../api/jsonService/dashboardJsonService"; // JSON Service
 
-const TotalLeadLine = ({chartData=[]}) => {
+const TotalLeadLine = () => {
+  const [chartData, setChartData] = useState([]);
   const [mounted, setMounted] = useState(false);
+
+  const useDummyData =
+    process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+
+    const fetchData = async () => {
+      const fetchedData = useDummyData
+        ? await dashboardTotalLeadLineApi()
+        : await dashboardTotalLeadLineJson();
+
+      setChartData(fetchedData || []);
+    };
+
+    fetchData();
+  }, [useDummyData]);
 
   const DynamicChart = dynamic(
     () =>
@@ -54,8 +70,8 @@ const TotalLeadLine = ({chartData=[]}) => {
           <h3 className="font-semibold text-bg-blue-12 text-lg md:text-xl">
             Total Monthly Lead
           </h3>
-          <button className="">
-            <img src="details_logo.svg" alt="details"></img>
+          <button>
+            <img src="details_logo.svg" alt="details" />
           </button>
         </div>
         <div className="h-40 md:h-48">

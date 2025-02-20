@@ -3,7 +3,7 @@ import Individual_Title from "./Individual/IndividualTitle";
 import LeftSide from "./Individual/LeftSide";
 import TimeLine from "./Individual/TimeLine";
 import RightSide from "./Individual/RightSide";
-import {data} from '../components/Path/IndividualData'
+
 
 const Individual = () => {
   return (

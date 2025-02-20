@@ -1,7 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { dashboardUnreadMessagesApi } from "../../api/apiService/dashboardApiService";
+import { dashboardUnreadMessagesJson } from "../../api/jsonService/dashboardJsonService";
 
+const UnreadMessages = () => {
+  const [unreadMessages, setUnreadMessages] = useState([]);
 
-const UnreadMessages = ({ unread_messages = [] }) => {
+  const useDummyData = String(process.env.NEXT_PUBLIC_USE_DUMMY_DATA || "false").trim().toLowerCase() === "true";
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const messagesData = useDummyData
+          ? await dashboardUnreadMessagesApi()
+          : dashboardUnreadMessagesJson();
+
+          setUnreadMessages(useDummyData ? messagesData?.messages ?? [] : messagesData ?? []);
+      } catch (error) {
+        console.error("Error fetching unread messages:", error);
+      }
+    };
+
+    fetchData();
+  }, [useDummyData]);
+
   return (
     <div className="w-full relative">
       <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
@@ -10,39 +31,36 @@ const UnreadMessages = ({ unread_messages = [] }) => {
             Unread Messages
           </div>
 
-          {unread_messages.length > 0 && (
-            <div className="unread_icon">{unread_messages.length}</div>
+          {unreadMessages.length > 0 && (
+            <div className="unread_icon">{unreadMessages.length}</div>
           )}
         </div>
 
         <div className="scrollable_view">
-          {unread_messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`flex items-center justify-between pb-4 ${
-                index !== unread_messages.length - 1
-                  ? "border-b border-gray-300"
-                  : ""
-              }`}
-            >
-              <img
-                src="image.svg"
-                alt={msg.name}
-                className="w-8 h-8 md:w-10 md:h-10 mt-1 flex-shrink-0"
-              />
-              <div className="flex-1 min-w-0 mx-3">
-                <h4 className="font-medium text-gray-800 text-sm md:text-base truncate">
-                  {msg.name}
-                </h4>
-                <p className="text-xs md:text-sm text-gray-500 truncate">
-                  {msg.message}
-                </p>
+          {unreadMessages.length > 0 ? (
+            unreadMessages.map((msg, index) => (
+              <div
+                key={index}
+                className={`flex items-center justify-between pb-4 ${
+                  index !== unreadMessages.length - 1 ? "border-b border-gray-300" : ""
+                }`}
+              >
+                <div className="flex-1 min-w-0 mx-3">
+                  <h4 className="font-medium text-gray-800 text-sm md:text-base truncate">
+                    {msg.name}
+                  </h4>
+                  <p className="text-xs md:text-sm text-gray-500 truncate">
+                    {msg.message}
+                  </p>
+                </div>
+                <button>
+                  <img src="arrow.svg" alt="Arrow" />
+                </button>
               </div>
-              <button>
-                <img src="arrow.svg" alt="Arrow"></img>
-              </button>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-gray-500 text-center">No unread messages</p>
+          )}
         </div>
       </div>
     </div>
