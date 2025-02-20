@@ -64,20 +64,20 @@ const Meetings = () => {
         </div>
 
         {recentView === "today" ? (
-          <div className="scrollable_view">
+          <div className="scrollbar-custom overflow-y-auto max-h-[200px]">
             {meetings.map((meeting, index) => (
               <div
                 key={index}
-                className={`flex items-center justify-between pb-4 ${
+                className={`flex items-center justify-between pb-4 mr-4 ${
                   index !== meetings.length - 1 ? "border-b border-gray-300" : ""
                 }`}
               >
-                <div className="flex items-center space-x-3 md:space-x-4 min-w-0">
+                <div className="flex items-center space-x-3 md:space-x-4 min-w-0 mt-4">
                   <div className="clock_icon">
                     <img src="clock.svg" alt="Clock" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="font-medium text-gray-800 text-sm md:text-base truncate">
+                    <h3 className="font-medium text-gray-800 text-sm md:text-base truncate ">
                       {meeting.title}
                     </h3>
                     <p className="text-xs md:text-sm text-gray-500">
@@ -85,7 +85,7 @@ const Meetings = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex">
+                <div className="flex mt-4">
                   <button className="border shadow-sm bg-white p-2 rounded-md mr-4">
                     <img src="/link.svg" alt="Link" />
                   </button>
@@ -95,20 +95,20 @@ const Meetings = () => {
             ))}
           </div>
         ) : (
-          <div className="scrollable_view">
+          <div className="scrollbar-custom overflow-y-auto max-h-[200px]">
             {recent.map((msg, index) => (
               <div
                 key={index}
-                className={`flex items-center justify-between pb-4 ${
+                className={`flex items-center justify-between pb-4 mr-4 ${
                   index !== recent.length - 1 ? "border-b border-gray-300" : ""
                 }`}
               >
                 <img
                   src="image.svg"
                   alt={msg.name}
-                  className="w-8 h-8 md:w-10 md:h-10 mt-1 flex-shrink-0"
+                  className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0 mt-4"
                 />
-                <div className="flex-1 min-w-0 mx-3">
+                <div className="flex-1 min-w-0 mx-3 mt-4">
                   <h4 className="font-medium text-gray-800 text-sm md:text-base truncate">
                     {msg.name}
                   </h4>

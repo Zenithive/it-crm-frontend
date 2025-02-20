@@ -7,15 +7,15 @@
 }
 
 .scrollbar-custom::-webkit-scrollbar-thumb {
-  background-color: #3490dc; 
-  border-radius: 10px;
+  background-color: #3490dc!important; 
+  border-radius: 10px!important;
 
 }
 .scrollbar-custom::-webkit-scrollbar-track {
   background-color: white;
   border-radius: 10px;
-margin-top: 10px;
-margin-right: 10px;
+    margin-top: 10px;
+    margin-right: 10px;
     
 }
 

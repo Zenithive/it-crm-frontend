@@ -8,12 +8,18 @@ export const Dashboardtitle = [
 
 export const OverallCaseStudytitle =[
     {
-        titleName:"Case Study Portfolio"
+        titleName:"Case Studies"
     }
 ]
 
 export const Individualtitle = [
     {
         titleName: "Sachin Tend"
+    }
+]
+
+export const Todolisttitle = [
+    {
+        titleName : "To-Do List"
     }
 ]

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../Dashboard/Dashboard.css";
 import PipelineStages from "./PipelineStages";
-import axios from "axios";
-import individualRightSideDocDummyData from "../../dummyData/individualRightSideDocDummyData.json";
 import { apiServiceRightSideDoc } from "../../api/apiService/individualApiService";
 import { jsonServiceRightSideDoc } from "../../api/jsonService/individualJsonService";
 
@@ -26,7 +24,6 @@ const RightSide = () => {
         setError("Failed to load documents.");
         console.error(err);
         // Fallback to dummy data if API fails
-        setDocuments(individualRightSideDocDummyData);
       } finally {
         setIsLoading(false);
       }

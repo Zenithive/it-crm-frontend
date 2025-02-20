@@ -1,12 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "./Navbar";
 import Search from "../microComponents/Search";
 import HeaderButtons from "../microComponents/HeaderButtons";
-import { headerbutton, search,nav } from "./Path/TaskData";
-import ResourceContainer from "./ResourceList/ResourceContainer";
-import { dynamicResources } from "./Path/OverallCaseStudyData";
+import { headerbutton, search } from "./Path/TaskData";
 import { OverallCaseStudytitle } from "./Path/TitlePaths";
 import Title from "../microComponents/Title";
 import TablerLayout from "./OverallCaseStudy/TablerLayout";
@@ -16,33 +13,23 @@ const TableViewOverallCase = () => {
   const [itemsPerPage, setItemsPerPage] = useState(9);
 
   const handleLayoutChange = () => {
-    router.push("/overallcasestudy"); 
+    router.push("/overallcasestudy");
   };
 
   return (
     <div>
-      <Navbar nav={nav[0]}/>
+      {/* Header Section */}
       <div className="w-full px-4 sm:px-6 lg:px-[70px] mt-6">
         <div className="flex justify-between items-center w-full">
-          <div className="">
+          {/* Left Side: Title & Search Bar */}
+          <div className="flex items-center space-x-4">
             <Title title={OverallCaseStudytitle[0].titleName} />
-          </div>
-          <div className="">
-            <HeaderButtons
-              button1Text={headerbutton[1].button1text}
-              button1img={headerbutton[1].button1img}
-              button2Text={headerbutton[1].button2text}
-              button2img={headerbutton[1].button2img}
-              button1width="w-[109px]"
-              button2width="w-[160px]"
-            />
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <div className="flex justify-between">
             <Search searchText={search[1].searchText} />
+          </div>
 
+          {/* Right Side: Header Buttons & Toggle Buttons */}
+          <div className="flex items-center space-x-6">
+            {/* Toggle Buttons */}
             <div className="flex space-x-4">
               <button onClick={handleLayoutChange} className="w-6 h-6">
                 <img
@@ -59,14 +46,22 @@ const TableViewOverallCase = () => {
                 />
               </button>
             </div>
+
+            {/* Header Buttons */}
+            <HeaderButtons
+              button1Text={headerbutton[1].button1text}
+              button1img={headerbutton[1].button1img}
+              button2Text={headerbutton[1].button2text}
+              button2img={headerbutton[1].button2img}
+              button1width="w-[109px]"
+              button2width="w-[160px]"
+            />
           </div>
         </div>
       </div>
 
-      <TablerLayout  resources={dynamicResources}
-              itemsPerPage={itemsPerPage}
-              setItemsPerPage={setItemsPerPage}
-              isResourceList={false}></TablerLayout>
+      {/* Table Layout Section */}
+      <TablerLayout/>
     </div>
   );
 };

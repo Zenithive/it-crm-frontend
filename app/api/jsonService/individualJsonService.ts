@@ -1,15 +1,14 @@
-import individualLeftSideDummyData from '../../dummyData/individualLeftSideDummyData.json'
-import individualTimelineDummyData from '../../dummyData/individualTimelineDummyData.json'
-import individualRightSideDocDummyData from '../../dummyData/individualRightSideDocDummyData.json'
+import individualDummyData from '../../dummyData/individualDummyData.json'
+
 
 export const jsonServiceLeftSide = async () => {
-    return individualLeftSideDummyData;
+    return individualDummyData.leftside;
   };
 
 export const jsonServiceTimeLine = async () =>{
-  return individualTimelineDummyData;
+  return individualDummyData.timeline;
 }
 
 export const jsonServiceRightSideDoc = async () =>{
-  return individualRightSideDocDummyData;
+  return individualDummyData.rightside;
 }

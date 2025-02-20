@@ -1,0 +1,53 @@
+{
+  "companyData": [
+    {
+      "owner_client": "Sachin Tend",
+      "location": "New York, USA",
+      "contact": "Sachin Tend",
+      "email": "contact@zenithive.com",
+      "phone": "+915665223652",
+      "duration": "2 Months"
+    }
+  ],
+  "project": {
+    "summary": "The project focused on implementing a custom Sales Customer Relationship Management (CRM) system for a mid-sized B2B company looking to enhance its sales pipeline, streamline client management, and improve overall sales performance. The goal was to provide the sales team with a tool that not only tracks leads and opportunities but also automates routine tasks, integrates with marketing efforts, and provides detailed reporting for data-driven decision-making."
+  },
+  "technologies": [
+    {
+      "logo": "react_logo.svg",
+      "name": "React"
+    },
+    {
+      "logo": "figma_logo.svg",
+      "name": "Figma"
+    },
+    {
+      "logo": "react_logo.svg",
+      "name": "React"
+    },
+    {
+      "logo": "figma_logo.svg",
+      "name": "Figma"
+    }
+  ],
+
+    "outcome": [
+      {
+        "outcomes": "The project focused on implementing a custom Sales Customer Relationship Management (CRM) system for a mid-sized B2B company looking to enhance its sales pipeline, streamline client management, and improve overall sales performance.\n\nThe goal was to provide the sales team with a tool that not only tracks leads and opportunities but also automates routine tasks, integrates with marketing efforts, and provides detailed reporting for data-driven decision-making.\n\nThe project focused on implementing a custom Sales Customer Relationship Management (CRM) system for a mid-sized B2B company looking to enhance its sales pipeline, streamline client management, and improve overall sales performance."
+      }
+    ],
+
+    "doc":[
+      { "name": "Proposal.pdf", "url": "https://example.com/proposal.pdf" },
+      { "name": "Contract.pdf", "url": "https://example.com/contract.pdf" },
+      { "name": "Invoice.pdf", "url": "https://example.com/invoice.pdf" },
+      {
+        "name": "Presentation.pptx",
+        "url": "https://example.com/presentation.pptx"
+      },
+      { "name": "Report.docx", "url": "https://example.com/report.docx" }
+    ]
+    
+  
+  
+}
