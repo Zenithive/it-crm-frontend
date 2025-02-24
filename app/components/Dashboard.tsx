@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 
 const CRMDashboard = () => {
   const user = useSelector((state: RootState) => state.auth);
+  console.log(`user`, user);
 
   return (
     <div className="min-h-screen bg-gray-50">
