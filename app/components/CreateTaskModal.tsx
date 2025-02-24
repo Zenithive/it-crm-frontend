@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { Button, Modal, Form, Input, DatePicker, Select, message } from "antd";
 import axios from "axios";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store/store";
 
 const { Option } = Select;
 
@@ -9,6 +11,8 @@ const CreateTaskModal = () => {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+
+  const user = useSelector((state: RootState) => state.auth);
 
   const showModal = () => setVisible(true);
   const handleCancel = () => setVisible(false);
@@ -36,7 +40,7 @@ const CreateTaskModal = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDAzNzU4NDYsIm5hbWUiOiJkZW1vIiwicm9sZSI6IkFETUlOIiwidXNlcl9pZCI6IjljYjA3YmFmLWI2OGItNDY4MC1iY2E3LTA3NWQ3Y2E2ZDFhOSJ9.KTxKrEMNI2f0SldlEWZjygSFAhttpO2Vsx9i7ATVLdU`, // Replace with a valid token
+            Authorization: `Bearer ${user.token}`, // Replace with a valid token
           },    
         }
       );

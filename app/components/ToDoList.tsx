@@ -137,12 +137,13 @@ const TodoList: React.FC = () => {
       ) : (
         <div className="overflow-x-auto rounded-lg shadow-custom">
           <table className="min-w-full bg-white">
-            <thead className="bg-blue-500 text-white">
+            <thead className="bg-bg-blue-12 text-white">
               <tr>
                 <th className="px-6 py-3 text-left">Task Name</th>
                 <th className="px-6 py-3 text-left">Priority</th>
                 <th className="px-6 py-3 text-left">Due Date</th>
                 <th className="px-6 py-3 text-left">Status</th>
+                <th className="px-6 py-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -150,15 +151,19 @@ const TodoList: React.FC = () => {
                 <tr key={todo.taskID} className="hover:bg-gray-50">
                   <td className="px-6 py-4">{todo.title}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm ${getPriorityColor(todo.priority)}`}>
+                    <span className={`px-3 py-1 rounded-lg text-sm ${getPriorityColor(todo.priority)}`}>
                       {todo.priority}
                     </span>
                   </td>
                   <td className="px-6 py-4">{new Date(todo.dueDate).toLocaleString()}</td>
                   <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm ${getStatusColor(todo.status)}`}>
+                    <span className={`px-3 py-1 rounded-lg text-sm ${getStatusColor(todo.status)}`}>
                       {todo.status.replace("_", " ")}
                     </span>
+                  </td>
+                  <td className="flex px-6 py-4 space-x-2">
+                    <img src="/edit.svg" alt="Edit" className=""></img>
+                    <img src="/delete.svg" alt="Delete" className="px-4"></img>
                   </td>
                 </tr>
               ))}

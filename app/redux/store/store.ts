@@ -3,6 +3,8 @@ import authReducer from "../slice/authSlice";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // Uses localStorage
 
+export type RootState = ReturnType<typeof store.getState>;
+
 const persistConfig = {
   key: "auth",
   storage, // This saves the state in localStorage
