@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Button, Modal, Form, Input, DatePicker, Select, message } from "antd";
-import axios from "axios";
+import {createTask} from "../api/apiService/createTaskModalApiService"; 
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
 
@@ -20,31 +20,7 @@ const CreateTaskModal = () => {
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        "https://crmbackendapis.onrender.com/graphql",
-        {
-          query: `
-            mutation CreateTask($input: CreateTaskInput!) {
-              createTask(input: $input) {
-                taskID
-                title
-                description
-                status
-                priority
-                dueDate
-              }
-            }
-          `,
-          variables: { input: values },
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`, // Replace with a valid token
-          },    
-        }
-      );
-      message.success("Task created successfully!");
+      await createTask(values, user.token);
       form.resetFields();
       setVisible(false);
     } catch (error) {

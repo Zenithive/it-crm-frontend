@@ -8,7 +8,7 @@ import { columnDefs } from "./OverallLeadsData";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { fetchFromAPIForListView } from "../../api/apiService/OverallLeadApiService";
+import { fetchFromAPIForListView } from "../../api/apiService/overallLeadApiService";
 import { fetchFromJSONForListView } from "../../api/jsonService/OverallLeadsJsonService";
 
 type ViewType = "list" | "kanban";

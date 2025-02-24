@@ -1,7 +1,6 @@
 "use client"
 import React, { useState, useEffect } from "react";
 import Pagination from "../microComponents/Pagination";
-import axios from "axios";
 import HeaderButtons from "../microComponents/HeaderButtons";
 import Title from "../microComponents/Title";
 import { Todolisttitle } from "./Path/TitlePaths";
@@ -10,80 +9,18 @@ import { headerbutton, search } from "./Path/TaskData";
 import CreateTaskModal from "./CreateTaskModal";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
+import todoListApiService from "../api/apiService/todoListApiService";
 
 const TodoList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Default to 10
-  const [totalItems, setTotalItems] = useState(0);
-
+  
+  const { todos, loading, error, totalItems } = todoListApiService(currentPage, itemsPerPage);
   const user = useSelector((state: RootState) => state.auth);
 
-  console.log(`user`, user);
-  console.log(`user.token`, user.token);
-
-
-  useEffect(() => {
-    const fetchTasks = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await axios.post(
-          "https://crmbackendapis.onrender.com/graphql",
-          {
-            query: `
-              query GetTasks($page: Int!, $pageSize: Int!) {
-                getTasks(
-                  pagination: { page: $page, pageSize: $pageSize },
-                  sort: { field: DUE_DATE, order: DESC }
-                ) {
-                  items {
-                    taskID
-                    title
-                    status
-                    priority
-                    dueDate
-                  }
-                  totalCount
-                }
-              }
-            `,
-            variables: {
-              page: currentPage,
-              pageSize: itemsPerPage,
-            },
-          },
-          {
-            // headers: {
-            //                 "Content-Type": "application/json",
-            //                 Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDAzNzU4NDYsIm5hbWUiOiJkZW1vIiwicm9sZSI6IkFETUlOIiwidXNlcl9pZCI6IjljYjA3YmFmLWI2OGItNDY4MC1iY2E3LTA3NWQ3Y2E2ZDFhOSJ9.KTxKrEMNI2f0SldlEWZjygSFAhttpO2Vsx9i7ATVLdU`, // Replace with a valid token
-            //               },
-
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user.token}`, // Using user.token from Redux
-            },
-          }
-        );
-
-        if (response.data.errors) {
-          throw new Error(response.data.errors[0].message);
-        }
-
-        setTodos(response.data.data.getTasks.items);
-        setTotalItems(response.data.data.getTasks.totalCount);
-      } catch (err) {
-        setError(err.message || "Failed to fetch tasks");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTasks();
-  }, [currentPage, itemsPerPage]); // Reload data when page or itemsPerPage changes
+  const formatText = (text: string) => {
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  };
 
     const getPriorityColor = (priority: string) => {
     const priorityMap: Record<string, string> = {
@@ -100,6 +37,7 @@ const TodoList: React.FC = () => {
       TODO: "bg-blue-100 text-blue-800",
       IN_PROGRESS: "bg-yellow-100 text-yellow-800",
       ON_HOLD: "bg-gray-300 text-gray-800",
+      COMPLETED: "bg-green-100 text-green-800",
     };
     return statusMap[status] || "";
   };
@@ -152,13 +90,13 @@ const TodoList: React.FC = () => {
                   <td className="px-6 py-4">{todo.title}</td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-lg text-sm ${getPriorityColor(todo.priority)}`}>
-                      {todo.priority}
+                      {formatText(todo.priority)}
                     </span>
                   </td>
                   <td className="px-6 py-4">{new Date(todo.dueDate).toLocaleString()}</td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-lg text-sm ${getStatusColor(todo.status)}`}>
-                      {todo.status.replace("_", " ")}
+                      {formatText(todo.status).replace("_", " ")}
                     </span>
                   </td>
                   <td className="flex px-6 py-4 space-x-2">

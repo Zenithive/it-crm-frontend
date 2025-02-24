@@ -36,7 +36,7 @@ const CRMDashboard = () => {
 
           <div className="lg:col-span-6 space-y-4 md:space-y-6">
             <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
-              <div className="w-full sm:w-1/2">
+              <div className="w-full sm:w-1/2 md:mt-0 mt-[205px]" >
                 <MonthlyLead />
               </div>
               <div className="w-full sm:w-1/2">

@@ -17,14 +17,12 @@ interface TimelineItem {
   status?: string;
 }
 
-
 const TimeLine: React.FC = () => {
   const [timelineData, setTimelineData] = useState<TimelineItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
-  const flag = (process.env.NEXT_PUBLIC_USE_DUMMY_DATA).toLowerCase() === "true";
+  const flag = (process.env.NEXT_PUBLIC_USE_DUMMY_DATA || "").toLowerCase() === "true";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -126,34 +124,34 @@ const TimeLine: React.FC = () => {
   };
 
   return (
-    <div>
-      <div className="bg-white rounded-lg shadow-custom p-1">
-        <div className="overflow-y-auto h-screen scrollbar-custom">
-          <div className="flex justify-between items-center ml-2 p-2">
-            <h2 className="text-2xl font-semibold text-bg-blue-12">Timeline</h2>
-            <button className="p-2 hover:bg-gray-100 rounded-full">
-              <img src="/SearchIcon.svg" alt="Search" />
-            </button>
+    <div className="bg-white rounded-lg shadow-custom p-1 flex flex-col h-screen">
+      {/* Fixed header */}
+      <div className="flex justify-between items-center ml-2 p-2 sticky top-0 bg-white z-10">
+        <h2 className="text-2xl font-semibold text-bg-blue-12">Timeline</h2>
+        <button className="p-2 hover:bg-gray-100 rounded-full">
+          <img src="/SearchIcon.svg" alt="Search" />
+        </button>
+      </div>
+
+      {/* Scrollable content */}
+      <div className="overflow-y-auto flex-1 scrollbar-custom">
+        {error && (
+          <div className="p-4 text-red-600 bg-red-50 rounded-md m-4">
+            {error}
           </div>
+        )}
 
-          {error && (
-            <div className="p-4 text-red-600 bg-red-50 rounded-md m-4">
-              {error}
-            </div>
-          )}
-
-          {isLoading ? (
-            <div className="flex justify-center p-4">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-            </div>
-          ) : (
-            <div className="space-y-4 p-4">
-              {timelineData.map((item, index) => (
-                <div key={index}>{renderTimelineItem(item)}</div>
-              ))}
-            </div>
-          )}
-        </div>
+        {isLoading ? (
+          <div className="flex justify-center p-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          </div>
+        ) : (
+          <div className="space-y-4 p-4">
+            {timelineData.map((item, index) => (
+              <div key={index}>{renderTimelineItem(item)}</div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
