@@ -37,24 +37,24 @@ const Meetings = () => {
   }, [useDummyData]);
 
   return (
-    <div className="w-full">
-      <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
+    <div className="w-full h-40 md:h-56">
+      <div className="bg-white rounded-xl shadow-custom">
         <div className="border-b">
-          <div className="flex space-x-4 md:space-x-8 mb-4 overflow-x-auto">
-            <button className="text-black text-base md:text-lg font-semibold whitespace-nowrap">
+          <div className="flex space-x-4 md:space-x-8 mb-4 overflow-x-auto ml-5">
+            <button className="text-bg-blue-12 text-base md:text-lg font-semibold whitespace-nowrap mt-3">
               Meetings
             </button>
             <button
-              className={`text-black text-base md:text-lg font-semibold pb-2 whitespace-nowrap ${
-                recentView === "today" ? "border-b-2 border-[#6366F1]" : ""
+              className={`text-black text-base md:text-lg font-semibold pb-2 whitespace-nowrap mt-4 ${
+                recentView === "today" ? "border-b-2 border-bg-blue-12" : ""
               }`}
               onClick={() => setRecentView("today")}
             >
               Today
             </button>
             <button
-              className={`text-black text-base md:text-lg font-semibold whitespace-nowrap pb-2 ${
-                recentView === "recent" ? "border-b-2 border-[#6366F1]" : ""
+              className={`text-black text-base md:text-lg font-semibold whitespace-nowrap pb-2 mt-4 ${
+                recentView === "recent" ? "border-b-2 border-bg-blue-12" : ""
               }`}
               onClick={() => setRecentView("recent")}
             >
@@ -64,12 +64,12 @@ const Meetings = () => {
         </div>
 
         {recentView === "today" ? (
-          <div className="scrollbar-custom overflow-y-auto max-h-[200px]">
+          <div className="scrollbar-custom overflow-y-auto max-h-[300px] pl-6 pr-6 pb-6">
             {meetings.map((meeting, index) => (
               <div
                 key={index}
                 className={`flex items-center justify-between pb-4 mr-4 ${
-                  index !== meetings.length - 1 ? "border-b border-gray-300" : ""
+                  index !== meetings.length - 1 ? "border-b border-bg-blue-12-[1px]" : ""
                 }`}
               >
                 <div className="flex items-center space-x-3 md:space-x-4 min-w-0 mt-4">
@@ -95,12 +95,12 @@ const Meetings = () => {
             ))}
           </div>
         ) : (
-          <div className="scrollbar-custom overflow-y-auto max-h-[200px]">
+          <div className="scrollbar-custom overflow-y-auto max-h-[200px] pl-6 pr-6 pb-6">
             {recent.map((msg, index) => (
               <div
                 key={index}
                 className={`flex items-center justify-between pb-4 mr-4 ${
-                  index !== recent.length - 1 ? "border-b border-gray-300" : ""
+                  index !== recent.length - 1 ? "border-b border-bg-blue-12-[1px]" : ""
                 }`}
               >
                 <img

@@ -4,14 +4,15 @@ import PipelineStages from "./PipelineStages";
 import { apiServiceRightSideDoc } from "../../api/apiService/individualApiService";
 import { jsonServiceRightSideDoc } from "../../api/jsonService/individualJsonService";
 
-const flag = process.env.NEXT_PUBLIC_USE_DUMMY_DATA === "true";
-
 const RightSide = () => {
   const [documents, setDocuments] = useState<{ name: string; url: string }[]>(
     []
   );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  
+  const flag = (process.env.NEXT_PUBLIC_USE_DUMMY_DATA || "").toLowerCase() === "true";
+
   useEffect(() => {
     const fetchDocuments = async () => {
       setIsLoading(true);
@@ -35,18 +36,21 @@ const RightSide = () => {
   return (
     <div className="bg-white rounded-lg shadow-custom p-1">
       <div className="space-y-4">
-        {/* Documents Section */}
-        <div className="overflow-y-auto h-[210px] scrollbar-custom bg-white">
-          <div className="p-4">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-bg-blue-12">
-                Documents
-              </h2>
-              <button className="p-2 hover:bg-gray-100 rounded-full">
-                <img src="/plus_icon.svg" alt="Plus" />
-              </button>
-            </div>
+        {/* Documents Section with Fixed Header */}
+        <div className="h-[210px] flex flex-col bg-white">
+          {/* Fixed Header */}
+          <div className="flex justify-between items-center p-3 sticky top-0 bg-white z-10">
+            <h2 className="text-xl font-semibold text-bg-blue-12">
+              Documents
+            </h2>
+            <button className="p-2 hover:bg-gray-100 rounded-full">
+              <img src="/plus_icon.svg" alt="Plus" />
+            </button>
+          </div>
+            <div className="border border-bg-blue-12-[1.19px] mr-3 ml-3"></div>
 
+          {/* Scrollable Content */}
+          <div className="overflow-y-auto flex-1 scrollbar-custom px-4 pb-4 mt-2">
             {isLoading ? (
               <p className="text-center text-gray-500">Loading...</p>
             ) : error ? (
@@ -72,7 +76,7 @@ const RightSide = () => {
                       href={doc.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-indigo-600 hover:text-indigo-700"
+                      className="text-bg-blue-12 font-bold"
                     >
                       View
                     </a>
@@ -96,8 +100,8 @@ const RightSide = () => {
         {/* Notes Section */}
         <div className="flex justify-between items-center ml-4">
           <h2 className="text-xl font-semibold text-bg-blue-12">Note</h2>
-          <button className="flex items-center gap-2 text-white bg-bg-blue-12 p-2 text-[14px] rounded-md mr-4">
-            <img src="/plus_icon.svg" alt="Plus"></img>
+          <button className="flex items-center gap-2 text-white bg-bg-blue-12 p-2 text-[14px] rounded-md mr-5">
+            <img src="/plus.svg" alt="Plus" className="mr-1"></img>
             Add Note
           </button>
         </div>

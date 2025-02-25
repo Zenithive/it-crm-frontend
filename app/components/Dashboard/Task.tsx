@@ -36,21 +36,21 @@ const Task = () => {
     }, [useDummyData]);
   
   return (
-    <div className="w-full">
-      <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm ">
+    <div className="w-full ">
+      <div className="bg-white rounded-xl shadow-custom ">
         <div className="border-b ">
-          <div className="flex space-x-4 md:space-x-8 mb-4 overflow-x-auto ">
+          <div className="flex space-x-4 md:space-x-8 mb-4 overflow-x-auto ml-4">
             <button
-              className={`text-black text-base md:text-lg font-semibold whitespace-nowrap pb-2 ${
-                activeView === "today" ? "border-b-2 border-[#6366F1]" : ""
+              className={`text-black text-base md:text-lg font-semibold whitespace-nowrap pb-2 mt-4 ${
+                activeView === "today" ? "border-b-2 border-bg-blue-12 " : ""
               }`}
               onClick={() => setActiveView("today")}
             >
               Today Task
             </button>
             <button
-              className={`text-black text-base md:text-lg font-semibold whitespace-nowrap pb-2 ${
-                activeView === "followup" ? "border-b-2 border-[#6366F1]" : ""
+              className={`text-black text-base md:text-lg font-semibold whitespace-nowrap pb-2 mt-4 ${
+                activeView === "followup" ? "border-b-2 border-bg-blue-12" : ""
               }`}
               onClick={() => setActiveView("followup")}
             >
@@ -60,12 +60,12 @@ const Task = () => {
         </div>
 
         {activeView === "today" ? (
-          <div className="scrollbar-custom overflow-y-auto max-h-[200px]">
+          <div className="scrollbar-custom overflow-y-auto max-h-[220px] pl-6 pr-6 pb-6">
             {tasks.map((task, index) => (
               <div
                 key={index}
                 className={`flex items-center justify-between pb-4 ${
-                  index !== tasks.length - 1 ? "border-b border-gray-300 mr-4" : ""
+                  index !== tasks.length - 1 ? "border-b border-bg-blue-12-[1px] mr-4" : "mr-4"
                 }`}
               >
                 <div className="min-w-0 flex-1 pr-4 mt-3">
@@ -74,18 +74,18 @@ const Task = () => {
                     {task.dueTime}
                   </p>
                 </div>
-                <input type="checkbox" className="task_checkbox mr-4" />
+                <input type="checkbox" className="task_checkbox mr-4 " />
               </div>
             ))}
           </div>
         ) : (
-          <div className="scrollbar-custom overflow-y-auto max-h-[200px]">
+          <div className="scrollbar-custom overflow-y-auto max-h-[220px] pl-6 pr-6 pb-6">
             {followup.map((msg, index) => (
               <div
                 key={index}
                 className={`flex items-center justify-between pb-4 mr-4 ${
                   index !== followup.length - 1
-                    ? "border-b border-gray-300"
+                    ? "border-b border-bg-blue-12-[1px]"
                     : ""
                 }`}
               >

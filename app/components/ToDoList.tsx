@@ -1,98 +1,54 @@
-"use client";
-import React, { useState } from "react";
+"use client"
+import React, { useState, useEffect } from "react";
+import Pagination from "../microComponents/Pagination";
 import HeaderButtons from "../microComponents/HeaderButtons";
 import Title from "../microComponents/Title";
-import Search from "../microComponents/Search";
-import Pagination from "../microComponents/Pagination"
 import { Todolisttitle } from "./Path/TitlePaths";
+import Search from "../microComponents/Search";
 import { headerbutton, search } from "./Path/TaskData";
-
-// Define TypeScript interfaces
-interface Todo {
-  id: string;
-  taskName: string;
-  priority: "Low" | "Medium" | "High";
-  dueDate: string;
-  status: "Scheduled" | "In Progress" | "Completed";
-}
+import CreateTaskModal from "./CreateTaskModal";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store/store";
+import todoListApiService from "../api/apiService/todoListApiService";
 
 const TodoList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
-    const [resources, setResources] = useState<Resource[]>([]);
-      const [loading, setLoading] = useState(true);
-      const [error, setError] = useState<string | null>(null);
-      const [itemsPerPage, setItemsPerPage] = useState(9); 
-  const [todos, setTodos] = useState<Todo[]>([
-    {
-      id: "1",
-      taskName: "CRM",
-      priority: "Low",
-      dueDate: "01/01/2024",
-      status: "Scheduled",
-    },
-    {
-      id: "2",
-      taskName: "CRM",
-      priority: "Medium",
-      dueDate: "01/01/2024",
-      status: "Completed",
-    },
-    {
-      id: "3",
-      taskName: "CRM",
-      priority: "High",
-      dueDate: "01/01/2024",
-      status: "In Progress",
-    },
-    {
-      id: "4",
-      taskName: "CRM",
-      priority: "High",
-      dueDate: "01/01/2024",
-      status: "In Progress",
-    },
-    {
-      id: "5",
-      taskName: "CRM",
-      priority: "Medium",
-      dueDate: "01/01/2024",
-      status: "Completed",
-    },
-  ]);
-
+  const [itemsPerPage, setItemsPerPage] = useState(10); // Default to 10
   
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentItems = resources.slice(startIndex, endIndex);
+  const { todos, loading, error, totalItems } = todoListApiService(currentPage, itemsPerPage);
+  const user = useSelector((state: RootState) => state.auth);
 
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "Low":
-        return "bg-green-100 text-green-800";
-      case "Medium":
-        return "bg-yellow-100 text-yellow-800";
-      case "High":
-        return "bg-red-100 text-red-800";
-      default:
-        return "";
-    }
+  const formatText = (text: string) => {
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  };
+
+    const getPriorityColor = (priority: string) => {
+    const priorityMap: Record<string, string> = {
+      LOW: "bg-green-100 text-green-800",
+      MEDIUM: "bg-yellow-100 text-yellow-800",
+      HIGH: "bg-red-100 text-red-800",
+      URGENT: "bg-red-600 text-white",
+    };
+    return priorityMap[priority] || "";
   };
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Scheduled":
-        return "bg-purple-100 text-purple-800";
-      case "In Progress":
-        return "bg-yellow-100 text-yellow-800";
-      case "Completed":
-        return "bg-green-100 text-green-800";
-      default:
-        return "";
-    }
+    const statusMap: Record<string, string> = {
+      TODO: "bg-blue-100 text-blue-800",
+      IN_PROGRESS: "bg-yellow-100 text-yellow-800",
+      ON_HOLD: "bg-gray-300 text-gray-800",
+      COMPLETED: "bg-green-100 text-green-800",
+    };
+    return statusMap[status] || "";
   };
 
   return (
+    
     <div className="p-4 max-w-[1350px] mx-auto">
+
+      <div>
+      <h1>Welcome, {user?.name || "Guest"}!</h1> 
+    </div>
       <div className="flex flex-col sm:flex-row items-center mb-6 justify-between">
         <div className="flex">
         <Title title={Todolisttitle[0].titleName} />
@@ -109,66 +65,59 @@ const TodoList: React.FC = () => {
           button1width="w-[120px]"
           button2width="w-[200px]"
         />
+        <CreateTaskModal/>
         </div>
       </div>
-
-      <div className="overflow-x-auto rounded-lg shadow-custom">
-        <table className="min-w-full bg-white ">
-          <thead className="bg-bg-blue-12 text-white">
-            <tr>
-              <th className="px-6 py-3 text-left">Task Name</th>
-              <th className="px-6 py-3 text-left">Priority</th>
-              <th className="px-6 py-3 text-left">Due Date</th>
-              <th className="px-6 py-3 text-left">Status</th>
-              <th className="px-6 py-3 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {todos.map((todo) => (
-              <tr key={todo.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4">{todo.taskName}</td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm ${getPriorityColor(
-                      todo.priority
-                    )}`}
-                  >
-                    {todo.priority}
-                  </span>
-                </td>
-                <td className="px-6 py-4">{todo.dueDate}</td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
-                      todo.status
-                    )}`}
-                  >
-                    {todo.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex gap-2">
-                    <img src="/edit.svg" className=""></img>
-
-                    <img src="/delete.svg" className="ml-6"></img>
-                  </div>
-                </td>
+      {loading ? (
+        <p className="text-center">Loading tasks...</p>
+      ) : error ? (
+        <p className="text-center text-red-500">{error}</p>
+      ) : (
+        <div className="overflow-x-auto rounded-lg shadow-custom">
+          <table className="min-w-full bg-white">
+            <thead className="bg-bg-blue-12 text-white">
+              <tr>
+                <th className="px-6 py-3 text-left">Task Name</th>
+                <th className="px-6 py-3 text-left">Priority</th>
+                <th className="px-6 py-3 text-left">Due Date</th>
+                <th className="px-6 py-3 text-left">Status</th>
+                <th className="px-6 py-3 text-left">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="mt-6">
-        <Pagination
-          totalItems={resources.length}
-          initialItemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
-          onItemsPerPageChange={(newItemsPerPage) => {
-            setItemsPerPage(newItemsPerPage);
-            setCurrentPage(1);
-          }}
-        />
-      </div>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {todos.map((todo) => (
+                <tr key={todo.taskID} className="hover:bg-gray-50">
+                  <td className="px-6 py-4">{todo.title}</td>
+                  <td className="px-6 py-4">
+                    <span className={`px-3 py-1 rounded-lg text-sm ${getPriorityColor(todo.priority)}`}>
+                      {formatText(todo.priority)}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">{new Date(todo.dueDate).toLocaleString()}</td>
+                  <td className="px-6 py-4">
+                    <span className={`px-3 py-1 rounded-lg text-sm ${getStatusColor(todo.status)}`}>
+                      {formatText(todo.status).replace("_", " ")}
+                    </span>
+                  </td>
+                  <td className="flex px-6 py-4 space-x-2">
+                    <img src="/edit.svg" alt="Edit" className=""></img>
+                    <img src="/delete.svg" alt="Delete" className="px-4"></img>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Pagination with Dropdown for Items Per Page */}
+      <Pagination
+        currentPage={currentPage}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={setCurrentPage}
+        onItemsPerPageChange={setItemsPerPage}
+      />
     </div>
   );
 };

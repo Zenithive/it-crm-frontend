@@ -7,7 +7,7 @@
 }
 
 .scrollbar-custom::-webkit-scrollbar-thumb {
-  background-color: #3490dc!important; 
+  background-color: #6158FF!important; 
   border-radius: 10px!important;
 
 }
@@ -26,7 +26,7 @@
 
 /* For DashBoard_Title */
 .lead_button {
-  @apply bg-[#6366F1] text-white px-4 py-1.5 rounded-lg text-sm flex items-center h-11;
+  @apply bg-bg-blue-12 text-white px-4 py-1.5 rounded-lg text-sm flex items-center h-11;
 }
 
 /* For Task */
@@ -35,7 +35,7 @@
 }
 
 .task_checkbox {
-  @apply h-4 w-4 md:h-5 md:w-5 rounded-md border-gray-300 flex-shrink-0;
+  @apply h-4 w-4 md:h-5 md:w-5 rounded-md flex-shrink-0 ;
 }
 
 /* For Meetings */
@@ -43,7 +43,7 @@
   @apply h-8 w-8 md:h-10 md:w-10 rounded-lg bg-white border border-bg-blue-12 flex items-center justify-center flex-shrink-0;
 }
 .join_button {
-  @apply bg-[#6366F1] text-white px-4 md:px-6 py-1.5 rounded-lg text-xs md:text-sm flex-shrink-0 ml-2;
+  @apply bg-bg-blue-12 text-white px-4 md:px-6 py-1.5 rounded-lg text-xs md:text-sm flex-shrink-0 ml-2;
 }
 
 /* For UnreadMessages */
@@ -53,5 +53,5 @@
 
 /* For TotalLeadLine */
 .position_linechart {
-  @apply mt-4 flex flex-wrap justify-center md:justify-between gap-4 px-2 md:px-4;
+  @apply mt-4 flex flex-wrap justify-center md:justify-center gap-6 px-2 md:px-4;
 }
