@@ -18,6 +18,7 @@ const todoListApiService = (currentPage: number, itemsPerPage: number) => {
   const [error, setError] = useState<string | null>(null);
   const [totalItems, setTotalItems] = useState(0);
   const user = useSelector((state: RootState) => state.auth);
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL; 
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -26,7 +27,7 @@ const todoListApiService = (currentPage: number, itemsPerPage: number) => {
 
       try {
         const response = await axios.post(
-          "https://crmbackendapis.onrender.com/graphql",
+          apiUrl,
           {
             query: GET_TODOS,
             variables: { page: currentPage, pageSize: itemsPerPage },

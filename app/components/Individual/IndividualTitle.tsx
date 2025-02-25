@@ -1,6 +1,7 @@
 import React from 'react'
 import Title from '../../microComponents/Title';
 import { Individualtitle } from '../Path/TitlePaths';
+import IconButton from '../../microComponents/IconButton';
 
 const IndividualTitle = () => {
   return (
@@ -13,11 +14,7 @@ const IndividualTitle = () => {
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50 ">
-              <img src='edit_icon.svg' alt='Edit'/>
-              <div className='text-bg-blue-12 font-semibold'>Edit Contact</div>
-            </button>
-
+          <IconButton icon="edit_logo.svg" text="Edit Contact" />
              <div className="bg-white flex p-4 rounded-xl h-12 space-x-4 shadow-custom">
             <div className="flex items-center ">
               <img src="flag_india.svg" alt="flag" className="mr-1" />

@@ -38,10 +38,16 @@ export default {
         "red-light":"#FFF4F5",
         "text-red": "#E53935",
         "blue-background":"#FBFBFF",
-        follow_ups_yellow: "#FFC107",
-        follow_ups_green: "#28A745",
-        blue_shadow: "#F2F1FF",
-        "gray-background": "#F9F8FF"
+        "blue_shadow": "#F2F1FF",
+        "gray-background": "#F9F8FF",
+        "blue-shadow-color" : "#F3F3FF",
+        "green-shadow-color" : "#E9FFEE",      
+        "orange-shadow-color" : "#FFFBED",
+        "red-shadow-color":"#FFF4F5",
+        "orange-text":"#E3AA00",
+        "green-text":"#14A155",
+        "red-text":"#E53935"
+        
       },
      
       scale: {
