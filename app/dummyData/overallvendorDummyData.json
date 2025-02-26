@@ -1,91 +1,113 @@
 [
-    {
-      "vendorID": "1",
-      "vendor": "ABC Tech Solutions",
-      "location": "New York",
-      "skills": "Cloud, DevOps",
-      "rating": "4.5",
-      "status": "Active"
-    },
-    {
-      "vendorID": "2",
-      "vendor": "XYZ Innovations",
-      "location": "San Francisco",
-      "skills": "AI, Data Science",
-      "rating": "4.2",
-      "status": "Inactive"
-    },
-    {
-      "vendorID": "3",
-      "vendor": "NextGen IT",
-      "location": "Los Angeles",
-      "skills": "Cybersecurity, Blockchain",
-      "rating": "4.7",
-      "status": "Active"
-    },
-    {
-      "vendorID": "4",
-      "vendor": "CloudVista Solutions",
-      "location": "Chicago",
-      "skills": "Cloud Computing, SaaS",
-      "rating": "4.3",
-      "status": "Active"
-    },
-    {
-      "vendorID": "5",
-      "vendor": "Quantum AI Labs",
-      "location": "Seattle",
-      "skills": "Quantum Computing, AI",
-      "rating": "4.8",
-      "status": "Inactive"
-    },
-    {
-      "vendorID": "6",
-      "vendor": "DataSphere Analytics",
-      "location": "Boston",
-      "skills": "Big Data, Machine Learning",
-      "rating": "4.6",
-      "status": "Active"
-    },
-    {
-      "vendorID": "7",
-      "vendor": "InnovateX Solutions",
-      "location": "Austin",
-      "skills": "Software Development, UI/UX",
-      "rating": "4.4",
-      "status": "Active"
-    },
-    {
-        "vendorID": "8",
-        "vendor": "DataSphere Analytics",
-        "location": "Boston",
-        "skills": "Big Data, Machine Learning",
-        "rating": "4.6",
-        "status": "Active"
-      },
-      {
-        "vendorID": "9",
-        "vendor": "InnovateX Solutions",
-        "location": "Austin",
-        "skills": "Software Development, UI/UX",
-        "rating": "4.4",
-        "status": "Active"
-      },
-      {
-        "vendorID": "10",
-        "vendor": "DataSphere Analytics",
-        "location": "Boston",
-        "skills": "Big Data, Machine Learning",
-        "rating": "4.6",
-        "status": "Active"
-      },
-      {
-        "vendorID": "11",
-        "vendor": "InnovateX Solutions",
-        "location": "Austin",
-        "skills": "Software Development, UI/UX",
-        "rating": "4.4",
-        "status": "Active"
-      }
-  ]
-  
+  {
+    "vendorID": "1",
+    "vendor": "ABC Tech Solutions",
+    "location": "New York",
+    "resources": 90,
+    "rating": "4.5",
+    "status": "Active"
+  },
+  {
+    "vendorID": "2",
+    "vendor": "XYZ Innovations",
+    "location": "San Francisco",
+    "resources": 80,
+    "rating": "4.2",
+    "status": "Inactive"
+  },
+  {
+    "vendorID": "3",
+    "vendor": "NextGen IT",
+    "location": "Los Angeles",
+    "resources": 100,
+    "rating": "4.7",
+    "status": "Active"
+  },
+  {
+    "vendorID": "4",
+    "vendor": "CloudVista Solutions",
+    "location": "Chicago",
+    "resources": 120,
+    "rating": "4.3",
+    "status": "Active"
+  },
+  {
+    "vendorID": "5",
+    "vendor": "Quantum AI Labs",
+    "location": "Seattle",
+    "resources": 110,
+    "rating": "4.8",
+    "status": "Inactive"
+  },
+  {
+    "vendorID": "6",
+    "vendor": "DataSphere Analytics",
+    "location": "Boston",
+    "resources": 95,
+    "rating": "4.6",
+    "status": "Active"
+  },
+  {
+    "vendorID": "7",
+    "vendor": "InnovateX Solutions",
+    "location": "Austin",
+    "resources": 105,
+    "rating": "4.4",
+    "status": "Active"
+  },
+  {
+    "vendorID": "8",
+    "vendor": "DataSphere Analytics",
+    "location": "Boston",
+    "resources": 98,
+    "rating": "4.6",
+    "status": "Active"
+  },
+  {
+    "vendorID": "9",
+    "vendor": "InnovateX Solutions",
+    "location": "Austin",
+    "resources": 92,
+    "rating": "4.4",
+    "status": "Active"
+  },
+  {
+    "vendorID": "10",
+    "vendor": "DataSphere Analytics",
+    "location": "Boston",
+    "resources": 97,
+    "rating": "4.6",
+    "status": "Active"
+  },
+  {
+    "vendorID": "11",
+    "vendor": "InnovateX Solutions",
+    "location": "Austin",
+    "resources": 99,
+    "rating": "4.4",
+    "status": "Active"
+  },{
+    "vendorID": "12",
+    "vendor": "ABC Tech Solutions",
+    "location": "New York",
+    "resources": 90,
+    "rating": "4.5",
+    "status": "Active"
+  },
+  {
+    "vendorID": "13",
+    "vendor": "XYZ Innovations",
+    "location": "San Francisco",
+    "resources": 80,
+    "rating": "4.2",
+    "status": "Inactive"
+  },
+  {
+    "vendorID": "14",
+    "vendor": "NextGen IT",
+    "location": "Los Angeles",
+    "resources": 100,
+    "rating": "4.7",
+    "status": "Active"
+  }
+]

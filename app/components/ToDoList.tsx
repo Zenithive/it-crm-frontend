@@ -24,9 +24,9 @@ const TodoList: React.FC = () => {
 
     const getPriorityColor = (priority: string) => {
     const priorityMap: Record<string, string> = {
-      LOW: "bg-green-100 text-green-800",
-      MEDIUM: "bg-yellow-100 text-yellow-800",
-      HIGH: "bg-red-100 text-red-800",
+      LOW: "bg-green-shadow-color text-green-text",
+      MEDIUM: "bg-orange-shadow-color text-orange-text",
+      HIGH: "bg-red-shadow-color text-red-text",
       URGENT: "bg-red-600 text-white",
     };
     return priorityMap[priority] || "";
@@ -87,19 +87,19 @@ const TodoList: React.FC = () => {
             <tbody className="divide-y divide-gray-200">
               {todos.map((todo) => (
                 <tr key={todo.taskID} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">{todo.title}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-lg text-sm ${getPriorityColor(todo.priority)}`}>
+                  <td className="px-6 py-6">{todo.title}</td>
+                  <td className="px-6 py-6">
+                    <span className={`px-3 py-1 rounded-lg text-sm font-semibold ${getPriorityColor(todo.priority)}`}>
                       {formatText(todo.priority)}
                     </span>
                   </td>
-                  <td className="px-6 py-4">{new Date(todo.dueDate).toLocaleString()}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-lg text-sm ${getStatusColor(todo.status)}`}>
+                  <td className="px-6 py-6">{new Date(todo.dueDate).toLocaleString()}</td>
+                  <td className="px-6 py-6">
+                    <span className={`px-3 py-1 rounded-lg text-sm font-semibold ${getStatusColor(todo.status)}`}>
                       {formatText(todo.status).replace("_", " ")}
                     </span>
                   </td>
-                  <td className="flex px-6 py-4 space-x-2">
+                  <td className="flex px-6 py-6 space-x-2">
                     <img src="/edit.svg" alt="Edit" className=""></img>
                     <img src="/delete.svg" alt="Delete" className="px-4"></img>
                   </td>

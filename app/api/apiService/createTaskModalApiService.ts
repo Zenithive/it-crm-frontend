@@ -2,12 +2,12 @@ import axios from "axios";
 import { message } from "antd";
 import {CREATE_TASK_QUERY} from "../../../graphQl/queries/createTaskModal.queries";
 
-const API_URL = "https://crmbackendapis.onrender.com/graphql";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL; 
 
 export const createTask = async (values: any, token: string) => {
   try {
     const response = await axios.post(
-      API_URL,
+      apiUrl,
       {
         query: CREATE_TASK_QUERY,
         variables: { input: values },

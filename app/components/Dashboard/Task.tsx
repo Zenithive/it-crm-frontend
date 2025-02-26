@@ -17,28 +17,46 @@ const Task = () => {
   const useDummyData =
     process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-      
-          const [taskData, followupData] = useDummyData
-            ? await Promise.all([dashboardTaskApi(), dashboardFollowupApi()]) // API data
-            : [dashboardTaskJson(), dashboardFollowupJson()]; // JSON data
-  
-          setTasks(useDummyData ? taskData.tasks ?? [] : taskData ?? []);
-          setFollowup(useDummyData ? followupData.followup ?? [] : followupData ?? []);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [taskData, followupData] = useDummyData
+          ? await Promise.all([dashboardTaskApi(), dashboardFollowupApi()]) // API data
+          : [dashboardTaskJson(), dashboardFollowupJson()]; // JSON data
+
+        setTasks(useDummyData ? taskData.tasks ?? [] : taskData ?? []);
+        setFollowup(
+          useDummyData ? followupData.followup ?? [] : followupData ?? []
+        );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [useDummyData]);
+
+  const handleCheckboxChange = (taskIndex) => {
+    setTasks((prevTasks) => {
+      const updatedTasks = [...prevTasks];
+      const newCompleted = !updatedTasks[taskIndex].completed;
+      updatedTasks[taskIndex] = {
+        ...updatedTasks[taskIndex],
+        completed: newCompleted,
       };
-  
-      fetchData();
-    }, [useDummyData]);
-  
+
+      console.log(
+        `Task ${taskIndex} is now ${newCompleted ? "completed" : "uncompleted"}`
+      );
+
+      return updatedTasks;
+    });
+  };
+
   return (
     <div className="w-full ">
       <div className="bg-white rounded-xl shadow-custom ">
-        <div className="border-b ">
+        <div className="border-b border-bg-blue-12">
           <div className="flex space-x-4 md:space-x-8 mb-4 overflow-x-auto ml-4">
             <button
               className={`text-black text-base md:text-lg font-semibold whitespace-nowrap pb-2 mt-4 ${
@@ -65,7 +83,9 @@ const Task = () => {
               <div
                 key={index}
                 className={`flex items-center justify-between pb-4 ${
-                  index !== tasks.length - 1 ? "border-b border-bg-blue-12-[1px] mr-4" : "mr-4"
+                  index !== tasks.length - 1
+                    ? "border-b border-bg-blue-12-[1px] mr-4"
+                    : "mr-4"
                 }`}
               >
                 <div className="min-w-0 flex-1 pr-4 mt-3">
@@ -74,7 +94,35 @@ const Task = () => {
                     {task.dueTime}
                   </p>
                 </div>
-                <input type="checkbox" className="task_checkbox mr-4 " />
+                <div className="flex items-center h-6">
+                  <input
+                    type="checkbox"
+                    id={`task-${index}`}
+                    checked={task.completed}
+                    onChange={() => handleCheckboxChange(index)}
+                    className="w-5 h-5 border-2 border-bg-blue-12 rounded-md bg-white 
+              checked:bg-bg-blue-12 checked:border-bg-blue-12 
+              cursor-pointer appearance-none checked:after:content-['✓'] 
+              after:absolute after:text-white after:text-xl after:font-bold
+              flex items-center justify-center"
+                    style={{
+                      backgroundColor: task.completed ? "#6158FF" : "white",
+                      position: "relative",
+                    }}
+                  />
+                  {task.completed && (
+                    <span
+                      className="absolute text-white text-xl font-bold pointer-events-none"
+                      style={{
+                        transform: "translate(-50%, -50%)",
+                        left: "50%",
+                        top: "50%",
+                      }}
+                    >
+                      ✓
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -103,8 +151,8 @@ const Task = () => {
                   </p>
                 </div>
                 <button>
-                <img src="arrow.svg" alt="Arrow" className="mr-4"></img>
-              </button>
+                  <img src="arrow.svg" alt="Arrow" className="mr-4"></img>
+                </button>
               </div>
             ))}
           </div>

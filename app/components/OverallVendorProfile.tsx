@@ -17,32 +17,50 @@ const OverallVendorProfile: React.FC = () => {
   const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
- 
-  const useDummyData = process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
 
+  // Calculate the index range for the current page
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentVendors = vendors.slice(indexOfFirstItem, indexOfLastItem);
+
+
+  const useDummyData =
+  process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
   const user = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     const fetchVendors = async () => {
-     try {
-            setLoading(true);
-            const response = useDummyData
-              ? await overallvendorApiService()
-              : overallvendorJsonService();
-              
-            setVendors(response ?? []);
-          } catch (err) {
-            console.error("Error fetching resources:", err);
-            setError("Failed to load resources");
-          } finally {
-            setLoading(false);
-          }
-       
-        
-      
+      try {
+        setLoading(true);
+        const response = useDummyData
+          ? await overallvendorApiService()
+          : overallvendorJsonService();
+        setVendors(response ?? []);
+      } catch (err) {
+        console.error("Error fetching resources:", err);
+        setError("Failed to load resources");
+      } finally {
+        setLoading(false);
+      }
     };
     fetchVendors();
   }, [useDummyData]);
+
+  // Function to format text (capitalize first letter)
+  const formatText = (text: string) => {
+    return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+  };
+
+  // Function to assign colors to vendor statuses
+  const getStatusColor = (status: string) => {
+    const normalizedStatus = status.toUpperCase().trim(); // Normalize status
+    const statusMap: Record<string, string> = {
+      ACTIVE: "bg-green-shadow-color text-green-text",
+      INACTIVE: "bg-orange-shadow-color text-orange-text",
+    };
+    return statusMap[normalizedStatus] || "bg-gray-100 text-gray-800"; // Default color
+  };
+  
 
   return (
     <div className="p-4 max-w-[1350px] mx-auto">
@@ -78,21 +96,38 @@ const OverallVendorProfile: React.FC = () => {
               <tr>
                 <th className="px-6 py-3 text-left">Vendor</th>
                 <th className="px-6 py-3 text-left">Location</th>
-                <th className="px-6 py-3 text-left">Skills</th>
+                <th className="px-6 py-3 text-left">Resource</th>
                 <th className="px-6 py-3 text-left">Rating</th>
                 <th className="px-6 py-3 text-left">Status</th>
                 <th className="px-6 py-3 text-left">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
-              {vendors.map((vendor) => (
+            <tbody className="divide-y divide-gray-200 ">
+              {currentVendors.map((vendor) => (
                 <tr key={vendor.vendorID} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">{vendor.vendor}</td>
-                  <td className="px-6 py-4">{vendor.location}</td>
-                  <td className="px-6 py-4">{vendor.skills}</td>
-                  <td className="px-6 py-4">{vendor.rating}</td>
-                  <td className="px-6 py-4">{vendor.status}</td>
-                  <td className="flex px-6 py-4 space-x-2">
+                  <td className="px-6 py-6">{vendor.vendor}</td>
+                  <td className="px-6 py-6">{vendor.location}</td>
+                  <td className="px-6 py-6">
+                    <span className="px-3 py-1 rounded-lg text-sm bg-blue-shadow-color text-bg-blue-12">
+                      {vendor.resources}
+                    </span>
+                  </td>
+
+                  <td className="px-6 py-6 flex">
+                    {vendor.rating}
+                    <img src="/Star_icon.svg" alt="Rate" className="ml-2"></img>
+                  </td>
+
+                  <td className="px-6 py-6">
+                    <span
+                      className={`px-3 py-1 rounded-lg text-sm font-semibold ${getStatusColor(
+                        vendor.status
+                      )}`}
+                    >
+                      {formatText(vendor.status)}
+                    </span>
+                  </td>
+                  <td className="flex px-6 py-6 space-x-2">
                     <img src="/edit.svg" alt="Edit" />
                     <img src="/delete.svg" alt="Delete" className="px-4" />
                   </td>

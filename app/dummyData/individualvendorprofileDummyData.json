@@ -1,0 +1,35 @@
+{
+  "name": "Tuvoc Inc",
+  "isActive": true,
+  "primaryContact": {
+    "email": "zen@consulting.com",
+    "phone": "+91 7541223562",
+    "location": "India, Ahmedabad"
+  },
+  "secondaryContact": {
+    "email": "zen@consulting.com",
+    "phone": "+91 7541223562",
+    "location": "India, Ahmedabad"
+  },
+  "agreement": {
+    "startDate": "Jan 1, 2024",
+    "endDate": "Dec 31, 2024",
+    "status": "Active"
+  },
+  "locations": ["India", "Canada", "America", "Australia"],
+  "skills": ["Project Management", "React Js.", "UIUX Designer"],
+  "paymentTerms": "Net 30",
+  "employeeCount": "250- 400",
+  "recentActivity": [
+    {
+      "type": "review",
+      "title": "Performance review added",
+      "timestamp": "2 Days ago"
+    },
+    {
+      "type": "document",
+      "title": "Document uploaded: Q1 Report",
+      "timestamp": "6 Days ago"
+    }
+  ]
+}
