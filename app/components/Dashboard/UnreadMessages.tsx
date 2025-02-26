@@ -42,7 +42,7 @@ const UnreadMessages = () => {
               <div
                 key={index}
                 className={`flex items-center justify-between pb-4 mr-4 ${
-                  index !== unreadMessages.length - 1 ? "border-b border-bg-blue-12-[1px]" : ""
+                  index !== unreadMessages.length - 1 ? "border-b border-content-border" : ""
                 }`}
               >
                 <div className="flex-1 min-w-0 mx-3 mt-4">

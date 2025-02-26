@@ -47,7 +47,7 @@ const RightSide = () => {
               <img src="/plus_icon.svg" alt="Plus" />
             </button>
           </div>
-            <div className="border border-bg-blue-12-[1.19px] mr-3 ml-3"></div>
+            <div className="border border-content-border mr-3 ml-3"></div>
 
           {/* Scrollable Content */}
           <div className="overflow-y-auto flex-1 scrollbar-custom px-4 pb-4 mt-2">
@@ -87,7 +87,7 @@ const RightSide = () => {
           </div>
         </div>
 
-        <div className="border border-bg-blue-12-[1px] mt-5 ml-5 mr-5"></div>
+        <div className="border border-content-border mt-5 ml-5 mr-5"></div>
 
         {/* Pipeline Stage */}
         <h2 className="text-xl font-semibold text-bg-blue-12 ml-4">
@@ -95,7 +95,7 @@ const RightSide = () => {
         </h2>
         <PipelineStages />
 
-        <div className="border border-bg-blue-12-[1px] ml-5 mr-5"></div>
+        <div className="border border-content-border ml-5 mr-5"></div>
 
         {/* Notes Section */}
         <div className="flex justify-between items-center ml-4">

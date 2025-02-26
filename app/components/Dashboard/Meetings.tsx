@@ -69,7 +69,7 @@ const Meetings = () => {
               <div
                 key={index}
                 className={`flex items-center justify-between pb-4 mr-4 ${
-                  index !== meetings.length - 1 ? "border-b border-bg-blue-12-[1px]" : ""
+                  index !== meetings.length - 1 ? "border-b border-content-border" : ""
                 }`}
               >
                 <div className="flex items-center space-x-3 md:space-x-4 min-w-0 mt-4">
@@ -95,12 +95,12 @@ const Meetings = () => {
             ))}
           </div>
         ) : (
-          <div className="scrollbar-custom overflow-y-auto max-h-[200px] pl-6 pr-6 pb-6">
+          <div className="scrollbar-custom overflow-y-auto max-h-[300px] pl-6 pr-6 pb-6">
             {recent.map((msg, index) => (
               <div
                 key={index}
                 className={`flex items-center justify-between pb-4 mr-4 ${
-                  index !== recent.length - 1 ? "border-b border-bg-blue-12-[1px]" : ""
+                  index !== recent.length - 1 ? "border-b border-content-border" : ""
                 }`}
               >
                 <img
