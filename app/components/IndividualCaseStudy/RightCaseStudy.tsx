@@ -65,14 +65,18 @@ const RightCaseStudy = () => {
       {/* Outcomes */}
       <div>
         <h3 className="text-lg font-semibold text-bg-blue-12 mb-3">Outcomes</h3>
-        <ul className="space-y-4">
-          <li className="text-black leading-relaxed whitespace-pre-wrap">
-            {outcome?.outcomes ?? "No outcome available."}
-          </li>
+        <ul className="space-y-4 list-disc pl-5">
+          {outcome?.outcomes
+            ?.split("\n\n") // Splitting the text at line breaks
+            .map((point, index) => (
+              <li key={index} className="text-black leading-relaxed whitespace-pre-wrap">
+                {point}
+              </li>
+            ))}
         </ul>
       </div>
 
-      <div className="border border-bg-blue-12-[1.19px]"></div>
+      <div className="border border-content-border"></div>
 
       {/* Documents */}
       <div className="bg-white rounded-lg shadow-custom p-2">
@@ -94,7 +98,7 @@ const RightCaseStudy = () => {
            </div>
       </div>
 
-      <div className="border border-bg-blue-12-[1px] mb-3"></div>
+      <div className="border border-content-border mb-3"></div>
 
       {docLoading ? (
         <p className="text-center text-gray-500">Loading documents...</p>

@@ -62,7 +62,7 @@ const LeftSide = () => {
                   )}
                 </div>
                 {/* Always Show Divider */}
-                <div className="border border-bg-blue-12-[1.19px] mt-4 mr-4"></div>
+                <div className="border border-content-border mt-4 mr-4"></div>
               </div>
             ))
           )}

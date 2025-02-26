@@ -90,17 +90,17 @@ const LeftCaseStudy = () => {
             <div className="flex items-center space-x-3">
               <img
                 src="/individual_icon_3.svg"
-                alt="Contact"
+                alt="Duration"
                 className="h-5 w-5"
               />
               <div className="text-sm text-bg-blue-12 font-semibold">
-                Primary Contact :
+                Duration :
               </div>
-              <div className="text-black">{companyData?.contact ?? "N/A"}</div>
+              <div className="text-black">{companyData?.duration ?? "N/A"}</div>
             </div>
           </div>
 
-          <div className="hidden md:block border-l border-bg-blue-12"></div>
+          <div className="hidden md:block border-l border-content-border"></div>
 
           <div className="space-y-4 w-full md:w-1/2">
             <div className="flex items-center space-x-3">
@@ -110,10 +110,10 @@ const LeftCaseStudy = () => {
                 className="h-5 w-5"
               />
               <div className="text-sm text-bg-blue-12 font-semibold">
-                Email :
+                Industry :
               </div>
               <div className="text-black truncate">
-                {companyData?.email ?? "N/A"}
+                {companyData?.industry ?? "N/A"}
               </div>
             </div>
 
@@ -124,27 +124,17 @@ const LeftCaseStudy = () => {
                 className="h-5 w-5"
               />
               <div className="text-sm text-bg-blue-12 font-semibold">
-                Phone :
+                Live-Link :
               </div>
-              <div className="text-black">{companyData?.phone ?? "N/A"}</div>
+              <div className="text-black">{companyData?.livelink?? "N/A"}</div>
             </div>
 
-            <div className="flex items-center space-x-3">
-              <img
-                src="/individual_icon_6.svg"
-                alt="Duration"
-                className="h-5 w-5"
-              />
-              <div className="text-sm text-bg-blue-12 font-semibold">
-                Duration :
-              </div>
-              <div className="text-black">{companyData?.duration ?? "N/A"}</div>
-            </div>
+            
           </div>
         </div>
       </div>
 
-      <div className="border border-bg-blue-12-[1.19px]"></div>
+      <div className="border border-content-border"></div>
 
       {/* Project Summary */}
       <div>
@@ -156,7 +146,7 @@ const LeftCaseStudy = () => {
         </p>
       </div>
 
-      <div className="border border-bg-blue-12-[1.19px]"></div>
+      <div className="border border-content-border"></div>
 
       {/* Technologies */}
       <div>

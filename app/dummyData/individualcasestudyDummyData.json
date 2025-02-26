@@ -3,10 +3,9 @@
     {
       "owner_client": "Sachin Tend",
       "location": "New York, USA",
-      "contact": "Sachin Tend",
-      "email": "contact@zenithive.com",
-      "phone": "+915665223652",
-      "duration": "2 Months"
+      "duration": "2 Months",
+      "industry": "IT Company",
+      "livelink": "portal.attmans.com/"
     }
   ],
   "project": {

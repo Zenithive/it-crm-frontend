@@ -84,7 +84,7 @@ const Task = () => {
                 key={index}
                 className={`flex items-center justify-between pb-4 ${
                   index !== tasks.length - 1
-                    ? "border-b border-bg-blue-12-[1px] mr-4"
+                    ? "border-b border-content-border mr-4"
                     : "mr-4"
                 }`}
               >
@@ -133,7 +133,7 @@ const Task = () => {
                 key={index}
                 className={`flex items-center justify-between pb-4 mr-4 ${
                   index !== followup.length - 1
-                    ? "border-b border-bg-blue-12-[1px]"
+                    ? "border-b border-content-border"
                     : ""
                 }`}
               >

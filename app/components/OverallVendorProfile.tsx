@@ -23,7 +23,6 @@ const indexOfLastItem = currentPage * itemsPerPage;
 const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 const currentVendors = vendors.slice(indexOfFirstItem, indexOfLastItem);
 
-
   const useDummyData =
   process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
   const user = useSelector((state: RootState) => state.auth);

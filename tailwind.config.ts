@@ -46,7 +46,8 @@ export default {
         "red-shadow-color":"#FFF4F5",
         "orange-text":"#E3AA00",
         "green-text":"#14A155",
-        "red-text":"#E53935"
+        "red-text":"#E53935",
+        "content-border":"rgba(97, 88, 255, 0.5)",
         
       },
      
