@@ -1,11 +1,12 @@
 "use client"
 import React from 'react'
-import VendorDetails from './IndividualVendor/VendorDetails'
+
+import VendorLayout from './IndividualVendor/VendorLayout'
 
 const IndividualVendorProfile = () => {
   return (
     <div>
-      <VendorDetails/>
+      <VendorLayout/>
     </div>
   )
 }

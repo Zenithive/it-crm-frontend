@@ -1,8 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import VendorLayout from "./VendorLayout";
-import { individualvendorApi } from "../../api/apiService/individualvendorApiService";
-import { individualvendor } from "../../api/jsonService/individualvendorJsonService";
+import { resourcemanagmentApi } from "../../api/apiService/resourcemanagmentApiService";
+import { resourcemanagment } from "../../api/jsonService/resourcemanagmentJsonService";
 
 interface Document {
   name: string;
@@ -11,7 +10,7 @@ interface Document {
   designation: string;
 }
 
-const VendorDoc = () => {
+const ResourceDoc = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
@@ -24,8 +23,8 @@ const VendorDoc = () => {
       try {
         setIsLoading(true);
         const response = useDummyData
-          ? await individualvendorApi()
-          : individualvendor();
+          ? await resourcemanagmentApi()
+          : resourcemanagment();
 
           const documentsData = response?.documents ?? [];  
           setDocuments(Array.isArray(documentsData) ? documentsData : []);          
@@ -118,4 +117,4 @@ const VendorDoc = () => {
   );
 };
 
-export default VendorDoc;
+export default ResourceDoc;

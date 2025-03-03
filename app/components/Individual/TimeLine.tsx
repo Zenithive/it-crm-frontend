@@ -53,7 +53,7 @@ const TimeLine: React.FC = () => {
               <div className="flex items-center justify-between gap-2 mb-2">
                 <div className="flex items-center">
                   <img
-                    src="/individual_icon_4.svg"
+                    src="/email.svg"
                     alt="Mail"
                     className="w-7 h-7"
                   />

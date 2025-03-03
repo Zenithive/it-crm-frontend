@@ -29,7 +29,7 @@ export default {
         "bg-blue-16":"#F2F1FF",
         "bg-red": "#FFE5E4",
         "bg-green":"#7ED321",
-        "bg-green-light":"#F4FFE8",
+        "bg-green-light":"#F4FFE8",  
         "orange-11":"#F5A623",
         "orange-light-11":"#FFF7E9",
         "green-dark":"#417505",
@@ -48,6 +48,8 @@ export default {
         "green-text":"#14A155",
         "red-text":"#E53935",
         "content-border":"rgba(97, 88, 255, 0.5)",
+        "blue-shadow":"#F8F8FF",
+        "gray-text": "#333333"
         
       },
      
