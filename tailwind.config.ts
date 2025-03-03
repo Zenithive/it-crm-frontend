@@ -49,7 +49,11 @@ export default {
         "red-text":"#E53935",
         "content-border":"rgba(97, 88, 255, 0.5)",
         "blue-shadow":"#F8F8FF",
-        "gray-text": "#333333"
+        "gray-text": "#333333",
+        "lead-source-blue":"#3B5998",
+        "lead-source-green":"#36C86F",
+        "lead-source-orange":"#FF6F61",
+        "lead-source-purple":"#8E44AD",
         
       },
      

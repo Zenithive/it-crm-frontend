@@ -4,17 +4,20 @@ import { Card } from '../../microComponents/CardForIndividualDashboard';
 import { CardContent } from '../../microComponents/CardContent';
 import { CardHeader } from '../../microComponents/CardHeader';
 import { CardTitle } from '../../microComponents/CardTitle';
-import { SlidersHorizontal } from 'lucide-react';
+
 
 const PipelineMap: React.FC = () => {
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between p-4">
+      <CardHeader className="flex flex-row items-center justify-between p-6">
         <CardTitle className="text-indigo-500">Lead Pipeline Trends</CardTitle>
-        <SlidersHorizontal className="w-5 h-5 text-gray-500" />
+        <button>
+        <img src='filterC.svg' alt="filter" className="w-7 h-7 text-gray-500" />
+        </button>
       </CardHeader>
+      <div className='border-b border-content-border ml-5 mr-5 mb-4 '></div>
       <CardContent className="p-4">
-        <div className="flex justify-center items-center h-64 bg-gray-100 rounded">
+        <div className="flex justify-center items-center h-64 bg-gray-100  rounded">
           {/* Placeholder for the map - in a real app, you'd use a map library */}
           <div className="text-center">
             <img 

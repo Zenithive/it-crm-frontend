@@ -44,9 +44,10 @@ const SalesDashboard: React.FC = () => {
   const { keyMetrics, teamData, leadSourceData } = dummyData as DummyData;
 
   return (
-    <div className="flex flex-col w-full gap-4 p-4 bg-gray-50">
+    <div className="bg-blue-background ">
+    <div className="flex flex-col w-full gap-4 p-4 ">
       {/* Key Metrics Cards */}
-      <Card className="bg-white shadow-sm rounded-xl overflow-hidden">
+      <Card className="bg-white shadow-custom rounded-xl overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-gray-200">
           {keyMetrics.map((metric, index) => (
             <MetricCard
@@ -61,7 +62,7 @@ const SalesDashboard: React.FC = () => {
       </Card>
 
       {/* Charts and Map Section */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 ">
         {/* Pipeline Map */}
         <PipelineMap />
 
@@ -71,6 +72,7 @@ const SalesDashboard: React.FC = () => {
 
       {/* Team Performance Table Component */}
       <TeamPerformanceTable teamData={teamData} />
+    </div>
     </div>
   );
 };

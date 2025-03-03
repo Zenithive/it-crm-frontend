@@ -20,6 +20,10 @@
 }
 
 /* Common CSS */
+.background{
+  @apply bg-blue-background;
+}
+
 .scrollable_view {
   @apply space-y-3 mt-4 max-h-[200px] overflow-y-auto scrollbar-none;
 }
