@@ -1,0 +1,115 @@
+{
+  "name": "Tuvoc Inc",
+  "isActive": true,
+  "primaryContact": {
+    "email": "zen@consulting.com",
+    "phone": "+91 7541223562",
+    "location": "India, Ahmedabad"
+  },
+  "secondaryContact": {
+    "email": "zen@consulting.com",
+    "phone": "+91 7541223562",
+    "location": "India, Ahmedabad"
+  },
+  "agreement": {
+    "startDate": "Jan 1, 2024",
+    "endDate": "Dec 31, 2024",
+    "status": "Active"
+  },
+  "locations": ["India", "Canada", "America", "Australia"],
+  "skills": ["Project Management", "React Js.", "UIUX Designer"],
+  "paymentTerms": "Net 30",
+  "employeeCount": "250- 400",
+  "recentActivity": [
+    {
+      "type": "review",
+      "title": "Performance review added",
+      "timestamp": "2 Days ago"
+    },
+    {
+      "type": "document",
+      "title": "Document uploaded: Q1 Report",
+      "timestamp": "6 Days ago"
+    }
+  ],
+
+  "resourceList": [
+    {
+      "title": "Zenithive",
+      "company": "Tech Solution Inc",
+      "tags": ["E-commerce", "UI/UX", "SWD"]
+    },
+    {
+      "title": "CodeCraft",
+      "company": "Innovatech Labs",
+      "tags": ["Software Development", "AI", "Automation"]
+    },
+    {
+      "title": "Zenithive",
+      "company": "Tech Solution Inc",
+      "tags": ["E-commerce", "UI/UX", "SWD"]
+    },
+    {
+      "title": "CodeCraft",
+      "company": "Innovatech Labs",
+      "tags": ["Software Development", "AI", "Automation"]
+    }
+  ],
+
+  "performance": [
+    {
+      "projectCompleted": "24",
+      "onTimeDelivery": "80%",
+      "qualityScore": "4.8/5"
+    }
+  ],
+
+  "documents": [
+  {
+    "name": "Proposal.pdf",
+    "url": "https://example.com/proposal.pdf",
+    "date": "2024-02-27",
+    "designation": "Project Manager"
+  },
+  {
+    "name": "Contract.pdf",
+    "url": "https://example.com/contract.pdf",
+    "date": "2024-02-25",
+    "designation": "Legal Advisor"
+  },
+  {
+    "name": "Invoice.pdf",
+    "url": "https://example.com/invoice.pdf",
+    "date": "2024-02-20",
+    "designation": "Finance Officer"
+  },
+  {
+    "name": "Presentation.pptx",
+    "url": "https://example.com/presentation.pptx",
+    "date": "2024-02-18",
+    "designation": "Marketing Head"
+  },
+  {
+    "name": "Report.docx",
+    "url": "https://example.com/report.docx",
+    "date": "2024-02-15",
+    "designation": "Operations Manager"
+  }
+],
+
+"notes":[
+  {
+    "message":"Meeting scheduled for quarterly review next week.",
+    "profile":"image.svg",
+    "name":"Sachin Tendulkar",
+    "date":"Jan 3 2024"
+  },
+  {
+    "message":"Meeting scheduled for quarterly review next week.",
+    "profile":"profileLogo.svg",
+    "name":"Sachin Tendulkar",
+    "date":"Jan 3 2024"
+  }
+]
+
+}

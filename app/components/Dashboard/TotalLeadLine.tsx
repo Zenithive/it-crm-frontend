@@ -65,16 +65,16 @@ const TotalLeadLine = () => {
 
   return (
     <div className="w-full">
-      <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
+      <div className="bg-white rounded-xl p-4 md:p-6 shadow-custom">
         <div className="flex justify-between items-center mb-4 md:mb-6">
           <h3 className="font-semibold text-bg-blue-12 text-lg md:text-xl">
-            Total Monthly Lead
+            Total Lead Sources
           </h3>
           <button>
             <img src="details_logo.svg" alt="details" />
           </button>
         </div>
-        <div className="h-40 md:h-48">
+        <div className="h-40 md:h-56">
           {mounted && <DynamicChart data={chartData} />}
         </div>
         <div className="position_linechart">
@@ -85,7 +85,7 @@ const TotalLeadLine = () => {
           ].map((item, index) => (
             <div key={index} className="flex items-center">
               <div
-                className="w-3 h-3 rounded-full mr-2"
+                className="w-4 h-4 rounded-sm mr-2"
                 style={{ backgroundColor: item.color }}
               />
               <span className="text-xs md:text-sm">{item.label}</span>

@@ -1,0 +1,93 @@
+{
+  "name": "Sachin T",
+  "isAvailable": true,
+  "designation": "Senior UI/UX Designer",
+      "email": "zen@consulting.com",
+      "phone": "+91 7541223562",
+      "location": "India, Ahmedabad",
+      "vendor": "TechCrop Solutions",
+      "contractType": "Full Time",
+   
+  "performance": [
+    {
+      "rate":"98%",
+      "satisfaction":"50%"
+    }
+  ],
+ "skills": [
+  "Figma",
+  "Sketch",
+  "Adobe XD",
+  "UI/UX Designer"
+],
+  "experience": [
+    {
+      "designation":"Senior UI/UX Designer",
+      "duration":"2+ Years"
+    },
+    {
+      "designation":"Senior UI/UX Designer",
+      "duration":"2+ Years"
+    }
+  ],
+
+
+  "overview": [
+    {
+      "project":"Completed Project: E-commerce Redesign",
+      "time":"2 Days ago"
+    },{
+      "project":"Completed Project: E-commerce Redesign",
+      "time":"2 Days ago"
+    }
+  ],
+  "documents": [
+    {
+      "name": "Proposal.pdf",
+      "url": "https://example.com/proposal.pdf",
+      "date": "2024-02-27",
+      "designation": "Project Manager"
+    },
+    {
+      "name": "Contract.pdf",
+      "url": "https://example.com/contract.pdf",
+      "date": "2024-02-25",
+      "designation": "Legal Advisor"
+    },
+    {
+      "name": "Invoice.pdf",
+      "url": "https://example.com/invoice.pdf",
+      "date": "2024-02-20",
+      "designation": "Finance Officer"
+    },
+    {
+      "name": "Presentation.pptx",
+      "url": "https://example.com/presentation.pptx",
+      "date": "2024-02-18",
+      "designation": "Marketing Head"
+    },
+    {
+      "name": "Report.docx",
+      "url": "https://example.com/report.docx",
+      "date": "2024-02-15",
+      "designation": "Operations Manager"
+    }
+  ],
+  
+  "notes":[
+    {
+      "message":"Meeting scheduled for quarterly review next week.",
+      "profile":"image.svg",
+      "name":"Sachin Tendulkar",
+      "date":"Jan 3 2024"
+    },
+    {
+      "message":"Meeting scheduled for quarterly review next week.",
+      "profile":"profileLogo.svg",
+      "name":"Sachin Tendulkar",
+      "date":"Jan 3 2024"
+    }
+  ]
+  
+  }
+  

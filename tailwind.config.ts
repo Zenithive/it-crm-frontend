@@ -29,7 +29,7 @@ export default {
         "bg-blue-16":"#F2F1FF",
         "bg-red": "#FFE5E4",
         "bg-green":"#7ED321",
-        "bg-green-light":"#F4FFE8",
+        "bg-green-light":"#F4FFE8",  
         "orange-11":"#F5A623",
         "orange-light-11":"#FFF7E9",
         "green-dark":"#417505",
@@ -38,10 +38,19 @@ export default {
         "red-light":"#FFF4F5",
         "text-red": "#E53935",
         "blue-background":"#FBFBFF",
-        follow_ups_yellow: "#FFC107",
-        follow_ups_green: "#28A745",
-        blue_shadow: "#F2F1FF",
-        "gray-background": "#F9F8FF"
+        "blue_shadow": "#F2F1FF",
+        "gray-background": "#F9F8FF",
+        "blue-shadow-color" : "#F3F3FF",
+        "green-shadow-color" : "#E9FFEE",      
+        "orange-shadow-color" : "#FFFBED",
+        "red-shadow-color":"#FFF4F5",
+        "orange-text":"#E3AA00",
+        "green-text":"#14A155",
+        "red-text":"#E53935",
+        "content-border":"rgba(97, 88, 255, 0.5)",
+        "blue-shadow":"#F8F8FF",
+        "gray-text": "#333333"
+        
       },
      
       scale: {

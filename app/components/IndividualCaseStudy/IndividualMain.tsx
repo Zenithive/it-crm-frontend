@@ -12,13 +12,6 @@ const IndividualMain = () => {
             <h2 className="text-lg md:text-xl text-bg-blue-12 font-semibold">
               E-Commerce Platform
             </h2>
-            <button className="p-2 hover:bg-gray-100 rounded-lg">
-              <img
-                src="/individual_icon_7.svg"
-                alt="Visit"
-                className="h-5 w-5 text-gray-500"
-              ></img>
-            </button>
           </div>
 
           {/* Project Details Grid */}

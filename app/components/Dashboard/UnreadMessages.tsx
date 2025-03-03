@@ -25,8 +25,8 @@ const UnreadMessages = () => {
 
   return (
     <div className="w-full relative">
-      <div className="bg-white rounded-xl p-4 md:p-6 shadow-sm">
-        <div className="flex justify-between items-center mb-4 md:mb-6 relative">
+      <div className="bg-white rounded-xl p-4 md:p-6 shadow-custom">
+        <div className="flex justify-between items-center mb-4 relative">
           <div className="font-semibold text-bg-blue-12 text-lg md:text-xl">
             Unread Messages
           </div>
@@ -42,7 +42,7 @@ const UnreadMessages = () => {
               <div
                 key={index}
                 className={`flex items-center justify-between pb-4 mr-4 ${
-                  index !== unreadMessages.length - 1 ? "border-b border-gray-300" : ""
+                  index !== unreadMessages.length - 1 ? "border-b border-content-border" : ""
                 }`}
               >
                 <div className="flex-1 min-w-0 mx-3 mt-4">

@@ -42,6 +42,14 @@
     {
       "title": "Product Demo - XYZ Corp",
       "time": "2:00 PM - 3:00 PM"
+    },
+    {
+      "title": "Product Demo - XYZ Corp",
+      "time": "2:00 PM - 3:00 PM"
+    },
+    {
+      "title": "Product Demo - XYZ Corp",
+      "time": "2:00 PM - 3:00 PM"
     }
   ],
   "recent": [
@@ -82,16 +90,33 @@
   ],
   "totalleadline": [
     { "name": "Jan", "linkedin": 10, "upwork": 15, "webform": 5 },
-    { "name": "Feb", "linkedin": 8, "upwork": 19, "webform": 8 },
+    { "name": "Feb", "linkedin": 8, "upwork": 25, "webform": 8 },
     { "name": "Mar", "linkedin": 12, "upwork": 15, "webform": 10 },
-    { "name": "Apr", "linkedin": 15, "upwork": 14, "webform": 12 },
+    { "name": "Apr", "linkedin": 25, "upwork": 14, "webform": 12 },
     { "name": "May", "linkedin": 8, "upwork": 15, "webform": 15 },
     { "name": "Jun", "linkedin": 5, "upwork": 10, "webform": 20 }
   ],
   "totalmonthlylead": [
-    { "name": "Closed", "value": 60, "color": "#6366F1" },
-    { "name": "Prospect", "value": 25, "color": "#8B5CF6" },
-    { "name": "Lead", "value": 15, "color": "#333" }
+    {
+      "name": "Lead",
+      "value": 25,
+      "color": "#6366F1"
+    },
+    {
+      "name": "Prospect",
+      "value": 55,
+      "color": "#EF4444"
+    },
+    {
+      "name": "Closed",
+      "value": 30,
+      "color": "#10B981"
+    },
+    {
+      "name": "lost",
+      "value": 10,
+      "color": "#374151"
+    }
   ],
   "unreadmessages": [
     {

@@ -23,3 +23,9 @@ export const Todolisttitle = [
         titleName : "To-Do List"
     }
 ]
+
+export const OverallVendorProfiletitle = [
+    {
+        titleName: "Vendor Management"
+    }
+]

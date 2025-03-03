@@ -5,7 +5,8 @@ import "./globals.css";
 import { ApolloProvider } from "@apollo/client";
 import client from "../lib/appoloClient";
 import { Provider } from "react-redux";
-import { store } from "./redux/store/store";
+import { store, persistor } from "./redux/store/store";
+import { PersistGate } from "redux-persist/integration/react";
 import Layout from "./components/Layout"; // Import the Layout component
 
 const geistSans = Geist({
@@ -29,11 +30,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <Provider store={store}>
-          <ApolloProvider client={client}>
-            <Layout> 
-              {children} 
-            </Layout>
-          </ApolloProvider>
+          <PersistGate loading={null} persistor={persistor}>
+            <ApolloProvider client={client}>
+              <Layout> 
+                {children} 
+              </Layout>
+            </ApolloProvider>
+          </PersistGate>
         </Provider>
       </body>
     </html>
