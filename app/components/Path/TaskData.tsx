@@ -40,6 +40,7 @@ export const search = [
   {searchText:"Search by name or skills..."},
   {searchText:"Search Meetings"},
   {searchText:"Search Vendor"},
+  {searchText:"Search Messages..."},
 ]
 
 export const headerbutton = [
@@ -47,5 +48,5 @@ export const headerbutton = [
   {button1text: "Filters",button1img: "filterC.svg",button2text:"Add Case Study",button2img:"plus.svg"},
   {button1text: "Filters",button1img: "filterC.svg",button2text:"Add New",button2img:"plus.svg"},
   {button1text: "Filters",button1img: "filterC.svg",button2text:"Add Vendor",button2img:"plus.svg"},
-
+ 
 ]

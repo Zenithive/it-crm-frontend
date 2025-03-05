@@ -44,33 +44,48 @@ const SalesDashboard: React.FC = () => {
   const { keyMetrics, teamData, leadSourceData } = dummyData as DummyData;
 
   return (
-    <div className="flex flex-col w-full gap-4 p-4 bg-gray-50">
-      {/* Key Metrics Cards */}
-      <Card className="bg-white shadow-sm rounded-xl overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-gray-200">
-          {keyMetrics.map((metric, index) => (
-            <MetricCard
-              key={index}
-              title={metric.title}
-              value={metric.value}
-              change={metric.change}
-              isPositive={metric.isPositive}
-            />
-          ))}
+    <div className="">
+      <div className="bg-blue-background">
+        <div className="flex flex-col w-full gap-4 p-4 ">
+          {/* Key Metrics Cards */}
+          <Card className="bg-white shadow-custom rounded-xl overflow-hidden">
+            <div className="justify-end items-end flex mr-4 mt-2">
+              <img src="filterC.svg" alt="filter" className=""></img>
+            </div>
+            <div className="flex">
+              {keyMetrics.map((metric, index) => (
+                <div
+                  key={index}
+                  className={`relative  flex-1 px-4 pb-4 ${
+                    index !== 0
+                      ? "after:content-[''] after:absolute after:top-8 after:bottom-8 after:left-0 after:w-px after:bg-content-border"
+                      : ""
+                  }`}
+                >
+                  <MetricCard
+                    title={metric.title}
+                    value={metric.value}
+                    change={metric.change}
+                    isPositive={metric.isPositive}
+                  />
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Charts and Map Section */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 ">
+            {/* Pipeline Map */}
+            <PipelineMap />
+
+            {/* Lead Source Chart */}
+            <LeadSourceChart data={leadSourceData} />
+          </div>
+
+          {/* Team Performance Table Component */}
+          <TeamPerformanceTable teamData={teamData} />
         </div>
-      </Card>
-
-      {/* Charts and Map Section */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {/* Pipeline Map */}
-        <PipelineMap />
-
-        {/* Lead Source Chart */}
-        <LeadSourceChart data={leadSourceData} />
       </div>
-
-      {/* Team Performance Table Component */}
-      <TeamPerformanceTable teamData={teamData} />
     </div>
   );
 };

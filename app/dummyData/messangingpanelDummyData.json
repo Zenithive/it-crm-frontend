@@ -1,0 +1,32 @@
+{
+    "conversations": [
+      { "id": 1, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 2, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 3, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 4, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 5, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 6, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 7, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 8, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 9, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 10, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 11, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 12, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 13, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 14, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 15, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 16, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" },
+      { "id": 17, "sender": "Sachin Tend", "time": "10:30 AM", "date": "2024-02-12" }
+    ],
+    
+       "messages": [
+    {
+      "id": 1,
+      "sender": "Sachin Tend",
+      "content": "Can you send the quote? I haven't received it in email.",
+      "receiver": "John Doe",
+      "attachment": { "name": "Zenithive.PDF", "size": "33.1 KB" }
+    }
+  ]
+  }
+  
