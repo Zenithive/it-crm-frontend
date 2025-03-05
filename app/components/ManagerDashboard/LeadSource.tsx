@@ -37,8 +37,8 @@ const   LeadSourceChart: React.FC<LeadSourceChartProps> = ({ data }) => {
       </CardHeader>
       <div className='border-b border-content-border ml-5 mr-5 mb-4 '></div>
       <CardContent className="p-4">
-        <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={data} layout="vertical" barCategoryGap={8}>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={data} layout="vertical" barCategoryGap={8} barSize={32}>
             <CartesianGrid strokeDasharray="3 3" horizontal vertical={false} />
             <XAxis type="number" />
             <YAxis dataKey="month" type="category" />
@@ -49,7 +49,7 @@ const   LeadSourceChart: React.FC<LeadSourceChartProps> = ({ data }) => {
             <Bar dataKey="Other" stackId="a" fill="#8E44AD" />
           </BarChart>
         </ResponsiveContainer>
-        <div className="mt-4 flex justify-center gap-5 flex-wrap">
+        <div className="mt-6 flex justify-center gap-5 flex-wrap">
           <div className="flex flex-col space-y-2">
           <div className="flex items-center gap-3">
             <div className="w-8 h-3 bg-lead-source-blue rounded-sm"></div>

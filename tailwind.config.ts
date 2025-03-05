@@ -54,6 +54,9 @@ export default {
         "lead-source-green":"#36C86F",
         "lead-source-orange":"#FF6F61",
         "lead-source-purple":"#8E44AD",
+        "map-orange":"#FFAB48",
+        "shadow-green":"#C3FFD1",
+        "blue-barchart":"#C6D2FD",
         
       },
      
