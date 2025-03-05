@@ -8,7 +8,7 @@ interface CardHeaderProps {
 
 export const CardHeader: React.FC<CardHeaderProps> = ({ className = '', children }) => {
   return (
-    <div className={`flex flex-col space-y-1.5 p-6 ${className}`}>
+    <div className={`flex ${className}`}>
       {children}
     </div>
   );
