@@ -7,7 +7,7 @@ export type RootState = ReturnType<typeof store.getState>;
 
 const persistConfig = {
   key: "auth",
-  storage, // This saves the state in localStorage
+  storage, // Saves state in localStorage
 };
 
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
@@ -16,6 +16,13 @@ export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: ["persist/PERSIST"], // Ignores non-serializable actions from redux-persist
+        ignoredPaths: ["register"], // (Optional) Ignore paths if needed
+      },
+    }),
 });
 
 export const persistor = persistStore(store);

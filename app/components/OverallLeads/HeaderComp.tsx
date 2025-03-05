@@ -15,7 +15,9 @@ const HeaderComp: React.FC<HeaderProps> = ({
 
 
 
-  const [activeView,setActiveView]=useState('list')
+  const [activeView,setActiveView]=useState('list');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
   const handleViewChange=(view)=>{
     setActiveView(view);
     onViewChange?.(view);
