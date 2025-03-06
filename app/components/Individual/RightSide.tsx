@@ -13,12 +13,6 @@ const RightSide = () => {
   
   const flag = (process.env.NEXT_PUBLIC_USE_DUMMY_DATA || "").toLowerCase() === "true";
 
-  const [documents, setDocuments] = useState<{ name: string; url: string }[]>(
-    []
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-
   return (
     <div className="bg-white rounded-lg shadow-custom p-1">
       <div className="space-y-4">

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 
 
-import { fetchFromAPIForKanbanView } from "../../api/apiService/overallLeadApiService";
+import { fetchFromAPIForKanbanView } from '../../api/apiService/OverallLeadApiService';
 import { fetchFromJSONForKanbanView } from "../../api/jsonService/OverallLeadsJsonService";
 import './overallLeads.css';
 import {ColumnForKanbanView} from './OverallLeadsData';

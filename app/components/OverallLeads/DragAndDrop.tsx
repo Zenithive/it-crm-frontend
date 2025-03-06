@@ -21,7 +21,7 @@ const LeadCardDnD: React.FC<LeadCardDnDProps> = ({ id, title, subtitle,  columnI
     accept: ItemType,
     drop: (item: { id: string; columnId: string }) => {
       if (item.columnId !== columnId) {
-        moveCard(item.id, id);
+        moveCard(item.id, item.columnId, columnId);
       }
     },
   }));

@@ -10,13 +10,22 @@ import {
 
 import "../Dashboard/Dashboard.css";
 
+interface Outcome {
+  outcomes: string;
+}
+
 const RightCaseStudy = () => {
-  const [outcome, setOutcome] = useState(null);
-  const [documents, setDocuments] = useState([]);
+  const [outcome, setOutcome] = useState<Outcome | null>(null);
+  interface Document {
+    name: string;
+    url: string;
+  }
+  
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [docLoading, setDocLoading] = useState(true);
-  const [docError, setDocError] = useState(null);
+  const [docError, setDocError] = useState<string | null>(null);
 
   const useDummyData =
     process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";

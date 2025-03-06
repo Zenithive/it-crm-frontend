@@ -6,7 +6,14 @@ import "../Dashboard/Dashboard.css";
 const flag = process.env.NEXT_PUBLIC_USE_DUMMY_DATA === "true"; // Change to false to use JSON instead of API
 
 const LeftSide = () => {
-  const [data, setData] = useState([]);
+  interface DataItem {
+    label: string;
+    icon?: string;
+    value: string;
+    isLink?: boolean;
+  }
+  
+  const [data, setData] = useState<DataItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 

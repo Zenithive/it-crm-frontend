@@ -2,8 +2,13 @@ import React, { useState, useEffect } from "react";
 import { dashboardUnreadMessagesApi } from "../../api/apiService/dashboardApiService";
 import { dashboardUnreadMessagesJson } from "../../api/jsonService/dashboardJsonService";
 
+interface Message {
+  name: string;
+  message: string;
+}
+
 const UnreadMessages = () => {
-  const [unreadMessages, setUnreadMessages] = useState([]);
+  const [unreadMessages, setUnreadMessages] = useState<Message[]>([]);
 
   const useDummyData = String(process.env.NEXT_PUBLIC_USE_DUMMY_DATA || "false").trim().toLowerCase() === "true";
 

@@ -1,0 +1,14 @@
+{
+    "extends": "next/core-web-vitals",
+    "ignorePatterns": ["**/*"],
+    "overrides": [
+      {
+        "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.jsx"],
+        "env": {
+          "jest": true
+        },
+        "rules": {}
+      }
+    ]
+  }
+  

@@ -5,7 +5,7 @@ export type LeadCardDnDProps = {
   subtitle: string;
   index: number;
   columnId: string;
-  moveCard: (draggedId: string, targetId: string) => void;
+  moveCard: (draggedId: string, sourceColumnId: string, targetColumnId: string) => void;
 };
 
 
@@ -43,12 +43,14 @@ interface DataforHeaderComp {
   searchText?: string;
 }
 
+export type ViewType = 'list' | 'kanban';
+
 export type HeaderProps = {
   data: DataforHeaderComp;
   onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onAddLead?: () => void;
   onFilter?: () => void;
-  onViewChange?: (view: string) => void;
+  onViewChange?: (view: ViewType) => void;
 };
 
 
