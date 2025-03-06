@@ -17,7 +17,7 @@ const CreateTaskModal = () => {
   const showModal = () => setVisible(true);
   const handleCancel = () => setVisible(false);
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: any) => {
     setLoading(true);
     try {
       await createTask(values, user.token);

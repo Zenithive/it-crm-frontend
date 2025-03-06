@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Title from "../../microComponents/Title";
 import Search from "../../microComponents/Search";
 import HeaderButtons from "../../microComponents/HeaderButtons";
-import{HeaderProps} from "./OverallLeadsData"
+import { HeaderProps, ViewType } from "./OverallLeadsData"
 
 
 const HeaderComp: React.FC<HeaderProps> = ({
@@ -15,8 +15,8 @@ const HeaderComp: React.FC<HeaderProps> = ({
 
 
 
-  const [activeView,setActiveView]=useState('list')
-  const handleViewChange=(view)=>{
+  const [activeView, setActiveView] = useState<ViewType>('list')
+  const handleViewChange = (view: ViewType) => {
     setActiveView(view);
     onViewChange?.(view);
   }
@@ -24,7 +24,7 @@ const HeaderComp: React.FC<HeaderProps> = ({
     <div className="pt-[48px] flex justify-between items-center px-[70px]">
       <div className="flex gap-[20px] items-center">
         <div className="text-bg-blue-12 font-bold text-[30px]">
-          <Title title={data.title}/>
+          <Title title={data.title || ''}/>
         </div>
 
         <div className="flex gap-[48px] items-center">

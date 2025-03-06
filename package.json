@@ -69,6 +69,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/react-simple-maps": "^3.0.6",
     "babel-jest": "^29.7.0",
     "babel-loader": "^9.2.1",
     "babel-preset-next": "^1.4.0",

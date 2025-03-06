@@ -18,10 +18,28 @@ import {search} from "./Path/TaskData";
 const useStaticData = true; // Toggle flag to switch between static and API data
 
 const MessagingPanel: React.FC = () => {
-  const [conversations, setConversations] = useState([]);
+  interface Conversation {
+    id: number;
+    sender: string;
+    time: string;
+    date: string;
+  }
+  
+  const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeChannel, setActiveChannel] = useState<string>("LinkedIn");
   const [activeConversation, setActiveConversation] = useState<string>("");
-  const [messages, setMessages] = useState([]);
+  interface Message {
+    id: number;
+    sender: string;
+    content: string;
+    receiver: string;
+    attachment: {
+      name: string;
+      size: string;
+    };
+  }
+  
+  const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
     if (useStaticData) {

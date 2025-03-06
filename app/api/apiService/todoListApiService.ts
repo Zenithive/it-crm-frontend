@@ -26,6 +26,9 @@ const todoListApiService = (currentPage: number, itemsPerPage: number) => {
       setError(null);
 
       try {
+        if (!apiUrl) {
+          throw new Error("API URL is not defined");
+        }
         const response = await axios.post(
           apiUrl,
           {
@@ -47,7 +50,11 @@ const todoListApiService = (currentPage: number, itemsPerPage: number) => {
         setTodos(response.data.data.getTasks.items);
         setTotalItems(response.data.data.getTasks.totalCount);
       } catch (err) {
-        setError(err.message || "Failed to fetch tasks");
+        if (err instanceof Error) {
+          setError(err.message || "Failed to fetch tasks");
+        } else {
+          setError("Failed to fetch tasks");
+        }
       } finally {
         setLoading(false);
       }

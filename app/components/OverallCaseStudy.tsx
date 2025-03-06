@@ -149,14 +149,13 @@ const ResourceContainer = () => {
 
           <div className="mt-6">
             <Pagination
-              totalItems={resources.length}
-              initialItemsPerPage={itemsPerPage}
-              onPageChange={setCurrentPage}
-              onItemsPerPageChange={(newItemsPerPage) => {
-                setItemsPerPage(newItemsPerPage);
-                setCurrentPage(1);
-              }}
-            />
+                    totalItems={resources.length}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={setCurrentPage}
+                    onItemsPerPageChange={(newItemsPerPage) => {
+                      setItemsPerPage(newItemsPerPage);
+                      setCurrentPage(1);
+                    } } currentPage={0}            />
           </div>
         </>
       )}

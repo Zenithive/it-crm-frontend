@@ -14,9 +14,18 @@ import { overallvendorJsonService } from "../api/jsonService/overallvendorJsonSe
 const OverallVendorProfile: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [vendors, setVendors] = useState([]);
+  interface Vendor {
+    vendorID: string;
+    vendor: string;
+    location: string;
+    resources: string;
+    rating: number;
+    status: string;
+  }
+
+  const [vendors, setVendors] = useState<Vendor[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Calculate the index range for the current page
 const indexOfLastItem = currentPage * itemsPerPage;
