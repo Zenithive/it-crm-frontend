@@ -7,33 +7,43 @@ import KanbanView from "./KanbanView";
 import { columnDefs } from "./OverallLeadsData";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-
-import { fetchFromAPIForListView } from "../../api/apiService/OverallLeadApiService";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
+// import overallLeadApiService from "../../api/apiService/overallLeadApiService";
 import { fetchFromJSONForListView } from "../../api/jsonService/OverallLeadsJsonService";
+import AddLeadModal from "../AddLeadModal";
 
 type ViewType = "list" | "kanban";
 
 const Contact = () => {
   const [activeView, setActiveView] = useState<ViewType>("list");
   const [rowData, setRowData] = useState<any[]>([]);
-  const useAPI = process.env.NEXT_PUBLIC_USE_API === "false";
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = useAPI
-        ? await fetchFromAPIForListView()
-        : await fetchFromJSONForListView();
-      setRowData(data);
-    };
+  const [showAddLeadModal, setShowAddLeadModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  // const useAPI = process.env.NEXT_PUBLIC_USE_API === "true";
 
-    fetchData();
-  }, [useAPI]);
+  // const {data, loading, error, totalItems } = overallLeadApiService(
+  //   currentPage,
+  //   itemsPerPage
+  // );
+
+  // useEffect(() => {
+  //   setRowData(data);  
+  // }, [data]);
+
+  const user = useSelector((state: RootState) => state.auth);
+
+  const handleAddLead = () => {
+    setShowAddLeadModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowAddLeadModal(false);
+  };
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     // console.log("Search Input:", e.target.value);
-  };
-
-  const handleAddLead = () => {
-    // console.log("Add Lead clicked");
   };
 
   const handleFilter = () => {
@@ -71,6 +81,8 @@ const Contact = () => {
           </DndProvider>
         )}
       </div>
+
+      {showAddLeadModal && <AddLeadModal onClose={handleCloseModal} />}
     </>
   );
 };

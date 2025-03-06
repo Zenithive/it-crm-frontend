@@ -4,10 +4,10 @@ import { PieChart, Pie, Cell } from 'recharts';
 interface CircularProgressProps {
   value: number;
   title: string;
-
+  img: string;
 }
 
-const CircularProgress: React.FC<CircularProgressProps> = ({ value, title }) => {
+const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, img }) => {
   const data = [
     { name: 'Completed', value: value },
     { name: 'Remaining', value: 100 - value }
@@ -17,8 +17,10 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ value, title }) => 
     <div className="bg-white rounded-2xl shadow-custom  p-6 flex flex-col items-center">
       {/* Title & Options */}
       <div className="flex justify-between items-center w-full mb-2">
-        {/* <img src={img} alt='Image' className="w-8 h-8 object-contain" ></img> */}
-        <span className="text-2xl font-semibold text-bg-blue-12">{title}</span>
+        <div className='flex justify-center items-center'>
+        <img src={img} alt='Image' className="w-5 h-5 " ></img>
+        <span className="text-2xl font-semibold text-bg-blue-12 ml-4">{title}</span>
+        </div>
        <img src="filter.svg" alt="Filter"></img>
          
       </div>

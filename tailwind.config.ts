@@ -57,6 +57,7 @@ export default {
         "map-orange":"#FFAB48",
         "shadow-green":"#C3FFD1",
         "blue-barchart":"#C6D2FD",
+        "gray-text-color":"#615E83",
         
       },
      

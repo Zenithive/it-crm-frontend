@@ -47,7 +47,7 @@ const TodoList: React.FC = () => {
     <div className="p-4 max-w-[1350px] mx-auto">
 
       <div>
-      <h1>Welcome, {user?.name || "Guest"}!</h1> 
+      {/* <h1>Welcome, {user?.name || "Guest"}!</h1>  */}
     </div>
       <div className="flex flex-col sm:flex-row items-center mb-6 justify-between">
         <div className="flex">
