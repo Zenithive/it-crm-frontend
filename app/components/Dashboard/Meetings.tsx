@@ -9,8 +9,18 @@ import {
 } from "../../api/apiService/dashboardApiService";
 
 const Meetings = () => {
-  const [meetings, setMeetings] = useState([]);
-  const [recent, setRecent] = useState([]);
+  interface Meeting {
+    title: string;
+    time: string;
+  }
+
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
+  interface Recent {
+    name: string;
+    message: string;
+  }
+
+  const [recent, setRecent] = useState<Recent[]>([]);
   const [recentView, setRecentView] = useState("today");
 
   const useDummyData =

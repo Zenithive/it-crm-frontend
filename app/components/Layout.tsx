@@ -1,11 +1,9 @@
-
-
 "use client";
-
 import React from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar"; 
 import { nav } from "./Path/TaskData";
+import "./Dashboard/Dashboard.css";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -25,9 +23,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
      
       {!shouldHideNavbar && <Navbar nav={nav[0]} />}
       
-      <main className="flex-1 mx-auto container">
+      <div className="bg-blue-background">
+      <main className="flex-1 mx-auto container ">
         {children}
       </main>
+      </div>
+    
     </div>
   );
 };

@@ -1,10 +1,10 @@
 import React from 'react'
-import VendorDoc from '../components/IndividualVendor/VendorDoc'
+import ResourceManagment from '../components/ResourceManagment'
 
 const page = () => {
   return (
     <div>
-      <VendorDoc></VendorDoc>
+      <ResourceManagment/>
     </div>
   )
 }

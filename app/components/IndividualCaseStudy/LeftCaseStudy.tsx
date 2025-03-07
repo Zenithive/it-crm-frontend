@@ -11,12 +11,30 @@ import {
   individualcasestudyTechnologiesJson,
 } from "../../api/jsonService/individualcasestudyJsonServices";
 
+interface CompanyData {
+  owner_client: string;
+  location: string;
+  duration: string;
+  industry: string;
+  livelink: string;
+}
+
+interface ProjectData {
+  summary: string;
+  // Add other project properties here if needed
+}
+
 const LeftCaseStudy = () => {
-  const [companyData, setCompanyData] = useState(null);
-  const [project, setProject] = useState(null);
-  const [technologies, setTechnologies] = useState([]);
+  const [companyData, setCompanyData] = useState<CompanyData | null>(null);
+  const [project, setProject] = useState<ProjectData | null>(null);
+  interface Technology {
+    name: string;
+    logo: string;
+  }
+  
+  const [technologies, setTechnologies] = useState<Technology[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const useDummyData =
     process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";

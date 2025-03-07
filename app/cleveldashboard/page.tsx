@@ -1,10 +1,10 @@
 import React from 'react'
-import VendorNotes from '../components/IndividualVendor/VendorNotes'
+import ClevelDashboard from '../components/ClevelDashboard'
 
 const page = () => {
   return (
     <div>
-      <VendorNotes></VendorNotes>
+      <ClevelDashboard/>
     </div>
   )
 }

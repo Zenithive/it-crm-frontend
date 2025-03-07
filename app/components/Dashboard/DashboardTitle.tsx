@@ -2,7 +2,11 @@ import React from "react";
 import Title from "../../microComponents/Title";
 import HeaderFlag from "../../microComponents/HeaderFlag";
 
-const Dashboard_Title = ({ Dashboardtitle }) => {
+interface DashboardTitleProps {
+  Dashboardtitle: { titleName: string }[];
+}
+
+const Dashboard_Title: React.FC<DashboardTitleProps> = ({ Dashboardtitle }) => {
   return (
     <div>
       <div className="flex justify-between items-center">

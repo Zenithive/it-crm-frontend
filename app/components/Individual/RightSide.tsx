@@ -13,26 +13,6 @@ const RightSide = () => {
   
   const flag = (process.env.NEXT_PUBLIC_USE_DUMMY_DATA || "").toLowerCase() === "true";
 
-  useEffect(() => {
-    const fetchDocuments = async () => {
-      setIsLoading(true);
-      try {
-        const fetchedData = flag
-          ? await apiServiceRightSideDoc()
-          : await jsonServiceRightSideDoc();
-        setDocuments(fetchedData);
-      } catch (err) {
-        setError("Failed to load documents.");
-        console.error(err);
-        // Fallback to dummy data if API fails
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchDocuments();
-  }, []);
-
   return (
     <div className="bg-white rounded-lg shadow-custom p-1">
       <div className="space-y-4">

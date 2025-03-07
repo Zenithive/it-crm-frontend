@@ -8,10 +8,11 @@ export interface CardPropsForLeadCard {
   }
   
   export interface PaginationProps {
+    currentPage: number;
     totalItems: number;
-    initialItemsPerPage?: number;
-    onPageChange?: (page: number) => void;
-    onItemsPerPageChange?: (itemsPerPage: number) => void;
+    itemsPerPage: number;
+    onPageChange: (page: number) => void;
+    onItemsPerPageChange: (itemsPerPage: number) => void;
   }
   
   interface ColumnDefForListViewTabel {

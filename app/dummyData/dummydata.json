@@ -1,0 +1,45 @@
+{
+    "keyMetrics": [
+      {
+        "title": "Total Sales",
+        "value": "$ 913.9K",
+        "change": "433.2 %",
+        "isPositive": true
+      },
+      {
+        "title": "Win Rate",
+        "value": "13.8 %",
+        "change": "70.2 %",
+        "isPositive": true
+      },
+      {
+        "title": "Pipeline value",
+        "value": "$ 913.9K",
+        "change": "433.2 %",
+        "isPositive": true
+      },
+      {
+        "title": "Avg. Days to close",
+        "value": "51.9",
+        "change": "12.6 %",
+        "isPositive": false
+      }
+    ],
+    "teamData": [
+      { "name": "Sachin T", "totalLead": 25, "totalWon": 15, "totalLost": 15, "averageCloseRate": "25%", "totalRevenue": "60$" },
+      { "name": "Mahesh B", "totalLead": 15, "totalWon": 10, "totalLost": 10, "averageCloseRate": "10%", "totalRevenue": "120$" },
+      { "name": "Ravi P", "totalLead": 35, "totalWon": 20, "totalLost": 20, "averageCloseRate": "25%", "totalRevenue": "120$" },
+      { "name": "Suresh Y", "totalLead": 5, "totalWon": 2, "totalLost": 2, "averageCloseRate": "10%", "totalRevenue": "120$" },
+      { "name": "Sachin T", "totalLead": 45, "totalWon": 20, "totalLost": 20, "averageCloseRate": "10%", "totalRevenue": "120$" },
+      { "name": "Mahesh B", "totalLead": 65, "totalWon": 35, "totalLost": 35, "averageCloseRate": "25%", "totalRevenue": "120$" },
+      { "name": "Ravi P", "totalLead": 45, "totalWon": 15, "totalLost": 15, "averageCloseRate": "10%", "totalRevenue": "120$" },
+      { "name": "Suresh Y", "totalLead": 35, "totalWon": 30, "totalLost": 30, "averageCloseRate": "25%", "totalRevenue": "120$" }
+    ],
+    "leadSourceData": [
+      { "month": "Jan", "LinkedIn": 30, "UpWork": 20, "Contact": 10, "Direct": 5, "Other": 15 },
+      { "month": "Feb", "LinkedIn": 35, "UpWork": 25, "Contact": 5, "Direct": 10, "Other": 15 },
+      { "month": "Mar", "LinkedIn": 25, "UpWork": 15, "Contact": 20, "Direct": 2, "Other": 15 },
+      { "month": "Apr", "LinkedIn": 20, "UpWork": 30, "Contact": 15, "Direct": 5, "Other": 15 },
+      { "month": "May", "LinkedIn": 15, "UpWork": 35, "Contact": 20, "Direct": 0, "Other": 15 }
+    ]
+  }

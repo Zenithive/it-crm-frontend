@@ -20,6 +20,13 @@ const renderCustomizedLabel = ({
   innerRadius,
   outerRadius,
   percent,
+}: {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  percent: number;
 }) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.6;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -39,8 +46,14 @@ const renderCustomizedLabel = ({
   );
 };
 
+interface LeadData {
+  name: string;
+  value: number;
+  color: string;
+}
+
 const MonthlyLead = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<LeadData[]>([]);
   const useDummyData =
     process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
 

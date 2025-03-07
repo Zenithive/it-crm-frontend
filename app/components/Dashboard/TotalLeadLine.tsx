@@ -28,7 +28,7 @@ const TotalLeadLine = () => {
     () =>
       import("recharts").then((recharts) => {
         const { LineChart, Line, XAxis, YAxis, ResponsiveContainer } = recharts;
-        return function Chart({ data }) {
+        return function Chart({ data }: { data: any }) {
           return (
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={data}>

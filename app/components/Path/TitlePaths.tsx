@@ -29,3 +29,14 @@ export const OverallVendorProfiletitle = [
         titleName: "Vendor Management"
     }
 ]
+export const IndividualMeetingScreentitle = [
+    {
+        titleName: "Meetings"
+    }
+]
+
+export const IndividualMeetingtitle = [
+    {
+        titleName: "Zenithive Ltd."
+    }
+]
