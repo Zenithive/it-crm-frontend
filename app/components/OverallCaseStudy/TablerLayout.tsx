@@ -55,7 +55,7 @@ const TablerLayout=()=> {
               key={index}
               className="bg-blue_shadow p-6 rounded-xl hover:shadow-lg transition-shadow mb-4 flex justify-between items-center"
             >
-              {/* Left side content */}
+
               <div className="flex-1">
                 <div className="mb-4 max-w-[300px]">
                   <h3 className="text-bg-blue-12 text-lg sm:text-xl lg:text-2xl font-semibold">
@@ -79,7 +79,7 @@ const TablerLayout=()=> {
                 </p>
               </div>
 
-              {/* Right side button */}
+        
               <div className="ml-6">
                 <div className="bg-white p-2 rounded-lg flex items-center">
                   <button className="text-bg-blue-12 text-sm">

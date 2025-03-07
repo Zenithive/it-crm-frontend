@@ -2,18 +2,38 @@
 import { ChangeEvent, useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-
 import HeaderComp from "./HeaderComp";
 import MicroTable from "../../microComponents/Tabel";
 import KanbanView from "./KanbanView";
 import Pagination2 from "../../microComponents/Pagination2";
 import { columnDefs } from "./OverallLeadsData";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
+// import overallLeadApiService from "../../api/apiService/overallLeadApiService";
+import { fetchFromJSONForListView } from "../../api/jsonService/OverallLeadsJsonService";
+import AddLeadModal from "../AddLeadModal";
 import useOverallLeadsData from "../../api/apiService/OverallLeadApiService";
 
 type ViewType = "list" | "kanban";
 
 const Contact = () => {
   const [activeView, setActiveView] = useState<ViewType>("list");
+  const [rowData, setRowData] = useState<any[]>([]);
+  const [showAddLeadModal, setShowAddLeadModal] = useState(false);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  // const useAPI = process.env.NEXT_PUBLIC_USE_API === "true";
+
+  
+
+  const user = useSelector((state: RootState) => state.auth);
+
+  const handleAddLead = () => {
+    setShowAddLeadModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowAddLeadModal(false);
+  };
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(5);
 
@@ -21,10 +41,6 @@ const Contact = () => {
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     console.log("Search Input:", e.target.value);
-  };
-
-  const handleAddLead = () => {
-    console.log("Add Lead clicked");
   };
 
   const handleFilter = () => {
@@ -71,6 +87,8 @@ const Contact = () => {
           </DndProvider>
         )}
       </div>
+
+      {showAddLeadModal && <AddLeadModal onClose={handleCloseModal} />}
     </>
   );
 };

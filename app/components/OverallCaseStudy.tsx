@@ -47,7 +47,6 @@ const ResourceContainer = () => {
   };
   return (
     <>
-      {/* Header Section */}
       <div className="w-full px-4 sm:px-6 lg:px-[70px] mt-6">
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center space-x-4">

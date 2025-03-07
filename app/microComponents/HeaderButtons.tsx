@@ -8,6 +8,8 @@ interface Data {
   button2img?: string;
   button1Text?: string;
   button2Text?: string;
+  onClick1?: () => void;  
+  onClick2?: () => void;  
 }
 
 const HeaderButtons = ({
@@ -17,22 +19,22 @@ const HeaderButtons = ({
   button2img,
   button1width,
   button2width,
+  onClick1,
+  onClick2
 }: Data) => {
   return (
     <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-[15px] w-full sm:w-auto">
       <button
-        className={`border shadow-sm bg-white text-bg-blue-12 font-normal h-[40px] rounded-xl 
-                   flex items-center justify-center gap-2 w-full sm:w-auto 
-                   ${button1width} min-w-[100px]`}
+        className={`${button1width} min-w-[100px] border shadow-sm bg-white text-bg-blue-12 font-normal h-[40px] rounded-xl flex items-center justify-center gap-2`}
+        onClick={onClick1}
       >
         <img src={button1img} className="w-4 sm:w-auto" alt="" />
         <div className="text-[12px] sm:text-[14px] whitespace-nowrap">{button1Text}</div>
       </button>
 
       <button
-        className={`bg-bg-blue-12 text-white font-normal h-[40px] rounded-xl 
-                   flex items-center justify-center gap-[10px] w-full sm:w-auto 
-                   ${button2width} min-w-[120px]`}
+        className={`${button2width} min-w-[120px] bg-bg-blue-12 text-white font-normal h-[40px] rounded-xl flex items-center justify-center gap-[10px]`}
+        onClick={onClick2}
       >
         <img src={button2img} className="w-4 sm:w-auto" alt="" />
         <span className="text-[12px] sm:text-[14px] whitespace-nowrap">{button2Text}</span>
@@ -40,5 +42,4 @@ const HeaderButtons = ({
     </div>
   );
 };
-
 export default HeaderButtons;

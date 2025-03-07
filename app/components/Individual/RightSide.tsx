@@ -12,7 +12,6 @@ const RightSide = () => {
   const [error, setError] = useState("");
   
   const flag = (process.env.NEXT_PUBLIC_USE_DUMMY_DATA || "").toLowerCase() === "true";
-
  
 
   return (
