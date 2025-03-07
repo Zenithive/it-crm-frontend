@@ -16,6 +16,7 @@ export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
   },
+  
 });
 
 export const persistor = persistStore(store);

@@ -5,6 +5,8 @@ import RevenueTrendChart from "./ClevelDashboard/RevenueTrendChart";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 
 import worldTopo from "../../public/world-topo.json";
+import leadsApiService from "../api/apiService/leadsApiService";
+import dealsApiService from "../api/apiService/dealsApiService";
 // Types for data
 interface KPICardProps {
   title: string;
@@ -107,6 +109,14 @@ const ClevelDashboard: React.FC = () => {
     { country: "Ahmedabad", count: 40 },
   ];
 
+
+  // Calculate Active Leads Total
+  const { newLeads, inProgressLeads, followUpLeads, closedWonLeads, totalItems, loading } = leadsApiService(1, 500);
+  const activeLeads = newLeads + inProgressLeads + followUpLeads;
+
+  const {totalDealAmount} = dealsApiService();
+
+
   const KPICard: React.FC<KPICardProps> = ({ title, value, percentage }) => (
     <div className="bg-white rounded-lg shadow-md p-4 space-y-2">
       <div className="flex justify-between items-center">
@@ -129,10 +139,16 @@ const ClevelDashboard: React.FC = () => {
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
-            <CircularProgress value={75} title="Active Lead" />
-            <CircularProgress value={85} title="Deal Closed" />
-            <CircularProgress value={60} title="Conversion Rate" />
-            <CircularProgress value={90} title="Total Revenue" />
+          {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <>
+                <CircularProgress value={activeLeads} title="Active Leads" />
+                <CircularProgress value={80} title="Deal Closed" />
+                <CircularProgress value={Math.round((closedWonLeads / totalItems) * 100)} title="Lead Conversion" />
+                <CircularProgress value={totalDealAmount} title="Revenue Growth" isCurrency={true} />
+              </>
+            )}
           </div>
           <RevenueTrendChart />
         </div>
