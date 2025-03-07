@@ -10,8 +10,20 @@ import {
 } from "../../api/apiService/dashboardApiService";
 
 const Task = () => {
-  const [tasks, setTasks] = useState([]);
-  const [followup, setFollowup] = useState([]);
+  interface Task {
+    title: string;
+    dueTime: string;
+    completed: boolean;
+  }
+
+  interface Followup {
+    profileImage: string;
+    name: string;
+    message: string;
+  }
+
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [followup, setFollowup] = useState<Followup[]>([]);
   const [activeView, setActiveView] = useState("today"); // 'today' or 'followup'
 
   const useDummyData =
@@ -36,7 +48,7 @@ const Task = () => {
     fetchData();
   }, [useDummyData]);
 
-  const handleCheckboxChange = (taskIndex) => {
+  const handleCheckboxChange = (taskIndex: number) => {
     setTasks((prevTasks) => {
       const updatedTasks = [...prevTasks];
       const newCompleted = !updatedTasks[taskIndex].completed;

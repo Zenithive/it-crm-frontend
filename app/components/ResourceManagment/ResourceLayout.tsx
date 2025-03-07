@@ -167,7 +167,7 @@ const ResourceLayout: React.FC<ResourceLayoutProps> = ({ children }) => {
                       <div className="text-gray-text">{item.project}</div>
                       <div className="font-medium text-md text-bg-blue-12 whitespace-nowrap">{item.time}</div>
                     </div>
-                    {index !== resources.overview.length - 1 && (
+                    {resources?.overview && index !== resources.overview.length - 1 && (
                       <div className="border-b border-content-border mt-4 mb-4"></div>
                     )}
                   </div>

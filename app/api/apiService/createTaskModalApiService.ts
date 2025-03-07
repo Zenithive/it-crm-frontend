@@ -2,7 +2,11 @@ import axios from "axios";
 import { message } from "antd";
 import {CREATE_TASK_QUERY} from "../../../graphQl/queries/createTaskModal.queries";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL; 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+if (!apiUrl) {
+  throw new Error("API URL is not defined");
+}
 
 export const createTask = async (values: any, token: string) => {
   try {

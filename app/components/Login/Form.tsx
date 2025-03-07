@@ -75,7 +75,7 @@ import { useDispatch } from "react-redux";
                       type="email"
                       name="email"
                       data-testid="email"
-                      onChange={(e) => {
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setFieldValue("email", e.target.value);
 
                         if (apiError) {
@@ -103,7 +103,7 @@ import { useDispatch } from "react-redux";
                       type="password"
                       name="password"
                       data-testid="pass"
-                      onChange={(e) => {
+                      onChange={(e: { target: { value: any; }; }) => {
                         setFieldValue("password", e.target.value);
                         if (apiError) {
                           reset();
