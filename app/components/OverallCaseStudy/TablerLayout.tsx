@@ -1,7 +1,7 @@
 "use client";
 import React, { useState,useEffect } from "react";
 import Pagination from "../../microComponents/Pagination";
-import { overallcasestudyDataApi } from "../../api/apiService/overallcasestudyApiService"; 
+// import { overallcasestudyDataApi } from "../../api/apiService/overallcasestudyApiService"; 
 import { overallcasestudyDataJson } from "../../api/jsonService/overallcasestudyJsonService"
 
 interface Resource {
@@ -23,9 +23,11 @@ const TablerLayout=()=> {
         const fetchData = async () => {
           try {
             setLoading(true);
-            const response = useDummyData
-              ? await overallcasestudyDataApi()
-              : overallcasestudyDataJson();
+            // const response = useDummyData
+            //   ? await overallcasestudyDataApi()
+            //   : overallcasestudyDataJson();
+
+            const response = await overallcasestudyDataJson();
               
             setResources(response ?? []);
           } catch (err) {

@@ -1,77 +1,42 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useQuery } from "@apollo/client";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
+import { GET_CASE_STUDIES_QUERY } from "../../../graphQl/queries/getCaseStudies";
 
-interface CaseStudy {
+export interface CaseStudy {
   caseStudyID: string;
   projectName: string;
   clientName: string;
   techStack: string;
   projectDuration: string;
-  keyOutcomes: string;
+  keyOutcomes?: string;
   industryTarget: string;
   tags: string[];
   document: string;
+  documents?: { name: string; url: string }[];
 }
 
 const useOverallCaseStudyData = () => {
-  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const user = useSelector((state: RootState) => state.auth);
+  const { token } = useSelector((state: RootState) => state.auth);
 
-  useEffect(() => {
-    const fetchCaseStudies = async () => {
-      setLoading(true);
-      setError(null);
+  const { data, loading, error } = useQuery(GET_CASE_STUDIES_QUERY, {
+    variables: {
+      industry: "Finance & Banking",
+      page: 1,
+      pageSize: 10,
+    },
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
 
-      try {
-        const response = await axios.post(
-          "https://crmbackendapis.onrender.com/graphql",
-          {
-            query: `query {
-              getCaseStudies(
-                filter: { industryTarget: "Finance & Banking" }, 
-                pagination: { page: 1, pageSize: 10 }, 
-                sort: { field: createdAt, order: ASC }
-              ) {
-                caseStudyID
-                projectName
-                clientName
-                techStack
-                projectDuration
-                keyOutcomes
-                industryTarget
-                tags
-                document
-              }
-            }`,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
-        );
-
-        if (response.data.errors) {
-          throw new Error(response.data.errors[0].message);
-        }
-
-        setCaseStudies(response?.data?.data?.getCaseStudies || []);
-      } catch (err) {
-        setError(err.message || "Failed to fetch case studies");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCaseStudies();
-  }, [user.token]); // Dependency array ensures it runs when the token changes
-
-  return { caseStudies, loading, error };
+  return {
+    caseStudies: data?.getCaseStudies || [],
+    loading,
+    error: error ? error.message : null,
+  };
 };
 
 export default useOverallCaseStudyData;
