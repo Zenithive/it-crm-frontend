@@ -23,14 +23,7 @@ const Contact = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   // const useAPI = process.env.NEXT_PUBLIC_USE_API === "true";
 
-  // const {data, loading, error, totalItems } = overallLeadApiService(
-  //   currentPage,
-  //   itemsPerPage
-  // );
-
-  // useEffect(() => {
-  //   setRowData(data);  
-  // }, [data]);
+  
 
   const user = useSelector((state: RootState) => state.auth);
 

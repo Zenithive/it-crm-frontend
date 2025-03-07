@@ -5,19 +5,20 @@ import { message } from "antd";
 import { addLead } from "../api/apiService/addLeadModalApiService";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
+import ActivityForm from "../components/ActivityForm";
 
 // Define an interface for the form data
 interface LeadFormData {
   firstName: string;
   lastName: string;
-  linkedinUrl: string;
+  linkedIn: string;
   phone: string;
   jobTitle: string;
-  source: string;
+  leadSource: string;
   leadType: string;
   campaignName: string;
   status: string;
-  date:string;
+  initialContactDate: string;
   organizationName: string;
   email: string;
   website: string;
@@ -35,6 +36,7 @@ interface AddLeadModalProps {
 const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
   const { register, handleSubmit, reset } = useForm<LeadFormData>();
   const [loading, setLoading] = useState(false);
+  const [showActivityForm, setShowActivityForm] = useState(false);
   const user = useSelector((state: RootState) => state.auth);
 
   const onSubmit: SubmitHandler<LeadFormData> = async (data) => {
@@ -52,7 +54,6 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
   };
 
   return (
-  
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="p-6 relative">
         <div className="bg-bg-blue-12 rounded-t-xl p-2 flex justify-between">
@@ -66,65 +67,65 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
             >
               <img src="cross_icon.svg" alt="Cross" className="h-3 w-3"></img>
             </button>
-        </div>
+          </div>
         </div>
 
         <div className="bg-white rounded-b-xl shadow-lg w-full max-w-4xl">
           <form onSubmit={handleSubmit(onSubmit)} className=" p-6">
-        <div className="space-y-2">
-            {/* Personal Information */}
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm text-bg-blue-12 mb-2">
-                  First Name
-                </label>
-                <input
-                  {...register("firstName")}
-                  placeholder="Enter name"
-                  className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-bg-blue-12 mb-2">
-                  Last Name
-                </label>
-                <input
-                  {...register("lastName")}
-                  placeholder="number"
-                  className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-bg-blue-12 mb-2">
-                  LinkedIn Profile URL
-                </label>
-                <input
-                  {...register("linkedinUrl")}
-                  placeholder="Link"
-                  className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
-                />
-              </div>
-            </div>
-
-            {/* Contact and Campaign Information */}
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm text-bg-blue-12 mb-2">
-                  Phone
-                </label>
-                <div className="flex">
-                  <select className="w-24 mr-2 px-2 py-2 border border-bg-blue-12 rounded-lg text-gray-400">
-                    <option value="+91" >+91</option>
-                    <option value="+92" >+92</option>
-                  </select>
+            <div className="space-y-2">
+              {/* Personal Information */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm text-bg-blue-12 mb-2">
+                    First Name
+                  </label>
                   <input
-                    {...register("phone")}
-                    placeholder="9563251478"
-                    className="flex-1 px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
+                    {...register("firstName")}
+                    placeholder="Enter name"
+                    className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-bg-blue-12 mb-2">
+                    Last Name
+                  </label>
+                  <input
+                    {...register("lastName")}
+                    placeholder="number"
+                    className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-bg-blue-12 mb-2">
+                    LinkedIn Profile URL
+                  </label>
+                  <input
+                    {...register("linkedIn")}
+                    placeholder="Link"
+                    className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
                   />
                 </div>
               </div>
-              <div>
+
+              {/* Contact and Campaign Information */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm text-bg-blue-12 mb-2">
+                    Phone
+                  </label>
+                  <div className="flex">
+                    <select className="w-24 mr-2 px-2 py-2 border border-bg-blue-12 rounded-lg text-gray-400">
+                      <option value="+91">+91</option>
+                      <option value="+92">+92</option>
+                    </select>
+                    <input
+                      {...register("phone")}
+                      placeholder="9563251478"
+                      className="flex-1 px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
+                    />
+                  </div>
+                </div>
+                {/* <div>
                 <label className="block text-sm text-bg-blue-12 mb-2">
                   Job Title
                 </label>
@@ -134,22 +135,23 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                 >
                   <option value="Title">Title</option>
                 </select>
+              </div> */}
+                {/* as this is not present in api */}
+                <div>
+                  <label className="block text-sm text-bg-blue-12 mb-2">
+                    Source
+                  </label>
+                  <input
+                    {...register("leadSource")}
+                    placeholder="ex. Linkedin, Upwork"
+                    className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm text-bg-blue-12 mb-2">
-                  Source
-                </label>
-                <input
-                  {...register("source")}
-                  placeholder="ex. Linkedin, Upwork"
-                  className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
-                />
-              </div>
-            </div>
 
-            {/* Lead Type and Campaign */}
-            <div className="grid grid-cols-3 gap-4">
-              <div>
+              {/* Lead Type and Campaign */}
+              <div className="grid grid-cols-3 gap-4">
+                {/* <div>
                 <label className="block text-sm text-bg-blue-12 mb-2">
                   Lead Type
                 </label>
@@ -158,21 +160,21 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                   placeholder="Type"
                   className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
                 />
-              </div>
-              <div>
-                <label className="block text-sm text-bg-blue-12 mb-2">
-                  Name of Campaign
-                </label>
-                <select
-                  {...register("campaignName")}
-                  className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
-                >
-                  <option value="Campaign">Campaign</option>
-                  <option value="Campaign1">Campaign1</option>
-                  <option value="Campaign2">Campaign2</option>
-                </select>
-              </div>
-              <div>
+              </div> */}
+                <div>
+                  <label className="block text-sm text-bg-blue-12 mb-2">
+                    Name of Campaign
+                  </label>
+                  <select
+                    {...register("campaignName")}
+                    className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
+                  >
+                    <option value="Campaign">Campaign</option>
+                    <option value="Campaign1">Campaign1</option>
+                    <option value="Campaign2">Campaign2</option>
+                  </select>
+                </div>
+                {/* <div>
                 <label className="block text-sm text-bg-blue-12 mb-2">
                   Status
                 </label>
@@ -182,43 +184,46 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                 >
                   <option value="Status" className="">Status</option>
                 </select>
+              </div> */}
+                {/* as this field not present in api */}
+                <div>
+                  <label className="block text-sm text-bg-blue-12 mb-2">
+                    Lead Date
+                  </label>
+                  <input
+                    {...register("initialContactDate")}
+                    className="w-full pl-8 py-2 border border-bg-blue-12 rounded-lg focus:outline-none bg-[url('/calender_icon.svg')] bg-no-repeat bg-left bg-[length:25px]"
+                    placeholder="Date"
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-sm text-bg-blue-12 mb-2">
-                  Lead Date
-                </label>
-                <input
-                  {...register("date")}
-                  className="w-full pl-8 py-2 border border-bg-blue-12 rounded-lg focus:outline-none bg-[url('/calender_icon.svg')] bg-no-repeat bg-left bg-[length:25px]"
-                  placeholder="Date"
-                />
-              </div>
-            </div>
 
-            <div className="text-bg-blue-12 font-bold text-2xl py-3">Organization</div>
-            {/* Organization Information */}
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm text-bg-blue-12 mb-2">
-                  Organization Name
-                </label>
-                <input
-                  {...register("organizationName")}
-                  placeholder="Enter name"
-                  className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
-                />
+              <div className="text-bg-blue-12 font-bold text-2xl py-3">
+                Organization
               </div>
-              <div>
-                <label className="block text-sm text-bg-blue-12 mb-2">
-                  Email
-                </label>
-                <input
-                  {...register("email")}
-                  placeholder="email"
-                  className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
-                />
-              </div>
-              <div>
+              {/* Organization Information */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm text-bg-blue-12 mb-2">
+                    Organization Name
+                  </label>
+                  <input
+                    {...register("organizationName")}
+                    placeholder="Enter name"
+                    className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-bg-blue-12 mb-2">
+                    Email
+                  </label>
+                  <input
+                    {...register("email")}
+                    placeholder="email"
+                    className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
+                  />
+                </div>
+                {/* <div>
                 <label className="block text-sm text-bg-blue-12 mb-2">
                   Website
                 </label>
@@ -227,23 +232,25 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                   placeholder="Link"
                   className="w-full px-3 py-2 border  border-bg-blue-12 rounded-lg focus:outline-none"
                 />
+              </div> */}
               </div>
-            </div>
 
-            {/* Location and Company Details */}
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm text-bg-blue-12 mb-2">
-                  Country
-                </label>
-                <select
-                  {...register("country")}
-                  className="w-full px-3 py-2 border  border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
-                >
-                  <option value="Ex. India" className="">Ex. India</option>
-                </select>
-              </div>
-              <div>
+              {/* Location and Company Details */}
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm text-bg-blue-12 mb-2">
+                    Country
+                  </label>
+                  <select
+                    {...register("country")}
+                    className="w-full px-3 py-2 border  border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
+                  >
+                    <option value="Ex. India" className="">
+                      Ex. India
+                    </option>
+                  </select>
+                </div>
+                {/* <div>
                 <label className="block text-sm text-bg-blue-12 mb-2">
                   City
                 </label>
@@ -252,8 +259,8 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                   placeholder="City"
                   className="w-full px-3 py-2 border  border-bg-blue-12 rounded-lg focus:outline-none"
                 />
-              </div>
-              <div>
+              </div> */}
+                {/* <div>
                 <label className="block text-sm text-bg-blue-12 mb-2">
                   No. Employees
                 </label>
@@ -263,12 +270,12 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                 >
                   <option value="ex. 150" className="">ex. 150</option>
                 </select>
+              </div> */}
               </div>
-            </div>
 
-            {/* Final Section */}
-            <div className="grid grid-cols-3 gap-4">
-              {/* <div>
+              {/* Final Section */}
+              <div className="grid grid-cols-3 gap-4">
+                {/* <div>
                 <label className="block text-sm text-bg-blue-12 mb-2">
                   Annual Revenue
                 </label>
@@ -278,7 +285,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                   className="w-full px-3 py-2 border  border-bg-blue-12 rounded-lg focus:outline-none"
                 />
               </div> */}
-              <div>
+                {/* <div>
                 <label className="block text-sm text-bg-blue-12 mb-2">
                   Industry
                 </label>
@@ -288,30 +295,41 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                 >
                   <option value="Ex. India" className="">Ex. India</option>
                 </select>
+              </div> */}
               </div>
             </div>
-
-                </div>
             {/*  Action Buttons */}
             <div className="flex space-x-4 mt-5">
               <button
                 type="submit"
                 className="w-full py-2 bg-bg-blue-12 text-white rounded-lg"
-                >
+              >
                 Save
               </button>
+              {/* Activity Form Modal */}
               <button
                 type="button"
-                className= "w-full py-2 bg-bg-blue-12 text-white rounded-lg"
+                className="w-full py-2 bg-bg-blue-12 text-white rounded-lg"
+                onClick={() => setShowActivityForm(true)} // Show form on click
               >
                 Add Activity
               </button>
+
+              {/* Render ActivityForm outside button */}
+              {showActivityForm && (
+                <ActivityForm
+                  onClose={() => setShowActivityForm(false)} // Close ActivityForm
+                  onSubmit={async (data) => {
+                    console.log("Activity submitted:", data);
+                    // setShowActivityForm(false);
+                  }}
+                />
+              )}
             </div>
           </form>
-          </div>
+        </div>
       </div>
     </div>
-   
   );
 };
 

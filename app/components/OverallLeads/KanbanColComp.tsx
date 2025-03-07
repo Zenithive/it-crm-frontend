@@ -33,7 +33,7 @@ const ColumnComponent: React.FC<ColumnPropsForKanban> = ({ column, moveCard, car
       className={`h-[500px] bg-gray-50 rounded-lg shadow-prim mx-2 mainCard ${isOver ? 'bg-blue-300' : ''}`}
       style={{ flex: `0 0 ${cardWidth}` }}
     >
-      <h2 className="font-semibold mb-4 text-white bg-bg-blue-12 p-3 title_set">
+      <h2 className="font-semibold mb-4 text-white bg-bg-blue-12 p-3 title_set ">
         <span className="text-xl">{column.title}</span>
         <span className="text-[18px]">({column.number})</span>
       </h2>
