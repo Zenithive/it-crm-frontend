@@ -1,8 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Pagination from "../microComponents/Pagination"
-import { overallcasestudyDataApi } from "../api/apiService/overallcasestudyApiService"; 
-import { overallcasestudyDataJson } from "../api/jsonService/overallcasestudyJsonService"
+import Pagination from "../microComponents/Pagination";
 import Search from "../microComponents/Search";
 import HeaderButtons from "../microComponents/HeaderButtons";
 import { headerbutton, search, nav } from "./Path/TaskData";
@@ -10,164 +8,68 @@ import { useRouter } from "next/navigation";
 import { OverallCaseStudytitle } from "./Path/TitlePaths";
 import Title from "../microComponents/Title";
 import TablerLayout from "./OverallCaseStudy/TablerLayout";
-import AddCaseStudyForm from "./AddCaseStudyForm";
+import useOverallCaseStudyData from "../api/apiService/overallcasestudyApiService";
 
 interface Resource {
   title: string;
   company: string;
   tags: string[];
-}
-
-interface CaseStudyFormData {
-  projectName: string;
-  clientName: string;
-  clientLocation: string;
-  projectDuration: string;
-  techStack: string;
-  industryTargeted: string;
-  document: string;
-  searchableTags: string;
-  keyOutcomes: string;
-  details: string;
-}
-
-interface LeadCloseFormData {
-  dealName: string;
-  dealStartDate: string;
-  projectRequirement: string;
-  dealStatus: string;
+  caseStudyID: string;
 }
 
 const ResourceContainer = () => {
-  const [resources, setResources] = useState<Resource[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [itemsPerPage, setItemsPerPage] = useState(9); // Default value moved inside component
+  const [itemsPerPage] = useState(9);
 
-  const [isCaseStudyModalVisible, setIsCaseStudyModalVisible] = useState(false);
+  const { caseStudies, loading, error } = useOverallCaseStudyData(); // ✅ Call the custom hook here
 
-  const useDummyData = process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
+  const router = useRouter();
 
-  const showCaseStudyModal = () => {
-    setIsCaseStudyModalVisible(true);
-  };
-
-  const hideCaseStudyModal = () => {
-    setIsCaseStudyModalVisible(false);
-  };
-
-  const handleFormSubmit = async (
-    data: CaseStudyFormData | LeadCloseFormData, 
-
-  ) => {
-    try {
-      console.log('Form submitted:', { data });
-      // Here you would implement API calls to save the data
-      // For example:
-      // if (formType === "caseStudy") {
-      //   await saveCaseStudy(data as CaseStudyFormData);
-      // } else {
-      //   await saveLeadClose(data as LeadCloseFormData);
-      // }
-      
-      // On successful submission
-      hideCaseStudyModal();
-      
-      // Optionally refresh the resources list
-      // await fetchResources();
-      
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      // Handle error (display error message, etc.)
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = useDummyData
-          ? await overallcasestudyDataApi()
-          : overallcasestudyDataJson();
-          
-        setResources(response ?? []);
-      } catch (err) {
-        console.error("Error fetching resources:", err);
-        setError("Failed to load resources");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [useDummyData]);
+  // Transform API data into the format needed for resources
+  const resources = caseStudies.map((item: any) => ({
+    title: item.projectName,
+    company: item.clientName,
+    tags: item.tags ? item.tags.split(", ").map((tag:any) => tag.trim()) : [],
+    caseStudyID: item.caseStudyID,
+  }));
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentItems = resources.slice(startIndex, endIndex);
 
-  const router = useRouter();
   const handleLayoutChange = () => {
     router.push("/tableviewoverallcase");
   };
-  
-  const handleResourceClick = (resource: Resource) => {
-    // Handle resource click - can be customized as needed
-    console.log('Resource clicked:', resource);
-  };
 
+  const handleResourceClick = (resource: Resource) => {
+    const caseStudyID = encodeURIComponent(resource.caseStudyID);
+    router.push(`/individualcasestudy/${caseStudyID}`);
+  };
   return (
     <>
-      {/* Header Section */}
       <div className="w-full px-4 sm:px-6 lg:px-[70px] mt-6">
         <div className="flex justify-between items-center w-full">
-          {/* Left Side: Title & Search Bar */}
           <div className="flex items-center space-x-4">
             <Title title={OverallCaseStudytitle[0].titleName} />
             <Search searchText={search[1].searchText} />
           </div>
-
-          {/* Right Side: Header Buttons & Toggle Buttons */}
           <div className="flex items-center space-x-6">
-            {/* Toggle Buttons */}
             <div className="flex space-x-4">
               <button className="w-7 h-7">
-                <img
-                  src="/overallCaseStudy.svg"
-                  alt="Overall View"
-                  className="w-full h-full"
-                />
+                <img src="/overallCaseStudy.svg" alt="Overall View" className="w-full h-full" />
               </button>
               <button onClick={handleLayoutChange} className="w-7 h-7">
-                <img
-                  src="/tabler_layout-list.svg"
-                  alt="List View"
-                  className="w-full h-full"
-                />
+                <img src="/tabler_layout-list.svg" alt="List View" className="w-full h-full" />
               </button>
             </div>
-
-            {/* Header Buttons */}
             <HeaderButtons
               button1Text={headerbutton[1].button1text}
               button1img={headerbutton[1].button1img}
               button2Text={headerbutton[1].button2text}
               button2img={headerbutton[1].button2img}
               button1width="w-[109px]"
-              button2width="w-[150px]"
-              onClick2={showCaseStudyModal} 
+              button2width="w-[160px]"
             />
-             {isCaseStudyModalVisible && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="w-full max-w-6xl">
-              <AddCaseStudyForm 
-                onSubmit={handleFormSubmit}
-                onClose={hideCaseStudyModal}
-              />
-            </div>
-          </div>
-        )}
           </div>
         </div>
       </div>
@@ -182,7 +84,7 @@ const ResourceContainer = () => {
             <div className="flex-grow mt-6">
               <div className="bg-white shadow-custom rounded-2xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 sm:p-6 lg:p-8">
-                  {currentItems.map((resource, index) => (
+                  {currentItems.map((resource: Resource, index:any) => (
                     <div
                       key={index}
                       className="bg-blue_shadow p-4 sm:p-6 rounded-xl shadow-custom transition-all duration-300 flex flex-col min-h-[170px] h-full cursor-pointer"
@@ -214,24 +116,19 @@ const ResourceContainer = () => {
                 </div>
               </div>
             </div>
-
             <div className="mt-6">
-              <Pagination
+              {/* <Pagination
                 totalItems={resources.length}
-                itemsPerPage={itemsPerPage}
+                initialItemsPerPage={itemsPerPage}
                 onPageChange={setCurrentPage}
                 onItemsPerPageChange={(newItemsPerPage) => {
                   setItemsPerPage(newItemsPerPage);
                   setCurrentPage(1);
                 }}
-                currentPage={currentPage}
-              />
+              /> */}
             </div>
           </>
         )}
-        
-        {/* Render the AddCaseStudyForm modal when visible */}
-       
       </div>
     </>
   );

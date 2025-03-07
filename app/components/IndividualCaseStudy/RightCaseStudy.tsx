@@ -7,36 +7,42 @@ import {
   individualcasestudyOutcomesJson,
   individualcasestudyDocJson,
 } from "../../api/jsonService/individualcasestudyJsonServices";
-
-import "../Dashboard/Dashboard.css";
+import { CaseStudy } from "../../api/apiService/overallcasestudyApiService";
 
 interface Outcome {
   outcomes: string;
 }
 
-const RightCaseStudy = () => {
+interface Document {
+  name: string;
+  url: string;
+}
+
+// export interface CaseStudy {
+//   keyOutcomes?: string;
+//   documents?: { name: string; url: string }[];
+// }
+
+const useDummyData =
+  process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
+
+const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   const [outcome, setOutcome] = useState<Outcome | null>(null);
-  interface Document {
-    name: string;
-    url: string;
-  }
-  
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [docLoading, setDocLoading] = useState(true);
   const [docError, setDocError] = useState<string | null>(null);
 
-  const useDummyData =
-    process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
-
   useEffect(() => {
     const fetchOutcomeData = async () => {
       try {
-        const outcomeResponse = useDummyData
-          ? await individualcasestudyOutcomesApi()
-          : individualcasestudyOutcomesJson();
-
+        let outcomeResponse;
+        if (useDummyData) {
+          outcomeResponse = await individualcasestudyOutcomesJson();
+        } else {
+          outcomeResponse = { outcomes: caseStudy.keyOutcomes || "No outcomes available." };
+        }
         setOutcome(outcomeResponse ?? null);
       } catch (err) {
         console.error("Error fetching outcome data:", err);
@@ -48,10 +54,12 @@ const RightCaseStudy = () => {
 
     const fetchDocumentData = async () => {
       try {
-        const docResponse = useDummyData
-          ? await individualcasestudyDocApi()
-          : individualcasestudyDocJson();
-
+        let docResponse;
+        if (useDummyData) {
+          docResponse = await individualcasestudyDocJson();
+        } else {
+          docResponse = caseStudy.documents || [];
+        }
         setDocuments(docResponse ?? []);
       } catch (err) {
         console.error("Error fetching documents:", err);
@@ -63,82 +71,86 @@ const RightCaseStudy = () => {
 
     fetchOutcomeData();
     fetchDocumentData();
-  }, [useDummyData]);
+  }, [caseStudy]);
 
-  if (loading)
-    return <p className="text-gray-500 text-center">Loading outcome...</p>;
+  if (loading) return <p className="text-gray-500 text-center">Loading outcome...</p>;
   if (error) return <p className="text-red-500 text-center">{error}</p>;
 
   return (
     <div className="w-full lg:w-1/2 space-y-6">
-      {/* Outcomes */}
       <div>
         <h3 className="text-lg font-semibold text-bg-blue-12 mb-3">Outcomes</h3>
         <ul className="space-y-4 list-disc pl-5">
-          {outcome?.outcomes
-            ?.split("\n\n") // Splitting the text at line breaks
-            .map((point, index) => (
-              <li key={index} className="text-black leading-relaxed whitespace-pre-wrap">
-                {point}
-              </li>
-            ))}
+          {outcome?.outcomes?.split("\n\n").map((point, index) => (
+            <li key={index} className="text-black leading-relaxed whitespace-pre-wrap">
+              {point}
+            </li>
+          ))}
         </ul>
       </div>
 
       <div className="border border-content-border"></div>
 
-      {/* Documents */}
       <div className="bg-white rounded-lg shadow-custom p-2">
-  <div className="overflow-y-auto h-[210px] scrollbar-custom bg-white">
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-bg-blue-12">Documents</h3>
-        <div className="flex justify-center items-center">
-             <div className="flex max-w-[180px] px-4 py-2 border shadow-custom border-gray-300 rounded-lg hover:bg-gray-50">
-               <img
-                src="/doc_logo.svg"
-                 alt="Document"
-                 className="w-5 h-5 mr-3"
-               />
-               <button className="text-black text-sm text-center">
-                Add Document
-              </button>
-            </div>
-           </div>
-      </div>
-
-      <div className="border border-content-border mb-3"></div>
-
-      {docLoading ? (
-        <p className="text-center text-gray-500">Loading documents...</p>
-      ) : docError ? (
-        <p className="text-center text-red-500">{docError}</p>
-      ) : documents.length === 0 ? (
-        <p className="text-center text-gray-500">No documents available.</p>
-      ) : (
-        <div className="space-y-4">
-          {documents.map((doc, index) => (
-            <div key={index} className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 flex items-center justify-center">
-                  <img src="/doc.svg" alt="Document" />
-                </div>
-                <span className="text-gray-700">{doc.name}</span>
+        {/* <h3 className="text-lg font-semibold text-bg-blue-12">Documents</h3> */}
+        {/* <div className="overflow-y-auto h-[210px] scrollbar-custom bg-white p-4">
+          
+          {docLoading ? (
+            <p className="text-gray-500 text-center">Loading documents...</p>
+          ) : docError ? (
+            <p className="text-red-500 text-center">{docError}</p>
+          ) : documents.length > 0 ? (
+            documents.map((doc, index) => (
+              <div key={index} className="mb-2">
+                <a
+                  href={doc.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline"
+                >
+                  {doc.name}
+                </a>
               </div>
-              <a
-                href={doc.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-indigo-600 hover:text-indigo-700"
-              >
-                View
-              </a>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-gray-500">No documents available.</p>
+          )}
         </div>
-      )}
+      </div> */}
+
+
+<div className="overflow-y-auto h-[210px] scrollbar-custom bg-white p-4">
+  <div className="flex justify-between items-center mb-4">
+    <h3 className="text-lg font-semibold text-bg-blue-12">Documents</h3>
+    <div className="flex justify-center items-center">
+      <div className="flex max-w-[180px] px-4 py-2 border shadow-custom border-gray-300 rounded-lg hover:bg-gray-50">
+        <img src="/doc_logo.svg" alt="Document" className="w-5 h-5 mr-3" />
+        <button className="text-black text-sm text-center">Add Document</button>
+      </div>
     </div>
   </div>
+
+  {docLoading ? (
+    <p className="text-gray-500 text-center">Loading documents...</p>
+  ) : docError ? (
+    <p className="text-red-500 text-center">{docError}</p>
+  ) : documents.length > 0 ? (
+    documents.map((doc, index) => (
+      <div key={index} className="mb-2">
+        <a
+          href={doc.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 underline"
+        >
+          {doc.name}
+        </a>
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-500">No documents available.</p>
+  )}
+</div>
 </div>
 
     </div>
