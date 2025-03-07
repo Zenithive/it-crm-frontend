@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 
 
-import { fetchFromAPIForKanbanView } from '../../api/apiService/OverallLeadApiService';
+// import { fetchFromAPIForKanbanView } from '../../api/apiService/OverallLeadApiService';
 import { fetchFromJSONForKanbanView } from "../../api/jsonService/OverallLeadsJsonService";
 import './overallLeads.css';
 import {ColumnForKanbanView} from './OverallLeadsData';
@@ -20,8 +20,14 @@ const KanbanView: React.FC = () => {
    const useAPI = process.env.NEXT_PUBLIC_USE_API === "false";
     useEffect(() => {
       const fetchData = async () => {
-        const data = useAPI ? await fetchFromAPIForKanbanView() : await fetchFromJSONForKanbanView();
-        setColumns(data);
+        // const data = useAPI ? await fetchFromAPIForKanbanView() : await fetchFromJSONForKanbanView();
+        const page = 1; // Set your desired page number
+    const pageSize = 100; // Set your desired page size
+        // const response = useAPI ? await fetchFromAPIForKanbanView(page, pageSize) : await fetchFromJSONForKanbanView();
+        const response = await fetchFromJSONForKanbanView();
+        const data = Array.isArray(response) ? response : response;
+
+        // setColumns(data);
       };
   
       fetchData();
