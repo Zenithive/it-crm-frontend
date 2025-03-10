@@ -22,10 +22,10 @@ const KanbanView: React.FC = () => {
       const data = Array.isArray(response) ? response : response;
 
       // Ensure each column has an 'id'
-const formattedData = data.map((column, index) => ({
-  id: `column-${index}`, // Generate a unique ID if missing
-  ...column,
-}));
+      const formattedData = data.map((column, index) => ({
+        id: `column-${index}`, // Generate a unique ID if missing
+        ...column,
+      }));
 
       setColumns(formattedData);
     };
