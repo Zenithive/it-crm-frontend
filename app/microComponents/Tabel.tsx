@@ -4,21 +4,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { Table } from 'antd';
+import { MicroTablePropsForListView } from './InterfaceAndTypeData';
 
 
 
-interface ColumnDef {
-    field: string;
-    headerName: string;
-    cellRenderer?: string;
-}
 
-interface MicroTableProps {
-    rowData: any[];
-    columnDefs: ColumnDef[];
-}
-
-const MicroTable: React.FC<MicroTableProps> = ({ rowData, columnDefs }) => {
+const MicroTable: React.FC<MicroTablePropsForListView> = ({ rowData, columnDefs }) => {
     const [ready, setReady] = useState<boolean>(false);
 
     useEffect(() => {
@@ -34,7 +25,7 @@ const MicroTable: React.FC<MicroTableProps> = ({ rowData, columnDefs }) => {
         dataIndex: col.field,
         key: col.field,
         title: (
-            <div className="flex items-center justify-center gap-1">
+            <div className="flex items-center justify-center gap-1" data-testid="header">
                 {col.headerName}
                 <img src="/sort.svg" className="w-4 h-4 ml-2" alt="Sort" />
             </div>
@@ -122,7 +113,7 @@ const MicroTable: React.FC<MicroTableProps> = ({ rowData, columnDefs }) => {
                 }
 
                 return (
-                    <div className="flex items-center justify-center space-x-2 gap-2">
+                    <div className="flex items-center justify-center space-x-2 gap-2" data-testid="last-activity">
                         <div className="flex flex-col items-start">
                             <span className="text-sm text-black font-semibold">{activityTime}</span>
                         </div>

@@ -20,7 +20,11 @@ const config: Config = {
   preset: 'ts-jest',
   transform: {
       '^.+\\.(ts|tsx)?$': 'ts-jest',
+      
     },
+    // transformIgnorePatterns: [
+    //   "/node_modules/(?!react-dnd)/",  // Allow transformation of react-dnd
+    // ],
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node']
   
   

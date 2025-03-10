@@ -1,6 +1,13 @@
 {
   "compilerOptions": {
     "target": "ES2017",
+    // "module": "ESNext",
+
+  
+    
+    // "target": "ESNext",
+   
+    
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -27,7 +34,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "jest.config.ts",
-    "tests/components/login.test.js"
-  ],
+ "tests/OverallLeadsContact/ContactKanbanView.test.js",
+    "tests/**/*" ,
+ "tests/login.test.js", "tests/OverallLeadsContact/ContactKanbanView.js", "tests/OverallLeadsContact/ContactListView.test.js", "tests/dashboard.test.js"  ],
   "exclude": ["node_modules"]
 }

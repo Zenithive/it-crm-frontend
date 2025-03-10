@@ -65,7 +65,7 @@ type ViewType = "list" | "kanban";
     <>
       
 
-     
+     <main data-test-id='header'>
       <HeaderComp
         data={{
           title: "Lead",
@@ -90,7 +90,7 @@ type ViewType = "list" | "kanban";
     </DndProvider>
         )}
       </div>
-      
+      </main>
     </>
   );
 }

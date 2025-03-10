@@ -1,12 +1,7 @@
+import { CardPropsForLeadCard } from "./InterfaceAndTypeData";
 
-interface CardProps {
-    id: string;
-    title: string;
-    subtitle: string;
-    className?: string;
-  }
-  
-  export const LeadCard = ({ id, title, subtitle, className = '' }: CardProps) => {
+
+  export const LeadCard = ({ id, title, subtitle, className = '' }: CardPropsForLeadCard) => {
     return (
       <div 
         className={`p-3 mb-3 bg-blue_shadow rounded-lg transition-shadow ${className} `}

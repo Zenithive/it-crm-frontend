@@ -1,7 +1,7 @@
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import Login from '.././app/components/Login';
+import Login from '../app/components/Login';
 import '@testing-library/jest-dom';
 
 import userEvent from "@testing-library/user-event";
@@ -53,7 +53,7 @@ test('renders login form and components', () => {
 test('displays email validation error on invalid email', async () => {
   
   const mockPush = jest.fn();
-  useRouter.mockImplementation(() => ({ push: mockPush }));
+  mockImplementation(() => ({ push: mockPush }));
 
   render(
     <Provider store={mockStore}>

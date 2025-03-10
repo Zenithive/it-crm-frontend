@@ -45,6 +45,7 @@ import { useDispatch } from "react-redux";
             id: response.user.id,
             name: response.user.name,
             email: response.user.email,
+          
             role: response.user.role,
             token: response.token,
           };
