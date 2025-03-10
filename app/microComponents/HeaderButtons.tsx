@@ -9,7 +9,8 @@ interface Data {
   button1Text?: string;
   button2Text?: string;
   onClick1?: () => void;  
-  onClick2?: () => void;  
+  onClick2?: () => void; 
+  button2Action?: () => void; 
 }
 
 const HeaderButtons = ({
@@ -20,7 +21,8 @@ const HeaderButtons = ({
   button1width,
   button2width,
   onClick1,
-  onClick2
+  onClick2,
+  button2Action
 }: Data) => {
   return (
     <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-[15px] w-full sm:w-auto">
@@ -34,7 +36,10 @@ const HeaderButtons = ({
 
       <button
         className={`${button2width} min-w-[120px] bg-bg-blue-12 text-white font-normal h-[40px] rounded-xl flex items-center justify-center gap-[10px]`}
-        onClick={onClick2}
+        onClick={() => {
+          onClick2?.();
+          button2Action?.();
+        }}
       >
         <img src={button2img} className="w-4 sm:w-auto" alt="" />
         <span className="text-[12px] sm:text-[14px] whitespace-nowrap">{button2Text}</span>

@@ -61,12 +61,16 @@ type ItemForKanbanView = {
     title: string;
     subtitle: string;
   };
-export type ColumnForKanbanView = {
+  export interface ColumnForKanbanView {
     id: string;
     title: string;
     number: number;
-    items: ItemForKanbanView[];
-  };
+    items: {
+      id: string;
+      title: string;
+      subtitle: string;
+    }[];
+  }
   
 export type ColumnPropsForKanban = {
   column: ColumnForKanbanView;

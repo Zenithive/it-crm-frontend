@@ -1,32 +1,25 @@
-import axios from "axios";
+import { gql, useMutation } from "@apollo/client";
 import { message } from "antd";
-import {CREATE_TASK_QUERY} from "../../../graphQl/queries/createTaskModal.queries";
+import { CREATE_TASK_QUERY } from "../../../graphQl/queries/createTaskModal.queries";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const useCreateTask = () => {
+  const [createTaskMutation, { loading, error }] = useMutation(CREATE_TASK_QUERY);
 
-if (!apiUrl) {
-  throw new Error("API URL is not defined");
-}
-
-export const createTask = async (values: any, token: string) => {
-  try {
-    const response = await axios.post(
-      apiUrl,
-      {
-        query: CREATE_TASK_QUERY,
+  const createTask = async (values: any) => {
+    try {
+      const { data } = await createTaskMutation({
         variables: { input: values },
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    message.success("Task created successfully!");
-    return response.data;
-  } catch (error) {
-    message.error("Failed to create task");
-    throw error;
-  }
+      });
+
+      message.success("Task created successfully!");
+      return data;
+    } catch (err) {
+      message.error("Failed to create task");
+      throw err;
+    }
+  };
+
+  return { createTask, loading, error };
 };
+
+export default useCreateTask;
