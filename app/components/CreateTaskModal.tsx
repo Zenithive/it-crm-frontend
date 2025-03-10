@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { Button, Modal, Form, Input, DatePicker, Select, message } from "antd";
-import {createTask} from "../api/apiService/createTaskModalApiService"; 
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
+import useCreateTask from "../api/apiService/createTaskModalApiService";
 
 const { Option } = Select;
 
@@ -15,22 +15,20 @@ interface CreateTaskModalProps {
 const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ visible, setVisible }) => {
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const { createTask } = useCreateTask(); // Using custom hook
 
   const user = useSelector((state: RootState) => state.auth);
 
   const handleCancel = () => setVisible(false);
 
   const handleSubmit = async (values: any) => {
-    setLoading(true);
     try {
-      await createTask(values, user.token);
+      await createTask(values);
       form.resetFields();
       setVisible(false);
       message.success("Task created successfully!");
     } catch (error) {
       message.error("Failed to create task");
-    } finally {
-      setLoading(false);
     }
   };
 
