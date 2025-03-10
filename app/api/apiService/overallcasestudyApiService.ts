@@ -19,7 +19,7 @@ export interface CaseStudy {
 const useOverallCaseStudyData = () => {
   const { token } = useSelector((state: RootState) => state.auth);
 
-  const { data, loading, error } = useQuery(GET_CASE_STUDIES_QUERY, {
+  const { data, loading, error,refetch  } = useQuery(GET_CASE_STUDIES_QUERY, {
     variables: {
       industry: "Finance & Banking",
       page: 1,
@@ -36,6 +36,7 @@ const useOverallCaseStudyData = () => {
     caseStudies: data?.getCaseStudies || [],
     loading,
     error: error ? error.message : null,
+    refetch,
   };
 };
 

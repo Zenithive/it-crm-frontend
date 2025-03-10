@@ -18,10 +18,16 @@ const KanbanView: React.FC = () => {
       const page = 1; // Set your desired page number
       const pageSize = 100; // Set your desired page size
       // const response = useAPI ? await fetchFromAPIForKanbanView(page, pageSize) : await fetchFromJSONForKanbanView();
-      const response = await fetchFromJSONForKanbanView();
+      const response = await fetchFromJSONForKanbanView(page, pageSize);
       const data = Array.isArray(response) ? response : response;
 
-      // setColumns(data);
+      // Ensure each column has an 'id'
+      const formattedData = data.map((column, index) => ({
+        id: `column-${index}`, // Generate a unique ID if missing
+        ...column,
+      }));
+
+      setColumns(formattedData);
     };
 
     fetchData();

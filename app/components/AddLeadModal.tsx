@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { message } from "antd";
-import { addLead } from "../api/apiService/addLeadModalApiService";
+import { message, DatePicker } from "antd";
+import { useAddLead } from "../api/apiService/addLeadModalApiService";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
 import ActivityForm from "../components/ActivityForm";
@@ -34,15 +34,24 @@ interface AddLeadModalProps {
 }
 
 const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
-  const { register, handleSubmit, reset } = useForm<LeadFormData>();
+  const { register, handleSubmit, reset, setValue} = useForm<LeadFormData>();
   const [loading, setLoading] = useState(false);
   const [showActivityForm, setShowActivityForm] = useState(false);
   const user = useSelector((state: RootState) => state.auth);
+  const [date, setDate] = useState("");
+
+  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedDate = event.target.value;
+    setDate(selectedDate); // Ensures YYYY-MM-DD format
+    setValue("initialContactDate", selectedDate); // Update form value
+  };
+
+  const { addLead, loading: mutationLoading, error } = useAddLead();
 
   const onSubmit: SubmitHandler<LeadFormData> = async (data) => {
     setLoading(true);
     try {
-      await addLead(data, user.token);
+      await addLead(data); // ✅ Now using GraphQL mutation
       message.success("Lead added successfully!");
       reset(); // Reset the form after successful submission
       onClose(); // Close the modal
@@ -52,7 +61,6 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
       setLoading(false);
     }
   };
-
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="p-6 relative">
@@ -81,7 +89,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                   </label>
                   <input
                     {...register("firstName")}
-                    placeholder="Enter name"
+                    placeholder="Enter First name"
                     className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
                   />
                 </div>
@@ -91,7 +99,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                   </label>
                   <input
                     {...register("lastName")}
-                    placeholder="number"
+                    placeholder="Enter Last Name"
                     className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
                   />
                 </div>
@@ -191,9 +199,9 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                     Lead Date
                   </label>
                   <input
-                    {...register("initialContactDate")}
-                    className="w-full pl-8 py-2 border border-bg-blue-12 rounded-lg focus:outline-none bg-[url('/calender_icon.svg')] bg-no-repeat bg-left bg-[length:25px]"
-                    placeholder="Date"
+                    type="date"
+                    onChange={handleDateChange}
+                    className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
                   />
                 </div>
               </div>

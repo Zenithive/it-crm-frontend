@@ -1,19 +1,21 @@
 "use client";
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import {useAddCaseStudy} from "../api/apiService/addCaseStudyApiService"
+import { message } from "antd";
 
 // Define the interface for form data
 interface CaseStudyFormData {
   projectName: string;
   clientName: string;
-  clientLocation: string;
-  projectDuration: string;
+  // clientLocation: string;
   techStack: string;
-  industryTargeted: string;
-  document: string;
-  searchableTags: string;
+  projectDuration: string;
   keyOutcomes: string;
-  details: string;
+  industryTarget: string;
+  tags: string[];
+  document: string;
+  // details: string;
 }
 
 interface LeadCloseFormData {
@@ -45,17 +47,23 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
     defaultValues: initialData as LeadCloseFormData
   });
 
+  const { addCaseStudy } = useAddCaseStudy();
+
   const handleCaseStudySubmit: SubmitHandler<CaseStudyFormData> = async (data) => {
     setLoading(true);
     try {
-      await onSubmit(data, "caseStudy");
-      // Reset form or show success message
+      await addCaseStudy(data);
+      // No need to show success message here as it's already shown in the hook
+      onClose(); // Close the form after successful submission
     } catch (error) {
-      console.error("Failed to submit case study:", error);
+      // Error is already logged and displayed in the hook
+      console.error("Form submission failed:", error);
+      // No need for another error message
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleLeadCloseSubmit: SubmitHandler<LeadCloseFormData> = async (data) => {
     setLoading(true);
@@ -84,6 +92,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
             </div>
 
             <form onSubmit={caseStudyForm.handleSubmit(handleCaseStudySubmit)} className="p-6">
+
               <div className="grid grid-cols-2 gap-3">
                 {/* Project Name */}
                 <div>
@@ -118,7 +127,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
                 </div>
 
                 {/* Client Location */}
-                <div>
+                {/* <div>
                   <label className="block text-md text-indigo-600 font-medium mb-2">
                     Client Location
                   </label>
@@ -128,7 +137,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
                     {...caseStudyForm.register("clientLocation")}
                     className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
-                </div>
+                </div> */}
 
                 {/* Project Duration */}
                 <div>
@@ -164,7 +173,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
                   <input
                     type="text"
                     placeholder="Targeted"
-                    {...caseStudyForm.register("industryTargeted")}
+                    {...caseStudyForm.register("industryTarget")}
                     className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
@@ -190,7 +199,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
                   <input
                     type="text"
                     placeholder="Tags"
-                    {...caseStudyForm.register("searchableTags")}
+                    {...caseStudyForm.register("tags")}
                     className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
@@ -210,7 +219,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
               </div>
 
               {/* Details */}
-              <div className="mt-2">
+              {/* <div className="mt-2">
                 <label className="block text-md text-indigo-600 font-medium mb-2">
                   Details
                 </label>
@@ -220,7 +229,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
                   rows={3}
                   className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                 ></textarea>
-              </div>
+              </div> */}
 
               {/* Save Button */}
               <div className="mt-6">
@@ -241,17 +250,15 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="bg-indigo-500 p-4 flex justify-between items-center">
               <h2 className="text-2xl font-semibold text-white">Lead Close Form</h2>
-              <button className="bg-white p-2 rounded-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              <button className="bg-white p-2 rounded-lg" onClick={onClose}>
+  <img src="cross_icon.svg" alt="Close" className="h-3 w-3" />
+</button>
             </div>
 
             <form onSubmit={leadCloseForm.handleSubmit(handleLeadCloseSubmit)} className="p-6">
               <div className="grid grid-cols-1 gap-6">
                 {/* Deal Name */}
-                <div>
+                {/* <div>
                   <label className="block text-md text-indigo-600 font-medium mb-2">
                     Deal Name
                   </label>
@@ -264,10 +271,10 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
                   {leadCloseForm.formState.errors.dealName && (
                     <span className="text-red-500 text-sm">This field is required</span>
                   )}
-                </div>
+                </div> */}
 
                 {/* Deal Start Date */}
-                <div>
+                {/* <div>
                   <label className="block text-md text-indigo-600 font-medium mb-2">
                     Deal Start Date
                   </label>
@@ -280,10 +287,10 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
                   {leadCloseForm.formState.errors.dealStartDate && (
                     <span className="text-red-500 text-sm">This field is required</span>
                   )}
-                </div>
+                </div> */}
 
                 {/* Project Requirement */}
-                <div>
+                {/* <div>
                   <label className="block text-md text-indigo-600 font-medium mb-2">
                     Project Requirement
                   </label>
@@ -293,10 +300,10 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
                     {...leadCloseForm.register("projectRequirement")}
                     className="w-full px-4 py-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
-                </div>
+                </div> */}
 
                 {/* Deal Status */}
-                <div>
+                {/* <div>
                   <label className="block text-md text-indigo-600 font-medium mb-2">
                     Deal Status
                   </label>
@@ -306,7 +313,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
                     {...leadCloseForm.register("dealStatus")}
                     className="w-full px-4 py-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
-                </div>
+                </div> */}
 
                 {/* Submit Button */}
                 <div className="mt-6">

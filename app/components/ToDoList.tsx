@@ -12,11 +12,14 @@ import { RootState } from "../redux/store/store";
 import todoListApiService from "../api/apiService/todoListApiService";
 
 const TodoList: React.FC = () => {
+  const [visible, setVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Default to 10
   
   const { todos, loading, error, totalItems } = todoListApiService(currentPage, itemsPerPage);
   const user = useSelector((state: RootState) => state.auth);
+
+  const showModal = () => setVisible(true);
 
   const formatText = (text: string) => {
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
@@ -63,9 +66,10 @@ const TodoList: React.FC = () => {
           button2Text={headerbutton[2].button2text}
           button2img={headerbutton[2].button2img}
           button1width="w-[120px]"
-          button2width="w-[200px]"
+          button2width="w-[120px]"
+          onClick2={showModal}
         />
-        <CreateTaskModal/>
+        <CreateTaskModal visible={visible} setVisible={setVisible} />
         </div>
       </div>
       {loading ? (

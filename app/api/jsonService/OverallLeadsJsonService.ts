@@ -6,7 +6,7 @@ export const fetchFromJSONForListView = async () => {
 };
 
 
-export const fetchFromJSONForKanbanView = async () => {
+export const fetchFromJSONForKanbanView = async (page:number, pageSize:number) => {
     return kanbanData; 
   };
   

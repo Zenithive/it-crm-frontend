@@ -3,12 +3,12 @@ import React, { useState, useEffect } from "react";
 import Pagination from "../microComponents/Pagination";
 import Search from "../microComponents/Search";
 import HeaderButtons from "../microComponents/HeaderButtons";
-import { headerbutton, search, nav } from "./Path/TaskData";
-import { useRouter } from "next/navigation";
+import { headerbutton, search } from "./Path/TaskData";
 import { OverallCaseStudytitle } from "./Path/TitlePaths";
 import Title from "../microComponents/Title";
 import TablerLayout from "./OverallCaseStudy/TablerLayout";
 import useOverallCaseStudyData from "../api/apiService/overallcasestudyApiService";
+import AddCaseStudyForm from "./AddCaseStudyForm";
 
 interface Resource {
   title: string;
@@ -19,17 +19,16 @@ interface Resource {
 
 const ResourceContainer = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(9);
+  const [itemsPerPage, setItemsPerPage] = useState(9);
+  const [showForm, setShowForm] = useState(false);
+  const [isTableView, setIsTableView] = useState(false);
 
-  const { caseStudies, loading, error } = useOverallCaseStudyData(); // ✅ Call the custom hook here
+  const { caseStudies, loading, error } = useOverallCaseStudyData();
 
-  const router = useRouter();
-
-  // Transform API data into the format needed for resources
   const resources = caseStudies.map((item: any) => ({
     title: item.projectName,
     company: item.clientName,
-    tags: item.tags ? item.tags.split(", ").map((tag:any) => tag.trim()) : [],
+    tags: item.tags ? item.tags.split(", ").map((tag: any) => tag.trim()) : [],
     caseStudyID: item.caseStudyID,
   }));
 
@@ -37,14 +36,6 @@ const ResourceContainer = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentItems = resources.slice(startIndex, endIndex);
 
-  const handleLayoutChange = () => {
-    router.push("/tableviewoverallcase");
-  };
-
-  const handleResourceClick = (resource: Resource) => {
-    const caseStudyID = encodeURIComponent(resource.caseStudyID);
-    router.push(`/individualcasestudy/${caseStudyID}`);
-  };
   return (
     <>
       <div className="w-full px-4 sm:px-6 lg:px-[70px] mt-6">
@@ -55,13 +46,30 @@ const ResourceContainer = () => {
           </div>
           <div className="flex items-center space-x-6">
             <div className="flex space-x-4">
-              <button className="w-7 h-7">
-                <img src="/overallCaseStudy.svg" alt="Overall View" className="w-full h-full" />
+              <button className="w-7 h-7" onClick={() => setIsTableView(false)}>
+                <img
+                  src={
+                    isTableView
+                      ? "/overallCaseStudy_2.svg"
+                      : "/overallCaseStudy.svg"
+                  }
+                  alt="Grid View"
+                  className=""
+                />
               </button>
-              <button onClick={handleLayoutChange} className="w-7 h-7">
-                <img src="/tabler_layout-list.svg" alt="List View" className="w-full h-full" />
+              <button className="w-7 h-7" onClick={() => setIsTableView(true)}>
+                <img
+                  src={
+                    isTableView
+                      ? "/tabler_layout-list_2.svg"
+                      : "/tabler_layout-list.svg"
+                  }
+                  alt="List View"
+                  className=""
+                />
               </button>
             </div>
+
             <HeaderButtons
               button1Text={headerbutton[1].button1text}
               button1img={headerbutton[1].button1img}
@@ -69,67 +77,83 @@ const ResourceContainer = () => {
               button2img={headerbutton[1].button2img}
               button1width="w-[109px]"
               button2width="w-[160px]"
+              onClick2={() => setShowForm(true)}
             />
           </div>
         </div>
       </div>
 
-      <div className="w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-[70px]">
+      <div className="w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-[70px] mt-10">
         {loading ? (
           <p className="text-gray-500 text-center">Loading resources...</p>
-        ) : error ? (
-          <p className="text-red-500 text-center">{error}</p>
+        ) : isTableView ? (
+          <TablerLayout />
         ) : (
-          <>
-            <div className="flex-grow mt-6">
-              <div className="bg-white shadow-custom rounded-2xl">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 sm:p-6 lg:p-8">
-                  {currentItems.map((resource: Resource, index:any) => (
-                    <div
-                      key={index}
-                      className="bg-blue_shadow p-4 sm:p-6 rounded-xl shadow-custom transition-all duration-300 flex flex-col min-h-[170px] h-full cursor-pointer"
-                      onClick={() => handleResourceClick(resource)}
-                    >
-                      <h3 className="text-bg-blue-12 text-lg sm:text-xl lg:text-2xl font-semibold mb-3 sm:mb-4 line-clamp-2 max-w-[350px]">
-                        {resource.title}
-                      </h3>
-                      <div className="flex-grow flex flex-col justify-between">
-                        <div className="flex flex-wrap gap-2 mb-4">
-                          {resource.tags.map((tag, tagIndex) => (
-                            <span key={tagIndex} className="px-3 py-1.5 bg-white text-bg-blue-12 rounded-lg text-md font-medium whitespace-normal break-words flex items-center justify-center min-w-[100px] flex-shrink-0">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                        <div className="w-full flex justify-between items-center mb-4 lg:mb-0">
-                          <span className="text-xs sm:text-sm truncate max-w-[60%] font-normal">
-                            {resource.company}
-                          </span>
-                          <div className="flex items-center gap-1">
-                            <span className="text-sm font-normal">View Details</span>
-                            <img className="w-4 h-4" src="arrow_bold.svg" alt="arrow" />
-                          </div>
-                        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 sm:p-6 lg:p-8 bg-white shadow-custom rounded-xl">
+            {currentItems.map(
+              (resource: Resource, index: React.Key | null | undefined) => (
+                <div
+                  key={index}
+                  className="bg-blue_shadow p-4 sm:p-6 rounded-xl shadow-custom transition-all duration-300 flex flex-col min-h-[170px] h-full cursor-pointer"
+                >
+                  <h3 className="text-bg-blue-12 text-lg sm:text-xl lg:text-2xl font-semibold mb-3 sm:mb-4">
+                    {resource.title}
+                  </h3>
+                  <div className="flex-grow flex flex-col justify-between">
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {resource.tags.map((tag, tagIndex) => (
+                        <span
+                          key={tagIndex}
+                          className="px-3 py-1.5 bg-white text-bg-blue-12 rounded-lg text-md font-medium"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="w-full flex justify-between items-center mb-4 lg:mb-0">
+                      <span className="text-xs sm:text-sm truncate max-w-[60%] font-normal">
+                        {resource.company}
+                      </span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-sm font-normal">
+                          View Details
+                        </span>
+                        <img
+                          className="w-4 h-4"
+                          src="arrow_bold.svg"
+                          alt="arrow"
+                        />
                       </div>
                     </div>
-                  ))}
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="mt-6">
-              {/* <Pagination
-                totalItems={resources.length}
-                initialItemsPerPage={itemsPerPage}
-                onPageChange={setCurrentPage}
-                onItemsPerPageChange={(newItemsPerPage) => {
-                  setItemsPerPage(newItemsPerPage);
-                  setCurrentPage(1);
-                }}
-              /> */}
-            </div>
-          </>
+              )
+            )}
+          </div>
         )}
+
+        <div className="mt-6">
+          <Pagination
+            totalItems={resources.length}
+            itemsPerPage={itemsPerPage}
+            onPageChange={setCurrentPage}
+            onItemsPerPageChange={(newItemsPerPage) => {
+              setItemsPerPage(newItemsPerPage);
+              setCurrentPage(1);
+            }}
+            currentPage={currentPage}
+          />
+        </div>
       </div>
+
+      {showForm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <AddCaseStudyForm
+            onClose={() => setShowForm(false)}
+            onSubmit={async () => setShowForm(false)}
+          />
+        </div>
+      )}
     </>
   );
 };
