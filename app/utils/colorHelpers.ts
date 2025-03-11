@@ -18,3 +18,13 @@ export const getPriorityColor = (priority: string) => {
     return statusMap[status] || "";
   };
   
+
+
+  export const getStatusColor1 = (status: string): string => {
+    const normalizedStatus = status.toUpperCase().trim();
+    const statusMap: Record<string, string> = {
+      ACTIVE: "bg-green-shadow-color text-green-text",
+      INACTIVE: "bg-orange-shadow-color text-orange-text",
+    };
+    return statusMap[normalizedStatus] || "bg-gray-100 text-gray-800";
+  };
