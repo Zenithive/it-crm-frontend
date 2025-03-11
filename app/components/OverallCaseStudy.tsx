@@ -22,13 +22,18 @@ const ResourceContainer = () => {
   const [showForm, setShowForm] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
   const router = useRouter();
-  const { caseStudies, loading, error } = useOverallCaseStudyData();
-  const resources = caseStudies.map((item: any) => ({
-    title: item.projectName,
-    company: item.clientName,
-    tags: item.tags ? item.tags.split(", ").map((tag: any) => tag.trim()) : [],
-    caseStudyID: item.caseStudyID,
-  }));
+  // const { caseStudies, loading, error } = useOverallCaseStudyData();
+  const { caseStudies, totalItems, loading, error } = useOverallCaseStudyData(currentPage, itemsPerPage);
+  const resources = caseStudies.map((item: any) => {
+    console.log("Mapping item:", item);
+    return {
+      title: item.projectName || "No Title",
+      company: item.clientName || "No Company",
+      tags: item.tags ? item.tags.split(", ").map((tag: any) => tag.trim()) : [],
+      caseStudyID: item.caseStudyID || "No ID",
+    };
+  });
+  console.log("Mapped resources:", resources);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentItems = resources.slice(startIndex, endIndex);
@@ -131,16 +136,13 @@ const ResourceContainer = () => {
           </div>
         )}
         <div className="mt-6">
-          <Pagination
-            totalItems={resources.length}
-            itemsPerPage={itemsPerPage}
-            onPageChange={setCurrentPage}
-            onItemsPerPageChange={(newItemsPerPage) => {
-              setItemsPerPage(newItemsPerPage);
-              setCurrentPage(1);
-            }}
-            currentPage={currentPage}
-          />
+        <Pagination
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={setItemsPerPage}
+        />
         </div>
       </div>
       {showForm && (
