@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React, { useState, useEffect } from "react";
 import Pagination from "../microComponents/Pagination";
 import Search from "../microComponents/Search";
@@ -9,33 +9,33 @@ import Title from "../microComponents/Title";
 import TablerLayout from "./OverallCaseStudy/TablerLayout";
 import useOverallCaseStudyData from "../api/apiService/overallcasestudyApiService";
 import AddCaseStudyForm from "./AddCaseStudyForm";
-
+import { useRouter } from "next/navigation";
 interface Resource {
   title: string;
   company: string;
   tags: string[];
   caseStudyID: string;
 }
-
 const ResourceContainer = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(9);
   const [showForm, setShowForm] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
-
+  const router = useRouter();
   const { caseStudies, loading, error } = useOverallCaseStudyData();
-
   const resources = caseStudies.map((item: any) => ({
     title: item.projectName,
     company: item.clientName,
     tags: item.tags ? item.tags.split(", ").map((tag: any) => tag.trim()) : [],
     caseStudyID: item.caseStudyID,
   }));
-
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentItems = resources.slice(startIndex, endIndex);
-
+  const handleResourceClick = (resource: Resource) => {
+    const caseStudyID = encodeURIComponent(resource.caseStudyID);
+    router.push(`/individualcasestudy/${caseStudyID}`);
+  };
   return (
     <>
       <div className="w-full px-4 sm:px-6 lg:px-[70px] mt-6">
@@ -69,7 +69,6 @@ const ResourceContainer = () => {
                 />
               </button>
             </div>
-
             <HeaderButtons
               button1Text={headerbutton[1].button1text}
               button1img={headerbutton[1].button1img}
@@ -82,7 +81,6 @@ const ResourceContainer = () => {
           </div>
         </div>
       </div>
-
       <div className="w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-[70px] mt-10">
         {loading ? (
           <p className="text-gray-500 text-center">Loading resources...</p>
@@ -95,6 +93,7 @@ const ResourceContainer = () => {
                 <div
                   key={index}
                   className="bg-blue_shadow p-4 sm:p-6 rounded-xl shadow-custom transition-all duration-300 flex flex-col min-h-[170px] h-full cursor-pointer"
+                  onClick={()=> handleResourceClick(resource)}
                 >
                   <h3 className="text-bg-blue-12 text-lg sm:text-xl lg:text-2xl font-semibold mb-3 sm:mb-4">
                     {resource.title}
@@ -131,7 +130,6 @@ const ResourceContainer = () => {
             )}
           </div>
         )}
-
         <div className="mt-6">
           <Pagination
             totalItems={resources.length}
@@ -145,7 +143,6 @@ const ResourceContainer = () => {
           />
         </div>
       </div>
-
       {showForm && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <AddCaseStudyForm
@@ -157,5 +154,4 @@ const ResourceContainer = () => {
     </>
   );
 };
-
 export default ResourceContainer;
