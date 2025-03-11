@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import {useAddCaseStudy} from "../api/apiService/addCaseStudyApiService"
+import { useAddCaseStudy } from "../api/apiService/addCaseStudyApiService";
 import { message } from "antd";
 
 // Define the interface for form data
@@ -29,27 +29,36 @@ type FormType = "caseStudy" | "leadClose";
 
 interface CaseStudyPageProps {
   initialData?: CaseStudyFormData | LeadCloseFormData;
-  onSubmit: (data: CaseStudyFormData | LeadCloseFormData, formType: FormType) => Promise<void>;
+  onSubmit: (
+    data: CaseStudyFormData | LeadCloseFormData,
+    formType: FormType
+  ) => Promise<void>;
   onClose: () => void;
 }
 
-const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit , onClose }) => {
+const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
+  initialData,
+  onSubmit,
+  onClose,
+}) => {
   const [activeForm, setActiveForm] = useState<FormType>("caseStudy");
   const [loading, setLoading] = useState(false);
-  
+
   // Form for Case Study
   const caseStudyForm = useForm<CaseStudyFormData>({
-    defaultValues: initialData as CaseStudyFormData
+    defaultValues: initialData as CaseStudyFormData,
   });
 
   // Form for Lead Close
   const leadCloseForm = useForm<LeadCloseFormData>({
-    defaultValues: initialData as LeadCloseFormData
+    defaultValues: initialData as LeadCloseFormData,
   });
 
   const { addCaseStudy } = useAddCaseStudy();
 
-  const handleCaseStudySubmit: SubmitHandler<CaseStudyFormData> = async (data) => {
+  const handleCaseStudySubmit: SubmitHandler<CaseStudyFormData> = async (
+    data
+  ) => {
     setLoading(true);
     try {
       await addCaseStudy(data);
@@ -63,9 +72,10 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
       setLoading(false);
     }
   };
-  
 
-  const handleLeadCloseSubmit: SubmitHandler<LeadCloseFormData> = async (data) => {
+  const handleLeadCloseSubmit: SubmitHandler<LeadCloseFormData> = async (
+    data
+  ) => {
     setLoading(true);
     try {
       await onSubmit(data, "leadClose");
@@ -78,21 +88,23 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
   };
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-4xl mx-auto">
-
+    <div className="min-h-screen max-w-4xl w-full">
         {/* Case Study Form */}
         {activeForm === "caseStudy" && (
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden mt-4">
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden mt-4 ">
             <div className="bg-indigo-500 p-4 flex justify-between items-center">
-              <h2 className="text-2xl font-semibold text-white">Case Study Form</h2>
-              <button className="bg-white p-2 rounded-lg"  onClick={onClose} >
-              <img src="cross_icon.svg" alt="Cross" className="h-3 w-3"></img>
+              <h2 className="text-2xl font-semibold text-white">
+                Case Study Form
+              </h2>
+              <button className="bg-white p-2 rounded-lg" onClick={onClose}>
+                <img src="cross_icon.svg" alt="Cross" className="h-3 w-3"></img>
               </button>
             </div>
 
-            <form onSubmit={caseStudyForm.handleSubmit(handleCaseStudySubmit)} className="p-6">
-
+            <form
+              onSubmit={caseStudyForm.handleSubmit(handleCaseStudySubmit)}
+              className="p-6"
+            >
               <div className="grid grid-cols-2 gap-3">
                 {/* Project Name */}
                 <div>
@@ -102,11 +114,15 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
                   <input
                     type="text"
                     placeholder="Enter name"
-                    {...caseStudyForm.register("projectName", { required: true })}
+                    {...caseStudyForm.register("projectName", {
+                      required: true,
+                    })}
                     className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                   {caseStudyForm.formState.errors.projectName && (
-                    <span className="text-red-500 text-sm">This field is required</span>
+                    <span className="text-red-500 text-sm">
+                      This field is required
+                    </span>
                   )}
                 </div>
 
@@ -118,11 +134,15 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
                   <input
                     type="text"
                     placeholder="Name"
-                    {...caseStudyForm.register("clientName", { required: true })}
+                    {...caseStudyForm.register("clientName", {
+                      required: true,
+                    })}
                     className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                   {caseStudyForm.formState.errors.clientName && (
-                    <span className="text-red-500 text-sm">This field is required</span>
+                    <span className="text-red-500 text-sm">
+                      This field is required
+                    </span>
                   )}
                 </div>
 
@@ -249,13 +269,18 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
         {activeForm === "leadClose" && (
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="bg-indigo-500 p-4 flex justify-between items-center">
-              <h2 className="text-2xl font-semibold text-white">Lead Close Form</h2>
+              <h2 className="text-2xl font-semibold text-white">
+                Lead Close Form
+              </h2>
               <button className="bg-white p-2 rounded-lg" onClick={onClose}>
-  <img src="cross_icon.svg" alt="Close" className="h-3 w-3" />
-</button>
+                <img src="cross_icon.svg" alt="Close" className="h-3 w-3" />
+              </button>
             </div>
 
-            <form onSubmit={leadCloseForm.handleSubmit(handleLeadCloseSubmit)} className="p-6">
+            <form
+              onSubmit={leadCloseForm.handleSubmit(handleLeadCloseSubmit)}
+              className="p-6"
+            >
               <div className="grid grid-cols-1 gap-6">
                 {/* Deal Name */}
                 {/* <div>
@@ -329,7 +354,6 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({ initialData, onSubmit 
             </form>
           </div>
         )}
-      </div>
     </div>
   );
 };
