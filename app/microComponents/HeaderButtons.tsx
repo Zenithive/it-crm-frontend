@@ -10,6 +10,7 @@ interface Data {
   button2Text?: string;
   onClick1?: () => void;  
   onClick2?: () => void; 
+  onClick3?: () => void; 
   button2Action?: () => void; 
 }
 
@@ -22,6 +23,7 @@ const HeaderButtons = ({
   button2width,
   onClick1,
   onClick2,
+  onClick3,
   button2Action
 }: Data) => {
   return (
@@ -39,6 +41,7 @@ const HeaderButtons = ({
         onClick={() => {
           onClick2?.();
           button2Action?.();
+          onClick3?.();
         }}
       >
         <img src={button2img} className="w-4 sm:w-auto" alt="" />

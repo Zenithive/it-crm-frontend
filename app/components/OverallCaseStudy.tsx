@@ -10,40 +10,37 @@ import TablerLayout from "./OverallCaseStudy/TablerLayout";
 import useOverallCaseStudyData from "../api/apiService/overallcasestudyApiService";
 import AddCaseStudyForm from "./AddCaseStudyForm";
 import { useRouter } from "next/navigation";
-
 interface Resource {
   title: string;
   company: string;
   tags: string[];
   caseStudyID: string;
 }
-
 const ResourceContainer = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(9);
   const [showForm, setShowForm] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
-
   const router = useRouter();
-
-  const { caseStudies, loading, error } = useOverallCaseStudyData();
-
-  const resources = caseStudies.map((item: any) => ({
-    title: item.projectName,
-    company: item.clientName,
-    tags: item.tags ? item.tags.split(", ").map((tag: any) => tag.trim()) : [],
-    caseStudyID: item.caseStudyID,
-  }));
-
+  // const { caseStudies, loading, error } = useOverallCaseStudyData();
+  const { caseStudies, totalItems, loading, error } = useOverallCaseStudyData(currentPage, itemsPerPage);
+  const resources = caseStudies.map((item: any) => {
+    console.log("Mapping item:", item);
+    return {
+      title: item.projectName || "No Title",
+      company: item.clientName || "No Company",
+      tags: item.tags ? item.tags.split(", ").map((tag: any) => tag.trim()) : [],
+      caseStudyID: item.caseStudyID || "No ID",
+    };
+  });
+  console.log("Mapped resources:", resources);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentItems = resources.slice(startIndex, endIndex);
-
   const handleResourceClick = (resource: Resource) => {
     const caseStudyID = encodeURIComponent(resource.caseStudyID);
     router.push(`/individualcasestudy/${caseStudyID}`);
   };
-
   return (
     <>
       <div className="w-full px-4 sm:px-6 lg:px-[70px] mt-6">
@@ -77,7 +74,6 @@ const ResourceContainer = () => {
                 />
               </button>
             </div>
-
             <HeaderButtons
               button1Text={headerbutton[1].button1text}
               button1img={headerbutton[1].button1img}
@@ -90,7 +86,6 @@ const ResourceContainer = () => {
           </div>
         </div>
       </div>
-
       <div className="w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-[70px] mt-10">
         {loading ? (
           <p className="text-gray-500 text-center">Loading resources...</p>
@@ -140,21 +135,16 @@ const ResourceContainer = () => {
             )}
           </div>
         )}
-
         <div className="mt-6">
-          <Pagination
-            totalItems={resources.length}
-            itemsPerPage={itemsPerPage}
-            onPageChange={setCurrentPage}
-            onItemsPerPageChange={(newItemsPerPage) => {
-              setItemsPerPage(newItemsPerPage);
-              setCurrentPage(1);
-            }}
-            currentPage={currentPage}
-          />
+        <Pagination
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={setItemsPerPage}
+        />
         </div>
       </div>
-
       {showForm && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <AddCaseStudyForm
@@ -166,5 +156,4 @@ const ResourceContainer = () => {
     </>
   );
 };
-
 export default ResourceContainer;
