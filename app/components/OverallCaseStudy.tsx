@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React, { useState, useEffect } from "react";
 import Pagination from "../microComponents/Pagination";
 import Search from "../microComponents/Search";
@@ -9,6 +9,7 @@ import Title from "../microComponents/Title";
 import TablerLayout from "./OverallCaseStudy/TablerLayout";
 import useOverallCaseStudyData from "../api/apiService/overallcasestudyApiService";
 import AddCaseStudyForm from "./AddCaseStudyForm";
+import { useRouter } from "next/navigation";
 
 interface Resource {
   title: string;
@@ -23,6 +24,8 @@ const ResourceContainer = () => {
   const [showForm, setShowForm] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
 
+  const router = useRouter();
+
   const { caseStudies, loading, error } = useOverallCaseStudyData();
 
   const resources = caseStudies.map((item: any) => ({
@@ -35,6 +38,11 @@ const ResourceContainer = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentItems = resources.slice(startIndex, endIndex);
+
+  const handleResourceClick = (resource: Resource) => {
+    const caseStudyID = encodeURIComponent(resource.caseStudyID);
+    router.push(`/individualcasestudy/${caseStudyID}`);
+  };
 
   return (
     <>
@@ -95,6 +103,7 @@ const ResourceContainer = () => {
                 <div
                   key={index}
                   className="bg-blue_shadow p-4 sm:p-6 rounded-xl shadow-custom transition-all duration-300 flex flex-col min-h-[170px] h-full cursor-pointer"
+                  onClick={()=> handleResourceClick(resource)}
                 >
                   <h3 className="text-bg-blue-12 text-lg sm:text-xl lg:text-2xl font-semibold mb-3 sm:mb-4">
                     {resource.title}
