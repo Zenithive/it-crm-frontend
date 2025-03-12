@@ -51,5 +51,10 @@ export const Resourcetitle = [
         titleName: "Resources"
     }
 ]
+export const Campaigntitle = [
+    {
+        titleName: "Campaigns"
+    }
+]
 
 

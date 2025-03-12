@@ -1,0 +1,42 @@
+[
+    {
+      "campaignID": "101",
+      "name": "Tech Growth Initiative",
+      "country": "USA",
+      "region": "North America",
+      "industry": "Technology",
+      "assignee": 1
+    },
+    {
+      "campaignID": "102",
+      "name": "Healthcare Outreach",
+      "country": "Canada",
+      "region": "North America",
+      "industry": "Healthcare",
+      "assignee": 2
+    },
+    {
+      "campaignID": "103",
+      "name": "Financial Expansion Plan",
+      "country": "UK",
+      "region": "Europe",
+      "industry": "Finance",
+      "assignee": 3
+    },
+    {
+      "campaignID": "104",
+      "name": "Retail Market Penetration",
+      "country": "Germany",
+      "region": "Europe",
+      "industry": "Retail",
+      "assignee": 4
+    },
+    {
+      "campaignID": "105",
+      "name": "Automotive Innovation",
+      "country": "Japan",
+      "region": "Asia",
+      "industry": "Automobile",
+      "assignee": 5
+    }
+]
