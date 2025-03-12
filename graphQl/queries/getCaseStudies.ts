@@ -1,21 +1,29 @@
+// getCaseStudies.ts
 import { gql } from "@apollo/client";
 
 export const GET_CASE_STUDIES_QUERY = gql`
-  query GetCaseStudies($industry: String!, $page: Int!, $pageSize: Int!) {
+  query GetCaseStudies(
+    $filter: caseStudyFilter
+    $pagination: PaginationInput
+    $sort: caseStudySortInput
+  ) {
     getCaseStudies(
-      filter: { industryTarget: $industry }
-      pagination: { page: $page, pageSize: $pageSize }
-      sort: { field: createdAt, order: ASC }
+      filter: $filter
+      pagination: $pagination
+      sort: $sort
     ) {
-      caseStudyID
-      projectName
-      clientName
-      techStack
-      projectDuration
-      keyOutcomes
-      industryTarget
-      tags
-      document
+      items {
+        caseStudyID
+        projectName
+        clientName
+        techStack
+        projectDuration
+        keyOutcomes
+        industryTarget
+        tags
+        document
+      }
+      totalCount
     }
   }
 `;
