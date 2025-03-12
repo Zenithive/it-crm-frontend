@@ -26,7 +26,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCur
         <img src="filter.svg" alt="Filter" className="w-4 h-4" />
       </div>
 
-      <div className="relative p-5">
+      <div className="relative w-[140px] h-[140px] flex items-center justify-center">
         <PieChart width={120} height={120}>
           <Pie
             data={data}
@@ -46,7 +46,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCur
         </PieChart>
 
       
-        <div className="absolute inset-0 flex items-center justify-center text-xl font-semibold text-gray-900">
+        <div className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-900">
           {isActiveLeads ? value : displayValue}  
         </div>
       </div>

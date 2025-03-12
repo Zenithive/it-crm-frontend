@@ -23,6 +23,7 @@ const TablerLayout=()=> {
         const fetchData = async () => {
           try {
             setLoading(true);
+            console.log("Using dummy data:", useDummyData);
             const response = useDummyData
               ? await overallcasestudyDataApi()
               : overallcasestudyDataJson();
