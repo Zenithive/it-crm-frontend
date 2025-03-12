@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { formatText } from "../utils/formatHelpers";
-import { getRoleColor, getStatusColor } from "../utils/colorHelpers";
+import { getRoleColor } from "../utils/colorHelpers";
+import UserForm from "./UserForm";
 
 export interface User {
   userID: string;
-  name: string;
+  FirstName: string;
+  LastName: string;
   role: string;
   email: string;
   phone: string;
-  status: string;
+  password?:string;
 }
 
 interface UserTableProps {
@@ -16,6 +18,21 @@ interface UserTableProps {
 }
 
 const UserTable: React.FC<UserTableProps> = ({ users }) => {
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Open modal and set selected user
+  const handleEdit = (user: User) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  // Close modal
+  const handleClose = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+  };
+
   return (
     <div>
       <div className="overflow-x-auto rounded-lg shadow-custom">
@@ -33,35 +50,29 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
             {users?.length > 0 ? (
               users.map((user) => (
                 <tr key={user.userID} className="hover:bg-gray-50">
-                  <td className="px-6 py-6">{user.name}</td>
-
+                  <td className="px-6 py-6">{user.FirstName} {user.LastName}</td>
                   <td className="px-6 py-6">
                     <span
                       className={`px-3 py-1 rounded-lg text-sm font-semibold ${getRoleColor(
-                        user.role.trim().toUpperCase()
+                        user.role
                       )}`}
                     >
-                 {formatText(user.role)}
+                      {formatText(user.role)}
                     </span>
                   </td>
-            
-
                   <td className="px-6 py-6">{user.email}</td>
                   <td className="px-6 py-6">{user.phone}</td>
-
-
                   <td className="flex px-6 py-6 space-x-2">
                     <img
                       src="/edit.svg"
                       alt="Edit"
                       className="cursor-pointer"
-                      // onClick={() => onEdit(user)}
+                      onClick={() => handleEdit(user)} // Open modal
                     />
                     <img
                       src="/delete.svg"
                       alt="Delete"
                       className="cursor-pointer px-4"
-                      // onClick={() => onDelete(user.userID)}
                     />
                   </td>
                 </tr>
@@ -69,13 +80,18 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
             ) : (
               <tr>
                 <td colSpan={6} className="px-6 py-6 text-center text-gray-500">
-                  No tasks available
+                  No users available
                 </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
+
+      {/* Render Edit Modal */}
+      {isModalOpen && selectedUser && (
+        <UserForm user={selectedUser} onClose={handleClose} />
+      )}
     </div>
   );
 };

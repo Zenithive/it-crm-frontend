@@ -6,6 +6,8 @@ import HeaderButtons from "../microComponents/HeaderButtons";
 import { headerbutton, search } from "./Path/TaskData";
 import ResourceContainer from "./ResourceList/ResourceContainer";
 import { ResourceForm } from "./ResourceList/ResourceForm";
+import Title from "../microComponents/Title";
+import { Resourcetitle } from "./Path/TitlePaths";
 
 const ResourceList = () => {
   const [showForm, setShowForm] = useState(false);
@@ -24,8 +26,11 @@ const ResourceList = () => {
 
       <div className="w-full px-4 sm:px-6 lg:px-[70px] mt-6">
         <div className="flex justify-between items-center w-full">
-          <div>
+          <div className="flex">
+        <Title title={Resourcetitle[0].titleName} />
+          <div className="ml-5">
             <Search searchText={search[0].searchText} />
+          </div>
           </div>
           <div>
             <HeaderButtons

@@ -62,8 +62,8 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
     }
   };
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="p-6 relative">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={onClose}>
+      <div className="p-6 relative" onClick={(e) => e.stopPropagation()}>
         <div className="bg-bg-blue-12 rounded-t-xl p-2 flex justify-between">
           <div className="p-2">
             <h2 className="text-2xl font-semibold text-white">Lead Form</h2>
