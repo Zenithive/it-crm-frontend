@@ -29,6 +29,8 @@ export default {
         "bg-blue-16":"#F2F1FF",
         "bg-red": "#FFE5E4",
         "bg-green":"#7ED321",
+        "bg-gray-19":"#F2F1FF8C",
+        "bg-gray-20":"#FFFFFF1A",
         "bg-green-light":"#F4FFE8",  
         "orange-11":"#F5A623",
         "orange-light-11":"#FFF7E9",
