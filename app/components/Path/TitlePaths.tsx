@@ -41,3 +41,10 @@ export const IndividualMeetingtitle = [
     }
 ]
 
+export const Usertitle = [
+    {
+        titleName: "Users"
+    }
+]
+
+

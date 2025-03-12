@@ -16,6 +16,7 @@ interface Resource {
   company: string;
   tags: string[];
   caseStudyID: string;
+  projectName:string;
 }
 
 const ResourceContainer = () => {

@@ -19,7 +19,6 @@ export const getPriorityColor = (priority: string) => {
   };
   
 
-
   export const getStatusColor1 = (status: string): string => {
     const normalizedStatus = status.toUpperCase().trim();
     const statusMap: Record<string, string> = {
@@ -28,3 +27,15 @@ export const getPriorityColor = (priority: string) => {
     };
     return statusMap[normalizedStatus] || "bg-gray-100 text-gray-800";
   };
+
+
+  export const getRoleColor = (role: string) => {
+    const formattedRole = role.trim().toUpperCase(); 
+    const roleMap: Record<string, string> = {
+      "BUSINESS EXECUTIVE": "bg-blue-shadow-color text-blue-text",
+      "C-LEVEL": "bg-purple-shadow-color text-purple-text",
+      "SALES EXECUTIVE": "bg-yellow-shadow-color text-yellow-text",
+    };
+    return roleMap[formattedRole] || "bg-gray-100 text-gray-800";
+  };
+  

@@ -5,6 +5,7 @@ import { RootState } from "../../redux/store/store"
 import { GET_TODOS } from "../../../graphQl/queries/todolist.queries";
 
 interface Task {
+  id: string;
   taskID: string;
   title: string;
   status: string;
