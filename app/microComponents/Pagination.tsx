@@ -34,6 +34,7 @@ const Pagination = ({
           value={itemsPerPage}
           onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
         >
+          {/* <option value={2}>2 per page</option> */}
           <option value={10}>10 per page</option>
           <option value={20}>20 per page</option>
           <option value={50}>50 per page</option>

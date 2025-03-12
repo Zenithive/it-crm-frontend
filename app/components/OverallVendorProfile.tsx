@@ -9,8 +9,7 @@ import Search from "../microComponents/Search";
 import VendorTable from "./IndividualVendor/VendorTable";
 import { OverallVendorProfiletitle } from "./Path/TitlePaths";
 import { headerbutton, search } from "./Path/TaskData";
-import { overallvendorApiService } from "../api/apiService/overallvendorApiService";
-import { overallvendorJsonService } from "../api/jsonService/overallvendorJsonService";
+import { useVendors } from "../api/apiService/overallvendorApiService";
 import VendorForm from "./IndividualVendor/VendorForm";
 
 interface Vendor {
@@ -26,35 +25,20 @@ const OverallVendorProfile: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [showForm, setShowForm] = useState(false);
-  const [vendors, setVendors] = useState<Vendor[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const useDummyData =
-    process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
   const user = useSelector((state: RootState) => state.auth);
 
-  useEffect(() => {
-    const fetchVendors = async () => {
-      setLoading(true);
-      try {
-        const response = useDummyData
-          ? await overallvendorApiService()
-          : await overallvendorJsonService();
-        setVendors(response ?? []);
-      } catch (err) {
-        setError("Failed to load vendors");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchVendors();
-  }, [useDummyData]);
-
-  // Pagination Logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentVendors = vendors.slice(indexOfFirstItem, indexOfLastItem);
+  // Fetch vendors using useVendors
+  const { data, loading, error,totalItems  } = useVendors(currentPage, itemsPerPage);
+  console.log(`totalItems`, totalItems);
+  const vendors: Vendor[] =
+    data?.getVendors?.items.map((vendor: any) => ({
+      vendorID: vendor.vendorID || "",
+      vendor: vendor.companyName || "N/A",
+      location: vendor.address || "N/A",
+      resources: vendor.resources?.length || "N/A",
+      rating: vendor.performanceRatings?.length || 0,
+      status: vendor.status || "N/A",
+    })) || [];
 
   return (
     <div className="p-4 max-w-[1350px] mx-auto">
@@ -79,14 +63,14 @@ const OverallVendorProfile: React.FC = () => {
       {loading ? (
         <p className="text-center">Loading vendors...</p>
       ) : error ? (
-        <p className="text-center text-red-500">{error}</p>
+        <p className="text-center text-red-500">{error.message}</p>
       ) : (
-        <VendorTable vendors={currentVendors} />
+        <VendorTable vendors={vendors} />
       )}
 
       <Pagination
         currentPage={currentPage}
-        totalItems={vendors.length}
+        totalItems={totalItems}
         itemsPerPage={itemsPerPage}
         onPageChange={setCurrentPage}
         onItemsPerPageChange={setItemsPerPage}

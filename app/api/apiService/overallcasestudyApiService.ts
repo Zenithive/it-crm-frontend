@@ -1,3 +1,4 @@
+// useOverallCaseStudyData.ts
 import { useQuery } from "@apollo/client";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
@@ -16,16 +17,31 @@ export interface CaseStudy {
   documents?: { name: string; url: string }[];
 }
 
-const useOverallCaseStudyData = (page: number, pageSize: number) => {
+const useOverallCaseStudyData = (
+  page: number, 
+  pageSize: number, 
+  industry?: string,
+  sortField: string = "createdAt",
+  sortOrder: "ASC" | "DESC" = "DESC"
+) => {
   const { token } = useSelector((state: RootState) => state.auth);
 
+  const filter: any = {};
+  if (industry) {
+    filter.industryTarget = industry;
+  }
+
   const { data, loading, error, refetch } = useQuery(GET_CASE_STUDIES_QUERY, {
-    variables: { industry: "Finance & Banking", page, pageSize },
+    variables: { 
+      filter: filter,
+      pagination: { page, pageSize },
+      sort: { field: sortField, order: sortOrder }
+    },
     context: { headers: { Authorization: `Bearer ${token}` } },
   });
 
   return {
-    caseStudies: data?.getCaseStudies || [],
+    caseStudies: data?.getCaseStudies?.items || [],
     totalItems: data?.getCaseStudies?.totalCount || 0,
     loading,
     error: error ? error.message : null,
