@@ -46,5 +46,10 @@ export const Usertitle = [
         titleName: "Users"
     }
 ]
+export const Resourcetitle = [
+    {
+        titleName: "Resources"
+    }
+]
 
 
