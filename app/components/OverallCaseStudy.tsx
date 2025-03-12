@@ -15,6 +15,7 @@ interface Resource {
   company: string;
   tags: string[];
   caseStudyID: string;
+  projectName:string;
 }
 const ResourceContainer = () => {
   const [currentPage, setCurrentPage] = useState(1);

@@ -24,7 +24,7 @@ const HeaderButtons = ({
   onClick1,
   onClick2,
   onClick3,
-  button2Action
+  button2Action,
 }: Data) => {
   return (
     <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-[15px] w-full sm:w-auto">
@@ -36,18 +36,22 @@ const HeaderButtons = ({
         <div className="text-[12px] sm:text-[14px] whitespace-nowrap">{button1Text}</div>
       </button>
 
-      <button
-        className={`${button2width} min-w-[120px] bg-bg-blue-12 text-white font-normal h-[40px] rounded-xl flex items-center justify-center gap-[10px]`}
-        onClick={() => {
-          onClick2?.();
-          button2Action?.();
-          onClick3?.();
-        }}
-      >
-        <img src={button2img} className="w-4 sm:w-auto" alt="" />
-        <span className="text-[12px] sm:text-[14px] whitespace-nowrap">{button2Text}</span>
-      </button>
+      {/* Conditionally render button2 only if button2Text is provided */}
+      {button2Text && (
+        <button
+          className={`${button2width} min-w-[120px] bg-bg-blue-12 text-white font-normal h-[40px] rounded-xl flex items-center justify-center gap-[10px]`}
+          onClick={() => {
+            onClick2?.();
+            button2Action?.();
+            onClick3?.();
+          }}
+        >
+          <img src={button2img} className="w-4 sm:w-auto" alt="" />
+          <span className="text-[12px] sm:text-[14px] whitespace-nowrap">{button2Text}</span>
+        </button>
+      )}
     </div>
   );
 };
+
 export default HeaderButtons;
