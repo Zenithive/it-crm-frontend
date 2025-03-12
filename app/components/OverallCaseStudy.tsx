@@ -10,37 +10,53 @@ import TablerLayout from "./OverallCaseStudy/TablerLayout";
 import useOverallCaseStudyData from "../api/apiService/overallcasestudyApiService";
 import AddCaseStudyForm from "./AddCaseStudyForm";
 import { useRouter } from "next/navigation";
+
 interface Resource {
   title: string;
   company: string;
   tags: string[];
   caseStudyID: string;
 }
+
 const ResourceContainer = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(9);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [showForm, setShowForm] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
   const router = useRouter();
-  // const { caseStudies, loading, error } = useOverallCaseStudyData();
-  const { caseStudies, totalItems, loading, error } = useOverallCaseStudyData(currentPage, itemsPerPage);
+  
+  // Updated to use the modified hook without industry filter by default
+  const { caseStudies, totalItems, loading, error, refetch } = useOverallCaseStudyData(
+    currentPage, 
+    itemsPerPage
+  );
+  
   const resources = caseStudies.map((item: any) => {
     console.log("Mapping item:", item);
     return {
       title: item.projectName || "No Title",
       company: item.clientName || "No Company",
-      tags: item.tags ? item.tags.split(", ").map((tag: any) => tag.trim()) : [],
+      tags: Array.isArray(item.tags) ? item.tags : (item.tags ? item.tags.split(", ").map((tag: any) => tag.trim()) : []),
       caseStudyID: item.caseStudyID || "No ID",
     };
   });
+  
   console.log("Mapped resources:", resources);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentItems = resources.slice(startIndex, endIndex);
+  
+  // No need to slice since pagination is handled by the API now
+  const currentItems = resources;
+  
   const handleResourceClick = (resource: Resource) => {
     const caseStudyID = encodeURIComponent(resource.caseStudyID);
     router.push(`/individualcasestudy/${caseStudyID}`);
   };
+  
+  // Function to refresh data after adding a new case study
+  const handleCaseStudyAdded = async () => {
+    setShowForm(false);
+    await refetch();
+  };
+  
   return (
     <>
       <div className="w-full px-4 sm:px-6 lg:px-[70px] mt-6">
@@ -89,16 +105,18 @@ const ResourceContainer = () => {
       <div className="w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-[70px] mt-10">
         {loading ? (
           <p className="text-gray-500 text-center">Loading resources...</p>
+        ) : error ? (
+          <p className="text-red-500 text-center">Error loading data: {error}</p>
         ) : isTableView ? (
           <TablerLayout />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 sm:p-6 lg:p-8 bg-white shadow-custom rounded-xl">
-            {currentItems.map(
+            {currentItems.length > 0 ? currentItems.map(
               (resource: Resource, index: React.Key | null | undefined) => (
                 <div
                   key={index}
                   className="bg-blue_shadow p-4 sm:p-6 rounded-xl shadow-custom transition-all duration-300 flex flex-col min-h-[170px] h-full cursor-pointer"
-                  onClick={()=> handleResourceClick(resource)}
+                  onClick={() => handleResourceClick(resource)}
                 >
                   <h3 className="text-bg-blue-12 text-lg sm:text-xl lg:text-2xl font-semibold mb-3 sm:mb-4">
                     {resource.title}
@@ -132,6 +150,10 @@ const ResourceContainer = () => {
                   </div>
                 </div>
               )
+            ) : (
+              <div className="col-span-3 text-center py-8">
+                <p className="text-gray-500">No case studies found</p>
+              </div>
             )}
           </div>
         )}
@@ -149,11 +171,12 @@ const ResourceContainer = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <AddCaseStudyForm
             onClose={() => setShowForm(false)}
-            onSubmit={async () => setShowForm(false)}
+            onSubmit={handleCaseStudyAdded}
           />
         </div>
       )}
     </>
   );
 };
+
 export default ResourceContainer;
