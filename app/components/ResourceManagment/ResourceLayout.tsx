@@ -173,7 +173,7 @@ const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
             rate: "85", // Example data, replace with actual if available
             satisfaction: "90", // Example data, replace with actual if available
           },
-          overview: fetchedProfile.pastProjects.map(project => ({
+          overview: fetchedProfile.pastProjects.map((project: { projectName: any; updatedAt: string | number | Date; }) => ({
             project: project.projectName,
             time: new Date(project.updatedAt).toLocaleDateString()
           })),
@@ -239,8 +239,8 @@ const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
         <div className="mt-6 w-full md:w-2/3">
           {activeTab === "Details" && <ResourceDetails resourceData={resourceData} />}
           {activeTab === "Skills & Experience" && <ResourceSkills resourceData={resourceData} />}
-          {activeTab === "Documents" && <ResourceDoc resourceData={resourceData} />}
-          {activeTab === "Notes" && <ResourceNote resourceData={resourceData} />}
+          {activeTab === "Documents" && <ResourceDoc />}
+          {activeTab === "Notes" && <ResourceNote  />}
         </div>
 
         {/* Recent Activity Section */}
@@ -288,7 +288,7 @@ const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
               <div className="mt-5">
                 <div className="border-b border-content-border"></div>
                 <h3 className="text-blue-600 text-2xl font-bold mb-4 mt-5">Project History</h3>
-                {resourceData?.overview?.map((item, index) => (
+                {resourceData?.overview?.map((item: { project: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; time: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
                   <div key={index}>
                     <div className="flex justify-between items-center mt-6">
                       <img src="right_icon.svg" alt="right" className="mr-6" />

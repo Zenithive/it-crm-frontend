@@ -9,7 +9,7 @@ const ResourceManagment: React.FC<ResourceManagmentProps> = ({ ResourceId }) => 
   
   return (
     <div>
-      <ResourceLayout ResourceId={ResourceId} children={undefined} />
+      <ResourceLayout ResourceId={ResourceId} />
     </div>
   );
 }
