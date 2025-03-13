@@ -6,12 +6,11 @@ import VendorResourceList from "./VendorResourceList";
 import VendorPerformance from "./VendorPerformance";
 import VendorDocuments from "./VendorDoc";
 import VendorNotes from "./VendorNotes";
-import {
-  individualvendorApi
-} from "../../api/apiService/individualvendorApiService";
-import {
-  individualvendor,
-} from "../../api/jsonService/individualvendorJsonService";
+
+// import {
+//   individualvendor,
+// } from "../../api/jsonService/individualvendorJsonService";
+import useIndividualVendorData from "../../api/apiService/individualvendorApiService";
 
 const tabs = [
   { label: "Details", key: "details" },
@@ -22,12 +21,12 @@ const tabs = [
 ];
 
 interface VendorLayoutProps {
-
+  vendorId: string;
 }
 
 interface CompanyProfile {
-  name: string;
-  isActive: boolean;
+  companyName: string;
+status: string;
   primaryContact: {
     email: string;
     phone: string;
@@ -38,7 +37,8 @@ interface CompanyProfile {
     endDate: string;
     status: string;
   };
-  locations: string[];
+  // locations: string[];
+  address: string;
   skills: string[];
   paymentTerms: string;
   employeeCount: string;
@@ -49,33 +49,43 @@ interface CompanyProfile {
   }>;
 }
 
-const VendorLayout: React.FC = () => {
+const VendorLayout: React.FC<VendorLayoutProps> = ({ vendorId }) => {
   const [activeTab, setActiveTab] = useState("details"); // Default active tab
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [vendorData, setVendorData] = useState<CompanyProfile | null>(null);
 
-  const useDummyData =
-    process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
+  // const useDummyData =
+  //   process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
 
+  // useEffect(() => {
+  //   const fetchVendorData = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const response = useDummyData
+  //         ? await individualvendorApi()
+  //         : individualvendor();
+  //       setVendorData(response);
+  //     } catch (err) {
+  //       console.error("Error fetching resources:", err);
+  //       setError("Failed to load resources");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchVendorData();
+  // }, []);
+  const { vendor, loading: vendorLoading, error: vendorError } = useIndividualVendorData(vendorId);
   useEffect(() => {
-    const fetchVendorData = async () => {
-      try {
-        setLoading(true);
-        const response = useDummyData
-          ? await individualvendorApi()
-          : individualvendor();
-        setVendorData(response);
-      } catch (err) {
-        console.error("Error fetching resources:", err);
-        setError("Failed to load resources");
-      } finally {
-        setLoading(false);
+      if (vendor) {
+        setVendorData(vendor);
+        setLoading(vendorLoading);
+        if (vendorError) {
+          setError(vendorError);
+        }
       }
-    };
-
-    fetchVendorData();
-  }, []);
+    }, [vendor, vendorLoading, vendorError]);
 
   return (
     <div className="p-4 max-w-[1300px] mx-auto">
@@ -83,10 +93,11 @@ const VendorLayout: React.FC = () => {
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-semibold text-blue-600">
-            {vendorData?.name ?? "Loading..."}
+            {vendorData?.companyName ?? "Loading..."}
           </h1>
           <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
-            {vendorData?.isActive ? "Active" : "Inactive"}
+            {/* {vendorData?.isActive ? "Active" : "Inactive"} */}
+            {vendorData?.status ?? "Status not available"}
           </span>
         </div>
         <IconButton icon="edit_logo.svg" text="Edit Contact" />
@@ -95,7 +106,9 @@ const VendorLayout: React.FC = () => {
       {/* Primary Contact */}
       <div className="mb-6 flex">
         <div className="text-md text-bg-gray-13 font-semibold">
-          {vendorData?.primaryContact?.location ?? "Location not available"}
+          {/* {vendorData?.primaryContact?.location ?? "Location not available"} */}
+
+          {vendorData?.address ?? "Location not available"}
         </div>
         <img src="/visit_icon.svg" alt="visit" className="ml-1"></img>
       </div>
@@ -123,19 +136,19 @@ const VendorLayout: React.FC = () => {
       <div className="flex">
         <div className="mt-6 w-2/3">
           <div className={activeTab === "details" ? "block" : "hidden"}>
-            <VendorDetails />
+            <VendorDetails vendorId={vendorId}/>
           </div>
           <div className={activeTab === "resourceList" ? "block" : "hidden"}>
-            <VendorResourceList />
+            <VendorResourceList vendorId={vendorId}/>
           </div>
           <div className={activeTab === "performance" ? "block" : "hidden"}>
-            <VendorPerformance />
+            <VendorPerformance vendorId={vendorId} />
           </div>
           <div className={activeTab === "documents" ? "block" : "hidden"}>
-            <VendorDocuments />
+            <VendorDocuments vendorId={vendorId} />
           </div>
           <div className={activeTab === "notes" ? "block" : "hidden"}>
-            <VendorNotes />
+            <VendorNotes vendorId={vendorId}/>
           </div>
         </div>
 

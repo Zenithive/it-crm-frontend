@@ -41,6 +41,7 @@ export const search = [
   {searchText:"Search Meetings"},
   {searchText:"Search Vendor"},
   {searchText:"Search Messages..."},
+  {searchText:"Search users..."},
 ]
 
 export const headerbutton = [

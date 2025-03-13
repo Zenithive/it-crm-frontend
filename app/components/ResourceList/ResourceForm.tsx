@@ -6,8 +6,6 @@ import { CREATE_RESOURCE_PROFILE } from "../../../graphQl/mutation/addResource.m
 const EMPLOYEE = "EMPLOYEE";
 const ACTIVE = "ACTIVE";
 
-
-
 interface ResourceFormProps {
   onClose: () => void;
 }
@@ -24,7 +22,9 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({ onClose }) => {
     skillInputs: [{ skillID: "", experienceYears: "" }],
   });
 
-  const [createResourceProfile, { loading, error }] = useMutation(CREATE_RESOURCE_PROFILE);
+  const [createResourceProfile, { loading, error }] = useMutation(
+    CREATE_RESOURCE_PROFILE
+  );
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -43,6 +43,13 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({ onClose }) => {
     setFormData((prev) => ({
       ...prev,
       skillInputs: [...prev.skillInputs, { skillID: "", experienceYears: "" }],
+    }));
+  };
+
+  const removeSkill = (index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      skillInputs: prev.skillInputs.filter((_, i) => i !== index)
     }));
   };
 
@@ -80,32 +87,35 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg w-full max-w-2xl p-6 relative">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-purple-600">
-            Resource Form
-          </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
-            ×
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="rounded-lg shadow-lg w-full max-w-4xl">
+        <div className="bg-bg-blue-12 rounded-t-2xl p-4 flex justify-between items-center">
+          <h2 className="text-xl font-semibold text-white">Resource Form</h2>
+          <button
+            className="text-gray-500 bg-white hover:text-gray-700 p-3 rounded-lg"
+            onClick={onClose}
+          >
+            <img src="cross_icon.svg" alt="Cross" className="h-3 w-3"></img>
           </button>
         </div>
 
-        {error && <p className="text-red-500">Error: {error.message}</p>}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-white">
+        {error && <p className="text-red-500">Error: {error.message}</p>}
+          <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm text-purple-600 mb-1">Type</label>
+              <label className="block text-base font-medium text-bg-blue-12 mb-1">
+                Type
+              </label>
               <input
                 type="text"
                 value="EMPLOYEE"
                 readOnly
-                className="w-full p-2 border rounded bg-gray-100"
+                className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm text-purple-600 mb-1">
+              <label className="block text-base font-medium text-bg-blue-12 mb-1">
                 First Name
               </label>
               <input
@@ -113,11 +123,11 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({ onClose }) => {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm text-purple-600 mb-1">
+              <label className="block text-base font-medium text-bg-blue-12 mb-1">
                 Last Name
               </label>
               <input
@@ -125,11 +135,53 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({ onClose }) => {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="block text-base font-medium text-bg-blue-12 mb-1">
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm text-purple-600 mb-1">
+              <label className="block text-base font-medium text-bg-blue-12 mb-1">
+                Phone
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="block text-base font-medium text-bg-blue-12 mb-1">
+                Status
+              </label>
+              <input
+                type="text"
+                value="ACTIVE"
+                readOnly
+                className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
+            {/* Experience (1/3) */}
+            <div className="col-span-1">
+              <label className="block text-base font-medium text-bg-blue-12 mb-1">
                 Total Experience (years)
               </label>
               <input
@@ -137,61 +189,36 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({ onClose }) => {
                 name="totalExperience"
                 value={formData.totalExperience}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
               />
             </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-purple-600 mb-1">Email</label>
+            {/* Google Drive Link (2/3) */}
+            <div className="col-span-2">
+              <label className="block text-base font-medium text-bg-blue-12 mb-1">
+                Google Drive Link
+              </label>
               <input
-                type="email"
-                name="email"
-                value={formData.email}
+                type="url"
+                name="googleDriveLink"
+                value={formData.googleDriveLink}
                 onChange={handleChange}
-                className="w-full p-2 border rounded"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-purple-600 mb-1">Phone</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full p-2 border rounded"
+                className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm text-purple-600 mb-1">
-              Google Drive Link
+            <label className="block text-base font-medium text-bg-blue-12 mb-1">
+              Skills
             </label>
-            <input
-              type="url"
-              name="googleDriveLink"
-              value={formData.googleDriveLink}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm text-purple-600 mb-1">Status</label>
-            <input
-              type="text"
-              value="ACTIVE"
-              readOnly
-              className="w-full p-2 border rounded bg-gray-100"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm text-purple-600 mb-1">Skills</label>
             {formData.skillInputs.map((skill, index) => (
-              <div key={index} className="grid grid-cols-2 gap-2 mb-2">
+              <div
+                key={index}
+                className="flex items-center gap-2 mb-2"
+              >
+                {/* Skill ID Input */}
+                
                 <input
                   type="text"
                   placeholder="Skill ID"
@@ -199,8 +226,10 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({ onClose }) => {
                   onChange={(e) =>
                     handleSkillChange(index, "skillID", e.target.value)
                   }
-                  className="w-full p-2 border rounded"
+                  className="flex-1 px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
                 />
+
+                {/* Experience Input */}
                 <input
                   type="number"
                   placeholder="Experience (years)"
@@ -208,14 +237,25 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({ onClose }) => {
                   onChange={(e) =>
                     handleSkillChange(index, "experienceYears", e.target.value)
                   }
-                  className="w-full p-2 border rounded"
+                  className="flex-1 px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
                 />
+
+                {/* Remove Button */}
+                <button
+                  type="button"
+                  onClick={() => removeSkill(index)}
+                  className="w-[20px] h-[20px] flex items-center justify-center bg-bg-blue-12 text-white rounded-md"
+                >
+                  -
+                </button>
               </div>
             ))}
+
+            {/* Add Skill Button */}
             <button
               type="button"
               onClick={addSkill}
-              className="text-purple-600 hover:underline"
+              className="text-base font-medium text-bg-blue-12 mt-2"
             >
               + Add Skill
             </button>
@@ -223,13 +263,15 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({ onClose }) => {
 
           <button
             type="submit"
-            className="w-full bg-purple-600 text-white py-2 rounded hover:bg-purple-700 transition-colors"
+            className="w-full bg-bg-blue-12 text-white py-2 rounded hover:bg-purple-700 transition-colors"
             disabled={loading}
           >
             {loading ? "Saving..." : "Save"}
           </button>
         </form>
       </div>
+      {/* </div> */}
+      {/* </div> */}
     </div>
   );
 };
