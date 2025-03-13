@@ -1,13 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { individualvendorApi } from "../../api/apiService/individualvendorApiService";
+
 import {individualvendor} from "../../api/jsonService/individualvendorJsonService";
 import VendorLayout from "./VendorLayout";
 import { useRouter } from "next/navigation";
+import useIndividualVendorData from "../../api/apiService/individualvendorApiService";
 
 interface ContactInfo {
   email: string;
-  phone: string;
+  phoneNumber: string;
   location: string;
 }
 
@@ -20,10 +21,12 @@ interface Agreement {
 interface CompanyProfile {
   name?: string;
   isActive?: boolean;
-  primaryContact: ContactInfo;
-  secondaryContact: ContactInfo;
+  // primaryContact: ContactInfo;
+  // secondaryContact: ContactInfo;
+  contactList: ContactInfo[];
   agreement: Agreement;
-  locations: string[];
+  // locations: string[];
+  address: string[];
   skills: string[];
   paymentTerms: string;
   employeeCount: string;
@@ -34,35 +37,50 @@ interface CompanyProfile {
   }>;
 }
 
-const VendorDetails = () => {
+const VendorDetails = ({ vendorId}: { vendorId: string }) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("details");
   const [vendorData, setVendorData] = useState<CompanyProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const useDummyData =
-    process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
+  // const useDummyData =
+  //   process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
 
+  const { vendor, loading: vendorLoading, error: vendorError } = useIndividualVendorData(vendorId);
+
+  
+
+  // console.log(vendor);
+
+  // useEffect(() => {
+  //   const fetchVendorData = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const response = useDummyData
+  //                 ? await individualvendorApi()
+  //                 : individualvendor();
+  //       setVendorData(response);
+  //       console.log(response);
+  //     } catch (err) {
+  //       console.error("Error fetching resources:", err);
+  //       setError("Failed to load resources");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchVendorData();
+  // }, []);
   useEffect(() => {
-    const fetchVendorData = async () => {
-      try {
-        setLoading(true);
-        const response = useDummyData
-                  ? await individualvendorApi()
-                  : individualvendor();
-        setVendorData(response);
-      } catch (err) {
-        console.error("Error fetching resources:", err);
-        setError("Failed to load resources");
-      } finally {
-        setLoading(false);
+    if (vendor) {
+      setVendorData(vendor);
+      setLoading(vendorLoading);
+      if (vendorError) {
+        setError(vendorError);
       }
-    };
-
-    fetchVendorData();
-  }, []);
-
+    }
+  }, [vendor, vendorLoading, vendorError]);
   return (
   <>
  
@@ -82,15 +100,15 @@ const VendorDetails = () => {
                           <div className="space-y-2">
                             <div className="flex gap-2">
                               <span className="text-gray-500">Email</span>
-                              <span>: {vendorData.primaryContact.email}</span>
+                              <span>: {vendorData.contactList[0]?.email}</span>
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Phone</span>
-                              <span>: {vendorData.primaryContact.phone}</span>
+                              <span>: {vendorData.contactList[0]?.phoneNumber}</span>
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Location</span>
-                              <span>: {vendorData.primaryContact.location}</span>
+                              <span>: {vendorData.contactList[0]?.location}</span>
                             </div>
                           </div>
                         </div>
@@ -102,15 +120,15 @@ const VendorDetails = () => {
                           <div className="space-y-2">
                             <div className="flex gap-2">
                               <span className="text-gray-500">Email</span>
-                              <span>: {vendorData.secondaryContact.email}</span>
+                              <span>: {vendorData.contactList[1]?.email}</span>
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Phone</span>
-                              <span>: {vendorData.secondaryContact.phone}</span>
+                              <span>: {vendorData.contactList[1]?.phoneNumber}</span>
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Location</span>
-                              <span>: {vendorData.secondaryContact.location}</span>
+                              <span>: {vendorData.contactList[1]?.location}</span>
                             </div>
                           </div>
                         </div>
@@ -124,16 +142,16 @@ const VendorDetails = () => {
                           <div className="space-y-2">
                             <div className="flex gap-2">
                               <span className="text-gray-500">Contract Start</span>
-                              <span>: {vendorData.agreement.startDate}</span>
+                              <span>: {vendorData.agreement?.startDate}</span>
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Contract End</span>
-                              <span>: {vendorData.agreement.endDate}</span>
+                              <span>: {vendorData.agreement?.endDate}</span>
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Status</span>
                               <span className="text-green-600">
-                                : {vendorData.agreement.status}
+                                : {vendorData.agreement?.status}
                               </span>
                             </div>
                           </div>
@@ -144,9 +162,11 @@ const VendorDetails = () => {
                             Location
                           </h3>
                           <ul className="space-y-1">
-                            {vendorData.locations.map((location, index) => (
+                            {/* {vendorData.address?.map((location, index) => (
                               <li key={index}>• {location}</li>
-                            ))}
+                            ))} */}
+
+<li>•{vendorData.address}</li>
                           </ul>
                         </div>
 

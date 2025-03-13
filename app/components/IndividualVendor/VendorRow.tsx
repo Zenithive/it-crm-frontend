@@ -1,6 +1,7 @@
 import React from "react";
 import { formatText } from "../../utils/formatHelpers"; 
 import { getStatusColor1 } from "../../utils/colorHelpers";
+import { useRouter } from "next/navigation";
 
 interface Vendor {
   vendorID: string;
@@ -16,9 +17,22 @@ interface VendorRowProps {
 }
 
 const VendorRow: React.FC<VendorRowProps> = ({ vendor }) => {
+const router = useRouter();
+
+const handleVendorClick = () => {
+  if (vendor.vendorID) {
+  
+    console.log(`/individualvendor/${vendor.vendorID}`);
+    router.push(`/individualvendor/${vendor.vendorID}`);
+  } else {
+    console.error("Vendor ID is missing");
+    console.log(vendor);
+  }
+};
+
   return (
-    <tr key={vendor.vendorID} className="hover:bg-gray-50">
-      <td className="px-6 py-6">{vendor.vendor}</td>
+    <tr  className="hover:bg-gray-50">
+      <td className="px-6 py-6 cursor-pointer" onClick={handleVendorClick}>{vendor.vendor}</td>
       <td className="px-6 py-6">{vendor.location}</td>
       <td className="px-6 py-6">
         <span className="px-3 py-1 rounded-lg text-sm bg-blue-shadow-color text-bg-blue-12">

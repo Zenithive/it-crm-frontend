@@ -15,6 +15,7 @@ export const useVendors = (
     variables: { page, pageSize, companyName, status, skillIDs, search },
   });
 
+  console.log(`useVendors`, data);
   return {
     data,
     loading,
@@ -22,5 +23,6 @@ export const useVendors = (
     totalItems: data?.getVendors?.totalCount || 0, // Corrected to totalCount
     refetch,
   };
+
 };
 
