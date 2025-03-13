@@ -43,7 +43,7 @@ const todoListApiService = (currentPage: number, itemsPerPage: number) => {
         }
       );
 
-      if (response.data.errors) {
+      if (response.data.errors) {   
         throw new Error(response.data.errors[0].message);
       }
 

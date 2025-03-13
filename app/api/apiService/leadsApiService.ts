@@ -6,21 +6,25 @@ import { GET_LEADS } from "../../../graphQl/queries/leads.queries";
 
 interface Lead {
   leadStage: string;
+  campaign?: {
+    campaignCountry?: string;
+  };
 }
 
-const leadsApiService = (currentPage: number, itemsPerPage: number) => {
+const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: boolean = false) => {
   const [newLeads, setNewLeads] = useState(0);
   const [inProgressLeads, setInProgressLeads] = useState(0);
   const [followUpLeads, setFollowUpLeads] = useState(0);
   const [closedWonLeads, setClosedWonLeads] = useState(0);
   const [leadConversion, setLeadConversion] = useState(0);
+  const [campaignCountryCounts, setCampaignCountryCounts] = useState<{ [key: string]: number }>({});
 
   const user = useSelector((state: RootState) => state.auth);
 
   const { data, loading, error } = useQuery(GET_LEADS, {
     variables: {
       filter: {},
-      pagination: { page: currentPage, pageSize: itemsPerPage },
+      pagination: fetchAll ? null : { page: currentPage, pageSize: itemsPerPage },
       sort: { field: "EMAIL", order: "ASC" },
     },
     context: {
@@ -40,10 +44,17 @@ const leadsApiService = (currentPage: number, itemsPerPage: number) => {
       const followUpCount = fetchedLeads.filter((lead: Lead) => lead.leadStage === "FOLLOW_UP").length;
       const closedWonCount = fetchedLeads.filter((lead: Lead) => lead.leadStage === "CLOSED_WON").length;
 
+      const campaignCountryMap: { [key: string]: number } = {};
+      fetchedLeads.forEach((lead: Lead) => {
+        const country = lead.campaign?.campaignCountry || "Unknown";
+        campaignCountryMap[country] = (campaignCountryMap[country] || 0) + 1;
+      });
+
       setNewLeads(newCount);
       setInProgressLeads(inProgressCount);
       setFollowUpLeads(followUpCount);
       setClosedWonLeads(closedWonCount);
+      setCampaignCountryCounts(campaignCountryMap);
 
       if (totalLeads > 0) {
         setLeadConversion((closedWonCount / totalLeads) * 100);
@@ -55,6 +66,7 @@ const leadsApiService = (currentPage: number, itemsPerPage: number) => {
       console.log("IN PROGRESS Leads:", inProgressCount);
       console.log("FOLLOW UP Leads:", followUpCount);
       console.log("CLOSED WON Leads:", closedWonCount);
+      console.log("Leads per Campaign Country:", campaignCountryMap);
     }
   }, [data]);
 
@@ -68,6 +80,7 @@ const leadsApiService = (currentPage: number, itemsPerPage: number) => {
     followUpLeads,
     closedWonLeads,
     leadConversion,
+    campaignCountryCounts
   };
 };
 
