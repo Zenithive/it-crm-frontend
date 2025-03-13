@@ -40,3 +40,11 @@ export const IndividualMeetingtitle = [
         titleName: "Zenithive Ltd."
     }
 ]
+
+export const Usertitle = [
+    {
+        titleName: "Users"
+    }
+]
+
+

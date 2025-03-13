@@ -5,9 +5,10 @@ interface CircularProgressProps {
   value: number;
   title: string;
   isCurrency?: boolean; 
+  img: string;
 }
 
-const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCurrency = false }) => {
+const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCurrency = false ,img}) => {
   const isActiveLeads = title === "Active Leads"; 
   const safeValue = isCurrency ? value : Math.min(value, 100); 
   const displayValue = isCurrency ? `$${value.toLocaleString()}` : `${safeValue}%`; 
@@ -22,8 +23,12 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCur
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center">
       <div className="flex justify-between items-center w-full mb-2">
-        <span className="text-lg font-semibold text-gray-700">{title}</span>
-        <img src="filter.svg" alt="Filter" className="w-4 h-4" />
+        <div className='flex justify-center items-center'>
+        <img src={img} alt='Image' className="w-5 h-5 " ></img>
+        <span className="text-2xl font-semibold text-bg-blue-12 ml-4">{title}</span>
+        </div>
+       <img src="filter.svg" alt="Filter"></img>
+         
       </div>
 
       <div className="relative w-[140px] h-[140px] flex items-center justify-center">
