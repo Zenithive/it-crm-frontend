@@ -1,18 +1,21 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import { individualvendorApi } from "../../api/apiService/individualvendorApiService";
+
 import { individualvendor } from "../../api/jsonService/individualvendorJsonService";
 import JoditEditor from "jodit-react";
+import useIndividualVendorData from "../../api/apiService/individualvendorApiService";
 
 interface Note {
   message: string;
+  notes: string;
   profile: string;
   name: string;
   date: string;
 }
 
-const VendorNotes = () => {
+const VendorNotes = ({ vendorId}: { vendorId: string }) => {
   const [notes, setNotes] = useState<Note[]>([]);
+  // const [notes, setNotes] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -26,8 +29,11 @@ const VendorNotes = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = useDummyData ? await individualvendorApi() : individualvendor();
-        const notesData = response?.notes ?? [];
+        const response =  individualvendor();
+        const notesData = response?.notes?.map((note: any) => ({
+          ...note,
+          notes: note.notes || ""
+        })) ?? [];
         setNotes(Array.isArray(notesData) ? notesData : []);
       } catch (err) {
         console.error("Error fetching resources:", err);
@@ -38,6 +44,24 @@ const VendorNotes = () => {
     };
     fetchData();
   }, [useDummyData]);
+
+  // const { vendor, loading: vendorLoading, error: vendorError } = useIndividualVendorData(vendorId);
+  
+  // useEffect(() => {
+  //   if (vendor?.notes) {
+      
+     
+  //           setNotes(vendor.notes);
+  
+     
+
+   
+  //   }
+  //   if (vendorError) {
+  //     setError(vendorError);
+  //   }
+  //   setIsLoading(vendorLoading);
+  // }, [vendor, vendorLoading, vendorError]);
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-custom mr-4 mt-4">
@@ -65,7 +89,7 @@ const VendorNotes = () => {
   </div>
       <div className="mt-4">
         <div className="space-y-4">
-          {notes.map((note, index) => (
+          {notes?.map((note, index) => (
             <div key={index} className="p-4 rounded-lg shadow-custom bg-white">
               <div className="font-medium text-xl">{note.message}</div>
               <div className="flex mt-3">
@@ -80,6 +104,8 @@ const VendorNotes = () => {
               </div>
             </div>
           ))}
+
+          {/* <div className="">{notes}</div> */}
         </div>
       </div>
     </div>

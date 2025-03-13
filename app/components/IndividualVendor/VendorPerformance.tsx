@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import VendorLayout from "./VendorLayout";
-import { individualvendorApi } from "../../api/apiService/individualvendorApiService";
+// import { individualvendorApi } from "../../api/apiService/individualvendorApiService";
 import { individualvendor } from "../../api/jsonService/individualvendorJsonService";
 
 interface Performance {
@@ -10,7 +10,7 @@ interface Performance {
   qualityScore: string;
 }
 
-const VendorPerformance = () => {
+const VendorPerformance = ({ vendorId}: { vendorId:String  }) => {
   const [performance, setPerformance] = useState<Performance[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -22,9 +22,7 @@ const VendorPerformance = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = useDummyData
-          ? await individualvendorApi()
-          : individualvendor();
+        const response =  individualvendor();
 
         const performanceData = response?.performance ?? [];
         setPerformance(Array.isArray(performanceData) ? performanceData : []);
