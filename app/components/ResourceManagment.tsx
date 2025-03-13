@@ -1,12 +1,17 @@
-import React from 'react'
-import ResourceLayout from './ResourceManagment/ResourceLayout'
+import React from 'react';
+import ResourceLayout from './ResourceManagment/ResourceLayout';
 
-const ResourceManagment = () => {
-  return (
-    <div>
-      <ResourceLayout children={''} ></ResourceLayout>
-    </div>
-  )
+interface ResourceManagmentProps {
+  ResourceId: string;
 }
 
-export default ResourceManagment
+const ResourceManagment: React.FC<ResourceManagmentProps> = ({ ResourceId }) => {
+  
+  return (
+    <div>
+      <ResourceLayout ResourceId={ResourceId} />
+    </div>
+  );
+}
+
+export default ResourceManagment;
