@@ -3,10 +3,10 @@ import React from 'react'
 
 import VendorLayout from './IndividualVendor/VendorLayout'
 
-const IndividualVendorProfile = () => {
+const IndividualVendorProfile = ({ vendorId }: { vendorId: string }) => {
   return (
     <div>
-      <VendorLayout/>
+      <VendorLayout vendorId={vendorId}/>
     </div>
   )
 }

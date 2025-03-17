@@ -30,8 +30,11 @@ const OverallVendorProfile: React.FC = () => {
   // Fetch vendors using useVendors
   const { data, loading, error,totalItems  } = useVendors(currentPage, itemsPerPage);
   console.log(`totalItems`, totalItems);
+  console.log(`data`, data);
   const vendors: Vendor[] =
-    data?.getVendors?.items.map((vendor: any) => ({
+    data?.getVendors?.items.map((vendor: any) => 
+      
+      ({
       vendorID: vendor.vendorID || "",
       vendor: vendor.companyName || "N/A",
       location: vendor.address || "N/A",

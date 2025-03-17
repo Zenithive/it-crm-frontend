@@ -1,4 +1,5 @@
 import React from 'react';
+import leadsApiService from '../../api/apiService/leadsApiService';
 
 interface Opportunity {
   country: string;
@@ -27,8 +28,10 @@ const opportunities: Opportunity[] = [
 ];
 
 const ViaCampaign = () => {
+
+  const { campaignCountryCounts } = leadsApiService(1, 10, true);
   return (
-    <div>
+  <div>
       {/* Title Outside the Box */}
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-2xl font-semibold text-bg-blue-12">
@@ -40,19 +43,17 @@ const ViaCampaign = () => {
       {/* Opportunities Container */}
       <div className="bg-white rounded-2xl shadow-custom p-4">
         <div className="space-y-4 scrollbar-custom overflow-y-auto max-h-[305px] pr-5 pl-4">
-          {opportunities.map((opportunity, index) => (
+          {Object.entries(campaignCountryCounts).map(([country, count], index) => (
             <div
               key={index}
               className={`flex justify-between pb-2 ${
-                index !== opportunities.length - 1
-                  ? "border-b border-content-border"
+                index !== Object.entries(campaignCountryCounts).length - 1
+                  ? "border-b border-c ontent-border"
                   : ""
               }`}
             >
-              <span>{opportunity.country}</span>
-              <span className="text-bg-blue-12 font-semibold">
-                {opportunity.count}
-              </span>
+              <span>{country}</span>
+              <span className="text-bg-blue-12 font-semibold">{count}</span>
             </div>
           ))}
         </div>
