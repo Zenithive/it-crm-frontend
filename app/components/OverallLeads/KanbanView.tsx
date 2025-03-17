@@ -11,13 +11,14 @@ const KanbanView: React.FC = () => {
   const [columns, setColumns] = useState<ColumnForKanbanView[]>([]);
   const [visibleCards, setVisibleCards] = useState<number>(3);
 
-  const useAPI = process.env.NEXT_PUBLIC_USE_API === "false";
+  // const useAPI = process.env.NEXT_PUBLIC_USE_API === "false";
   useEffect(() => {
     const fetchData = async () => {
       // const data = useAPI ? await fetchFromAPIForKanbanView() : await fetchFromJSONForKanbanView();
       const page = 1; // Set your desired page number
       const pageSize = 100; // Set your desired page size
       // const response = useAPI ? await fetchFromAPIForKanbanView(page, pageSize) : await fetchFromJSONForKanbanView();
+      // const response = await fetchFromJSONForKanbanView(page, pageSize);
       const response = await fetchFromJSONForKanbanView(page, pageSize);
       const data = Array.isArray(response) ? response : response;
 
@@ -31,7 +32,7 @@ const KanbanView: React.FC = () => {
     };
 
     fetchData();
-  }, [useAPI]);
+  }, []);
 
   const handleAddCard = () => {
     if (visibleCards < columns.length) {
