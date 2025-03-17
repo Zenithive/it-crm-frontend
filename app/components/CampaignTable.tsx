@@ -1,36 +1,25 @@
-import React, { useState } from "react";
-import { formatText } from "../utils/formatHelpers";
-import { getRoleColor } from "../utils/colorHelpers";
-import UserForm from "./UserForm";
+import React from "react";
 
 export interface Campaign {
-    campaignID: string;
+  campaignID: string;
+  campaignName: string;
+  campaignCountry: string;
+  region?: string;
+  industry?: string;
+  assignee?: string;
+  users?: Array<{
+    userID: string;
     name: string;
-    country: string;
-    region: string;
-    industry: string;
-    assignee: string;
+    email: string;
+  }>;
 }
 
-interface CampaignTableProps {
-  campaigns: Campaign[];
-}
+const CampaignTable: React.FC<{ campaigns: Campaign[] }> = ({ campaigns }) => {
+  console.log("Received campaigns in CampaignTable:", campaigns); // Debugging log
 
-const CampaignTable: React.FC<CampaignTableProps> = ({ campaigns }) => {
-  const [selectedUser, setSelectedUser] = useState<Campaign | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Open modal and set selected user
-  const handleEdit = (user: Campaign) => {
-    setSelectedUser(user);
-    setIsModalOpen(true);
-  };
-
-  // Close modal
-  const handleClose = () => {
-    setIsModalOpen(false);
-    setSelectedUser(null);
-  };
+  if (!campaigns || campaigns.length === 0) {
+    return <p className="text-center text-gray-500 mt-10">No campaigns available</p>;
+  }
 
   return (
     <div>
@@ -46,31 +35,22 @@ const CampaignTable: React.FC<CampaignTableProps> = ({ campaigns }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {campaigns?.length > 0 ? (
-                campaigns.map((campaign) => (
-                <tr key={campaign.campaignID} className="hover:bg-gray-50">
-                  <td className="px-6 py-6">{campaign.name}</td>
-                  <td className="px-6 py-6">{campaign.country}</td>
-                  <td className="px-6 py-6">{campaign.region}</td>
-                  <td className="px-6 py-6">{campaign.industry}</td>
-                  <td className="px-6 py-6">{campaign.assignee}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={6} className="px-6 py-6 text-center text-gray-500">
-                  No campaigns available
+            {campaigns.map((campaign) => (
+              <tr key={campaign.campaignID} className="hover:bg-gray-50">
+                <td className="px-6 py-6">{campaign.campaignName}</td>
+                <td className="px-6 py-6">{campaign.campaignCountry}</td>
+                <td className="px-6 py-6">{campaign.region || "N/A"}</td>
+                <td className="px-6 py-6">{campaign.industry || "N/A"}</td>
+                <td className="px-6 py-6">
+                  {campaign.users && campaign.users.length > 0 
+                    ? campaign.users[0].name 
+                    : "Unassigned"}
                 </td>
               </tr>
-            )}
+            ))}
           </tbody>
         </table>
       </div>
-
-      {/* Render Edit Modal
-      {isModalOpen && selectedUser && (
-        <UserForm campaign={selectedUser} onClose={handleClose} />
-      )} */}
     </div>
   );
 };

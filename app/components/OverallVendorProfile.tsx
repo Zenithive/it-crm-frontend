@@ -58,7 +58,7 @@ const OverallVendorProfile: React.FC = () => {
           button2Text={headerbutton[3].button2text}
           button2img={headerbutton[3].button2img}
           button1width="w-[120px]"
-          button2width="w-[200px]"
+          button2width="w-[140px]"
           onClick2={() => setShowForm(true)}
         />
       </div>

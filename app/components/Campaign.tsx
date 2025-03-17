@@ -1,63 +1,55 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Title from "../microComponents/Title";
 import { Campaigntitle } from "./Path/TitlePaths";
-import { campaignApi } from "../api/apiService/campaignApiService"; // API Service
-import { campaign } from "../api/jsonService/campaignJsonService"; // JSON Static Data
 import Search from "../microComponents/Search";
 import { headerbutton, search } from "./Path/TaskData";
 import HeaderButtons from "../microComponents/HeaderButtons";
 import CampaignTable from "./CampaignTable";
-import CampaignForm from "./CampaignForm"; // Import the form component
+import AddCampaignForm from "./AddCampaignForm"; 
+import { useCampaigns } from "../api/apiService/campaignApiService";
+import Pagination from "../microComponents/Pagination";
 
 export interface Campaign {
   campaignID: string;
-  name: string;
-  country: string;
-  region: string;
-  industry: string;
-  assignee: string;
+  campaignName: string;
+  campaignCountry: string;
+  region?: string;
+  industry?: string;
+  assignee?: string;
+  users?: Array<{
+    userID: string;
+    name: string;
+    email: string;
+  }>;
 }
 
-const useDummyData = process.env.NEXT_PUBLIC_USE_DUMMY_DATA === "false";
-
 const Campaign: React.FC = () => {
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
 
-  useEffect(() => {
-    const fetchCampaigns = async () => {
-      try {
-        setLoading(true);
-        const response = useDummyData ? await campaign() : await campaignApi();
-        setCampaigns(response);
-      } catch (err) {
-        console.error("Error fetching campaigns:", err);
-        setError("Failed to load campaign data");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { campaignsdata, totalCount, loading, error } = useCampaigns(
+    {}, // Your filters
+    { page: currentPage, limit: itemsPerPage }
+  );
 
-    fetchCampaigns();
-  }, []);
+  console.log("Campaigns data:", campaignsdata);
 
   if (loading) {
     return <p className="text-center mt-10 text-lg">Loading campaigns...</p>;
   }
 
   if (error) {
-    return <p className="text-center text-red-500 mt-10">{error}</p>;
+    return <p className="text-center text-red-500 mt-10">Failed to load campaigns: {error.message}</p>;
   }
 
   const handleOpenForm = () => {
     setSelectedCampaign({
       campaignID: "",
-      name: "",
-      country: "",
+      campaignName: "",
+      campaignCountry: "",
       region: "",
       industry: "",
       assignee: "",
@@ -86,11 +78,22 @@ const Campaign: React.FC = () => {
           />
         </div>
 
-        <CampaignTable campaigns={campaigns} />
+        <CampaignTable campaigns={campaignsdata} />
+        
+        <div className="mt-6">
+          <Pagination
+            totalItems={totalCount}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            onItemsPerPageChange={setItemsPerPage}
+            multiplicationFactor={10}
+          />
+        </div>
       </div>
 
       {isFormOpen && selectedCampaign && (
-        <CampaignForm campaign={selectedCampaign} onClose={() => setIsFormOpen(false)} />
+        <AddCampaignForm campaign={selectedCampaign} onClose={() => setIsFormOpen(false)} />
       )}
     </div>
   );

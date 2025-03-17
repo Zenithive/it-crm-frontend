@@ -101,11 +101,11 @@ const MonthlyLead = () => {
         </ResponsiveContainer>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-3 mt-4">
+      <div className="flex flex-wrap gap-3 mt-4 justify-center ml-6">
         {data.map((item, index) => (
           <div
             key={index}
-            className="flex items-center space-x-2 basis-1/3 justify-center"
+            className="flex space-x-2 basis-1/3"
           >
             <span
               className="w-4 h-4 rounded-sm"

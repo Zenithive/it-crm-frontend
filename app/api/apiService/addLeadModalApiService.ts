@@ -14,6 +14,12 @@ enum LeadPriority {
   HIGH = "HIGH",
 }
 
+enum leadType {
+  SMALL = "SMALL",
+  MEDIUM = "MEDIUM",
+  ENTERPRISE = "ENTERPRISE",
+}
+
 export const useAddLead = () => {
   const [addLeadMutation, { loading, error }] = useMutation(ADD_LEAD_QUERY);
 
@@ -33,6 +39,7 @@ export const useAddLead = () => {
       country: values.country || "",
       phone: values.phone || "",
       leadSource: values.leadSource || "",
+      leadType: values.leadType || leadType.SMALL,
       initialContactDate: values.initialContactDate || defaultValues.initialContactDate,
       leadAssignedTo: defaultValues.leadAssignedTo,
       leadStage: LeadStage.NEW,
