@@ -8,7 +8,11 @@ const Pagination = ({
   onPageChange,
   itemsPerPage,
   onItemsPerPageChange,
-}: PaginationProps & { onItemsPerPageChange: (value: number) => void }) => {
+  multiplicationFactor = 10, // Default is 10, but can be 9
+}: PaginationProps & { 
+  onItemsPerPageChange: (value: number) => void;
+  multiplicationFactor?: number; 
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startItem = (currentPage - 1) * itemsPerPage + 1;
@@ -34,10 +38,11 @@ const Pagination = ({
           value={itemsPerPage}
           onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
         >
-          {/* <option value={2}>2 per page</option> */}
-          <option value={10}>10 per page</option>
-          <option value={20}>20 per page</option>
-          <option value={50}>50 per page</option>
+          {[1, 2, 3, 4].map((num) => (
+            <option key={num} value={num * multiplicationFactor}>
+              {num * multiplicationFactor} per page
+            </option>
+          ))}
         </select>
 
         {/* Pagination controls */}

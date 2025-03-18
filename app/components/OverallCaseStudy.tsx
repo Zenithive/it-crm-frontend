@@ -21,7 +21,7 @@ interface Resource {
 
 const ResourceContainer = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(9);
   const [showForm, setShowForm] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
   const router = useRouter();
@@ -109,7 +109,11 @@ const ResourceContainer = () => {
         ) : error ? (
           <p className="text-red-500 text-center">Error loading data: {error}</p>
         ) : isTableView ? (
-          <TablerLayout />
+          <TablerLayout 
+            resources={currentItems} 
+            loading={loading} 
+            error={error} 
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 sm:p-6 lg:p-8 bg-white shadow-custom rounded-xl">
             {currentItems.length > 0 ? currentItems.map(
@@ -165,6 +169,7 @@ const ResourceContainer = () => {
           currentPage={currentPage}
           onPageChange={setCurrentPage}
           onItemsPerPageChange={setItemsPerPage}
+          multiplicationFactor={9}
         />
         </div>
       </div>

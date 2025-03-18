@@ -20,7 +20,7 @@ const Navbar: React.FC<NavbarProps> = ({ nav }) => {
         <div className="flex items-center space-x-8">
         
           <div>
-            <img src="logo.svg" alt="logo" className="h-6" />
+            <img src="/logo.svg" alt="logo" className="h-6" />
           </div>
 
         
@@ -48,15 +48,15 @@ const Navbar: React.FC<NavbarProps> = ({ nav }) => {
         <div className="hidden sm:flex items-center space-x-2">
   
           <button className="p-2 hover:bg-gray-100 rounded-lg">
-            <img src="nav_icon1.svg" alt="Navbar" className="w-5 h-5" />
+            <img src="/nav_icon1.svg" alt="Navbar" className="w-5 h-5" />
           </button>
           <div className="h-8 w-px border-l border-gray-300"></div>
           <button className="p-2 hover:bg-gray-100 rounded-lg">
-            <img src="nav_icon3.svg" alt="Navbar" className="w-7 h-7" />
+            <img src="/nav_icon3.svg" alt="Navbar" className="w-7 h-7" />
           </button>
           <div className="h-8 w-px border-l border-gray-300"></div>
           <button className="p-2 hover:bg-gray-100 rounded-lg">
-            <img src="location.svg" alt="Navbar" className="w-6 h-6" />
+            <img src="/location.svg" alt="Navbar" className="w-6 h-6" />
           </button>
 
       
@@ -67,7 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({ nav }) => {
                 <p className="text-xs text-gray-500">{designation}</p>
               </div>
               <div className="flex items-center ml-4">
-                <img src="dropdown.svg" alt="Profile" className="h-4 w-4" />
+                <img src="/dropdown.svg" alt="Profile" className="h-4 w-4" />
               </div>
             </div>
           </div>
