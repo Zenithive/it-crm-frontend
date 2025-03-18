@@ -42,14 +42,22 @@ export interface Lead {
   };
 }
 
-const useOverallLeadsData = (page: number, pageSize: number) => {
+const useOverallLeadsData = (page: number, pageSize: number,searchQuery: string) => {
   const { token } = useSelector((state: RootState) => state.auth);
 
+  const queryVariables: any = {
+    pagination: { page, pageSize },
+    sort: { field: "EMAIL", order: "ASC" },
+  };
+  
+  if (searchQuery) {
+    queryVariables.filter = { search: searchQuery };
+  }
+
   const { data, loading, error } = useQuery(GET_LEADS_QUERY, {
-    variables: {
-      pagination: { page, pageSize },
-      sort: { field: "EMAIL", order: "ASC" },
-    },
+    variables: 
+      queryVariables,
+      
     context: {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -64,18 +72,7 @@ const useOverallLeadsData = (page: number, pageSize: number) => {
     error: error ? error.message : null,
   };
 };
-
-
-
-
-
-
-
-
-
 export default useOverallLeadsData;
-
-
 
 
 export const updateTaskAPI = async (taskID: string, input: any) => {

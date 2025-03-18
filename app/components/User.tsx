@@ -78,7 +78,6 @@ const User: React.FC = () => {
           <HeaderButtons
             button1Text={headerbutton[2].button1text}
             button1img={headerbutton[2].button1img}
-            button1width="w-[109px]"
           />
         </div>
 

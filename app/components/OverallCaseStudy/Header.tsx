@@ -78,7 +78,6 @@ const Header: React.FC<HeaderProps> = ({
             button1img={headerButtons.button1img}
             button2Text={headerButtons.button2text}
             button2img={headerButtons.button2img}
-            button1width="w-[109px]"
             button2width="w-[160px]"
             onClick2={onAddButtonClick}
           />

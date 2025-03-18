@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
-import {individualvendor} from "../../api/jsonService/individualvendorJsonService";
+import { individualvendor } from "../../api/jsonService/individualvendorJsonService";
 import VendorLayout from "./VendorLayout";
 import { useRouter } from "next/navigation";
 import useIndividualVendorData from "../../api/apiService/individualvendorApiService";
@@ -37,7 +37,7 @@ interface CompanyProfile {
   }>;
 }
 
-const VendorDetails = ({ vendorId}: { vendorId: string }) => {
+const VendorDetails = ({ vendorId }: { vendorId: string }) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("details");
   const [vendorData, setVendorData] = useState<CompanyProfile | null>(null);
@@ -47,9 +47,11 @@ const VendorDetails = ({ vendorId}: { vendorId: string }) => {
   // const useDummyData =
   //   process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
 
-  const { vendor, loading: vendorLoading, error: vendorError } = useIndividualVendorData(vendorId);
-
-  
+  const {
+    vendor,
+    loading: vendorLoading,
+    error: vendorError,
+  } = useIndividualVendorData(vendorId);
 
   // console.log(vendor);
 
@@ -82,15 +84,14 @@ const VendorDetails = ({ vendorId}: { vendorId: string }) => {
     }
   }, [vendor, vendorLoading, vendorError]);
   return (
-  <>
- 
+    <>
       <div className="">
         {vendorData && (
           <div>
             <div className="flex justify-between items-center mt-4">
               <div className="w-full">
                 {activeTab === "details" && (
-                  <div className="flex">
+                  <div className="mr-4">
                     <div className=" bg-white rounded-2xl p-4 shadow-custom">
                       <div className="grid grid-cols-3 gap-6">
                         <div className="p-4 border-r border-content-border">
@@ -104,11 +105,15 @@ const VendorDetails = ({ vendorId}: { vendorId: string }) => {
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Phone</span>
-                              <span>: {vendorData.contactList[0]?.phoneNumber}</span>
+                              <span>
+                                : {vendorData.contactList[0]?.phoneNumber}
+                              </span>
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Location</span>
-                              <span>: {vendorData.contactList[0]?.location}</span>
+                              <span>
+                                : {vendorData.contactList[0]?.location}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -124,11 +129,15 @@ const VendorDetails = ({ vendorId}: { vendorId: string }) => {
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Phone</span>
-                              <span>: {vendorData.contactList[1]?.phoneNumber}</span>
+                              <span>
+                                : {vendorData.contactList[1]?.phoneNumber}
+                              </span>
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Location</span>
-                              <span>: {vendorData.contactList[1]?.location}</span>
+                              <span>
+                                : {vendorData.contactList[1]?.location}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -141,11 +150,15 @@ const VendorDetails = ({ vendorId}: { vendorId: string }) => {
                           </h3>
                           <div className="space-y-2">
                             <div className="flex gap-2">
-                              <span className="text-gray-500">Contract Start</span>
+                              <span className="text-gray-500">
+                                Contract Start
+                              </span>
                               <span>: {vendorData.agreement?.startDate}</span>
                             </div>
                             <div className="flex gap-2">
-                              <span className="text-gray-500">Contract End</span>
+                              <span className="text-gray-500">
+                                Contract End
+                              </span>
                               <span>: {vendorData.agreement?.endDate}</span>
                             </div>
                             <div className="flex gap-2">
@@ -166,7 +179,7 @@ const VendorDetails = ({ vendorId}: { vendorId: string }) => {
                               <li key={index}>• {location}</li>
                             ))} */}
 
-<li>•{vendorData.address}</li>
+                            <li>•{vendorData.address}</li>
                           </ul>
                         </div>
 
@@ -206,7 +219,6 @@ const VendorDetails = ({ vendorId}: { vendorId: string }) => {
           </div>
         )}
       </div>
-    
     </>
   );
 };
