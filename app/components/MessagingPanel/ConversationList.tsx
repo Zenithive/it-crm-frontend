@@ -26,7 +26,9 @@ const ConversationList: React.FC<ConversationListProps> = ({
     <div className="w-4/12 border-r border-gray-200 flex flex-col">
       {/* Search Bar */}
       <div className='m-4'>
-        <Search searchText={search[4].searchText} />
+        <Search searchText={search[4].searchText} value={""} onChange={function (value: string): void {
+          throw new Error("Function not implemented.");
+        } } />
       </div>
 
       {/* Conversation List */}

@@ -83,18 +83,20 @@ const IndividualMeetingScreen: React.FC = () => {
         <div className="flex">
           <Title title={IndividualMeetingScreentitle[0].titleName} />
           <div className="ml-5">
-            <Search searchText={search[2].searchText} />
+            <Search searchText={search[2].searchText} value={""} onChange={function (value: string): void {
+              throw new Error("Function not implemented.");
+            } } />
           </div>
         </div>
         <div>
           <div className="flex gap-4">
             <button
-              className="border shadow-sm bg-white text-bg-blue-12 font-normal h-[40px] rounded-xl 
+              className="border shadow-sm bg-white text-bg-blue-12 font-normal h-10 rounded-xl 
                    flex items-center justify-center gap-2 w-full sm:w-auto 
                     min-w-[100px]"
             >
               <img src="calender_icon.svg" className="w-6 h-6" alt="Calender" />
-              <div className="text-[12px] sm:text-[14px] whitespace-nowrap">
+              <div className="text-[12px] sm:text-sm whitespace-nowrap">
                 Calender
               </div>
             </button>

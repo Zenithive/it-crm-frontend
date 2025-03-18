@@ -68,7 +68,7 @@ import { useDispatch } from "react-redux";
               {({ errors, touched, handleSubmit, setFieldValue }) => (
                 <form onSubmit={handleSubmit} className="space-y-3">
                   <div className="space-y-1">
-                    <label className="block text-[18px]  font-semibold">
+                    <label className="block text-lg  font-semibold">
                       Email
                     </label>
                     <Field

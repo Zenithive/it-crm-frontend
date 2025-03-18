@@ -29,7 +29,9 @@ const ResourceList = () => {
           <div className="flex">
         <Title title={Resourcetitle[0].titleName} />
           <div className="ml-5">
-            <Search searchText={search[0].searchText} />
+            <Search searchText={search[0].searchText} value={""} onChange={function (value: string): void {
+                throw new Error("Function not implemented.");
+              } } />
           </div>
           </div>
           <div>

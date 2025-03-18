@@ -1,56 +1,90 @@
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { dashboardTotalLeadLineApi } from "../../api/apiService/dashboardApiService";  // API Service
-import { dashboardTotalLeadLineJson } from "../../api/jsonService/dashboardJsonService"; // JSON Service
+import leadsApiService from "../../api/apiService/leadsApiService";
+
+
+interface ChartDataPoint {
+  name: string;
+  linkedin: number;
+  socialMedia: number;
+  website: number;
+}
 
 const TotalLeadLine = () => {
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [mounted, setMounted] = useState(false);
-
-  const useDummyData =
-    process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
-
+  
+  const { leadSourceCounts, getTargetedLeadSources, loading } = leadsApiService(1, 1000, true);
+  
   useEffect(() => {
     setMounted(true);
-
-    const fetchData = async () => {
-      const fetchedData = useDummyData
-        ? await dashboardTotalLeadLineApi()
-        : await dashboardTotalLeadLineJson();
-
-      setChartData(fetchedData || []);
-    };
-
-    fetchData();
-  }, [useDummyData]);
+    
+    if (!loading && leadSourceCounts) {
+      console.log("leadSourceCounts", leadSourceCounts);
+      const { linkedin, socialMedia, website } = getTargetedLeadSources();
+      console.log("Targeted lead sources:", { linkedin, socialMedia, website });
+      
+      
+      const formattedData: ChartDataPoint[] = [
+        {
+          name: "Previous Period",
+          linkedin: 0, 
+          socialMedia: 0, 
+          website: 0 
+        },
+        {
+          name: "Current Period",
+          linkedin: linkedin,
+          socialMedia: socialMedia, 
+          website: website
+        }
+      ];
+      
+      console.log("Formatted chart data:", formattedData);
+      setChartData(formattedData);
+    }
+  }, [loading, leadSourceCounts]);
 
   const DynamicChart = dynamic(
     () =>
       import("recharts").then((recharts) => {
-        const { LineChart, Line, XAxis, YAxis, ResponsiveContainer } = recharts;
-        return function Chart({ data }: { data: any }) {
+        const { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } = recharts;
+        return function Chart({ data }: { data: ChartDataPoint[] }) {
           return (
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={data}>
                 <XAxis dataKey="name" />
                 <YAxis />
+                <Tooltip 
+                  formatter={(value: number, name: string) => {
+                    const nameMap: {[key: string]: string} = {
+                      linkedin: "LinkedIn",
+                      socialMedia: "Up Work",
+                      website: "Website"
+                    };
+                    return [value, nameMap[name] || name];
+                  }}
+                />
                 <Line
                   type="monotone"
                   dataKey="linkedin"
+                  name="LinkedIn"
                   stroke="#6366F1"
                   strokeWidth={2}
                   dot={false}
                 />
                 <Line
                   type="monotone"
-                  dataKey="upwork"
+                  dataKey="socialMedia"
+                  name="Up Work"
                   stroke="#22C55E"
                   strokeWidth={2}
                   dot={false}
                 />
                 <Line
                   type="monotone"
-                  dataKey="webform"
+                  dataKey="website"
+                  name="Website"
                   stroke="#94A3B8"
                   strokeWidth={2}
                   dot={false}
@@ -62,7 +96,7 @@ const TotalLeadLine = () => {
       }),
     { ssr: false }
   );
-
+  
   return (
     <div className="w-full">
       <div className="bg-white rounded-xl p-4 md:p-6 shadow-custom">
@@ -75,20 +109,20 @@ const TotalLeadLine = () => {
           </button>
         </div>
         <div className="h-40 md:h-56">
-          {mounted && <DynamicChart data={chartData} />}
+          {mounted && !loading && chartData.length > 0 && <DynamicChart data={chartData} />}
         </div>
         <div className="position_linechart">
           {[
-            { label: "LinkedIn", color: "#6366F1" },
-            { label: "Upwork", color: "#22C55E" },
-            { label: "Website Form", color: "#94A3B8" },
+            { label: "LinkedIn", color: "#6366F1", count: getTargetedLeadSources?.()?.linkedin || 0 },
+            { label: "Up Work", color: "#22C55E", count: getTargetedLeadSources?.()?.socialMedia || 0 },
+            { label: "Website", color: "#94A3B8", count: getTargetedLeadSources?.()?.website || 0 },
           ].map((item, index) => (
             <div key={index} className="flex items-center">
               <div
                 className="w-4 h-4 rounded-sm mr-2"
                 style={{ backgroundColor: item.color }}
               />
-              <span className="text-xs md:text-sm">{item.label}</span>
+              <span className="text-xs md:text-sm">{item.label}: {item.count}</span>
             </div>
           ))}
         </div>
