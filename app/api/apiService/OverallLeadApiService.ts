@@ -8,7 +8,7 @@ import client from "../../../lib/appoloClient";
 import { UPDATE_TASK_MUTATION } from "../../../graphQl/mutation/updateTask.mutation";
 
 export interface Lead {
-  leadID: string;
+  leadID: string
   firstName: string;
   lastName: string;
   email: string;
