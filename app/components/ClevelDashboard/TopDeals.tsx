@@ -1,4 +1,6 @@
 import React from 'react';
+import useDealsApiService from '../../api/apiService/dealsApiService';
+import { Deal } from '../../api/apiService/dealsApiService';
 
 interface TopDeal {
   name: string;
@@ -41,38 +43,44 @@ const topDeals: TopDeal[] = [
 ];
 
 const TopDeals = () => {
+
+  const { deals, loading, error } = useDealsApiService();
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+
   return (
     <div>
-      {/* Title Outside the Box */}
+   
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-2xl font-semibold text-bg-blue-12">Top Deals</h3>
         <img src="filter.svg" alt="Filter" />
       </div>
 
-      {/* Deals Container */}
+     
       <div className="bg-white rounded-2xl shadow-custom p-4">
         <div className="space-y-2 scrollbar-custom overflow-y-auto max-h-[450px] pr-4">
-          {topDeals.map((deal, index) => (
+          {deals.map((deal:Deal, index:number) => (
             <div
               key={index}
               className="flex justify-between items-center p-4 border-b last:border-none"
             >
-              {/* Deal Name & Type */}
+        
               <div>
                 <p className="font-medium text-lg text-bg-blue-12">
-                  {deal.name}
+                  {deal.dealName}
                 </p>
-                <p className="text-sm text-black mt-1">{deal.type}</p>
+                {/* <p className="text-sm text-black mt-1">{deal.projectRequirements}</p> */}
               </div>
 
-              {/* Amount & Status */}
+           
               <div className="flex flex-col items-end min-w-[100px]">
-                <div className="font-bold">${deal.amount.toLocaleString()}</div>
+              <div className="font-bold">{`$${Math.floor(Number(deal.dealAmount)).toLocaleString()}`}</div>
                 <div
                   className={`text-sm font-semibold text-black py-1 px-3 rounded-md mt-1 w-fit
-                  ${deal.status === "final" ? "bg-shadow-green" : "bg-bg-blue-16"}`}
+                  ${deal.dealStatus === "final" ? "bg-shadow-green" : "bg-bg-blue-16"}`}
                 >
-                  {deal.status}
+                  {deal.dealStatus}
                 </div>
               </div>
             </div>

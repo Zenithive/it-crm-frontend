@@ -1,78 +1,118 @@
-import React, { useState, useEffect } from "react";
-import { apiServiceLeftSide } from "../../api/apiService/individualApiService";
-import { jsonServiceLeftSide } from "../../api/jsonService/individualJsonService";
+import React from "react";
+import { useRouter } from "next/router";
+import leadApiService from "../../api/apiService/individualleadService";
 import "../Dashboard/Dashboard.css";
 
-const flag = process.env.NEXT_PUBLIC_USE_DUMMY_DATA === "true"; // Change to false to use JSON instead of API
+interface LeftSideProps {
+  leadId: string;
+}
 
-const LeftSide = () => {
-  interface DataItem {
-    label: string;
-    icon?: string;
-    value: string;
-    isLink?: boolean;
-  }
-  
-  const [data, setData] = useState<DataItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+const LeftSide: React.FC<LeftSideProps> = ({ leadId }) => {
+  console.log(`leadId in LeftSide:`, leadId);
+  const { lead, loading, error } = leadApiService(leadId);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const fetchedData = flag ? await apiServiceLeftSide() : await jsonServiceLeftSide();
-        setData(fetchedData);
-      } catch (err) {
-        setError("Error fetching left-side data");
-        console.error(err);
-        // Fallback to JSON data if API fails
-        setData(await jsonServiceLeftSide());
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
-    fetchData();
-  }, [flag]);
+
+  const data = [
+    {
+      label: "Location",
+      value: `${lead?.country || "N/A"}`,
+      icon: "/location_icon.svg"
+    },
+    {
+      label: "Assigned Owner",
+      value: `${lead?.assignedToName || "N/A"}`
+    },
+    {
+      label: "Email",
+      value: `${lead?.email || "N/A"}`,
+      icon: "/email_icon.svg"
+    },
+    {
+      label: "Phone",
+      value: `${lead?.phone || "N/A"}`,
+      icon: "/phone_icon.svg"
+    },
+    {
+      label: "Company",
+      value: `${lead?.organizationName || "N/A"}`,
+      icon: "/company_icon.svg"
+    },
+    {
+      label: "Industry",
+      value: `${lead?.industryTargeted || "N/A"}`
+    },
+    {
+      label: "Employee Count",
+      value: 35
+    },
+    {
+      label: "LinkedIn",
+      value: (
+        <a
+          href={lead?.linkedIn}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-bg-blue-12 hover:underline"
+        >
+          {lead?.linkedIn?.split('/').pop() || "N/A"}
+        </a>
+      ),
+    },
+    ...(lead?.organizationLinkedIn ? [{
+      label: "Company LinkedIn",
+      value: (
+        <a
+          href={lead.organizationLinkedIn}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-bg-blue-12 hover:underline"
+        >
+          {lead.organizationLinkedIn}
+        </a>
+      ),
+    }] : []),
+    ...(lead?.organizationWebsite ? [{
+      label: "Company Website",
+      value: (
+        <a
+          href={lead.organizationWebsite}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-bg-blue-12 hover:underline"
+        >
+          {lead.organizationWebsite}
+        </a>
+      ),
+    }] : []),
+    {
+      label: "Created Date",
+      value: lead?.initialContactDate
+        ? new Date(lead.initialContactDate).toLocaleDateString("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric"
+          })
+        : "N/A"
+    },
+  ].filter(Boolean); 
 
   return (
     <div className="rounded-lg shadow-custom bg-white p-1">
       <div className="scrollbar-custom overflow-y-auto h-screen">
         <div className="space-y-4 mt-3">
-          {isLoading ? (
-            <p className="text-center text-gray-500">Loading...</p>
-          ) : error ? (
-            <p className="text-center text-red-500">{error}</p>
-          ) : (
-            data.map((item, index) => (
-              <div key={index} className="ml-4">
-                {/* Always Show Label */}
-                <h2 className="text-lg font-semibold text-bg-blue-12 mb-2">{item.label}</h2>
-                <div className="flex items-center gap-2 text-gray-700">
-                  {item.icon && <img src={item.icon} alt={item.label} />}
-                  {item.value ? ( // Only show value if available
-                    item.isLink ? (
-                      <a
-                        href={item.value}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="break-all text-blue-600 hover:underline"
-                      >
-                        {item.value}
-                      </a>
-                    ) : (
-                      <div>{item.value}</div>
-                    )
-                  ) : (
-                    <div className="text-gray-400">N/A</div> // Show placeholder when value is missing
-                  )}
-                </div>
-                {/* Always Show Divider */}
-                <div className="border border-content-border mt-4 mr-4"></div>
+          {data.map((item, index) => (
+            <div key={index} className="ml-4">
+              <h2 className="text-lg font-semibold text-bg-blue-12 mb-2">{item.label}</h2>
+              <div className="flex items-center gap-2 text-gray-700">
+                {item.icon && <img src={item.icon} alt={item.label} className="w-5 h-5" />}
+                <div>{item.value || "N/A"}</div>
               </div>
-            ))
-          )}
+              <div className="border border-content-border mt-4 mr-4"></div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
