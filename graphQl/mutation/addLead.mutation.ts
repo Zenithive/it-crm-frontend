@@ -7,6 +7,7 @@ export const ADD_LEAD_QUERY = gql`
       firstName
       email
       leadStage
+      leadType
       leadPriority
       leadCreatedBy {
         userID

@@ -13,7 +13,8 @@ import { useUpdateTask } from "../hooks/useUpdateTask";
 
 export interface User {
   userID: string;
-  name: string;
+  FirstName: string;
+  LastName: string;
   role: string;
   email: string;
   phone: string;

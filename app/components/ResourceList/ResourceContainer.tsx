@@ -15,7 +15,7 @@ interface Resource {
 const ResourceContainer = () => {
   const router = useRouter(); // Initialize router
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(9);
   const useDummyData = process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
 
   // For API data, we use the actual page and pageSize values
@@ -136,6 +136,7 @@ const ResourceContainer = () => {
           itemsPerPage={itemsPerPage}
           onPageChange={handlePageChange}
           onItemsPerPageChange={handleItemsPerPageChange}
+          multiplicationFactor={9}
         />
       </div>
     </div>

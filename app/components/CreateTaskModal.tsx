@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect  } from "react";
 import { useForm } from "react-hook-form";
 import useCreateTask from "../api/apiService/createTaskModalApiService";
 import { DatePicker } from "antd";
@@ -55,8 +55,16 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
         "dueDate",
         initialTaskData.dueDate ? dayjs(initialTaskData.dueDate).toISOString() : ""
       );
+    }else{
+      reset({
+        title: "",
+        description: "",
+        status: "",
+        priority: "",
+        dueDate: "",
+      });
     }
-  }, [initialTaskData, setValue]);
+  }, [initialTaskData, setValue,reset]);
 
   const handleDateChange = (value: dayjs.Dayjs | null) => {
     setValue("dueDate", value ? value.toISOString() : "");
@@ -81,8 +89,8 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="rounded-lg shadow-lg w-full max-w-lg">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"  onClick={onClose}>
+      <div className=" rounded-lg shadow-lg w-full max-w-lg"  onClick={(e) => e.stopPropagation()}>
         <div className="bg-bg-blue-12 rounded-t-2xl p-4 flex justify-between items-center">
           <h2 className="text-xl font-semibold text-white">
             {initialTaskData ? "Edit Task" : "Create Task"}

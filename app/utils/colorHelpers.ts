@@ -29,8 +29,8 @@ export const getPriorityColor = (priority: string) => {
   };
 
 
-  export const getRoleColor = (role: string) => {
-    const formattedRole = role.trim().toUpperCase(); 
+  export const getRoleColor = (role: string): string => {
+    const formattedRole = role.trim().toUpperCase();
     const roleMap: Record<string, string> = {
       "BUSINESS EXECUTIVE": "bg-blue-shadow-color text-blue-text",
       "C-LEVEL": "bg-purple-shadow-color text-purple-text",

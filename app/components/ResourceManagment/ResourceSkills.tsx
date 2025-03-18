@@ -81,7 +81,7 @@ const ResourceSkills: React.FC<ResourceSkillsProps> = ({ resourceData }) => {
   return (
     <div className="">
       <div className="flex justify-between items-center">
-        <div className="">
+        <div className="w-full">
           {activeTab === "details" && (
             <div className="flex mr-6 mt-4">
               <div className="bg-white rounded-2xl p-4 shadow-custom w-full h-[500px]">

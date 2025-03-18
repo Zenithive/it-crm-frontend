@@ -62,8 +62,8 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
     }
   };
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="p-6 relative">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={onClose}>
+      <div className="p-6 relative" onClick={(e) => e.stopPropagation()}>
         <div className="bg-bg-blue-12 rounded-t-xl p-2 flex justify-between">
           <div className="p-2">
             <h2 className="text-2xl font-semibold text-white">Lead Form</h2>
@@ -159,16 +159,19 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
 
               {/* Lead Type and Campaign */}
               <div className="grid grid-cols-3 gap-4">
-                {/* <div>
+                <div>
                 <label className="block text-sm text-bg-blue-12 mb-2">
                   Lead Type
                 </label>
-                <input
-                  {...register("leadType")}
-                  placeholder="Type"
-                  className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
-                />
-              </div> */}
+                <select
+                    {...register("leadType")}
+                    className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
+                  >
+                    <option value="SMALL">small</option>
+                    <option value="MEDIUM">medium</option>
+                    <option value="ENTERPRISE">enterprise</option>
+                  </select>
+              </div>
                 <div>
                   <label className="block text-sm text-bg-blue-12 mb-2">
                     Name of Campaign

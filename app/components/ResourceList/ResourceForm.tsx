@@ -87,8 +87,8 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="rounded-lg shadow-lg w-full max-w-4xl">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={onClose}>
+      <div className="rounded-lg shadow-lg w-full max-w-4xl"  onClick={(e) => e.stopPropagation()}>
         <div className="bg-bg-blue-12 rounded-t-2xl p-4 flex justify-between items-center">
           <h2 className="text-xl font-semibold text-white">Resource Form</h2>
           <button
