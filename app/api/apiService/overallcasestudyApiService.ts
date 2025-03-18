@@ -22,13 +22,19 @@ const useOverallCaseStudyData = (
   pageSize: number, 
   industry?: string,
   sortField: string = "createdAt",
-  sortOrder: "ASC" | "DESC" = "DESC"
+  sortOrder: "ASC" | "DESC" = "DESC",
+  searchQuery?: string
 ) => {
   const { token } = useSelector((state: RootState) => state.auth);
 
   const filter: any = {};
   if (industry) {
     filter.industryTarget = industry;
+  }
+  
+  // Add search filter if there's a query
+  if (searchQuery && searchQuery.trim() !== "") {
+    filter.search = searchQuery.trim();
   }
 
   const { data, loading, error, refetch } = useQuery(GET_CASE_STUDIES_QUERY, {

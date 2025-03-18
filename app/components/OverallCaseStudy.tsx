@@ -1,5 +1,6 @@
 "use client"
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import _ from "lodash";
 import Pagination from "../microComponents/Pagination";
 import Search from "../microComponents/Search";
 import HeaderButtons from "../microComponents/HeaderButtons";
@@ -16,7 +17,7 @@ interface Resource {
   company: string;
   tags: string[];
   caseStudyID: string;
-  projectName:string;
+  projectName: string;
 }
 
 const ResourceContainer = () => {
@@ -24,16 +25,37 @@ const ResourceContainer = () => {
   const [itemsPerPage, setItemsPerPage] = useState(9);
   const [showForm, setShowForm] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
   
-  // Updated to use the modified hook without industry filter by default
+  // Create a debounced search function using lodash
+  const debouncedSearch = useCallback(
+    _.debounce((query: string) => {
+      // Reset to first page when searching
+      setCurrentPage(1);
+      // The actual search is handled by the API through the filter
+    }, 500),
+    []
+  );
+  
+  // Handle search input change
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    debouncedSearch(value);
+  };
+  
+  // Update the useOverallCaseStudyData hook to include search filter
   const { caseStudies, totalItems, loading, error, refetch } = useOverallCaseStudyData(
     currentPage, 
-    itemsPerPage
+    itemsPerPage,
+    undefined, // industry filter
+    "createdAt", // sort field
+    "DESC", // sort order
+    searchQuery // pass the search query to the hook
   );
   
   const resources = caseStudies.map((item: any) => {
-    console.log("Mapping item:", item);
+    // console.log("Mapping item:", item);
     return {
       title: item.projectName || "No Title",
       company: item.clientName || "No Company",
@@ -42,7 +64,7 @@ const ResourceContainer = () => {
     };
   });
   
-  console.log("Mapped resources:", resources);
+  // console.log("Mapped resources:", resources);
   
   // No need to slice since pagination is handled by the API now
   const currentItems = resources;
@@ -64,7 +86,11 @@ const ResourceContainer = () => {
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center space-x-4">
             <Title title={OverallCaseStudytitle[0].titleName} />
-            <Search searchText={search[1].searchText} />
+            <Search 
+              searchText={search[1].searchText} 
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
           </div>
           <div className="flex items-center space-x-6">
             <div className="flex space-x-4">
