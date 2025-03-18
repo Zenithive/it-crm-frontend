@@ -31,7 +31,9 @@ const Header: React.FC<HeaderProps> = ({
       <div className="flex justify-between items-center w-full">
         <div className="flex items-center space-x-4">
           <Title title={title} />
-          <Search searchText={searchText} />
+          <Search searchText={searchText} value={""} onChange={function (value: string): void {
+            throw new Error("Function not implemented.");
+          } } />
         </div>
         <div className="flex items-center space-x-6">
           {onViewTypeChange && (

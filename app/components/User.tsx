@@ -70,7 +70,9 @@ const User: React.FC = () => {
           <div className="flex">
             <Title title={Usertitle[0].titleName} />
             <div className="ml-4">
-              <Search searchText={search[5].searchText} />
+              <Search searchText={search[5].searchText} value={""} onChange={function (value: string): void {
+                throw new Error("Function not implemented.");
+              } } />
             </div>
           </div>
           <HeaderButtons

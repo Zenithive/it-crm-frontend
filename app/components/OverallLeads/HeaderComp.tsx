@@ -41,7 +41,9 @@ const HeaderComp: React.FC<HeaderProps> = ({
           </div>
 
           <div className="flex gap-[48px] items-center">
-            <Search searchText={data.searchText} />
+            <Search searchText={data.searchText} value={""} onChange={function (value: string): void {
+              throw new Error("Function not implemented.");
+            } } />
 
             <div className="flex gap-5 items-center justify-start">
               <div
