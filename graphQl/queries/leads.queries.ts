@@ -36,6 +36,7 @@ export const GET_LEADS = gql`
         organization {
           organizationID
           organizationName
+          
         }
         campaign {
           campaignID
