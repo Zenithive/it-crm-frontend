@@ -1,12 +1,13 @@
 "use client";
-import React, { useState, useEffect, ReactNode } from "react";
+import React, { useState } from "react";
 import { Flex, Progress, Rate } from "antd";
 import IconButton from "../../microComponents/IconButton";
-import axios from "axios";
+import { useQuery } from "@apollo/client";
 import ResourceDetails from "./ResourceDetails";
 import ResourceSkills from "./ResourceSkills";
 import ResourceDoc from "./ResourceDoc";
 import ResourceNote from "./ResourceNote";
+import { GET_RESOURCE_PROFILE } from "../../../graphQl/queries/getresourcebyid.queries";
 
 const tabs = ["Details", "Skills & Experience", "Documents", "Notes"];
 
@@ -14,38 +15,38 @@ interface ResourceLayoutProps {
   ResourceId: string;
 }
 
-interface ResourceProfile {
-  resourceProfileID: string;
-  type: string;
-  firstName: string;
-  lastName: string;
-  totalExperience: number;
-  contactInformation: string;
-  googleDriveLink: string;
-  status: string;
-  vendorID: string;
-  vendor: {
-    vendorID: string;
-    companyName: string;
-  };
-  resourceSkills: Array<{
-    skill: {
-      skillID: string;
-      name: string;
-      description: string;
-      skilltype: string;
-    };
-    experienceYears: number;
-  }>;
-  pastProjects: Array<{
-    pastProjectID: string;
-    createdAt: string;
-    updatedAt: string;
-    resourceProfileID: string;
-    projectName: string;
-    description: string;
-  }>;
-}
+// interface ResourceProfile {
+//   resourceProfileID: string;
+//   type: string;
+//   firstName: string;
+//   lastName: string;
+//   totalExperience: number;
+//   contactInformation: string;
+//   googleDriveLink: string;
+//   status: string;
+//   vendorID: string;
+//   vendor: {
+//     vendorID: string;
+//     companyName: string;
+//   };
+//   resourceSkills: Array<{
+//     skill: {
+//       skillID: string;
+//       name: string;
+//       description: string;
+//       skilltype: string;
+//     };
+//     experienceYears: number;
+//   }>;
+//   pastProjects: Array<{
+//     pastProjectID: string;
+//     createdAt: string;
+//     updatedAt: string;
+//     resourceProfileID: string;
+//     projectName: string;
+//     description: string;
+//   }>;
+// }
 
 // Add dummy data for development
 const dummyResourceProfile = {
@@ -71,130 +72,40 @@ const dummyResourceProfile = {
 };
 
 const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
-  console.log(`ResourceId`, ResourceId);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [resourceProfile, setResourceProfile] = useState<ResourceProfile | null>(null);
-  const [resourceData, setResourceData] = useState<any>(null);
-  console.log(`resourceData`, resourceData);
-  const [activeTab, setActiveTab] = useState<string>("Details");
+  const [activeTab, setActiveTab] = useState("Details");
 
   const useDummyData =
     process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
 
-  useEffect(() => {
-    const fetchResourceProfile = async () => {
-      try {
-        setLoading(true);
-        
-        if (useDummyData) {
-          // Use dummy data for development
-          setResourceData(dummyResourceProfile);
-          setLoading(false);
-          return;
-        }
-        
-        // GraphQL query
-        const query = `
-          query GetResourceProfile($resourceProfileId: ID!) {
-            getResourceProfile(resourceProfileID: $resourceProfileId) {
-              resourceProfileID
-              type
-              firstName
-              lastName
-              totalExperience
-              contactInformation
-              googleDriveLink
-              status
-              vendorID
-              vendor {
-                vendorID
-                companyName
-              }
-              resourceSkills {
-                skill {
-                  skillID
-                  name
-                  description
-                  skilltype
-                }
-                experienceYears
-              }
-              pastProjects {
-                pastProjectID
-                createdAt
-                updatedAt
-                resourceProfileID
-                projectName
-                description
-              }
-            }
-          }
-        `;
-        
-        const variables = {
-          resourceProfileId: ResourceId
-        };
-        
-        const response = await axios.post(
-          'https://crmbackendapis.onrender.com/graphql',
-          {
-            query,
-            variables
-          },
-          {
-            headers: {
-              'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDI0NDg1MjMsIm5hbWUiOiJkZW1vIiwicm9sZSI6IkFETUlOIiwidXNlcl9pZCI6IjljYjA3YmFmLWI2OGItNDY4MC1iY2E3LTA3NWQ3Y2E2ZDFhOSJ9.5LrwEngmYGIvrP2-e_8UfDxqF7twhLyB9kj61-B1PW0',
-              'Content-Type': 'application/json'
-            }
-          }
-        );
-        
-        if (response.data.errors) {
-          throw new Error(response.data.errors[0].message);
-        }
-        
-        const fetchedProfile = response.data.data.getResourceProfile;
-        setResourceProfile(fetchedProfile);
-        
-        // Transform data to match the component's expected format
-        const formattedData = {
-          name: `${fetchedProfile.firstName} ${fetchedProfile.lastName}`,
-          isAvailable: fetchedProfile.status === "AVAILABLE",
-          designation: fetchedProfile.type,
-          details: {
-            email: JSON.parse(fetchedProfile.contactInformation)?.email || "",
-            phone: JSON.parse(fetchedProfile.contactInformation)?.phone || "",
-            location: JSON.parse(fetchedProfile.contactInformation)?.location || "",
-            vendor: fetchedProfile.vendor?.companyName || "",
-            contractType: fetchedProfile.type,
-          },
-          performance: {
-            rate: "85", // Example data, replace with actual if available
-            satisfaction: "90", // Example data, replace with actual if available
-          },
-          overview: fetchedProfile.pastProjects.map((project: { projectName: any; updatedAt: string | number | Date; }) => ({
-            project: project.projectName,
-            time: new Date(project.updatedAt).toLocaleDateString()
-          })),
-          resourceSkills: fetchedProfile.resourceSkills,
-          googleDriveLink: fetchedProfile.googleDriveLink,
-          pastProjects: fetchedProfile.pastProjects,
-        };
-        
-        setResourceData(formattedData);
-      } catch (err) {
-        console.error("Error fetching resource profile:", err);
-        setError("Failed to load resource profile");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data, loading, error } = useQuery(GET_RESOURCE_PROFILE, {
+    variables: { resourceProfileId: ResourceId },
+    skip: useDummyData,
+  });
 
-    if (ResourceId) {
-      fetchResourceProfile();
-    }
-  }, [ResourceId, useDummyData]);
+  const resourceData = useDummyData
+    ? dummyResourceProfile
+    : data?.getResourceProfile
+    ? {
+        name: `${data.getResourceProfile.firstName} ${data.getResourceProfile.lastName}`,
+        isAvailable: data.getResourceProfile.status === "AVAILABLE",
+        designation: data.getResourceProfile.type,
+        details: {
+          email: JSON.parse(data.getResourceProfile.contactInformation)?.email || "",
+          phone: JSON.parse(data.getResourceProfile.contactInformation)?.phone || "",
+          location: JSON.parse(data.getResourceProfile.contactInformation)?.location || "",
+          vendor: data.getResourceProfile.vendor?.companyName || "",
+          contractType: data.getResourceProfile.type,
+        },
+        performance: {
+          rate: "85", // Example data
+          satisfaction: "90", // Example data
+        },
+        overview: data.getResourceProfile.pastProjects.map((project: { projectName: any; updatedAt: string | number | Date; }) => ({
+          project: project.projectName,
+          time: new Date(project.updatedAt).toLocaleDateString(),
+        })),
+      }
+    : null;
 
   return (
     <div className="p-4 max-w-[1300px] mx-auto">

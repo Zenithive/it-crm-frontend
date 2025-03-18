@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { GET_RESOURCE_PROFILES_QUERY } from "../../../graphQl/queries/getAllResources.queries";
 
-interface Vendor {
+export interface Vendor {
     vendorID: string;
     companyName: string;
 }
@@ -27,7 +27,7 @@ interface PastProject {
     description: string;
 }
 
-interface ResourceProfile {
+export interface ResourceProfile {
     resourceProfileID: string;
     type: string;
     firstName: string;

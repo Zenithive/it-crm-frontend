@@ -117,8 +117,46 @@
 "use client";
 import React, { useState } from "react";
 
+// interface ResourceSkillsProps {
+//   resourceData: {
+//     resourceSkills?: Array<{
+//       skill: {
+//         skillID: string;
+//         name: string;
+//         description: string;
+//         skilltype: string;
+//       };
+//       experienceYears: number;
+//     }>;
+//     pastProjects?: Array<{
+//       pastProjectID: string;
+//       projectName: string;
+//       description: string;
+//     }>;
+//   } | null;
+// }
+
 interface ResourceSkillsProps {
   resourceData: {
+    name?: string;
+    isAvailable?: boolean;
+    designation?: string;
+    details?: {
+      email: string;
+      phone: string;
+      location: string;
+      vendor: string;
+      contractType: string;
+    };
+    performance?: {
+      rate: string;
+      satisfaction: string;
+    };
+    overview?: Array<{
+      project: string;
+      time: string;
+    }>;
+    // Keep the existing expected properties
     resourceSkills?: Array<{
       skill: {
         skillID: string;
