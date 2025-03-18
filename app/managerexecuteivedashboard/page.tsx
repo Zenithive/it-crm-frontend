@@ -79,7 +79,7 @@ const SalesDashboard: React.FC = () => {
             <PipelineMap />
 
             {/* Lead Source Chart */}
-            <LeadSourceChart data={leadSourceData} />
+            <LeadSourceChart/>
           </div>
 
           {/* Team Performance Table Component */}

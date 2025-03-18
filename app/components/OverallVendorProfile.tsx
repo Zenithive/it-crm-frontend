@@ -49,7 +49,9 @@ const OverallVendorProfile: React.FC = () => {
         <div className="flex">
           <Title title={OverallVendorProfiletitle[0].titleName} />
           <div className="ml-5">
-            <Search searchText={search[3].searchText} />
+            <Search searchText={search[3].searchText} value={""} onChange={function (value: string): void {
+              throw new Error("Function not implemented.");
+            } } />
           </div>
         </div>
         <HeaderButtons

@@ -64,7 +64,9 @@ const Campaign: React.FC = () => {
           <div className="flex">
             <Title title={Campaigntitle[0].titleName} />
             <div className="ml-4">
-              <Search searchText={search[6].searchText} />
+              <Search searchText={search[6].searchText} value={""} onChange={function (value: string): void {
+                throw new Error("Function not implemented.");
+              } } />
             </div>
           </div>
           <HeaderButtons

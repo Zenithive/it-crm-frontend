@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 import { MicroTablePropsForListView } from "./InterfaceAndTypeData";
-import Pagination from "./Pagination";
+
+import { useRouter } from "next/navigation"; 
+
+
+interface Resource {
+  leadID:string;
+}
 
 const MicroTable: React.FC<MicroTablePropsForListView> = ({
   rowData,
@@ -10,6 +16,7 @@ const MicroTable: React.FC<MicroTablePropsForListView> = ({
   // console.log(`columnDefs`, columnDefs);
   console.log(`rowData`, rowData);
   const [ready, setReady] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     const timer = setTimeout(() => setReady(true), 100);
@@ -20,6 +27,12 @@ const MicroTable: React.FC<MicroTablePropsForListView> = ({
     return <div className="text-center p-6">Loading table...</div>;
   }
 
+  const handleResourceClick = (resource: any) => {
+    const leadID = encodeURIComponent(resource.leadID);
+    console.log("Resource id", leadID);
+    window.open(`/individual/${leadID}`, "_blank"); 
+  };
+  
   const columns = columnDefs.map((col) => ({
     dataIndex: col.field,
     key: col.field,
@@ -32,7 +45,16 @@ const MicroTable: React.FC<MicroTablePropsForListView> = ({
     render: (text: any, record: any) => {
       switch (col.field) {
         case "name":
-          return `${record.firstName} ${record.lastName}`;
+          return (
+            <a
+              href={`/individual/${encodeURIComponent(record.leadID)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cursor-pointer hover:text-blue-600 font-medium"
+            >
+              {`${record.firstName} ${record.lastName}`}
+            </a>
+          );
 
         case "company":
           return record.organization?.organizationName || "N/A";
