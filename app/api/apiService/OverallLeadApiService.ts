@@ -4,8 +4,11 @@ import { useQuery } from "@apollo/client";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { GET_LEADS_QUERY } from "../../../graphQl/queries/getLeads.query";
+import client from "../../../lib/appoloClient";
+import { UPDATE_TASK_MUTATION } from "../../../graphQl/mutation/updateTask.mutation";
 
 export interface Lead {
+  leadID: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -62,4 +65,28 @@ const useOverallLeadsData = (page: number, pageSize: number) => {
   };
 };
 
+
+
+
+
+
+
+
+
 export default useOverallLeadsData;
+
+
+
+
+export const updateTaskAPI = async (taskID: string, input: any) => {
+  try {
+    const { data } = await client.mutate({
+      mutation: UPDATE_TASK_MUTATION,
+      variables: { taskID, input },
+    });
+
+    return data?.updateTask;
+  } catch (error) {
+    console.error("Failed to update task:", error);
+    throw error;
+  }}
