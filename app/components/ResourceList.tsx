@@ -1,3 +1,4 @@
+// ResourceList.tsx
 "use client";
 import React, { useState, useCallback } from "react";
 import Search from "../microComponents/Search";
@@ -7,12 +8,31 @@ import ResourceContainer from "./ResourceList/ResourceContainer";
 import { ResourceForm } from "./ResourceList/ResourceForm";
 import Title from "../microComponents/Title";
 import { Resourcetitle } from "./Path/TitlePaths";
+import FilterHandler from "./Filter/FilterHandler"; // Updated import
 import _ from "lodash";
+
+interface FilterPayload {
+  filter: {
+    [key: string]: string | undefined;
+  };
+  pagination: {
+    page: number;
+    pageSize: number;
+  };
+  sort: {
+    field: string;
+    order: string;
+  };
+}
 
 const ResourceList = () => {
   const [showForm, setShowForm] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [inputValue, setInputValue] = useState<string>("");
+  const [vendorNameFilter, setVendorNameFilter] = useState<string | undefined>(undefined);
+  const [experienceYearFilter, setExperienceYearFilter] = useState<string | undefined>(undefined);
+  const [skillsFilter, setSkillsFilter] = useState<string | undefined>(undefined);
 
   const debouncedSearch = useCallback(
     _.debounce((query: string) => {
@@ -25,7 +45,6 @@ const ResourceList = () => {
 
   const handleSearchChange = (query: string) => {
     setInputValue(query);
-
     if (query.length >= 3 || query.length === 0) {
       debouncedSearch(query);
     } else if (searchQuery && query.length < 3) {
@@ -41,6 +60,45 @@ const ResourceList = () => {
     setShowForm(false);
   };
 
+  const handleFilterApply = (payload: FilterPayload) => {
+    const { filter } = payload;
+    setVendorNameFilter(filter.vendorName);
+    setExperienceYearFilter(filter.experienceYear);
+    setSkillsFilter(filter.skills);
+    setShowFilter(false);
+  };
+
+  const filterSections = [
+    {
+      id: "vendorName",
+      title: "Vendor Name",
+      options: [
+        { id: "vendorA", label: "Vendor A", checked: false },
+        { id: "vendorB", label: "Vendor B", checked: false },
+        { id: "vendorC", label: "Vendor C", checked: false },
+      ],
+    },
+    {
+      id: "experienceYear",
+      title: "Experience Year",
+      options: [
+        { id: "1-3", label: "1-3 Years", checked: false },
+        { id: "3-5", label: "3-5 Years", checked: false },
+        { id: "5+", label: "5+ Years", checked: false },
+      ],
+    },
+    {
+      id: "skills",
+      title: "Skills",
+      options: [
+        { id: "javascript", label: "JavaScript", checked: false },
+        { id: "python", label: "Python", checked: false },
+        { id: "java", label: "Java", checked: false },
+        { id: "react", label: "React", checked: false },
+      ],
+    },
+  ];
+
   return (
     <div className="min-h-screen w-full">
       {showForm && <ResourceForm onClose={handleCloseForm} />}
@@ -50,10 +108,10 @@ const ResourceList = () => {
           <div className="flex">
             <Title title={Resourcetitle[0].titleName} />
             <div className="ml-5">
-              <Search 
-                searchText={search[0].searchText} 
-                value={inputValue} 
-                onChange={handleSearchChange} 
+              <Search
+                searchText={search[0].searchText}
+                value={inputValue}
+                onChange={handleSearchChange}
               />
             </div>
           </div>
@@ -64,13 +122,29 @@ const ResourceList = () => {
               button2Text={headerbutton[0].button2text}
               button2img={headerbutton[0].button2img}
               button2width="w-[160px]"
-              button2Action={handleAddResource}
+              onClick1={() => setShowFilter(true)}
+              onClick2={handleAddResource}
             />
           </div>
         </div>
       </div>
-      
-      <ResourceContainer searchQuery={searchQuery} />
+
+      <ResourceContainer
+        searchQuery={searchQuery}
+        vendorNameFilter={vendorNameFilter}
+        experienceYearFilter={experienceYearFilter}
+        skillsFilter={skillsFilter}
+      />
+
+      {showFilter && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <FilterHandler
+            filterSections={filterSections}
+            onFilterApply={handleFilterApply}
+            setShowFilter={setShowFilter}
+          />
+        </div>
+      )}
     </div>
   );
 };

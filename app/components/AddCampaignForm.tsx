@@ -126,7 +126,7 @@ const CampaignForm: React.FC<AddCampaignModalProps> = ({ campaign, onClose }) =>
             <div className="mt-4 flex justify-end">
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg w-full"
+                className="px-4 py-2 bg-bg-blue-12 text-white rounded-lg w-full"
                 disabled={loading}
               >
                 {loading ? "Saving..." : "Save"}
