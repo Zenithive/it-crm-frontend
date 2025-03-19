@@ -10,9 +10,10 @@ import Title from "../microComponents/Title";
 import TablerLayout from "./OverallCaseStudy/TablerLayout";
 import useOverallCaseStudyData from "../api/apiService/overallcasestudyApiService";
 import AddCaseStudyForm from "./AddCaseStudyForm";
+import { Filter } from "./Filter/Filter";
 import { useRouter } from "next/navigation";
 
-interface Resource {
+interface Resource {  
   title: string;
   company: string;
   tags: string[];
@@ -20,12 +21,30 @@ interface Resource {
   projectName: string;
 }
 
+interface FilterPayload {
+  filter: {
+    industryTarget?: string;
+    techStack?: string;
+  };
+  pagination: {
+    page: number;
+    pageSize: number;
+  };
+  sort: {
+    field: string;
+    order: string;
+  };
+}
+
 const ResourceContainer = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(9);
   const [showForm, setShowForm] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [industryFilter, setIndustryFilter] = useState<string | undefined>(undefined);
+  const [technologyFilter, setTechnologyFilter] = useState<string | undefined>(undefined);
   const router = useRouter();
   
   // Create a debounced search function using lodash
@@ -44,18 +63,18 @@ const ResourceContainer = () => {
     debouncedSearch(value);
   };
   
-  // Update the useOverallCaseStudyData hook to include search filter
+  // Update the useOverallCaseStudyData hook to include both filters
   const { caseStudies, totalItems, loading, error, refetch } = useOverallCaseStudyData(
     currentPage, 
     itemsPerPage,
-    undefined, // industry filter
+    industryFilter, // Pass industry filter from state
     "createdAt", // sort field
     "DESC", // sort order
-    searchQuery // pass the search query to the hook
+    searchQuery, // pass the search query to the hook
+    technologyFilter // Pass technology filter from state
   );
   
   const resources = caseStudies.map((item: any) => {
-    // console.log("Mapping item:", item);
     return {
       title: item.projectName || "No Title",
       company: item.clientName || "No Company",
@@ -63,8 +82,6 @@ const ResourceContainer = () => {
       caseStudyID: item.caseStudyID || "No ID",
     };
   });
-  
-  // console.log("Mapped resources:", resources);
   
   // No need to slice since pagination is handled by the API now
   const currentItems = resources;
@@ -77,6 +94,29 @@ const ResourceContainer = () => {
   // Function to refresh data after adding a new case study
   const handleCaseStudyAdded = async () => {
     setShowForm(false);
+    await refetch();
+  };
+
+  // Function to handle filter application
+  const handleFilterApply = async (payload: FilterPayload) => {
+    // Extract the filter values from the payload
+    const { filter } = payload;
+    
+    // Set the appropriate filter state based on what was selected
+    if (filter.industryTarget !== undefined) {
+      setIndustryFilter(filter.industryTarget);
+      setTechnologyFilter(undefined); // Clear the other filter
+    } else if (filter.techStack !== undefined) {
+      setTechnologyFilter(filter.techStack);
+      setIndustryFilter(undefined); // Clear the other filter
+    } else {
+      // If both are undefined, clear all filters
+      setIndustryFilter(undefined);
+      setTechnologyFilter(undefined);
+    }
+    
+    setShowFilter(false);
+    setCurrentPage(1); // Reset to first page when applying filters
     await refetch();
   };
   
@@ -124,7 +164,8 @@ const ResourceContainer = () => {
               button2img={headerbutton[1].button2img}
               button1width="w-[109px]"
               button2width="w-[160px]"
-              onClick2={() => setShowForm(true)}
+              onClick1={() => setShowFilter(true)} // Add filter click handler to first button
+              onClick2={() => setShowForm(true)}   // Add case study form handler to second button
             />
           </div>
         </div>
@@ -204,6 +245,16 @@ const ResourceContainer = () => {
           <AddCaseStudyForm
             onClose={() => setShowForm(false)}
             onSubmit={handleCaseStudyAdded}
+          />
+        </div>
+      )}
+      {showFilter && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <Filter
+            onClose={() => setShowFilter(false)}
+            onApply={handleFilterApply}
+            currentIndustry={industryFilter}
+            currentTechnology={technologyFilter}
           />
         </div>
       )}

@@ -1,11 +1,13 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "../../microComponents/CardForIndividualDashboard";
 import { CardContent } from "../../microComponents/CardContent";
 import { CardHeader } from "../../microComponents/CardHeader";
 import { CardTitle } from "../../microComponents/CardTitle";
+import leadsApiService from "../../api/apiService/leadsApiService";
 
-// Define the type for team member data
+
+
 interface TeamMember {
   name: string;
   totalLead: number;
@@ -15,20 +17,49 @@ interface TeamMember {
   totalRevenue: string;
 }
 
-// Define the props interface
-interface TeamPerformanceTableProps {
-  teamData: TeamMember[];
-}
+const TeamPerformanceTable: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(100);
+  
 
-const TeamPerformanceTable: React.FC<TeamPerformanceTableProps> = ({
-  teamData,
-}) => {
+  const { 
+    teamPerformance, 
+    loading, 
+    error 
+  } = leadsApiService(currentPage, itemsPerPage, true);
+
+  if (loading) {
+    return (
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between ml-6 mb-2 mt-6">
+          <CardTitle className="text-bg-blue-12">Team Performance</CardTitle>
+        </CardHeader>
+        <CardContent className="p-4">
+          <p>Loading team performance data...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between ml-6 mb-2 mt-6">
+          <CardTitle className="text-bg-blue-12">Team Performance</CardTitle>
+        </CardHeader>
+        <CardContent className="p-4">
+          <p>Error loading team data: {error}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <>
+    <Card>
       <CardHeader className="flex flex-row items-center justify-between ml-6 mb-2 mt-6">
         <CardTitle className="text-bg-blue-12">Team Performance</CardTitle>
         <button>
-        <img src='filterC.svg' alt="filter" className="w-7 h-7 text-gray-500" />
+          <img src='filterC.svg' alt="filter" className="w-7 h-7 text-gray-500" />
         </button>
       </CardHeader>
 
@@ -44,12 +75,12 @@ const TeamPerformanceTable: React.FC<TeamPerformanceTableProps> = ({
                 <th className="p-4 text-left font-medium">
                   Average Close Rate
                 </th>
-                <th className="p-2 text-left  font-medium">Total Revenue</th>
+                <th className="p-2 text-left font-medium">Total Revenue</th>
               </tr>
             </thead>
             <tbody className="border-spacing-y-5 border-separate">
-              {teamData.map((member, index) => (
-                <tr key={index} className={`bg-white`}>
+              {teamPerformance.map((member, index) => (
+                <tr key={index} className="bg-white">
                   <td className="p-4 border-t rounded-l-lg">{member.name}</td>
                   <td className="p-4 border-t">{member.totalLead}</td>
                   <td className="p-4 border-t">{member.totalWon}</td>
@@ -64,7 +95,7 @@ const TeamPerformanceTable: React.FC<TeamPerformanceTableProps> = ({
           </table>
         </div>
       </CardContent>
-    </>
+    </Card>
   );
 };
 
