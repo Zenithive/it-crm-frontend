@@ -27,13 +27,15 @@ const IndividualTitle = ({ leadId }: { leadId: string }) => {
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           {/* <Title title={Individualtitle[0].titleName}></Title> */}
+          <div className="text-2xl font-bold text-bg-blue-12">
           {loading ? "Loading..." : lead ? `${lead.firstName} ${lead.lastName}` : "No Data Available"}
+          </div>
           <span className="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-full text-sm">
           {loading ? "Loading..." : lead ? `${lead.leadStage}` : "No Data Available"}
           </span>
         </div>
         <div className="flex items-center gap-4">
-          <IconButton icon="edit_logo.svg" text="Edit Contact" />
+          <IconButton icon="/edit_logo.svg" text="Edit Contact" />
           <HeaderFlag/>
         </div>
       </div>

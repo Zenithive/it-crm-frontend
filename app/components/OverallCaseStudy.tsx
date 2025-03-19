@@ -173,7 +173,7 @@ const ResourceContainer = () => {
                         </span>
                         <img
                           className="w-4 h-4"
-                          src="arrow_bold.svg"
+                          src="/arrow_bold.svg"
                           alt="arrow"
                         />
                       </div>

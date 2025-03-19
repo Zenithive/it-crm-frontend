@@ -13,7 +13,7 @@ const Navbar: React.FC<NavbarProps> = ({ nav }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="bg-white shadow-navbar-shadow h-[100px] p-4">
+    <div className="bg-white shadow-navbar-shadow h-24 p-4">
 
       <div className="px-4 py-3 flex items-center justify-between">
 
@@ -76,7 +76,7 @@ const Navbar: React.FC<NavbarProps> = ({ nav }) => {
 
 
       {isMobileMenuOpen && (
-        <div className="sm:hidden flex flex-col items-center space-y-4 p-4 bg-gray-50 absolute top-[100px] left-0 w-full z-10">
+        <div className="sm:hidden flex flex-col items-center space-y-4 p-4 bg-gray-50 absolute top-24 left-0 w-full z-10">
           <button className="p-2 hover:bg-gray-100 rounded-lg">
             <img src="nav_icon1.svg" alt="Navbar" />
           </button>

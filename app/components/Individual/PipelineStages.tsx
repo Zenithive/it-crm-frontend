@@ -24,7 +24,7 @@ function PipelineStages() {
     return (
       <div className="relative flex items-center justify-center ">
         <div
-          className={`w-1 h-2 rounded-full flex items-center justify-center p-[7px] 
+          className={`w-1 h-2 rounded-full flex items-center justify-center p-2
             ${isActive ? "border-bg-blue-12 border-4" : "bg-gray-200 border-bg-blue-12"}`}
         >
           {isActive && (

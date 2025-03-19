@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import HeaderComp from "./HeaderComp";
@@ -9,8 +9,7 @@ import Pagination2 from "../../microComponents/Pagination2";
 import { columnDefs } from "./OverallLeadsData";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-// import overallLeadApiService from "../../api/apiService/overallLeadApiService";
-import { fetchFromJSONForListView } from "../../api/jsonService/OverallLeadsJsonService";
+import _ from "lodash";
 import AddLeadModal from "../AddLeadModal";
 import useOverallLeadsData from "../../api/apiService/OverallLeadApiService";
 
@@ -18,29 +17,38 @@ type ViewType = "list" | "kanban";
 
 const Contact = () => {
   const [activeView, setActiveView] = useState<ViewType>("list");
-  const [rowData, setRowData] = useState<any[]>([]);
   const [showAddLeadModal, setShowAddLeadModal] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  // const useAPI = process.env.NEXT_PUBLIC_USE_API === "true";
-
-  
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(5);
+  const [inputValue, setInputValue] = useState<string>("");
 
   const user = useSelector((state: RootState) => state.auth);
 
+  // Debounced search handling
+  const debouncedSearch = useCallback(
+    _.debounce((query: string) => {
+      if(query.length >=3 ){
+        setCurrentPage(1); 
+        setSearchQuery(query);
+      }
+    }, 500),
+    []
+  );
+
+  const handleSearchChange = (query: string) => {
+    setInputValue(query);
+
+  if (query.length >= 3 || query.length === 0) {
+    debouncedSearch(query);
+  } else if (searchQuery) {
+    setSearchQuery("");
+    setCurrentPage(1);
+  }
+};
+
   const handleAddLead = () => {
     setShowAddLeadModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowAddLeadModal(false);
-  };
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(5);
-
-  const { leads, totalCount, loading } = useOverallLeadsData(currentPage, pageSize);
-
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log("Search Input:", e.target.value);
   };
 
   const handleFilter = () => {
@@ -49,8 +57,13 @@ const Contact = () => {
 
   const handleViewChange = (view: ViewType) => {
     setActiveView(view);
-    console.log("View changed to:", view);
   };
+
+  const { leads, totalCount, loading } = useOverallLeadsData(
+    currentPage,
+    pageSize,
+    searchQuery
+  );
 
   return (
     <>
@@ -61,6 +74,7 @@ const Contact = () => {
           Kanbanlogo: "kanban.svg",
           searchText: "Search Leads...",
         }}
+        searchQuery={inputValue}
         onSearchChange={handleSearchChange}
         onAddLead={handleAddLead}
         onFilter={handleFilter}
@@ -77,8 +91,8 @@ const Contact = () => {
               currentPage={currentPage}
               pageSize={pageSize}
               totalCount={totalCount}
-              onPageChange={(page) => setCurrentPage(page)}
-              onPageSizeChange={(size) => setPageSize(size)}
+              onPageChange={setCurrentPage}
+              onPageSizeChange={setPageSize}
             />
           </>
         ) : (
@@ -88,7 +102,7 @@ const Contact = () => {
         )}
       </div>
 
-      {showAddLeadModal && <AddLeadModal onClose={handleCloseModal} />}
+      {showAddLeadModal && <AddLeadModal onClose={() => setShowAddLeadModal(false)} />}
     </>
   );
 };

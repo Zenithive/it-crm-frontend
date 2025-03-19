@@ -49,13 +49,7 @@ const VendorNotes = ({ vendorId}: { vendorId: string }) => {
   
   // useEffect(() => {
   //   if (vendor?.notes) {
-      
-     
   //           setNotes(vendor.notes);
-  
-     
-
-   
   //   }
   //   if (vendorError) {
   //     setError(vendorError);
@@ -94,7 +88,7 @@ const VendorNotes = ({ vendorId}: { vendorId: string }) => {
               <div className="font-medium text-xl">{note.message}</div>
               <div className="flex mt-3">
                 <img
-                  src={note.profile}
+                  src="/image.svg"
                   alt={note.name}
                   className="w-8 h-8 md:w-10 md:h-10 rounded-full"
                 />

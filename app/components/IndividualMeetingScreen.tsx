@@ -105,8 +105,6 @@ const IndividualMeetingScreen: React.FC = () => {
               button1img={headerbutton[2].button1img}
               button2Text={headerbutton[2].button2text}
               button2img={headerbutton[2].button2img}
-              button1width="w-[120px]"
-              button2width="w-[200px]"
             />
           </div>
         </div>

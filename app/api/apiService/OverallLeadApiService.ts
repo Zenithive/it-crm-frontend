@@ -43,14 +43,24 @@ export interface Lead {
   };
 }
 
-const useOverallLeadsData = (page: number, pageSize: number) => {
+const useOverallLeadsData = (page: number, pageSize: number,searchQuery: string) => {
   const { token } = useSelector((state: RootState) => state.auth);
 
+  const queryVariables: any = {
+    pagination: { page, pageSize },
+    sort: { field: "EMAIL", order: "ASC" },
+  };
+  
+  if (searchQuery) {
+    queryVariables.filter = { search: searchQuery };
+  }
+
+  
+
   const { data, loading, error,refetch } = useQuery(GET_LEADS_QUERY, {
-    variables: {
-      pagination: { page, pageSize },
-      sort: { field: "EMAIL", order: "ASC" },
-    },
+    variables: 
+      queryVariables,
+      
     context: {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -66,20 +76,7 @@ const useOverallLeadsData = (page: number, pageSize: number) => {
     refetch
   };
 };
-
-
-
-
-
-
-
-
-
 export default useOverallLeadsData;
-
-
-
-
 
 export const useUpdateLead = () => {
   const { token } = useSelector((state: RootState) => state.auth);

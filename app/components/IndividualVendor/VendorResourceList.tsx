@@ -63,7 +63,7 @@ const VendorResourceList = ({ vendorId}: { vendorId: string }) => {
   
   return (
     
-      <div className="flex-grow mt-4 mr-6">
+      <div className="mt-4 mr-4">
         <div className="bg-white shadow-custom rounded-2xl">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 p-4 sm:p-6 lg:p-8">
             

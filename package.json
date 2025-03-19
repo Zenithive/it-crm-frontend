@@ -36,6 +36,7 @@
     "graphql": "^16.10.0",
     "jodit": "^4.5.17",
     "jodit-react": "^5.2.15",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.474.0",
     "mobiscroll-react": "^4.0.0",
     "next": "^15.1.5",

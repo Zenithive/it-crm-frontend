@@ -32,7 +32,9 @@ const handleVendorClick = () => {
 
   return (
     <tr  className="hover:bg-gray-50">
-      <td className="px-6 py-6 cursor-pointer" onClick={handleVendorClick}>{vendor.vendor}</td>
+      <td className="px-6 py-6 cursor-pointer " onClick={handleVendorClick}>
+        <div className="hover:text-bg-blue-12">{vendor.vendor}</div>
+        </td>
       <td className="px-6 py-6">{vendor.location}</td>
       <td className="px-6 py-6">
         <span className="px-3 py-1 rounded-lg text-sm bg-blue-shadow-color text-bg-blue-12">

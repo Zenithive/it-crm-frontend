@@ -120,8 +120,8 @@ const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
           </span>
         </div>
         <div className="flex flex-wrap gap-4 mt-4 md:mt-0">
-          <IconButton icon="edit_logo.svg" text="Edit Profile" />
-          <IconButton icon="update_icon.svg" text="Update Status" />
+          <IconButton icon="/edit_logo.svg" text="Edit Profile" />
+          <IconButton icon="/update_icon.svg" text="Update Status" />
         </div>
       </div>
       <div className="text-gray-text">{resourceData?.designation ?? "Designation"}</div>
