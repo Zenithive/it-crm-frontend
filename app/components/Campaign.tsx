@@ -7,7 +7,7 @@ import { headerbutton, search } from "./Path/TaskData";
 import HeaderButtons from "../microComponents/HeaderButtons";
 import CampaignTable from "./CampaignTable";
 import AddCampaignForm from "./AddCampaignForm"; 
-import { useCampaigns } from "../api/apiService/campaignApiService";
+import useCampaigns from "../api/apiService/campaignApiService";
 import Pagination from "../microComponents/Pagination";
 
 export interface Campaign {
@@ -30,19 +30,17 @@ const Campaign: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
 
-  const { campaignsdata, totalCount, loading, error } = useCampaigns(
-    {}, // Your filters
-    { page: currentPage, limit: itemsPerPage }
-  );
+  // Using the updated API service
+  const { campaigns, totalItems, loading, error } = useCampaigns(currentPage, itemsPerPage,);
 
-  console.log("Campaigns data:", campaignsdata);
+  console.log("Campaigns data:", campaigns);
 
   if (loading) {
     return <p className="text-center mt-10 text-lg">Loading campaigns...</p>;
   }
 
   if (error) {
-    return <p className="text-center text-red-500 mt-10">Failed to load campaigns: {error.message}</p>;
+    return <p className="text-center text-red-500 mt-10">Failed to load campaigns: {error}</p>;
   }
 
   const handleOpenForm = () => {
@@ -80,11 +78,11 @@ const Campaign: React.FC = () => {
           />
         </div>
 
-        <CampaignTable campaigns={campaignsdata} />
-        
+        <CampaignTable campaigns={campaigns} />
+
         <div className="mt-6">
           <Pagination
-            totalItems={totalCount}
+            totalItems={totalItems}
             itemsPerPage={itemsPerPage}
             currentPage={currentPage}
             onPageChange={setCurrentPage}

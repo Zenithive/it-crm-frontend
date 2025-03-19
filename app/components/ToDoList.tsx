@@ -68,8 +68,6 @@ const TodoList: React.FC = () => {
           button1img={headerbutton[2].button1img}
           button2Text={headerbutton[2].button2text}
           button2img={headerbutton[2].button2img}
-          button1width="w-[109px]"
-          button2width="w-[120px]"
           onClick2={showModal}
         />
         <CreateTaskModal

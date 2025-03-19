@@ -1,48 +1,56 @@
 [
-    {
-      "title": "Zenithive",
-      "company": "Tech Solution Inc",
-      "tags": ["E-commerce", "UI/UX", "SWD"]
-    },
-    {
-      "title": "CodeCraft",
-      "company": "Innovatech Labs",
-      "tags": ["Software Development", "AI", "Automation"]
-    },
-    {
-      "title": "PixelForge",
-      "company": "Creative Pixels",
-      "tags": ["UI/UX", "Graphic Design", "Branding"]
-    },
-    {
-      "title": "DataSphere",
-      "company": "Analytics Hub",
-      "tags": ["Big Data", "Machine Learning", "Data Science"]
-    },
-    {
-      "title": "CloudXpert",
-      "company": "CloudNet Solutions",
-      "tags": ["Cloud Computing", "DevOps", "Infrastructure"]
-    },
-    {
-      "title": "CyberShield",
-      "company": "SecureNet Corp",
-      "tags": ["Cybersecurity", "Network Security", "Encryption"]
-    },
-    {
-      "title": "AgriTech Pro",
-      "company": "GreenHarvest Ltd",
-      "tags": ["Agriculture", "IoT", "Sustainability"]
-    },
-    {
-      "title": "MedTech Innovators",
-      "company": "HealthTech Systems",
-      "tags": ["Healthcare", "AI", "Wearable Tech"]
-    },
-    {
-      "title": "FinEdge",
-      "company": "Finance Solutions Co",
-      "tags": ["Fintech", "Blockchain", "Investments"]
-    }
-  ]
-  
+  {
+    "title": "Zenithive",
+    "company": "Tech Solution Inc",
+    "tags": ["E-commerce", "UI/UX", "SWD"],
+    "experience": "3 years"
+  },
+  {
+    "title": "CodeCraft",
+    "company": "Innovatech Labs",
+    "tags": ["Software Development", "AI", "Automation"],
+    "experience": "5 years"
+  },
+  {
+    "title": "PixelForge",
+    "company": "Creative Pixels",
+    "tags": ["UI/UX", "Graphic Design", "Branding"],
+    "experience": "4 years"
+  },
+  {
+    "title": "DataSphere",
+    "company": "Analytics Hub",
+    "tags": ["Big Data", "Machine Learning", "Data Science"],
+    "experience": "6 years"
+  },
+  {
+    "title": "CloudXpert",
+    "company": "CloudNet Solutions",
+    "tags": ["Cloud Computing", "DevOps", "Infrastructure"],
+    "experience": "7 years"
+  },
+  {
+    "title": "CyberShield",
+    "company": "SecureNet Corp",
+    "tags": ["Cybersecurity", "Network Security", "Encryption"],
+    "experience": "8 years"
+  },
+  {
+    "title": "AgriTech Pro",
+    "company": "GreenHarvest Ltd",
+    "tags": ["Agriculture", "IoT", "Sustainability"],
+    "experience": "4 years"
+  },
+  {
+    "title": "MedTech Innovators",
+    "company": "HealthTech Systems",
+    "tags": ["Healthcare", "AI", "Wearable Tech"],
+    "experience": "5 years"
+  },
+  {
+    "title": "FinEdge",
+    "company": "Finance Solutions Co",
+    "tags": ["Fintech", "Blockchain", "Investments"],
+    "experience": "6 years"
+  }
+]

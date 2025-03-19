@@ -1,4 +1,3 @@
-// 1. First, let's modify the Search component to accept onChange and value props
 import React from "react";
 
 interface SearchProps {
@@ -9,11 +8,18 @@ interface SearchProps {
 }
 
 const Search = ({ searchText, children, value, onChange }: SearchProps) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Call the parent's onChange with the input value
+    onChange(e.target.value);
+  };
+
   return (
-    <div className="flex flex-col sm:flex-row gap-4 sm:gap-[48px] items-center w-full sm:w-auto">
-      <div className="flex items-center bg-white rounded-[10px] px-3 
-                      w-full sm:w-[320px] md:w-[420px] h-[44px] 
-                      shadow-custom gap-[6px]">
+    <div className="flex flex-col sm:flex-row gap-4 sm:gap-12 items-center w-full sm:w-auto">
+      <div
+        className="flex items-center bg-white rounded-[10px] px-3
+                      w-full sm:w-[320px] md:w-[420px] h-[44px]
+                      shadow-custom gap-2"
+      >
         <img
           src="/SearchIcon.svg"
           alt="Search"
@@ -23,11 +29,11 @@ const Search = ({ searchText, children, value, onChange }: SearchProps) => {
           type="text"
           name="search"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={handleInputChange}
           placeholder={searchText}
-          className="w-full border-none outline-none bg-transparent 
-                     text-gray-700 placeholder-gray-400 
-                     text-[14px] sm:text-[16px]"
+          className="w-full border-none outline-none bg-transparent
+                     text-gray-700 placeholder-gray-400
+                     text-base "
         />
       </div>
       {children}

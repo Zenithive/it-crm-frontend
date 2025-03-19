@@ -60,15 +60,25 @@ interface ResourceListApiVariables {
 }
 
 export const useResourceList = (variables: ResourceListApiVariables) => {
-    const { data, loading, error } = useQuery<GetResourceProfilesResponse>(
+    const cleanVariables = {
+        ...variables,
+        search: variables.search && variables.search.trim() ? variables.search.trim() : null,
+    };
+
+    const { data, loading, error, refetch } = useQuery<GetResourceProfilesResponse>(
         GET_RESOURCE_PROFILES_QUERY,
-        { variables }
+        { 
+            variables: cleanVariables,
+            // Adding fetchPolicy to ensure we always get fresh data when parameters change
+            fetchPolicy: "network-only"
+        }
     );
 
-    console.log(`data111`, data);
-    return { data, loading, error,
-        totalItems: data?.getResourceProfiles?.totalCount || 0, // Corrected to totalCount
-    // refetch,
-     };
-
+    return { 
+        data, 
+        loading, 
+        error,
+        totalItems: data?.getResourceProfiles?.totalCount || 0,
+        refetch
+    };
 };
