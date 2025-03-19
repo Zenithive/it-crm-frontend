@@ -43,7 +43,7 @@ export interface Lead {
   };
 }
 
-const useOverallLeadsData = (page: number, pageSize: number,searchQuery: string) => {
+const useOverallLeadsData = (page: number, pageSize: number,searchQuery?: string) => {
   const { token } = useSelector((state: RootState) => state.auth);
 
   const queryVariables: any = {
