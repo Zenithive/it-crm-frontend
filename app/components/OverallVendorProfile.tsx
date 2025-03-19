@@ -1,3 +1,4 @@
+// OverallVendorProfile.tsx
 "use client";
 import React, { useState, useCallback } from "react";
 import { useSelector } from "react-redux";
@@ -11,8 +12,8 @@ import { OverallVendorProfiletitle } from "./Path/TitlePaths";
 import { headerbutton, search } from "./Path/TaskData";
 import { useVendors } from "../api/apiService/overallvendorApiService";
 import VendorForm from "./IndividualVendor/VendorForm";
+import FilterHandler from "./Filter/FilterHandler"; 
 import _ from "lodash";
-import Filter from "./Filter/Filter";
 
 interface Vendor {
   vendorID: string;
@@ -25,8 +26,7 @@ interface Vendor {
 
 interface FilterPayload {
   filter: {
-    industryTarget?: string;
-    techStack?: string;
+    [key: string]: string | undefined;
   };
   pagination: {
     page: number;
@@ -42,29 +42,26 @@ const OverallVendorProfile: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [showForm, setShowForm] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [inputValue, setInputValue] = useState<string>("");
+  const [locationFilter, setLocationFilter] = useState<string | undefined>(undefined);
+  const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
+  const [ratingFilter, setRatingFilter] = useState<string | undefined>(undefined);
   const user = useSelector((state: RootState) => state.auth);
-    const [showFilter, setShowFilter] = useState(false);
-     const [industryFilter, setIndustryFilter] = useState<string | undefined>(undefined);
-      const [technologyFilter, setTechnologyFilter] = useState<string | undefined>(undefined);
-        const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
 
-  // Debounce search function
   const debouncedSearch = useCallback(
     _.debounce((query: string) => {
       if (query.length >= 3 || query.length === 0) {
         setSearchQuery(query);
-        setCurrentPage(1); // Reset to first page on new search
+        setCurrentPage(1);
       }
     }, 500),
     []
   );
 
-  // Handle search input change
   const handleSearchChange = (query: string) => {
     setInputValue(query);
-
     if (query.length >= 3 || query.length === 0) {
       debouncedSearch(query);
     } else if (searchQuery && query.length < 3) {
@@ -73,17 +70,6 @@ const OverallVendorProfile: React.FC = () => {
     }
   };
 
-  const handleFilterApply = async (payload: FilterPayload) => {
-    const { filter } = payload;
-    
-    setIndustryFilter(filter.industryTarget);
-    setTechnologyFilter(filter.techStack);
-    setShowFilter(false);
-    setCurrentPage(1);
-    // await refetch();
-  };
-
-  // Fetch vendors using useVendors with search parameter
   const { data, loading, error, totalItems } = useVendors({
     page: currentPage,
     pageSize: itemsPerPage,
@@ -102,78 +88,54 @@ const OverallVendorProfile: React.FC = () => {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo(0, 0); // Scroll to top on page change
+    window.scrollTo(0, 0);
   };
 
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
     setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1); // Reset to first page
+    setCurrentPage(1);
+  };
+
+  const handleFilterApply = async (payload: FilterPayload) => {
+    const { filter } = payload;
+    setLocationFilter(filter.location);
+    setStatusFilter(filter.status);
+    setRatingFilter(filter.rating);
+    setCurrentPage(1);
   };
 
   const filterSections = [
     {
-      id: "industry",
-      title: "Industry",
+      id: "location",
+      title: "Location",
       options: [
-        { id: "healthcare", label: "Healthcare", checked: false },
-        { id: "finance", label: "Finance", checked: false },
-        { id: "technology", label: "Technology", checked: false },
-        { id: "education", label: "Education", checked: false },
-        { id: "retail", label: "Retail", checked: false }
-      ]
+        { id: "usa", label: "USA", checked: false },
+        { id: "europe", label: "Europe", checked: false },
+        { id: "asia", label: "Asia", checked: false },
+        { id: "africa", label: "Africa", checked: false },
+        { id: "australia", label: "Australia", checked: false },
+      ],
     },
     {
-      id: "technology",
-      title: "Technology",
+      id: "status",
+      title: "Status",
       options: [
-        { id: "react", label: "React", checked: false },
-        { id: "nodejs", label: "Node.js", checked: false },
-        { id: "python", label: "Python", checked: false },
-        { id: "java", label: "Java", checked: false },
-        { id: "aws", label: "AWS", checked: false }
-      ]
-    }
+        { id: "active", label: "Active", checked: false },
+        { id: "inactive", label: "Inactive", checked: false },
+      ],
+    },
+    {
+      id: "rating",
+      title: "Rating",
+      options: [
+        { id: "5star", label: "5", checked: false },
+        { id: "4star", label: "4", checked: false },
+        { id: "3star", label: "3", checked: false },
+        { id: "2star", label: "2", checked: false },
+        { id: "1star", label: "1", checked: false },
+      ],
+    },
   ];
-
-  const renderFilterRightPanel = (activeSection: string, selectedOptions: string[]) => {
-    const currentSection = filterSections.find(section => section.id === activeSection);
-    if (!currentSection) return null;
-
-    return (
-      <div>
-        <h3 className="text-lg font-semibold mb-4">
-          {/* {activeSection === "industry" ? "Industry Filter" : "Technology Filter"} */}
-        </h3>
-        <div className="space-y-8 max-h-[300px] overflow-y-auto">
-          {currentSection.options.map(option => (
-            <div key={option.id} className="flex items-center space-x-3 ml-3 mt-3">
-              <input
-                type="checkbox"
-                id={option.id}
-                checked={selectedOptions.includes(option.id)}
-                onChange={() => {
-                  const newSelected = selectedOptions.includes(option.id)
-                    ? selectedOptions.filter(id => id !== option.id)
-                    : [...selectedOptions, option.id];
-                  setSelectedOptions(newSelected);
-                  handleFilterApply({
-                    filter: {
-                      [activeSection === "industry" ? "industryTarget" : "techStack"]: newSelected[0]
-                    },
-                    pagination: { page: 1, pageSize: 9 },
-                    sort: { field: "createdAt", order: "DESC" }
-                  });
-                }}
-                className="w-5 h-5"
-              />
-              <label htmlFor={option.id} className="text-base">{option.label}</label>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
 
   return (
     <div className="p-4 max-w-[1350px] mx-auto">
@@ -194,7 +156,7 @@ const OverallVendorProfile: React.FC = () => {
           button2Text={headerbutton[3].button2text}
           button2img={headerbutton[3].button2img}
           button2width="w-[140px]"
-          onClick1={()=> setShowFilter(true)}
+          onClick1={() => setShowFilter(true)}
           onClick2={() => setShowForm(true)}
         />
       </div>
@@ -225,15 +187,10 @@ const OverallVendorProfile: React.FC = () => {
 
       {showFilter && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <Filter
-            onClose={() => setShowFilter(false)}
-            onApply={handleFilterApply}
-            sections={filterSections}
-            renderRightPanel={renderFilterRightPanel}
-            currentIndustry={industryFilter}
-            currentTechnology={technologyFilter}
-            selectedOptions={selectedOptions}
-            setSelectedOptions={setSelectedOptions}
+          <FilterHandler
+            filterSections={filterSections}
+            onFilterApply={handleFilterApply}
+            setShowFilter={setShowFilter}
           />
         </div>
       )}
