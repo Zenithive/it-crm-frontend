@@ -46,9 +46,9 @@ export const search = [
 ]
 
 export const headerbutton = [
-  {button1text: "Filters",button1img: "filterC.svg",button2text:"Add Resource",button2img:"plus.svg"},
-  {button1text: "Filters",button1img: "filterC.svg",button2text:"Add Case Study",button2img:"plus.svg"},
-  {button1text: "Filters",button1img: "filterC.svg",button2text:"Add New",button2img:"plus.svg"},
-  {button1text: "Filters",button1img: "filterC.svg",button2text:"Add Vendor",button2img:"plus.svg"},
-  {button1text: "Filters",button1img: "filterC.svg",button2text:"Add Campaigns",button2img:"plus.svg"},
+  {button1text: "Filters",button1img: "/filterC.svg",button2text:"Add Resource",button2img:"/plus.svg"},
+  {button1text: "Filters",button1img: "/filterC.svg",button2text:"Add Case Study",button2img:"/plus.svg"},
+  {button1text: "Filters",button1img: "/filterC.svg",button2text:"Add New",button2img:"/plus.svg"},
+  {button1text: "Filters",button1img: "/filterC.svg",button2text:"Add Vendor",button2img:"/plus.svg"},
+  {button1text: "Filters",button1img: "/filterC.svg",button2text:"Add Campaigns",button2img:"/plus.svg"},
 ]

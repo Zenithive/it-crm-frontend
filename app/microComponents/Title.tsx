@@ -11,7 +11,7 @@ const Title = ({ title, children }: Data) => {
       <div className="w-full">
         <div className="flex  justify-between items-center">
           <div className="flex items-center">
-            <div className="font-bold text-bg-blue-12 text-[30px]">{title}</div>
+            <div className="font-bold text-bg-blue-12 text-3xl">{title}</div>
           </div>
           {children}
         </div>

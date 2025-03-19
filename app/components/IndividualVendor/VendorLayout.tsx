@@ -100,7 +100,7 @@ const VendorLayout: React.FC<VendorLayoutProps> = ({ vendorId }) => {
             {vendorData?.status ?? "Status not available"}
           </span>
         </div>
-        <IconButton icon="edit_logo.svg" text="Edit Contact" />
+        <IconButton icon="/edit_logo.svg" text="Edit Contact" />
       </div>
 
       {/* Primary Contact */}

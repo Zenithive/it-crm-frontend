@@ -27,19 +27,19 @@ const HeaderButtons = ({
   button2Action,
 }: Data) => {
   return (
-    <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-[15px] w-full sm:w-auto">
+    <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
       <button
-        className={`${button1width} min-w-[100px] border shadow-sm bg-white text-bg-blue-12 font-normal h-[40px] rounded-xl flex items-center justify-center gap-2`}
+        className={`${button1width} min-w-28 border shadow-sm bg-white text-bg-blue-12 font-normal h-10 rounded-xl flex items-center justify-center gap-2`}
         onClick={onClick1}
       >
         <img src={button1img} className="w-4 sm:w-auto" alt="" />
-        <div className="text-[12px] sm:text-[14px] whitespace-nowrap">{button1Text}</div>
+        <div className="text-sm whitespace-nowrap">{button1Text}</div>
       </button>
 
       {/* Conditionally render button2 only if button2Text is provided */}
       {button2Text && (
         <button
-          className={`${button2width} min-w-[120px] bg-bg-blue-12 text-white font-normal h-[40px] rounded-xl flex items-center justify-center gap-[10px]`}
+          className={`${button2width} min-w-28 bg-bg-blue-12 text-white font-normal h-10 rounded-xl flex items-center justify-center gap-2`}
           onClick={() => {
             onClick2?.();
             button2Action?.();
@@ -47,7 +47,7 @@ const HeaderButtons = ({
           }}
         >
           <img src={button2img} className="w-4 sm:w-auto" alt="" />
-          <span className="text-[12px] sm:text-[14px] whitespace-nowrap">{button2Text}</span>
+          <span className="text-sm whitespace-nowrap">{button2Text}</span>
         </button>
       )}
     </div>

@@ -24,7 +24,7 @@ const ColumnComponent: React.FC<ColumnPropsForKanban> = ({ column, moveCard, car
 
 
     
-    const { leads:allLeads, loading, error } = useOverallLeadsData(1,117);
+  const { leads:allLeads, loading, error } = useOverallLeadsData(1, 117, '');
   
   const stageValue = columnToStageMap[column.title];
 
@@ -74,7 +74,7 @@ const ColumnComponent: React.FC<ColumnPropsForKanban> = ({ column, moveCard, car
         <span className="text-xl">{column.title}</span>
         {/* <span className="text-[18px]">({column.number})</span> */}
    
-        <span className="text-[18px]">({filteredLeads?.length || 0})</span>
+        <span className="text-lg">({filteredLeads?.length || 0})</span>
         
       </h2>
 
