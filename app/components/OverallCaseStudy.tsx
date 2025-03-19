@@ -1,3 +1,4 @@
+// ResourceContainer.tsx
 "use client"
 import React, { useState, useEffect, useCallback } from "react";
 import _ from "lodash";
@@ -10,7 +11,7 @@ import Title from "../microComponents/Title";
 import TablerLayout from "./OverallCaseStudy/TablerLayout";
 import useOverallCaseStudyData from "../api/apiService/overallcasestudyApiService";
 import AddCaseStudyForm from "./AddCaseStudyForm";
-import { Filter } from "./Filter/Filter";
+import Filter from "./Filter/Filter";
 import { useRouter } from "next/navigation";
 
 interface Resource {  
@@ -45,33 +46,29 @@ const ResourceContainer = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [industryFilter, setIndustryFilter] = useState<string | undefined>(undefined);
   const [technologyFilter, setTechnologyFilter] = useState<string | undefined>(undefined);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const router = useRouter();
   
-  // Create a debounced search function using lodash
   const debouncedSearch = useCallback(
     _.debounce((query: string) => {
-      // Reset to first page when searching
       setCurrentPage(1);
-      // The actual search is handled by the API through the filter
     }, 500),
     []
   );
   
-  // Handle search input change
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
     debouncedSearch(value);
   };
   
-  // Update the useOverallCaseStudyData hook to include both filters
   const { caseStudies, totalItems, loading, error, refetch } = useOverallCaseStudyData(
     currentPage, 
     itemsPerPage,
-    industryFilter, // Pass industry filter from state
-    "createdAt", // sort field
-    "DESC", // sort order
-    searchQuery, // pass the search query to the hook
-    technologyFilter // Pass technology filter from state
+    industryFilter,
+    "createdAt",
+    "DESC",
+    searchQuery,
+    technologyFilter
   );
   
   const resources = caseStudies.map((item: any) => {
@@ -83,7 +80,6 @@ const ResourceContainer = () => {
     };
   });
   
-  // No need to slice since pagination is handled by the API now
   const currentItems = resources;
   
   const handleResourceClick = (resource: Resource) => {
@@ -91,35 +87,85 @@ const ResourceContainer = () => {
     router.push(`/individualcasestudy/${caseStudyID}`);
   };
   
-  // Function to refresh data after adding a new case study
   const handleCaseStudyAdded = async () => {
     setShowForm(false);
     await refetch();
   };
 
-  // Function to handle filter application
+  const filterSections = [
+    {
+      id: "industry",
+      title: "Industry",
+      options: [
+        { id: "healthcare", label: "Healthcare", checked: false },
+        { id: "finance", label: "Finance", checked: false },
+        { id: "technology", label: "Technology", checked: false },
+        { id: "education", label: "Education", checked: false },
+        { id: "retail", label: "Retail", checked: false }
+      ]
+    },
+    {
+      id: "technology",
+      title: "Technology",
+      options: [
+        { id: "react", label: "React", checked: false },
+        { id: "nodejs", label: "Node.js", checked: false },
+        { id: "python", label: "Python", checked: false },
+        { id: "java", label: "Java", checked: false },
+        { id: "aws", label: "AWS", checked: false }
+      ]
+    }
+  ];
+
+  const renderFilterRightPanel = (activeSection: string, selectedOptions: string[]) => {
+    const currentSection = filterSections.find(section => section.id === activeSection);
+    if (!currentSection) return null;
+
+    return (
+      <div>
+        <h3 className="text-lg font-semibold mb-4">
+          {/* {activeSection === "industry" ? "Industry Filter" : "Technology Filter"} */}
+        </h3>
+        <div className="space-y-8 max-h-[300px] overflow-y-auto">
+          {currentSection.options.map(option => (
+            <div key={option.id} className="flex items-center space-x-3 ml-3 mt-3">
+              <input
+                type="checkbox"
+                id={option.id}
+                checked={selectedOptions.includes(option.id)}
+                onChange={() => {
+                  const newSelected = selectedOptions.includes(option.id)
+                    ? selectedOptions.filter(id => id !== option.id)
+                    : [...selectedOptions, option.id];
+                  setSelectedOptions(newSelected);
+                  handleFilterApply({
+                    filter: {
+                      [activeSection === "industry" ? "industryTarget" : "techStack"]: newSelected[0]
+                    },
+                    pagination: { page: 1, pageSize: 9 },
+                    sort: { field: "createdAt", order: "DESC" }
+                  });
+                }}
+                className="w-5 h-5"
+              />
+              <label htmlFor={option.id} className="text-base">{option.label}</label>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   const handleFilterApply = async (payload: FilterPayload) => {
-    // Extract the filter values from the payload
     const { filter } = payload;
     
-    // Set the appropriate filter state based on what was selected
-    if (filter.industryTarget !== undefined) {
-      setIndustryFilter(filter.industryTarget);
-      setTechnologyFilter(undefined); // Clear the other filter
-    } else if (filter.techStack !== undefined) {
-      setTechnologyFilter(filter.techStack);
-      setIndustryFilter(undefined); // Clear the other filter
-    } else {
-      // If both are undefined, clear all filters
-      setIndustryFilter(undefined);
-      setTechnologyFilter(undefined);
-    }
-    
+    setIndustryFilter(filter.industryTarget);
+    setTechnologyFilter(filter.techStack);
     setShowFilter(false);
-    setCurrentPage(1); // Reset to first page when applying filters
+    setCurrentPage(1);
     await refetch();
   };
-  
+
   return (
     <>
       <div className="w-full px-4 sm:px-6 lg:px-[70px] mt-6">
@@ -142,7 +188,6 @@ const ResourceContainer = () => {
                       : "/overallCaseStudy.svg"
                   }
                   alt="Grid View"
-                  className=""
                 />
               </button>
               <button className="w-7 h-7" onClick={() => setIsTableView(true)}>
@@ -153,7 +198,6 @@ const ResourceContainer = () => {
                       : "/tabler_layout-list.svg"
                   }
                   alt="List View"
-                  className=""
                 />
               </button>
             </div>
@@ -164,8 +208,8 @@ const ResourceContainer = () => {
               button2img={headerbutton[1].button2img}
               button1width="w-[109px]"
               button2width="w-[160px]"
-              onClick1={() => setShowFilter(true)} // Add filter click handler to first button
-              onClick2={() => setShowForm(true)}   // Add case study form handler to second button
+              onClick1={() => setShowFilter(true)}
+              onClick2={() => setShowForm(true)}
             />
           </div>
         </div>
@@ -230,14 +274,14 @@ const ResourceContainer = () => {
           </div>
         )}
         <div className="mt-6">
-        <Pagination
-          totalItems={totalItems}
-          itemsPerPage={itemsPerPage}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-          onItemsPerPageChange={setItemsPerPage}
-          multiplicationFactor={9}
-        />
+          <Pagination
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            onItemsPerPageChange={setItemsPerPage}
+            multiplicationFactor={9}
+          />
         </div>
       </div>
       {showForm && (
@@ -253,8 +297,12 @@ const ResourceContainer = () => {
           <Filter
             onClose={() => setShowFilter(false)}
             onApply={handleFilterApply}
+            sections={filterSections}
+            renderRightPanel={renderFilterRightPanel}
             currentIndustry={industryFilter}
             currentTechnology={technologyFilter}
+            selectedOptions={selectedOptions}
+            setSelectedOptions={setSelectedOptions}
           />
         </div>
       )}

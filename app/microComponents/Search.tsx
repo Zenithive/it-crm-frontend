@@ -16,8 +16,8 @@ const Search = ({ searchText, children, value, onChange }: SearchProps) => {
   return (
     <div className="flex flex-col sm:flex-row gap-4 sm:gap-12 items-center w-full sm:w-auto">
       <div
-        className="flex items-center bg-white rounded-[10px] px-3
-                      w-full sm:w-[320px] md:w-[420px] h-[44px]
+        className="flex items-center bg-white rounded-lg px-3
+                      w-full sm:w-[320px] md:w-[420px]  h-11
                       shadow-custom gap-2"
       >
         <img
