@@ -8,11 +8,11 @@
 //   currentTechnology?: string;
 // }
 
-// export const Filter: React.FC<FilterProps> = ({ 
-//   onClose, 
-//   onApply, 
-//   currentIndustry, 
-//   currentTechnology 
+// export const Filter: React.FC<FilterProps> = ({
+//   onClose,
+//   onApply,
+//   currentIndustry,
+//   currentTechnology
 // }) => {
 //   const [selectedIndustry, setSelectedIndustry] = useState<string | undefined>(currentIndustry);
 //   const [searchTerm, setSearchTerm] = useState("");
@@ -47,7 +47,7 @@
 
 //   const handleApply = () => {
 //     let filterPayload = {};
-    
+
 //     // Determine the filter structure based on the active category
 //     if (activeCategory === "industry") {
 //       filterPayload = { industryTarget: selectedIndustry };
@@ -91,7 +91,7 @@
 //       <div className="flex h-[500px]">
 //         {/* Left sidebar */}
 //         <div className="w-[200px] border-r border-gray-200 p-4">
-//           <div 
+//           <div
 //             onClick={() => setActiveCategory("industry")}
 //             className={`flex items-center gap-2 py-2 px-3 rounded-lg cursor-pointer ${
 //               activeCategory === "industry" ? "bg-indigo-50" : ""
@@ -105,7 +105,7 @@
 //             <span className="text-sm font-medium">Industry</span>
 //           </div>
 
-//           <div 
+//           <div
 //             onClick={() => setActiveCategory("technology")}
 //             className={`flex items-center gap-2 py-2 px-3 mt-2 rounded-lg cursor-pointer ${
 //               activeCategory === "technology" ? "bg-indigo-50" : ""
@@ -137,7 +137,7 @@
 //           {/* Options list */}
 //           <div className="space-y-2">
 //             {filteredItems.map((item) => (
-//               <div 
+//               <div
 //                 key={item}
 //                 onClick={() => {
 //                   if (activeCategory === "industry") {
@@ -150,7 +150,7 @@
 //               >
 //                 <div className={`w-5 h-5 rounded border ${
 //                   (activeCategory === "industry" ? selectedIndustry === item : selectedTechnology === item)
-//                     ? 'border-indigo-600 bg-indigo-600 flex items-center justify-center' 
+//                     ? 'border-indigo-600 bg-indigo-600 flex items-center justify-center'
 //                     : 'border-gray-300'
 //                 }`}>
 //                   {((activeCategory === "industry" ? selectedIndustry === item : selectedTechnology === item)) && (
@@ -168,14 +168,14 @@
 
 //       {/* Footer */}
 //       <div className="border-t border-gray-200 p-4 flex items-center justify-between bg-white">
-//         <button 
+//         <button
 //           onClick={handleClear}
 //           className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800"
 //         >
 //          <img src="/cross_icon.svg" alt="cancle" className="w-3 h-3"></img>
 //           Clear Filter
 //         </button>
-//         <button 
+//         <button
 //           onClick={handleApply}
 //           className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
 //         >
@@ -185,55 +185,60 @@
 //     </div>
 //   );
 // };
-
-// Filter.tsx
+"use client";
 import React, { useState } from "react";
 import { X, Search } from "lucide-react";
 
 interface FilterProps {
   onClose: () => void;
   onApply: (filter: any) => void;
-  sections: { 
-    id: string; 
-    title: string; 
-    options: { id: string; label: string; checked: boolean }[] 
+  sections: {
+    id: string;
+    title: string;
+    options: { id: string; label: string; checked: boolean }[];
   }[];
-  renderRightPanel: (activeSection: string, selectedOptions: string[]) => React.ReactNode;
-  currentIndustry?: string;
-  currentTechnology?: string;
+  renderRightPanel: (
+    activeSection: string,
+    selectedOptions: string[]
+  ) => React.ReactNode;
   selectedOptions: string[];
   setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-const Filter: React.FC<FilterProps> = ({ 
-  onClose, 
-  onApply, 
-  sections, 
+const Filter: React.FC<FilterProps> = ({
+  onClose,
+  onApply,
+  sections,
   renderRightPanel,
-  currentIndustry,
-  currentTechnology,
   selectedOptions,
-  setSelectedOptions
+  setSelectedOptions,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeSection, setActiveSection] = useState<string>(sections[0]?.id || "");
+  const [activeSection, setActiveSection] = useState<string>(
+    sections[0]?.id || ""
+  );
 
   const handleApply = () => {
     const filterPayload = {
       filter: {
-        industryTarget: activeSection === "industry" ? selectedOptions[0] : currentIndustry,
-        techStack: activeSection === "technology" ? selectedOptions[0] : currentTechnology
+        [activeSection]:
+          selectedOptions.length > 0 ? selectedOptions[0] : undefined,
       },
       pagination: {
         page: 1,
-        pageSize: 9
+        pageSize: 9,
       },
       sort: {
         field: "createdAt",
-        order: "DESC"
-      }
+        order: "DESC",
+      },
     };
     onApply(filterPayload);
+  };
+
+  const getSectionTitle = (sectionId: string) => {
+    const section = sections.find((s) => s.id === sectionId);
+    return section ? section.title.toLowerCase() : sectionId;
   };
 
   return (
@@ -259,7 +264,9 @@ const Filter: React.FC<FilterProps> = ({
               }`}
             >
               <div className="w-4 h-4 border-2 border-indigo-600 rounded-full bg-white flex items-center justify-center">
-                {activeSection === section.id && <div className="w-2 h-2 bg-indigo-600 rounded-full"></div>}
+                {activeSection === section.id && (
+                  <div className="w-2 h-2 bg-indigo-600 rounded-full"></div>
+                )}
               </div>
               <span className="text-sm font-medium">{section.title}</span>
             </div>
@@ -267,43 +274,41 @@ const Filter: React.FC<FilterProps> = ({
         </div>
 
         <div className="flex-1 p-6 overflow-y-auto">
-        <div className="mt-1">
+          <div className="mt-1">
+            {activeSection !== "type" && activeSection !== "stage" && activeSection !== "date" && activeSection!=="status" && activeSection!=="rating" && activeSection!=="experienceYear" && activeSection!=="role" &&(
             <div className="relative">
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder={`Search ${activeSection === "industry" ? "industries" : "technologies"}...`}
+                placeholder={`Search ${getSectionTitle(activeSection)}...`}
                 className="w-full p-2 pl-8 border rounded-lg"
               />
               <Search className="w-4 h-4 absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            </div>
+            </div>)}
           </div>
           {renderRightPanel(activeSection, selectedOptions)}
-          
         </div>
       </div>
 
       <div className="border-t border-gray-200 p-4 flex items-center justify-between bg-white">
-        <button className="flex justify-center items-center">
-          <img src="/cross_icon.svg" alt="cancle" className="w-3 h-3 mr-2"></img>
-        <div 
-          className=" text-gray-600 hover:text-gray-800" 
+        <button
+          className="flex justify-center items-center"
           onClick={() => {
             setSearchTerm("");
             setSelectedOptions([]);
             onApply({
               filter: {},
               pagination: { page: 1, pageSize: 9 },
-              sort: { field: "createdAt", order: "DESC" }
+              sort: { field: "createdAt", order: "DESC" },
             });
           }}
         >
-          Clear Filter
-        </div>
+          <img src="/cross_icon.svg" alt="cancel" className="w-3 h-3 mr-2" />
+          <div className="text-gray-600 hover:text-gray-800">Clear Filter</div>
         </button>
-        <button 
-          className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700" 
+        <button
+          className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
           onClick={handleApply}
         >
           Show Result

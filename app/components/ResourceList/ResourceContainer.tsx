@@ -1,3 +1,4 @@
+// ResourceContainer.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -8,85 +9,89 @@ import { resourcelistJson } from "../../api/jsonService/resourcelistJsonService"
 interface Resource {
   id: string;
   title: string;
-  experience:string;
+  experience: string;
   company: string;
   tags: string[];
 }
 
 interface ResourceContainerProps {
   searchQuery?: string;
+  vendorNameFilter?: string;
+  experienceYearFilter?: string;
+  skillsFilter?: string;
 }
 
-const ResourceContainer = ({ searchQuery = "" }: ResourceContainerProps) => {
+const ResourceContainer: React.FC<ResourceContainerProps> = ({
+  searchQuery = "",
+  vendorNameFilter,
+  experienceYearFilter,
+  skillsFilter,
+}) => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(9);
   const useDummyData = process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
 
-  // Reset to first page when search query changes
+  // Reset to first page when search query or filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery]);
+  }, [searchQuery, vendorNameFilter, experienceYearFilter, skillsFilter]);
 
-  // For API data, we use the actual page and pageSize values
+  // Map filter values to API parameters (adjust as per your backend requirements)
   const { data, loading, error, totalItems } = useResourceList({
     page: currentPage,
     pageSize: itemsPerPage,
-    firstName: null,
+    firstName: null, // Could be adjusted if searchQuery targets firstName
     status: null,
-    vendorID: null,
-    skillIDs: [],
-    search: searchQuery || null, // Pass search query to API
+    vendorID: vendorNameFilter || null, // Assuming vendorNameFilter maps to vendorID
+    skillIDs: skillsFilter ? [skillsFilter] : [], // Assuming skillsFilter is a single skill ID
+    search: searchQuery || null,
+    // Add experience filter if supported by backend, e.g., totalExperience: experienceYearFilter
   });
-  
-  console.log(`data111`, data);
 
   // Process resources based on data source
   const resources: Resource[] = useDummyData
     ? resourcelistJson()
         .filter((item) => {
-          // Filter dummy data based on search query
-          if (!searchQuery) return true;
           const searchLower = searchQuery.toLowerCase();
-          return (
+          const matchesSearch = !searchQuery || (
             item.title.toLowerCase().includes(searchLower) ||
             item.experience.toLowerCase().includes(searchLower) ||
             item.company.toLowerCase().includes(searchLower) ||
             item.tags.some(tag => tag.toLowerCase().includes(searchLower))
           );
+          const matchesVendor = !vendorNameFilter || item.company.toLowerCase() === vendorNameFilter.toLowerCase();
+          const matchesExperience = !experienceYearFilter || item.experience.toLowerCase().includes(experienceYearFilter.toLowerCase());
+          const matchesSkills = !skillsFilter || item.tags.some(tag => tag.toLowerCase() === skillsFilter.toLowerCase());
+          return matchesSearch && matchesVendor && matchesExperience && matchesSkills;
         })
         .map((item, index) => ({
           id: `dummy-${index}`,
-          ...item
+          ...item,
         }))
     : data?.getResourceProfiles.items.map((item) => ({
         id: item.resourceProfileID,
         title: `${item.firstName} ${item.lastName}`,
-        experience: `${item.totalExperience} years`, 
+        experience: `${item.totalExperience} years`,
         company: item.vendor.companyName,
         tags: item.resourceSkills.map((skill) => skill.skill.name),
       })) || [];
 
-  // Only apply the slice operation for dummy data
-  // For API data, we're already getting the correct page from the backend
-  const currentItems = useDummyData 
+  // Apply pagination only for dummy data (API handles it server-side)
+  const currentItems = useDummyData
     ? resources.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
     : resources;
 
-  // Handle page change
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
-    // You might want to scroll to top when changing pages
     window.scrollTo(0, 0);
   };
 
-  // Handle items per page change
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
     setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1); // Reset to first page when changing items per page
+    setCurrentPage(1);
   };
 
-  // Handle resource navigation
   const handleViewDetails = (resourceId: string) => {
     router.push(`/resourcemanagment/${resourceId}`);
   };
@@ -110,14 +115,11 @@ const ResourceContainer = ({ searchQuery = "" }: ResourceContainerProps) => {
                   onClick={() => handleViewDetails(resource.id)}
                 >
                   <div className="flex justify-between">
-                  <h3 className="text-bg-blue-12 text-lg sm:text-xl lg:text-2xl font-semibold mb-3 sm:mb-4 line-clamp-2 max-w-[350px]">
-                    {resource.title}
-                  </h3>
-
-                  <h3 className="text-black font-normal text-xl">({resource.experience})</h3>
-
+                    <h3 className="text-bg-blue-12 text-lg sm:text-xl lg:text-2xl font-semibold mb-3 sm:mb-4 line-clamp-2 max-w-[350px]">
+                      {resource.title}
+                    </h3>
+                    <h3 className="text-black font-normal text-xl">({resource.experience})</h3>
                   </div>
-
                   <div className="flex-grow flex flex-col justify-between">
                     <div className="flex flex-wrap gap-2 mb-4">
                       {resource.tags.slice(0, 3).map((tag, tagIndex) => (
@@ -134,15 +136,14 @@ const ResourceContainer = ({ searchQuery = "" }: ResourceContainerProps) => {
                         </span>
                       )}
                     </div>
-
                     <div className="w-full flex justify-between items-center mb-4 lg:mb-0">
                       <span className="text-xs sm:text-sm truncate max-w-[60%] font-normal">
                         {resource.company}
                       </span>
-                      <div 
+                      <div
                         className="flex items-center gap-1"
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevent triggering the parent onClick
+                          e.stopPropagation();
                           handleViewDetails(resource.id);
                         }}
                       >
@@ -157,7 +158,6 @@ const ResourceContainer = ({ searchQuery = "" }: ResourceContainerProps) => {
           </div>
         </div>
       </div>
-
       <div className="mt-6">
         <Pagination
           currentPage={currentPage}
