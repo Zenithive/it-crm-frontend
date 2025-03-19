@@ -83,7 +83,7 @@ const SalesDashboard: React.FC = () => {
           </div>
 
           {/* Team Performance Table Component */}
-          <TeamPerformanceTable teamData={teamData} />
+          <TeamPerformanceTable />
         </div>
       </div>
     </div>

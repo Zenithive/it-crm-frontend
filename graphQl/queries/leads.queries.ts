@@ -4,6 +4,7 @@ export const GET_LEADS = gql`
   query GetLeads($filter: LeadFilter, $pagination: PaginationInput, $sort: LeadSortInput) {
     getLeads(filter: $filter, pagination: $pagination, sort: $sort) {
       items {
+        leadID
         firstName
         lastName
         email
