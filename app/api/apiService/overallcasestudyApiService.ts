@@ -23,13 +23,21 @@ const useOverallCaseStudyData = (
   industry?: string,
   sortField: string = "createdAt",
   sortOrder: "ASC" | "DESC" = "DESC",
-  searchQuery?: string
+  searchQuery?: string,
+  technology?: string
 ) => {
   const { token } = useSelector((state: RootState) => state.auth);
 
   const filter: any = {};
+  
+  // Add industry filter if specified
   if (industry) {
     filter.industryTarget = industry;
+  }
+  
+  // Add technology filter if specified
+  if (technology) {
+    filter.techStack = technology;
   }
   
   // Add search filter if there's a query
