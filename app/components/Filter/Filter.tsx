@@ -1,12 +1,4 @@
-// import React, { useState } from "react";
-// import { X, Search } from 'lucide-react';
 
-// interface FilterProps {
-//   onClose: () => void;
-//   onApply: (filter: any) => void; // We'll keep this type as is
-//   currentIndustry?: string;
-//   currentTechnology?: string;
-// }
 
 // export const Filter: React.FC<FilterProps> = ({
 //   onClose,
@@ -189,14 +181,13 @@
 "use client";
 import React, { useState } from "react";
 import { X, Search } from "lucide-react";
-
 interface FilterProps {
   onClose: () => void;
   onApply: (filter: any) => void;
   sections: {
     id: string;
     title: string;
-    options: { id: string; label: string; checked: boolean }[];
+    options: { id: string; label: string; checked: boolean }[]
   }[];
   renderRightPanel: (
     activeSection: string,
@@ -206,7 +197,6 @@ interface FilterProps {
   selectedOptions: string[];
   setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>;
 }
-
 const Filter: React.FC<FilterProps> = ({
   onClose,
   onApply,
@@ -216,15 +206,11 @@ const Filter: React.FC<FilterProps> = ({
   setSelectedOptions,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeSection, setActiveSection] = useState<string>(
-    sections[0]?.id || ""
-  );
-
+  const [activeSection, setActiveSection] = useState<string>(sections[0]?.id || "");
   const handleApply = () => {
     const filterPayload = {
       filter: {
-        [activeSection]:
-          selectedOptions.length > 0 ? selectedOptions[0] : undefined,
+        [activeSection]: selectedOptions.length > 0 ? selectedOptions[0] : undefined
       },
       pagination: {
         page: 1,
@@ -237,12 +223,10 @@ const Filter: React.FC<FilterProps> = ({
     };
     onApply(filterPayload);
   };
-
   const getSectionTitle = (sectionId: string) => {
-    const section = sections.find((s) => s.id === sectionId);
+    const section = sections.find(s => s.id === sectionId);
     return section ? section.title.toLowerCase() : sectionId;
   };
-
   return (
     <div className="bg-white rounded-2xl w-full max-w-[600px] overflow-hidden">
       <div className="bg-bg-blue-12 px-6 py-4 flex justify-between items-center">
@@ -251,7 +235,6 @@ const Filter: React.FC<FilterProps> = ({
           <X className="w-5 h-5" />
         </button>
       </div>
-
       <div className="flex h-[500px]">
         <div className="w-[200px] border-r border-gray-200 p-4">
           {sections.map((section) => (
@@ -275,12 +258,12 @@ const Filter: React.FC<FilterProps> = ({
             </div>
           ))}
         </div>
-
         <div className="flex-1 p-6 overflow-y-auto">
           <div className="mt-1">
             {activeSection !== "type" &&
               activeSection !== "stage" &&
               activeSection !== "date" &&
+              activeSection !== "priority" &&
               activeSection !== "status" &&
               activeSection !== "rating" &&
               activeSection !== "experienceYear" &&
@@ -300,22 +283,23 @@ const Filter: React.FC<FilterProps> = ({
           {renderRightPanel(activeSection, selectedOptions, searchTerm)}
         </div>
       </div>
-
       <div className="border-t border-gray-200 p-4 flex items-center justify-between bg-white">
-        <button
-          className="flex justify-center items-center"
-          onClick={() => {
-            setSearchTerm("");
-            setSelectedOptions([]);
-            onApply({
-              filter: {},
-              pagination: { page: 1, pageSize: 9 },
-              sort: { field: "createdAt", order: "DESC" },
-            });
-          }}
-        >
+        <button className="flex justify-center items-center">
           <img src="/cross_icon.svg" alt="cancel" className="w-3 h-3 mr-2" />
-          <div className="text-gray-600 hover:text-gray-800">Clear Filter</div>
+          <div
+            className="text-gray-600 hover:text-gray-800"
+            onClick={() => {
+              setSearchTerm("");
+              setSelectedOptions([]);
+              onApply({
+                filter: {},
+                pagination: { page: 1, pageSize: 9 },
+                sort: { field: "createdAt", order: "DESC" }
+              });
+            }}
+          >
+            Clear Filter
+          </div>
         </button>
         <button
           className="px-6 py-2 bg-bg-blue-12 text-white rounded-lg"
