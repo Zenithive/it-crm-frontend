@@ -15,7 +15,7 @@ const leadStageMap: { [key: string]: string } = {
   Qualified: "FOLLOW_UP",
 
   "Closed Win": "CLOSED_WON",
-  Lost: "LOST",
+  Lost: "CLOSED_LOST",
 };
 
 const LeadCardDnD: React.FC<LeadCardDnDProps> = ({
