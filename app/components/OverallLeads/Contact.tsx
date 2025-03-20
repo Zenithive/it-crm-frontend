@@ -15,6 +15,19 @@ import useOverallLeadsData from "../../api/apiService/OverallLeadApiService";
 
 type ViewType = "list" | "kanban";
 
+interface FilterPayload {
+  filter: {
+    [key: string]: string | undefined; // Dynamic filter keys
+  };
+  pagination: {
+    page: number;
+    pageSize: number;
+  };
+  sort: {
+    field: string;
+    order: string;
+  };
+}
 const Contact = () => {
   const [activeView, setActiveView] = useState<ViewType>("list");
   const [showAddLeadModal, setShowAddLeadModal] = useState(false);
@@ -22,6 +35,12 @@ const Contact = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(5);
   const [inputValue, setInputValue] = useState<string>("");
+
+   
+  const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
+  const [campaignFilter, setCampaignFilter] = useState<string | undefined>(undefined);
+  const [stageFilter, setStageFilter] = useState<string | undefined>(undefined);
+// const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignFilter);
 
   const user = useSelector((state: RootState) => state.auth);
 
@@ -50,21 +69,58 @@ const Contact = () => {
   const handleAddLead = () => {
     setShowAddLeadModal(true);
   };
-
-  const handleFilter = () => {
-    console.log("Filter clicked");
+  const handleFilter = async (payload: FilterPayload) => {
+    const { filter } = payload;
+    
+    // Just update the state - the hook will handle the refetch
+    setStageFilter(filter.stage);
+    setTypeFilter(filter.type);
+    setCampaignFilter(filter.campaign);
+    setCurrentPage(1);
+    
+    // Remove this separate refetch call - it's causing confusion
+    // The hook will automatically refetch when the state changes
   };
-
+  
+  // const handleFilter = async (payload: FilterPayload) => {
+  //   const { filter } = payload;
+   
+  //   setStageFilter(filter.stage);
+  //   setTypeFilter(filter.type);
+  //   setCampaignFilter(filter.campaign);
+  //   setCurrentPage(1);
+  //   await refetch({
+  //     pagination: { page: 1, pageSize: 100 },
+  //     sort: { field: "EMAIL", order: "ASC" },
+  //     filter: {
+  //       leadStage: filter.stage,
+  //       leadType: filter.type,
+  //       campaign: filter.campaign,
+       
+  //     },
+  //   });
+  // };
   const handleViewChange = (view: ViewType) => {
     setActiveView(view);
   };
 
-  const { leads, totalCount, loading } = useOverallLeadsData(
+  // const { leads, totalCount, loading,refetch } = useOverallLeadsData(
+  //   currentPage,
+  //   pageSize,
+  //   searchQuery,
+  //   stageFilter,typeFilter,campaignFilter
+  // );
+
+  const { leads, totalCount, loading, refetch } = useOverallLeadsData(
     currentPage,
     pageSize,
-    searchQuery
+    searchQuery,
+    stageFilter,
+    typeFilter,
+    campaignFilter
   );
-
+  
+  
   return (
     <>
       <HeaderComp

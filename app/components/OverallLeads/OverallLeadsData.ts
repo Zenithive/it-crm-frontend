@@ -26,7 +26,19 @@ export type LeadCardDnDProps = {
     targetColumnId: string
   ) => void;
 };
-
+interface FilterPayload {
+  filter: {
+    [key: string]: string | undefined; // Dynamic filter keys
+  };
+  pagination: {
+    page: number;
+    pageSize: number;
+  };
+  sort: {
+    field: string;
+    order: string;
+  };
+}
 interface ColumnDefForListTabel {
   headerName: string;
   field: string;
@@ -117,8 +129,10 @@ export type HeaderProps = {
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
   onAddLead?: () => void;
-  onFilter?: () => void;
+  // onFilter?: () => void;
+  onFilter?: (payload: FilterPayload) => void;
   onViewChange?: (view: ViewType) => void;
+  
 };
 
 type ItemForKanbanView = {

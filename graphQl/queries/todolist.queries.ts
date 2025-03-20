@@ -1,6 +1,12 @@
+
+import { gql } from "@apollo/client";
 export const GET_TODOS = `
-              query GetTasks($page: Int!, $pageSize: Int!) {
+              query GetTasks($page: Int!, $pageSize: Int!,) {
                 getTasks(
+
+
+
+                 
                   pagination: { page: $page, pageSize: $pageSize },
                   sort: { field: DUE_DATE, order: DESC }
                 ) {
@@ -15,3 +21,4 @@ export const GET_TODOS = `
                 }
               }
             `;
+

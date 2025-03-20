@@ -4,6 +4,27 @@ import Search from "../../microComponents/Search";
 import HeaderButtons from "../../microComponents/HeaderButtons";
 import { HeaderProps, ViewType } from "./OverallLeadsData";
 import AddLeadModal from "../AddLeadModal";
+import Filter from "../Filter/Filter";
+import FilterDropdown from "../../microComponents/FiterDropdown";
+import FilterHandler from "../Filter/FilterHandler";
+import useOverallLeadsData from "../../api/apiService/OverallLeadApiService";
+
+
+
+
+interface FilterPayload {
+  filter: {
+    [key: string]: string | undefined; // Dynamic filter keys
+  };
+  pagination: {
+    page: number;
+    pageSize: number;
+  };
+  sort: {
+    field: string;
+    order: string;
+  };
+}
 
 const HeaderComp: React.FC<HeaderProps> = ({
   data,
@@ -12,9 +33,18 @@ const HeaderComp: React.FC<HeaderProps> = ({
   onAddLead,
   onFilter,
   onViewChange,
+  
+  
 }) => {
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLeadModalVisible, setIsLeadModalVisible] = useState(false);
   const [activeView, setActiveView] = useState<ViewType>("list");
+const [showFilter, setShowFilter] = useState(false);
+  
+   const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
+  const [campaignFilter, setCampaignFilter] = useState<string | undefined>(undefined);
+  const [stageFilter, setStageFilter] = useState<string | undefined>(undefined);
+const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignFilter);
 
   const handleSearchChange = (value: string) => {
     if (onSearchChange) {
@@ -35,6 +65,76 @@ const HeaderComp: React.FC<HeaderProps> = ({
     setIsLeadModalVisible(false);
   };
 
+  const filterSections = [
+    {
+      id: "date",
+      title: "Date",
+      options: [
+        { id: "days", label: "Last 7 Days", checked: false },
+        { id: "start_date", label: "Start Date", checked: false },
+        { id: "end_date", label: "End Date", checked: false },
+    
+      ]
+    },
+    {
+      id: "stage",
+      title: "Stage",
+      options: [
+        { id: "NEW", label: "New Lead", checked: false },
+        { id: "FOLLOW_UP", label: "Qualified", checked: false },
+        { id: "IN_PROGRESS", label: "Negotiation", checked: false },
+        { id: "CLOSED_WON", label: "Close Won", checked: false },
+        { id: "CLOSED_LOST", label: "Close Lost", checked: false }
+      ]
+    },
+    {
+      id: "type",
+      title: "Type",
+      options: [
+        { id: "ENTERPRISE", label: "Enterprise", checked: false },
+        { id: "SMALL", label: "Small", checked: false },
+        { id: "MEDIUM", label: "Medium", checked: false },
+      ]
+    },
+    {
+      id: "campaign",
+      title: "Campaign",
+      options: [
+        { id: "zenzziy", label: "Zenzziy lnc", checked: false },
+        { id: "prisam", label: "Prisam lnc", checked: false },
+        { id: "tuvok", label: "Tuvok lnc", checked: false },
+        { id: "zenzziyL", label: "Zenzziy lnc", checked: false },]
+    }
+
+  ];
+  const handleFilterApply = async (payload: FilterPayload) => {
+    const { filter } = payload;
+   
+    setStageFilter(filter.stage);
+    setTypeFilter(filter.type);
+    setCampaignFilter(filter.campaign);
+    setCurrentPage(1);
+    await refetch({
+      pagination: { page: 1, pageSize: 100 },
+      sort: { field: "EMAIL", order: "ASC" },
+      filter: {
+        leadStage: filter.stage,
+        leadType: filter.type,
+        campaign: filter.campaign,
+       
+      },
+    });
+  };
+
+  // const handleFilterApply = async (payload: FilterPayload) => {
+  //   const { filter } = payload;
+    
+   
+  //   setShowFilter(false);
+  //   setCurrentPage(1);
+    
+  //   // await refetch();
+  // };
   return (
     <>
       <div className="pt-[48px] flex justify-between items-center px-[70px]">
@@ -100,12 +200,25 @@ const HeaderComp: React.FC<HeaderProps> = ({
           button1width="w-[102px]"
           button2width="w-[124px]"
           onClick2={showLeadModal}
-          onClick1={onFilter}
+          onClick1={() => setShowFilter(true)}
         />
       </div>
       {isLeadModalVisible && <AddLeadModal onClose={hideLeadModal} />}
+      {showFilter && (
+        <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
+         
+
+<FilterHandler
+            filterSections={filterSections}
+            onFilterApply={onFilter || (() => {})}
+            setShowFilter={setShowFilter}
+             pageType="contact"
+          />
+        </div>
+      )}
     </>
   );
 };
 
 export default HeaderComp;
+

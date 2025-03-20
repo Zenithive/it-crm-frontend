@@ -43,31 +43,47 @@ export interface Lead {
   };
 }
 
-const useOverallLeadsData = (page: number, pageSize: number,searchQuery?: string) => {
+const useOverallLeadsData = (page: number, pageSize: number,searchQuery?: string,stage?:string,type?:string,campaign?:string)=> {
   const { token } = useSelector((state: RootState) => state.auth);
-
+  
+  const filter: any = {};
+  
+  
+  
+  if(stage) {
+    // You're using "Stage" with uppercase S in your code but lowercase in the components
+    // Make sure it's consistent with your GraphQL schema
+    filter.leadStage = stage; // Changed from filter.Stage
+  }
+  
+  if(type) {
+    // Change this to match your GraphQL schema, such as "leadType" or whatever your backend expects
+    filter.leadType = type; // Changed from filter.type
+  }
+  
+  if(campaign) {
+    filter.campaign = campaign;
+  }
+  
   const queryVariables: any = {
     pagination: { page, pageSize },
     sort: { field: "EMAIL", order: "ASC" },
+    filter:filter
   };
   
   if (searchQuery) {
-    queryVariables.filter = { search: searchQuery };
+    queryVariables.filter.search = searchQuery;
   }
-
   
-
-  const { data, loading, error,refetch } = useQuery(GET_LEADS_QUERY, {
-    variables: 
-      queryVariables,
-      
+  const { data, loading, error, refetch } = useQuery(GET_LEADS_QUERY, {
+    variables: queryVariables,
     context: {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     },
   });
-
+  
   return {
     leads: data?.getLeads?.items || [],
     totalCount: data?.getLeads?.totalCount || 0,
@@ -76,6 +92,7 @@ const useOverallLeadsData = (page: number, pageSize: number,searchQuery?: string
     refetch
   };
 };
+
 export default useOverallLeadsData;
 
 export const useUpdateLead = () => {
@@ -88,7 +105,7 @@ export const useUpdateLead = () => {
       },
     },
   });
-
+  const filter: any = {};
   const updateLead = async (leadID: string, input: Record<string, any>) => {
 
    

@@ -1,5 +1,10 @@
+
+
 import React, { useState } from "react";
 import Filter from "./Filter";
+import FilterDropdown from "../../microComponents/FiterDropdown";
+
+
 
 interface FilterSection {
   id: string;
@@ -25,23 +30,44 @@ interface FilterHandlerProps {
   filterSections: FilterSection[];
   onFilterApply: (payload: FilterPayload) => void | Promise<void>;
   setShowFilter: (show: boolean) => void;
+  pageType?: "contact" | "todo";
 }
 
 const FilterHandler: React.FC<FilterHandlerProps> = ({
   filterSections,
   onFilterApply,
   setShowFilter,
+
+  pageType
+
 }) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [selectdata, setSelecteData] = useState('Last 7 Days');
+  
 
-  const renderFilterRightPanel = (
-    activeSection: string,
-    selectedOptions: string[]
-  ) => {
-    const currentSection = filterSections.find(
-      (section) => section.id === activeSection
-    );
+
+  const isContactPage = pageType === "contact";
+  const renderFilterRightPanel = (activeSection: string, selectedOptions: string[]) => {
+    const currentSection = filterSections.find(section => section.id === activeSection);
+
     if (!currentSection) return null;
+
+    if (activeSection === "date") {
+      return (
+        <FilterDropdown
+          selectData={selectdata}
+          // showRangeDropdown={true}
+          showRangeDropdown={isContactPage}
+          setSelectData={setSelecteData}
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+        />
+      );
+    }
 
     return (
       <div>
