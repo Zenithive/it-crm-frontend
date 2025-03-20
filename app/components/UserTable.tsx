@@ -5,29 +5,34 @@ import UserForm from "./UserForm";
 
 export interface User {
   userID: string;
-  FirstName: string;
-  LastName: string;
-  role: string;
+  name: string;
   email: string;
-  phone: string;
-  password?:string;
+  role: string;
+  phone?: string;
+  password?: string;
+  campaigns: {
+    campaignID: string;
+    campaignName: string;
+    campaignCountry: string;
+    industryTargeted: string;
+  }[];
 }
 
 interface UserTableProps {
   users: User[];
+  onDelete: (userID: string) => void;
+  onEdit: (userID: string, input: { name?: string; email?: string; phone?: string; role?: string }) => void; // Updated onEdit type
 }
 
-const UserTable: React.FC<UserTableProps> = ({ users }) => {
+const UserTable: React.FC<UserTableProps> = ({ users, onDelete, onEdit }) => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Open modal and set selected user
   const handleEdit = (user: User) => {
     setSelectedUser(user);
     setIsModalOpen(true);
   };
 
-  // Close modal
   const handleClose = () => {
     setIsModalOpen(false);
     setSelectedUser(null);
@@ -42,7 +47,6 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
               <th className="px-6 py-3 text-left">User Name</th>
               <th className="px-6 py-3 text-left">Role</th>
               <th className="px-6 py-3 text-left">Email</th>
-              <th className="px-6 py-3 text-left">Phone Number</th>
               <th className="px-6 py-3 text-left">Actions</th>
             </tr>
           </thead>
@@ -50,7 +54,7 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
             {users?.length > 0 ? (
               users.map((user) => (
                 <tr key={user.userID} className="hover:bg-gray-50">
-                  <td className="px-6 py-6">{user.FirstName} {user.LastName}</td>
+                  <td className="px-6 py-6">{user.name}</td>
                   <td className="px-6 py-6">
                     <span
                       className={`px-3 py-1 rounded-lg text-sm font-semibold ${getRoleColor(
@@ -61,25 +65,25 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
                     </span>
                   </td>
                   <td className="px-6 py-6">{user.email}</td>
-                  <td className="px-6 py-6">{user.phone}</td>
                   <td className="flex px-6 py-6 space-x-2">
                     <img
                       src="/edit.svg"
                       alt="Edit"
                       className="cursor-pointer"
-                      onClick={() => handleEdit(user)} // Open modal
+                      onClick={() => handleEdit(user)}
                     />
                     <img
                       src="/delete.svg"
                       alt="Delete"
                       className="cursor-pointer px-4"
+                      onClick={() => onDelete(user.userID)}
                     />
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="px-6 py-6 text-center text-gray-500">
+                <td colSpan={4} className="px-6 py-6 text-center text-gray-500">
                   No users available
                 </td>
               </tr>
@@ -88,9 +92,8 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
         </table>
       </div>
 
-      {/* Render Edit Modal */}
       {isModalOpen && selectedUser && (
-        <UserForm user={selectedUser} onClose={handleClose} />
+        <UserForm user={selectedUser} onClose={handleClose} onUpdate={onEdit} />
       )}
     </div>
   );

@@ -1,30 +1,39 @@
-// User.tsx
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import Title from "../microComponents/Title";
 import { Usertitle } from "./Path/TitlePaths";
-import { userApi } from "../api/apiService/userApiService";
-import { user } from "../api/jsonService/userJsonService";
+import { useUserApiService } from "../api/apiService/userApiService";
 import UserTable from "./UserTable";
 import Search from "../microComponents/Search";
 import { headerbutton, search } from "./Path/TaskData";
 import HeaderButtons from "../microComponents/HeaderButtons";
-import FilterHandler from "./Filter/FilterHandler"; // Updated import
+import FilterHandler from "./Filter/FilterHandler";
 import _ from "lodash";
+import Pagination from "../microComponents/Pagination";
+import { useDeleteUser } from "../api/apiService/deleteUserApiService";
+import { useUpdateUser } from "../api/apiService/updateUserApiService"; // Import the new hook
+import DeleteConfirmation from "./DeleteConfirmation";
 
 export interface User {
   userID: string;
-  FirstName: string;
-  LastName: string;
-  role: string;
+  name: string;
   email: string;
-  phone: string;
-  status: string;
+  role: string;
+  phone?: string; // Add phone to match mutation response
+  password?: string; // Add password to match mutation response
+  campaigns: {
+    campaignID: string;
+    campaignName: string;
+    campaignCountry: string;
+    industryTargeted: string;
+  }[];
 }
 
 interface FilterPayload {
   filter: {
     [key: string]: string | undefined;
+    role?: string;
+    name?: string;
   };
   pagination: {
     page: number;
@@ -36,85 +45,78 @@ interface FilterPayload {
   };
 }
 
-const useDummyData = process.env.NEXT_PUBLIC_USE_DUMMY_DATA === "false"; // Fixed condition (was "false")
-
 const User: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [inputValue, setInputValue] = useState("");
   const [showFilter, setShowFilter] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [roleFilter, setRoleFilter] = useState<string | undefined>(undefined);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        setLoading(true);
-        console.log("useDummyData:", useDummyData);
-        const response = useDummyData ? await user() : await userApi();
-        console.log("Response:", response);
-        console.log("Users from response:", response.users);
-        setUsers(response.users || []);
-        setFilteredUsers(response.users || []);
-      } catch (err) {
-        console.error("Error fetching users:", err);
-        setError("Failed to load user data");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { users, totalCount, loading, error, refetch } = useUserApiService({
+    filter: {
+      role: roleFilter,
+      name: searchQuery || undefined,
+    },
+    pagination: {
+      page: currentPage,
+      pageSize: itemsPerPage,
+    },
+    sort: {
+      field: "name",
+      order: "ASC",
+    },
+  });
 
-    fetchUsers();
-  }, []);
+  const { isDeleteModalOpen, handleOpenDeleteModal, handleCloseDeleteModal, handleConfirmDelete } =
+    useDeleteUser(refetch);
 
-  const debouncedSearch = _.debounce((query: string) => {
-    setSearchQuery(query);
-    applyFilters(query, roleFilter);
-  }, 500);
-
-  const handleSearchChange = (value: string) => {
-    debouncedSearch(value);
-  };
+  const { handleConfirmUpdate } = useUpdateUser(refetch);
 
   const filterSections = [
     {
       id: "role",
       title: "Role",
       options: [
-        { id: "admin", label: "C-Level", checked: false },
-        { id: "user", label: "Sales Executive", checked: false },
-        { id: "manager", label: "Business Executive", checked: false },
+        { id: "C-LEVEL", label: "C-Level", checked: false },
+        { id: "SALES_EXECUTIVE", label: "Sales Executive", checked: false },
+        { id: "BUSINESS_EXECUTIVE", label: "Business Executive", checked: false },
+        { id: "MANAGER", label: "Manager", checked: false },
+        { id: "ADMIN", label: "Admin", checked: false }, 
       ],
-    }
+    },
   ];
 
-  const handleFilterApply = (payload: FilterPayload) => {
-    const { filter } = payload;
-    setRoleFilter(filter.role);
-    applyFilters(searchQuery, filter.role);
-    setShowFilter(false);
-  };
+  const debouncedSearch = useMemo(
+    () =>
+      _.debounce((query: string) => {
+        setSearchQuery(query);
+        setCurrentPage(1);
+      }, 500),
+    []
+  );
 
-  const applyFilters = (query: string, role: string | undefined) => {
-    let filtered = [...users];
+  const handleSearchChange = useCallback(
+    (query: string) => {
+      setInputValue(query);
+      if (query.length >= 3 || query.length === 0) {
+        debouncedSearch(query);
+      } else if (searchQuery && query.length < 3) {
+        debouncedSearch("");
+      }
+    },
+    [debouncedSearch, searchQuery]
+  );
 
-    if (query && query.trim() !== "") {
-      const lowerQuery = query.toLowerCase();
-      filtered = filtered.filter(
-        (user) =>
-          user.FirstName.toLowerCase().includes(lowerQuery) ||
-          user.LastName.toLowerCase().includes(lowerQuery) ||
-          user.email.toLowerCase().includes(lowerQuery)
-      );
-    }
-
-    if (role) {
-      filtered = filtered.filter((user) => user.role.toLowerCase() === role.toLowerCase());
-    }
-
-    setFilteredUsers(filtered);
-  };
+  const handleFilterApply = useCallback(
+    async (payload: FilterPayload): Promise<void> => {
+      const { filter } = payload;
+      setRoleFilter(filter.role);
+      setCurrentPage(payload.pagination.page || 1);
+      return Promise.resolve();
+    },
+    []
+  );
 
   if (loading) {
     return <p className="text-center mt-10 text-lg">Loading users...</p>;
@@ -127,16 +129,14 @@ const User: React.FC = () => {
   return (
     <div>
       <div className="p-4 max-w-[1350px] mx-auto">
-        <div className="flex flex-col sm:flex-row items-center mb-6 justify-between">
-          <div className="flex">
+        <div className="flex flex-col sm:flex-row items-center mb-6 justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
             <Title title={Usertitle[0].titleName} />
-            <div className="ml-4">
-              <Search
-                searchText={search[5].searchText}
-                value={searchQuery}
-                onChange={handleSearchChange}
-              />
-            </div>
+            <Search
+              searchText={search[5].searchText}
+              value={inputValue}
+              onChange={handleSearchChange}
+            />
           </div>
           <HeaderButtons
             button1Text={headerbutton[2].button1text}
@@ -145,7 +145,25 @@ const User: React.FC = () => {
           />
         </div>
 
-        <UserTable users={filteredUsers} />
+        <UserTable
+          users={users}
+          onDelete={handleOpenDeleteModal}
+          onEdit={handleConfirmUpdate} 
+        />
+
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalCount}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={setItemsPerPage}
+        />
+
+        <DeleteConfirmation
+          isOpen={isDeleteModalOpen}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleConfirmDelete}
+        />
       </div>
 
       {showFilter && (
