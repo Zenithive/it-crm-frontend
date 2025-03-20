@@ -134,7 +134,7 @@ const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
               key={tab}
               className={`py-2 px-1 font-medium text-xl capitalize whitespace-nowrap ${
                 activeTab === tab
-                  ? "border-b-2 border-blue-600 text-blue-600"
+                  ? "border-b-2 border-bg-blue-12 text-bg-blue-12"
                   : "text-gray-500 hover:text-gray-700"
               }`}
               onClick={() => setActiveTab(tab)}
@@ -156,7 +156,7 @@ const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
 
         {/* Recent Activity Section */}
         <div className="w-full md:w-1/3 mt-10 flex-shrink-0 bg-white rounded-2xl p-6 shadow-custom">
-          <h3 className="text-blue-600 text-2xl font-bold mb-4">Performance Overview</h3>
+          <h3 className="text-bg-blue-12 text-2xl font-bold mb-4">Performance Overview</h3>
 
           {resourceData?.performance ? (
             <>
@@ -198,7 +198,7 @@ const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
               {/* Performance Overview */}
               <div className="mt-5">
                 <div className="border-b border-content-border"></div>
-                <h3 className="text-blue-600 text-2xl font-bold mb-4 mt-5">Project History</h3>
+                <h3 className="text-bg-blue-12 text-2xl font-bold mb-4 mt-5">Project History</h3>
                 {resourceData?.overview?.map((item: { project: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; time: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
                   <div key={index}>
                     <div className="flex justify-between items-center mt-6">

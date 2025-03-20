@@ -29,7 +29,7 @@ const ResourceDetails: React.FC<ResourceDetailsProps> = ({ resourceData }) => {
                 <div className="grid grid-cols-3 sm:grid-cols-2 gap-6 ">
                   {/* Primary Contact */}
                   <div className="p-4">
-                    <h3 className="text-blue-600 mb-4 text-xl font-bold">
+                    <h3 className="text-bg-blue-12 mb-4 text-xl font-bold">
                       Contact Details
                     </h3>
                     <div className="space-y-4">
@@ -48,7 +48,7 @@ const ResourceDetails: React.FC<ResourceDetailsProps> = ({ resourceData }) => {
                     </div>
 
                     <div className="mt-8">
-                      <h3 className="text-blue-600 text-xl font-bold mb-4">
+                      <h3 className="text-bg-blue-12 text-xl font-bold mb-4">
                         Vendor Information
                       </h3>
                       <div className="space-y-4">

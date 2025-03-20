@@ -147,7 +147,7 @@ const IndividualMeeting: React.FC = () => {
               </ul>
               {formattedSummary.length > SUMMARY_LIMIT && (
                 <button
-                  className="mt-4 text-blue-600 font-semibold hover:underline"
+                  className="mt-4 text-bg-blue-12 font-semibold hover:underline"
                   onClick={() => setShowFullSummary(!showFullSummary)}
                 >
                   {showFullSummary ? "See Less" : "See More"}
@@ -173,7 +173,7 @@ const IndividualMeeting: React.FC = () => {
             </ul>
             {actionPoints.length > ACTION_LIMIT && (
               <button
-                className="mt-4 text-blue-600 font-semibold hover:underline"
+                className="mt-4 text-bg-blue-12 font-semibold hover:underline"
                 onClick={() => setShowFullActionPoints(!showFullActionPoints)}
               >
                 {showFullActionPoints ? "See Less" : "See More"}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import moment from "moment-timezone";
 import { IN, US, GB, AU, JP, CA, DE, FR, BR, CN, ZA, RU } from "country-flag-icons/react/3x2";
 
@@ -7,6 +7,7 @@ const HeaderFlag = () => {
   const [selectedFlag, setSelectedFlag] = useState("in"); // Default selected flag (India country code)
   const [selectedZone, setSelectedZone] = useState("Asia/Kolkata"); // Default time zone (India)
   const [currentTime, setCurrentTime] = useState(""); // State for current time
+  const dropdownRef = useRef<HTMLDivElement>(null); // Ref to track the dropdown element
 
   // Array of flag options with time zones and country codes
   const flagOptions = [
@@ -34,6 +35,25 @@ const HeaderFlag = () => {
     const interval = setInterval(updateTime, 1000); // Update every second
     return () => clearInterval(interval); // Cleanup on unmount
   }, [selectedZone]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    // Add event listener when dropdown is open
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    // Cleanup event listener
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
 
   // Toggle dropdown visibility
   const toggleDropdown = () => setIsOpen(!isOpen);
@@ -73,18 +93,21 @@ const HeaderFlag = () => {
 
         {/* Dropdown Menu */}
         {isOpen && (
-       <div className="absolute top-[50px] left-0 bg-white rounded-lg shadow-lg py-2 px-2 w-44 z-10">
-            <div className="max-h-[200px] overflow-y-auto scroll  scrollbar-custom ">
-            {flagOptions.map((flag) => (
-              <div
-                key={flag.id}
-                onClick={() => handleFlagSelect(flag.code, flag.zone)}
-                className="flex items-center p-2 hover:bg-gray-100 cursor-pointer rounded pr-4"
-              >
-                <flag.component className="h-8 w-8 mr-2" />
-                <span className="text-sm text-gray-700">{flag.label}</span>
-              </div>
-            ))}
+          <div
+            ref={dropdownRef} // Attach ref to the dropdown
+            className="absolute top-[50px] left-0 bg-white rounded-lg shadow-lg py-2 px-2 w-44 z-10"
+          >
+            <div className="max-h-[200px] overflow-y-auto scroll scrollbar-custom">
+              {flagOptions.map((flag) => (
+                <div
+                  key={flag.id}
+                  onClick={() => handleFlagSelect(flag.code, flag.zone)}
+                  className="flex items-center p-2 hover:bg-gray-100 cursor-pointer rounded pr-4"
+                >
+                  <flag.component className="h-8 w-8 mr-2" />
+                  <span className="text-sm text-gray-700">{flag.label}</span>
+                </div>
+              ))}
             </div>
           </div>
         )}

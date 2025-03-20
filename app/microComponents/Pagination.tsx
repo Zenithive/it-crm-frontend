@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { PaginationProps } from "./InterfaceAndTypeData";
 
@@ -60,7 +59,7 @@ const Pagination = ({
             key={pageNum}
             onClick={() => handlePageChange(pageNum)}
             className={`px-2 w-7 h-7 rounded text-sm ${
-              currentPage === pageNum ? "bg-blue-600 text-white" : "bg-gray-200 text-black hover:bg-gray-300"
+              currentPage === pageNum ? "bg-bg-blue-12 text-white" : "bg-gray-200 text-black hover:bg-gray-300"
             }`}
             aria-label={`Page ${pageNum}`}
           >

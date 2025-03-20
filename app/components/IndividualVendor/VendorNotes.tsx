@@ -76,7 +76,7 @@ const VendorNotes = ({ vendorId}: { vendorId: string }) => {
           />
         </div>
         <div className="mt-6">
-          <button className="bg-blue-600 text-white rounded-lg p-2">
+          <button className="bg-bg-blue-12 text-white rounded-lg p-2">
             <div className="text-white">Update</div>
           </button>
         </div>
