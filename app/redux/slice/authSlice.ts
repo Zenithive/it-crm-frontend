@@ -6,6 +6,8 @@ const initialState = {
   email: "",
   role: "",
   token: "",
+  googleAccessToken: "",
+  authProvider: "",
   isAuthenticated: false,
 };
 
@@ -19,6 +21,8 @@ const authSlice = createSlice({
       state.email = action.payload.email;
       state.role = action.payload.role;
       state.token = action.payload.token;
+      state.googleAccessToken = action.payload.googleAccessToken || "";
+      state.authProvider = action.payload.authProvider || "";
       state.isAuthenticated = true;
     },
     logout: (state) => {
@@ -27,6 +31,8 @@ const authSlice = createSlice({
       state.email = "";
       state.role = "";
       state.token = "";
+      state.googleAccessToken = "";
+      state.authProvider = "";
       state.isAuthenticated = false;
     },
   },

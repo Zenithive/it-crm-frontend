@@ -7,9 +7,27 @@ import { GET_LEADS_QUERY } from "../../../graphQl/queries/getLeads.query";
 import client from "../../../lib/appoloClient";
 
 import { UPDATE_LEAD_MUTATION } from "../../../graphQl/mutation/updateLead.mutation";
+import { UPDATE_TASK_MUTATION } from "../../../graphQl/mutation/updateTask.mutation";
+import { useEffect } from "react";
+
+
+const getDateRange = () => {
+  const today = new Date();
+  const fromDate = new Date();
+  fromDate.setDate(today.getDate() - 30); 
+
+  const formatDate = (date: Date) => date.toISOString().split("T")[0]; 
+
+  console.log("formatDate(fromDate)",formatDate(fromDate));
+  console.log(" formatDate(today)", formatDate(today));
+  return {
+    fromDate: formatDate(fromDate),
+    toDate: formatDate(today),
+  };
+};
 
 export interface Lead {
-  leadID: string
+  leadID: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -66,11 +84,12 @@ const useOverallLeadsData = (page: number, pageSize: number,searchQuery?: string
   }
   
   const queryVariables: any = {
+    // filter: { fromDate, toDate }, 
     pagination: { page, pageSize },
     sort: { field: "EMAIL", order: "ASC" },
     filter:filter
   };
-  
+
   if (searchQuery) {
     queryVariables.filter.search = searchQuery;
   }
@@ -138,3 +157,119 @@ export const useUpdateLead = () => {
   };
 };
 
+
+
+// import { useQuery } from "@apollo/client";
+// import { useSelector } from "react-redux";
+// import { RootState } from "../../redux/store/store";
+// import { GET_LEADS_QUERY } from "../../../graphQl/queries/getLeads.query";
+// import client from "../../../lib/appoloClient";
+// import { UPDATE_TASK_MUTATION } from "../../../graphQl/mutation/updateTask.mutation";
+// import { useEffect } from "react";
+
+// const getDateRange = () => {
+//   const today = new Date();
+//   const fromDate = new Date();
+//   fromDate.setDate(today.getDate() - 30);
+  
+//   const formatDate = (date: Date) => date.toISOString().split("T")[0];
+  
+//   return {
+//     fromDate: formatDate(fromDate),
+//     toDate: formatDate(today),
+//   };
+// };
+
+// export interface Lead {
+//   leadID: string;
+//   firstName: string;
+//   lastName: string;
+//   email: string;
+//   phone: string;
+//   country: string;
+//   leadSource: string;
+//   leadStage: string;
+//   leadPriority: string;
+//   linkedIn?: string;
+//   initialContactDate?: string;
+//   leadCreatedBy: {
+//     userID: string;
+//     name: string;
+//     email: string;
+//   };
+//   leadAssignedTo: {
+//     userID: string;
+//     name: string;
+//     email: string;
+//   };
+//   organization: {
+//     organizationID: string;
+//     organizationName: string;
+//   };
+//   campaign: {
+//     campaignID: string;
+//     campaignName: string;
+//     campaignCountry: string;
+//     campaignRegion: string;
+//     industryTargeted: string;
+//   };
+// }
+
+// const useOverallLeadsData = (page: number, pageSize: number, searchQuery: string) => {
+//   const { token, name: currentUseName } = useSelector((state: RootState) => state.auth);
+//   const { fromDate, toDate } = getDateRange();
+  
+//   const queryVariables: any = {
+//     filter: { 
+//       fromDate, 
+//       toDate,
+//       assignedToUserId: currentUseName
+//     },
+//     pagination: { page, pageSize },
+//     sort: { field: "EMAIL", order: "ASC" },
+//   };
+//   console.log("queryVariables",queryVariables);
+  
+//   if (searchQuery) {
+//     queryVariables.filter.search = searchQuery;
+//   }
+  
+//   const { data, loading, error } = useQuery(GET_LEADS_QUERY, {
+//     variables: queryVariables,
+//     context: {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     },
+//   });
+  
+//   useEffect(() => {
+//     console.log("Query Variables:", queryVariables);
+//     console.log("Leads Data:", data);
+//     console.log("Loading State:", loading);
+//     console.log("Error:", error);
+//   }, [data, loading, error]);
+  
+//   return {
+//     leads: data?.getLeads?.items || [],
+//     totalCount: data?.getLeads?.totalCount || 0,
+//     loading,
+//     error: error ? error.message : null,
+//   };
+// };
+
+// export default useOverallLeadsData;
+
+// export const updateTaskAPI = async (taskID: string, input: any) => {
+//   try {
+//     const { data } = await client.mutate({
+//       mutation: UPDATE_TASK_MUTATION,
+//       variables: { taskID, input },
+//     });
+    
+//     return data?.updateTask;
+//   } catch (error) {
+//     console.error("Failed to update task:", error);
+//     throw error;
+//   }
+// };

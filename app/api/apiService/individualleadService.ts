@@ -17,6 +17,8 @@ interface Lead {
   organizationLinkedIn?:string;
   assignedToName?: string;
   industryTargeted?: string;
+  createdAt: string;
+  leadStage?:string;
 }
 
 const leadApiService = (leadID: string) => {
@@ -48,6 +50,8 @@ const leadApiService = (leadID: string) => {
         organizationLinkedIn:data.getLead.organization?.organizationLinkedIn || "",
         assignedToName: data.getLead.leadAssignedTo?.name || "Unassigned",
         industryTargeted: data.getLead.campaign?.industryTargeted || "Not Specified",
+        createdAt: data.getLead.createdAt, 
+        leadStage: data.getLead.leadStage || "Not Specified",
       };
 
       setLead(fetchedLead);

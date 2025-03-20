@@ -7,51 +7,36 @@ import { validationSchema } from "./ValidationSchema";
 import { loginSuccess } from "../../redux/slice/authSlice";
 import { useDispatch } from "react-redux";
 
- const Form=()=> {
+const Form = () => {
   const [formBg, setFormBg] = useState<string>("");
   const { loginUser, error: apiError, reset } = useLoginUser();
-
-
- 
-  
   const dispatch = useDispatch();
- 
-
   const router = useRouter();
 
-  // const handleNextClick = async (values: {
-  //   email: string;
-  //   password: string;
-  // }) => {
-  //   const response = await loginUser(values.email, values.password);
-  //   if (response?.token) {
-  //     localStorage.setItem("token", response.token);
+  // Handle regular email/password login
+  const handleNextClick = async (values: { email: string; password: string }) => {
+    const response = await loginUser(values.email, values.password);
+    if (response?.token) {
+      localStorage.setItem("token", response.token);
+      
+      const userData = {
+        id: response.user.id,
+        name: response.user.name,
+        email: response.user.email,
+        role: response.user.role,
+        token: response.token,
+      };
+      dispatch(loginSuccess(userData));
+      router.push("/dashboard");
+    }
+  };
 
-  //     router.push("/dashboard");
-  //   }
-  // };
+  // Handle Google login - just redirect to your backend's Google auth endpoint
+  const handleGoogleLogin = () => {
+    // Redirect to your backend Google auth endpoint
+    window.location.href = "https://crmbackendapis.onrender.com/auth/google";
+  };
 
-
-  
-    const handleNextClick= async (values: { email: string; password: string }) => {
-     
-  
-   
-        const response = await loginUser(values.email, values.password);
-        if (response?.token) {
-          localStorage.setItem("token", response.token);
-       
-          const userData = {
-            id: response.user.id,
-            name: response.user.name,
-            email: response.user.email,
-            role: response.user.role,
-            token: response.token,
-          };
-          dispatch(loginSuccess(userData));
-          router.push("/dashboard"); 
-        }
-    };
   return (
     <>
       <div className="w-full max-w-md mx-auto">
@@ -96,14 +81,14 @@ import { useDispatch } from "react-redux";
                     />
                   </div>
                   <div className="space-y-1 ">
-                    <label className="block text-[18px]  font-semibold">
+                    <label className="block text-[18px] font-semibold">
                       Password
                     </label>
                     <Field
                       type="password"
                       name="password"
                       data-testid="pass"
-                      onChange={(e: { target: { value: any; }; }) => {
+                      onChange={(e: { target: { value: any } }) => {
                         setFieldValue("password", e.target.value);
                         if (apiError) {
                           reset();
@@ -136,27 +121,27 @@ import { useDispatch } from "react-redux";
               )}
             </Formik>
             <div className="flex justify-end mt-3 text-xs md:text-sm">
-
               <span className="text-black font-semibold">Forgot Password?</span>
             </div>
             <div className="flex items-center justify-center my-4">
               <span className="text-[18px] font-semibold">OR</span>
             </div>
             <div className="space-y-3">
-              <Link
-                href="#"
+              <button
+                onClick={handleGoogleLogin}
+                type="button"
                 data-testid="googleLogin"
-                className="flex items-center justify-center gap-3 p-2 border border-bg-blue-12 rounded-xl"
+                className="w-full flex items-center justify-center gap-3 p-2 border border-bg-blue-12 rounded-xl"
               >
                 <img src="google.svg" className="w-5 h-5" alt="Google" />
                 <span className="text-[18px] text-bg-blue-12">
                   Login with Google
                 </span>
-              </Link>
+              </button>
               <Link
                 href="#"
                 data-testid="linkedinLogin"
-                className="flex items-center justify-center gap-3 p-2 border border-bg-blue-12 rounded-xl "
+                className="flex items-center justify-center gap-3 p-2 border border-bg-blue-12 rounded-xl"
               >
                 <img src="linkedin.svg" className="w-6 h-6" alt="LinkedIn" />
                 <span className="text-[18px] text-bg-blue-12">
@@ -169,7 +154,6 @@ import { useDispatch } from "react-redux";
       </div>
     </>
   );
-}
-
+};
 
 export default Form;

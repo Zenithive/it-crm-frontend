@@ -8,6 +8,7 @@ import ResourceSkills from "./ResourceSkills";
 import ResourceDoc from "./ResourceDoc";
 import ResourceNote from "./ResourceNote";
 import { GET_RESOURCE_PROFILE } from "../../../graphQl/queries/getresourcebyid.queries";
+import { ResourceForm } from "../ResourceList/ResourceForm";
 
 const tabs = ["Details", "Skills & Experience", "Documents", "Notes"];
 
@@ -73,14 +74,28 @@ const dummyResourceProfile = {
 
 const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
   const [activeTab, setActiveTab] = useState("Details");
+  const [showEditForm, setShowEditForm] = useState(false);
 
   const useDummyData =
     process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
 
-  const { data, loading, error } = useQuery(GET_RESOURCE_PROFILE, {
+  const { data, loading, error,refetch  } = useQuery(GET_RESOURCE_PROFILE, {
     variables: { resourceProfileId: ResourceId },
     skip: useDummyData,
   });
+
+  const handleEditClick = () => {
+    setShowEditForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowEditForm(false);
+  };
+
+
+  const handleUpdateSuccess = () => {
+    refetch();
+  };
 
   const resourceData = useDummyData
     ? dummyResourceProfile
@@ -120,7 +135,19 @@ const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
           </span>
         </div>
         <div className="flex flex-wrap gap-4 mt-4 md:mt-0">
-          <IconButton icon="/edit_logo.svg" text="Edit Profile" />
+        <IconButton 
+        icon="/edit_logo.svg" 
+        text="Edit Profile" 
+        onClick={handleEditClick} 
+      />
+        {showEditForm && (
+        <ResourceForm 
+          onClose={handleCloseForm} 
+          resourceProfileId={ResourceId} 
+          isEditMode={true} 
+          onUpdateSuccess={handleUpdateSuccess}
+        />
+      )}
           <IconButton icon="/update_icon.svg" text="Update Status" />
         </div>
       </div>
