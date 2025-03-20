@@ -2,6 +2,22 @@ export type LeadCardDnDProps = {
   id: string;
   title: string;
   subtitle: string;
+  data: {
+    
+    firstName: string;
+    lastName: string;
+    linkedIn: string;
+    country: string;
+    phone: string;
+    leadNotes:string;
+    leadType:string;
+    leadSource: string;
+    initialContactDate: string;
+    leadAssignedTo: string;
+    leadPriority: string;
+    organizationID: string;
+    campaignID: string;
+  };
   index: number;
   columnId: string;
   moveCard: (
@@ -129,4 +145,9 @@ export type ColumnPropsForKanban = {
     targetColumnId: string
   ) => void;
   cardWidth: string;
+  visibleCards: number;
+  minColumns: number;
+  setColumns: React.Dispatch<React.SetStateAction<ColumnForKanbanView[]>>;
+  setVisibleCards: React.Dispatch<React.SetStateAction<number>>;  
+ 
 };
