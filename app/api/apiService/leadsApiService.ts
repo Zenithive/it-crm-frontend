@@ -26,7 +26,7 @@ interface Deal {
   dealID: string;
   dealName: string;
   leadID: string;
-  dealAmount: string; // String type to match actual data
+  dealAmount: string; 
   dealStatus: string;
 }
 
