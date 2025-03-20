@@ -34,7 +34,7 @@ interface AddLeadModalProps {
 }
 
 const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
-  const { register, handleSubmit, reset, setValue} = useForm<LeadFormData>();
+  const { register, handleSubmit, reset, setValue } = useForm<LeadFormData>();
   const [loading, setLoading] = useState(false);
   const [showActivityForm, setShowActivityForm] = useState(false);
   const user = useSelector((state: RootState) => state.auth);
@@ -62,7 +62,10 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
     }
   };
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={onClose}>
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      onClick={onClose}
+    >
       <div className="p-6 relative" onClick={(e) => e.stopPropagation()}>
         <div className="bg-bg-blue-12 rounded-t-xl p-2 flex justify-between">
           <div className="p-2">
@@ -145,7 +148,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                 </select>
               </div> */}
                 {/* as this is not present in api */}
-                <div>
+                {/* <div>
                   <label className="block text-sm text-bg-blue-12 mb-2">
                     Source
                   </label>
@@ -154,16 +157,32 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                     placeholder="ex. Linkedin, Upwork"
                     className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
                   />
+                </div> */}
+
+                <div>
+                  <label className="block text-sm text-bg-blue-12 mb-2">
+                    Source
+                  </label>
+                  <select
+                    {...register("leadSource")}
+                    className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
+                  >
+                    <option value="" disabled selected>
+                      Select a source
+                    </option>
+                    <option value="Linkedin">LinkedIn</option>
+                    <option value="Upwork">Upwork</option>
+                  </select>
                 </div>
               </div>
 
               {/* Lead Type and Campaign */}
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                <label className="block text-sm text-bg-blue-12 mb-2">
-                  Lead Type
-                </label>
-                <select
+                  <label className="block text-sm text-bg-blue-12 mb-2">
+                    Lead Type
+                  </label>
+                  <select
                     {...register("leadType")}
                     className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
                   >
@@ -171,7 +190,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                     <option value="MEDIUM">medium</option>
                     <option value="ENTERPRISE">enterprise</option>
                   </select>
-              </div>
+                </div>
                 <div>
                   <label className="block text-sm text-bg-blue-12 mb-2">
                     Name of Campaign
@@ -257,7 +276,10 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                     className="w-full px-3 py-2 border  border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
                   >
                     <option value="Ex. India" className="">
-                      Ex. India
+                      India
+                    </option>
+                    <option value="Ex. India" className="">
+                      USA
                     </option>
                   </select>
                 </div>
@@ -318,13 +340,13 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose }) => {
                 Save
               </button>
               {/* Activity Form Modal */}
-              <button
+              {/* <button
                 type="button"
                 className="w-full py-2 bg-bg-blue-12 text-white rounded-lg"
                 onClick={() => setShowActivityForm(true)} // Show form on click
               >
                 Add Activity
-              </button>
+              </button> */}
 
               {/* Render ActivityForm outside button */}
               {showActivityForm && (
