@@ -282,7 +282,7 @@ const Filter: React.FC<FilterProps> = ({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={`Search ${getSectionTitle(activeSection)}...`}
-                className="w-full p-2 pl-8 border rounded-lg"
+                className="w-full p-2 pl-8 border rounded-lg focus:outline-none"
               />
               <Search className="w-4 h-4 absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>)}

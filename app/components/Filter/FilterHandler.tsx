@@ -45,7 +45,7 @@ const FilterHandler: React.FC<FilterHandlerProps> = ({
 
     return (
       <div>
-        <div className="space-y-8 max-h-[300px] overflow-y-auto">
+        <div className="space-y-8 max-h-[400px] overflow-y-auto">
           {currentSection.options.map((option) => (
             <div key={option.id} className="flex items-center space-x-3 ml-2 mt-6">
               <input

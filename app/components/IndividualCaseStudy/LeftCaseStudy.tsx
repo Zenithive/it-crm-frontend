@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { CaseStudy } from "../../api/apiService/overallcasestudyApiService";
-import { individualcasestudyECommerceJson } from "../../api/jsonService/individualcasestudyJsonServices"; // Import dummy data service
+import { individualcasestudyECommerceJson } from "../../api/jsonService/individualcasestudyJsonServices";
+// Import Iconify Icon component
+import { Icon } from "@iconify/react";
 
 interface CompanyData {
   owner_client: string;
@@ -16,11 +18,32 @@ interface ProjectData {
 
 interface Technology {
   name: string;
-  logo: string;
+  logo: string; // Iconify icon identifier (e.g., "simple-icons:react")
 }
 
 const useDummyData =
   process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
+
+// Mapping of tech names to Iconify Simple Icons identifiers
+const techIconMap: { [key: string]: string } = {
+  react: "simple-icons:react",
+  "node.js": "simple-icons:nodedotjs",
+  javascript: "simple-icons:javascript",
+  python: "simple-icons:python",
+  java: "simple-icons:java",
+  angular: "simple-icons:angular",
+  vue: "simple-icons:vuejs",
+  mongodb: "simple-icons:mongodb",
+  mysql: "simple-icons:mysql",
+  postgresql: "simple-icons:postgresql",
+  git: "simple-icons:git",
+  docker: "simple-icons:docker",
+  golang: "simple-icons:go", // Correct Go logo
+  go: "simple-icons:go", // Alternative name
+  redis: "simple-icons:redis", // Official Redis logo
+  kafka: "simple-icons:apachekafka", // Official Kafka logo
+  // Add more mappings as needed
+};
 
 const LeftCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   console.log(`caseStudy234`, caseStudy);
@@ -55,10 +78,14 @@ const LeftCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
 
           setTechnologies(
             (data as CaseStudy).techStack
-              ? (data as CaseStudy).techStack.split(", ").map((tech) => ({
-                  name: tech,
-                  logo: "/default-tech-logo.svg", // Default logo for technologies
-                }))
+              ? (data as CaseStudy).techStack.split(", ").map((tech) => {
+                  const techName = tech.toLowerCase().trim(); // Normalize tech name
+                  const iconId = techIconMap[techName] || "simple-icons:javascript"; // Fallback to JS icon
+                  return {
+                    name: tech,
+                    logo: iconId,
+                  };
+                })
               : []
           );
         }
@@ -110,7 +137,12 @@ const LeftCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
             <div className="flex items-center space-x-3">
               <img src="/individual_icon_5.svg" alt="Live-Link" className="h-5 w-5" />
               <div className="text-sm text-bg-blue-12 font-semibold">Live-Link :</div>
-              <a href={companyData?.livelink} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+              <a
+                href={companyData?.livelink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline"
+              >
                 View Document
               </a>
             </div>
@@ -135,7 +167,7 @@ const LeftCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
           {technologies.length > 0 ? (
             technologies.map((tech, index) => (
               <div key={index} className="shadow-custom rounded-lg flex items-center p-2">
-                <img src={tech.logo} alt={tech.name} className="w-6 h-6" />
+                <Icon icon={tech.logo} width={24} height={24} color="#1E3A8A" /> 
                 <div className="px-2 text-md font-semibold text-bg-blue-12">{tech.name}</div>
               </div>
             ))
