@@ -185,6 +185,7 @@
 //     </div>
 //   );
 // };
+
 "use client";
 import React, { useState } from "react";
 import { X, Search } from "lucide-react";
@@ -199,7 +200,8 @@ interface FilterProps {
   }[];
   renderRightPanel: (
     activeSection: string,
-    selectedOptions: string[]
+    selectedOptions: string[],
+    searchTerm: string // Add searchTerm as a parameter
   ) => React.ReactNode;
   selectedOptions: string[];
   setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>;
@@ -258,6 +260,7 @@ const Filter: React.FC<FilterProps> = ({
               onClick={() => {
                 setActiveSection(section.id);
                 setSelectedOptions([]);
+                setSearchTerm(""); // Reset search when switching sections
               }}
               className={`flex items-center gap-2 py-3 px-3 rounded-lg cursor-pointer ${
                 activeSection === section.id ? "bg-indigo-50" : ""
@@ -275,19 +278,26 @@ const Filter: React.FC<FilterProps> = ({
 
         <div className="flex-1 p-6 overflow-y-auto">
           <div className="mt-1">
-            {activeSection !== "type" && activeSection !== "stage" && activeSection !== "date" && activeSection!=="status" && activeSection!=="rating" && activeSection!=="experienceYear" && activeSection!=="role" &&(
-            <div className="relative">
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder={`Search ${getSectionTitle(activeSection)}...`}
-                className="w-full p-2 pl-8 border rounded-lg"
-              />
-              <Search className="w-4 h-4 absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            </div>)}
+            {activeSection !== "type" &&
+              activeSection !== "stage" &&
+              activeSection !== "date" &&
+              activeSection !== "status" &&
+              activeSection !== "rating" &&
+              activeSection !== "experienceYear" &&
+              activeSection !== "role" && (
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder={`Search ${getSectionTitle(activeSection)}...`}
+                    className="w-full p-2 pl-8 border rounded-lg focus:outline-none"
+                  />
+                  <Search className="w-4 h-4 absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                </div>
+              )}
           </div>
-          {renderRightPanel(activeSection, selectedOptions)}
+          {renderRightPanel(activeSection, selectedOptions, searchTerm)}
         </div>
       </div>
 
