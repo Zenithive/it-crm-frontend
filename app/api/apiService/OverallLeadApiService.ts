@@ -1,11 +1,12 @@
 // hooks/useOverallLeadsData.ts
 
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { GET_LEADS_QUERY } from "../../../graphQl/queries/getLeads.query";
 import client from "../../../lib/appoloClient";
-import { UPDATE_TASK_MUTATION } from "../../../graphQl/mutation/updateTask.mutation";
+
+import { UPDATE_LEAD_MUTATION } from "../../../graphQl/mutation/updateLead.mutation";
 
 export interface Lead {
   leadID: string
@@ -42,7 +43,7 @@ export interface Lead {
   };
 }
 
-const useOverallLeadsData = (page: number, pageSize: number,searchQuery: string) => {
+const useOverallLeadsData = (page: number, pageSize: number,searchQuery?: string) => {
   const { token } = useSelector((state: RootState) => state.auth);
 
   const queryVariables: any = {
@@ -54,7 +55,9 @@ const useOverallLeadsData = (page: number, pageSize: number,searchQuery: string)
     queryVariables.filter = { search: searchQuery };
   }
 
-  const { data, loading, error } = useQuery(GET_LEADS_QUERY, {
+  
+
+  const { data, loading, error,refetch } = useQuery(GET_LEADS_QUERY, {
     variables: 
       queryVariables,
       
@@ -70,20 +73,51 @@ const useOverallLeadsData = (page: number, pageSize: number,searchQuery: string)
     totalCount: data?.getLeads?.totalCount || 0,
     loading,
     error: error ? error.message : null,
+    refetch
   };
 };
 export default useOverallLeadsData;
 
+export const useUpdateLead = () => {
+  const { token } = useSelector((state: RootState) => state.auth);
 
-export const updateTaskAPI = async (taskID: string, input: any) => {
-  try {
-    const { data } = await client.mutate({
-      mutation: UPDATE_TASK_MUTATION,
-      variables: { taskID, input },
-    });
+  const [updateLeadMutation, { data, loading, error}] = useMutation(UPDATE_LEAD_MUTATION, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  });
 
-    return data?.updateTask;
-  } catch (error) {
-    console.error("Failed to update task:", error);
-    throw error;
-  }}
+  const updateLead = async (leadID: string, input: Record<string, any>) => {
+
+   
+    try {
+      const updatedInput = {
+        ...input,
+        leadType: 'SMALL', // Default to 'small' if leadType is not provided
+      };
+      const response = await updateLeadMutation({
+        variables: { leadID, input:updatedInput
+        },
+      });
+
+      
+           
+      return response?.data?.updateLead;
+    } catch (error) {
+      console.error("Failed to update lead:", error);
+      throw error;
+    }
+  };
+
+
+  return {
+    updateLead,
+    updatedLead: data?.updateLead || null,
+    loading,
+    error: error ? error.message : null,
+    
+  };
+};
+
