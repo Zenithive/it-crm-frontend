@@ -1,4 +1,3 @@
-// OverallVendorProfile.tsx
 "use client";
 import React, { useState, useCallback } from "react";
 import { useSelector } from "react-redux";
@@ -12,7 +11,7 @@ import { OverallVendorProfiletitle } from "./Path/TitlePaths";
 import { headerbutton, search } from "./Path/TaskData";
 import { useVendors } from "../api/apiService/overallvendorApiService";
 import VendorForm from "./IndividualVendor/VendorForm";
-import FilterHandler from "./Filter/FilterHandler"; 
+import FilterHandler from "./Filter/FilterHandler";
 import _ from "lodash";
 
 interface Vendor {
@@ -70,21 +69,23 @@ const OverallVendorProfile: React.FC = () => {
     }
   };
 
-  const { data, loading, error, totalItems } = useVendors({
+  const { vendors, totalItems, loading, error } = useVendors({
     page: currentPage,
     pageSize: itemsPerPage,
     search: searchQuery,
+    address: locationFilter,
+    status: statusFilter,
+    rating: ratingFilter,
   });
 
-  const vendors: Vendor[] =
-    data?.getVendors?.items.map((vendor: any) => ({
-      vendorID: vendor.vendorID || "",
-      vendor: vendor.companyName || "N/A",
-      location: vendor.address || "N/A",
-      resources: vendor.resources?.length || "N/A",
-      rating: vendor.performanceRatings?.length || 0,
-      status: vendor.status || "N/A",
-    })) || [];
+  const mappedVendors: Vendor[] = vendors.map((vendor: any) => ({
+    vendorID: vendor.vendorID || "",
+    vendor: vendor.companyName || "N/A",
+    location: vendor.address || "N/A",
+    resources: vendor.resources?.length || "N/A",
+    rating: vendor.performanceRatings?.length || 0,
+    status: vendor.status || "N/A",
+  }));
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -164,11 +165,11 @@ const OverallVendorProfile: React.FC = () => {
       {loading ? (
         <p className="text-center">Loading vendors...</p>
       ) : error ? (
-        <p className="text-center text-red-500">{error.message}</p>
-      ) : vendors.length === 0 ? (
+        <p className="text-center text-red-500">{error}</p>
+      ) : mappedVendors.length === 0 ? (
         <p className="text-center py-8">No vendors found</p>
       ) : (
-        <VendorTable vendors={vendors} />
+        <VendorTable vendors={mappedVendors} />
       )}
 
       <Pagination

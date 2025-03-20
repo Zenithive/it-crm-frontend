@@ -92,7 +92,7 @@ const VendorLayout: React.FC<VendorLayoutProps> = ({ vendorId }) => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold text-blue-600">
+          <h1 className="text-2xl font-semibold text-bg-blue-12">
             {vendorData?.companyName ?? "Loading..."}
           </h1>
           <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
@@ -121,7 +121,7 @@ const VendorLayout: React.FC<VendorLayoutProps> = ({ vendorId }) => {
               key={tab.key}
               className={`py-2 px-1 -mb-px font-medium text-xl capitalize ${
                 activeTab === tab.key
-                  ? "border-b-2 border-blue-600 text-blue-600"
+                  ? "border-b-2 border-bg-blue-12 text-bg-blue-12"
                   : "text-gray-500 hover:text-gray-700"
               }`}
               onClick={() => setActiveTab(tab.key)} // Update state instead of routing
@@ -154,7 +154,7 @@ const VendorLayout: React.FC<VendorLayoutProps> = ({ vendorId }) => {
 
         {/* Recent Activity Section */}
         <div className="w-1/3 mt-10 flex-shrink-0 bg-white rounded-2xl p-6 shadow-custom">
-          <h3 className="text-blue-600 text-xl font-semibold mb-4">
+          <h3 className="text-bg-blue-12 text-xl font-semibold mb-4">
             Recent Activity
           </h3>
           <div className="space-y-4">
@@ -171,7 +171,7 @@ const VendorLayout: React.FC<VendorLayoutProps> = ({ vendorId }) => {
                         : "/vendor_icon_1.svg"
                     }
                     alt="vendor"
-                    className="text-blue-600 w-6 h-6 mt-2 ml-3"
+                    className="text-bg-blue-12 w-6 h-6 mt-2 ml-3"
                   />
                   <div>
                     <p className="font-medium ml-3">{activity.title}</p>

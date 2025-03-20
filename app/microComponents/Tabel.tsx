@@ -50,7 +50,7 @@ const MicroTable: React.FC<MicroTablePropsForListView> = ({
               href={`/individual/${encodeURIComponent(record.leadID)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="cursor-pointer hover:text-blue-600 font-medium"
+              className="cursor-pointer hover:text-bg-blue-12 font-medium"
             >
               {`${record.firstName} ${record.lastName}`}
             </a>

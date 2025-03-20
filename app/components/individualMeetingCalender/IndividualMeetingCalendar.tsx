@@ -208,7 +208,7 @@ const ClarivionCalendar = () => {
             <div className="flex justify-between">
               <button
                 onClick={handleSaveEvent}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+                className="bg-bg-blue-12 text-white px-4 py-2 rounded-md hover:bg-blue-700"
               >
                 {selectedEvent ? "Update" : "Add"}
               </button>

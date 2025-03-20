@@ -15,19 +15,47 @@ interface Campaign {
   }>;
 }
 
-const useCampaigns = (currentPage: number, itemsPerPage: number, fetchAll: boolean = false) => {
+interface CampaignFilter {
+  campaignName?: string;
+  campaignCountry?: string;
+  region?: string;
+  industry?: string;
+}
+
+const useCampaigns = (
+  currentPage: number,
+  itemsPerPage: number,
+  searchQuery?: string,
+  regionFilter?: string,
+  industryFilter?: string,
+  fetchAll: boolean = false
+) => {
   const [totalCampaigns, setTotalCampaigns] = useState(0);
   const [campaignCountryCounts, setCampaignCountryCounts] = useState<{ [key: string]: number }>({});
   const user = useSelector((state: RootState) => state.auth);
-  
+
+  // Build filter object
+  const filter: CampaignFilter = {};
+  if (searchQuery) {
+    filter.campaignName = searchQuery; // Assuming search targets campaignName
+  }
+  if (regionFilter) {
+    filter.region = regionFilter;
+  }
+  if (industryFilter) {
+    filter.industry = industryFilter;
+  }
+
   useEffect(() => {
     console.log(`Pagination parameters: page=${currentPage}, pageSize=${itemsPerPage}`);
-  }, [currentPage, itemsPerPage]);
+    console.log(`Filter parameters:`, filter);
+  }, [currentPage, itemsPerPage, searchQuery, regionFilter, industryFilter]);
 
   const { data, loading, error, refetch } = useQuery(GET_CAMPAIGNS, {
     variables: {
-      filter: {},
+      filter: Object.keys(filter).length > 0 ? filter : null, // Only send filter if it has values
       pagination: fetchAll ? null : { page: currentPage, pageSize: itemsPerPage },
+      sort: { field: "campaignName", order: "ASC" }, // Optional: Add default sort
     },
     context: {
       headers: {
@@ -35,22 +63,28 @@ const useCampaigns = (currentPage: number, itemsPerPage: number, fetchAll: boole
       },
     },
     fetchPolicy: "network-only",
-    notifyOnNetworkStatusChange: true
+    notifyOnNetworkStatusChange: true,
   });
-  
+
   useEffect(() => {
     refetch();
-  }, [currentPage, itemsPerPage]);
+  }, [currentPage, itemsPerPage, searchQuery, regionFilter, industryFilter, refetch]);
 
   useEffect(() => {
     if (data && data.getCampaigns) {
       const fetchedCampaigns = data.getCampaigns.items || [];
       const totalCount = data.getCampaigns.totalCount || 0;
-      
+
       setTotalCampaigns(totalCount);
-      
+
+      // Calculate country counts (optional feature)
+      const counts = fetchedCampaigns.reduce((acc: { [key: string]: number }, campaign: Campaign) => {
+        acc[campaign.campaignCountry] = (acc[campaign.campaignCountry] || 0) + 1;
+        return acc;
+      }, {});
+      setCampaignCountryCounts(counts);
     }
-  }, [data, currentPage]);
+  }, [data]);
 
   return {
     campaigns: data?.getCampaigns?.items || [],

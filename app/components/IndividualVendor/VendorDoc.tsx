@@ -106,7 +106,7 @@ const VendorDoc = ({ vendorId}: { vendorId:String  }) => {
               </div>
             )}
             <div className="mt-6">
-              <button className="flex items-center justify-center bg-blue-600 text-white rounded-lg p-2">
+              <button className="flex items-center justify-center bg-bg-blue-12 text-white rounded-lg p-2">
                 <img src="/upload_icon.svg" alt="Upload"></img>
                 <div className="text-white ml-2">Upload Document</div>
               </button>

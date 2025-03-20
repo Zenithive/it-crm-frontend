@@ -57,7 +57,7 @@ const TimeLine: React.FC = () => {
                     alt="Mail"
                     className="w-7 h-7"
                   />
-                  <div className="text-blue-600 font-semibold text-lg ml-2">
+                  <div className="text-bg-blue-12 font-semibold text-lg ml-2">
                     Email
                   </div>
                 </div>
@@ -100,7 +100,7 @@ const TimeLine: React.FC = () => {
               <div className="flex items-center justify-between gap-2 mb-2">
                 <div className="flex items-center">
                   <img src="/deal_icon.svg" alt="Deal" className="w-7 h-7" />
-                  <div className="text-blue-600 font-semibold text-lg ml-2">
+                  <div className="text-bg-blue-12 font-semibold text-lg ml-2">
                     Deal activity
                   </div>
                 </div>

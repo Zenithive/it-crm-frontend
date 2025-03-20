@@ -243,7 +243,7 @@ const Filter: React.FC<FilterProps> = ({
 
   return (
     <div className="bg-white rounded-2xl w-full max-w-[600px] overflow-hidden">
-      <div className="bg-indigo-600 px-6 py-4 flex justify-between items-center">
+      <div className="bg-bg-blue-12 px-6 py-4 flex justify-between items-center">
         <h2 className="text-xl font-semibold text-white">Filters</h2>
         <button onClick={onClose} className="text-white hover:text-gray-200">
           <X className="w-5 h-5" />
@@ -263,9 +263,9 @@ const Filter: React.FC<FilterProps> = ({
                 activeSection === section.id ? "bg-indigo-50" : ""
               }`}
             >
-              <div className="w-4 h-4 border-2 border-indigo-600 rounded-full bg-white flex items-center justify-center">
+              <div className="w-4 h-4 border-2 border-bg-blue-12 rounded-full bg-white flex items-center justify-center">
                 {activeSection === section.id && (
-                  <div className="w-2 h-2 bg-indigo-600 rounded-full"></div>
+                  <div className="w-2 h-2 bg-bg-blue-12 rounded-full"></div>
                 )}
               </div>
               <span className="text-sm font-medium">{section.title}</span>
@@ -308,7 +308,7 @@ const Filter: React.FC<FilterProps> = ({
           <div className="text-gray-600 hover:text-gray-800">Clear Filter</div>
         </button>
         <button
-          className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+          className="px-6 py-2 bg-bg-blue-12 text-white rounded-lg"
           onClick={handleApply}
         >
           Show Result

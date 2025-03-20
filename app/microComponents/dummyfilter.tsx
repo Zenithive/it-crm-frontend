@@ -26,7 +26,7 @@ const Filter: React.FC<FilterProps> = ({ closeFilter, sections, renderRightPanel
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="p-6 relative max-w-3xl w-full" onClick={(e) => e.stopPropagation()}>
         <div className="w-full md:w-[900px]">
-          <div className="bg-blue-600 rounded-t-xl flex justify-between items-center p-3">
+          <div className="bg-bg-blue-12 rounded-t-xl flex justify-between items-center p-3">
             <h2 className="text-xl ml-3 font-semibold text-white">Filters</h2>
             <button className="text-gray-500 bg-white hover:text-gray-700 p-3 rounded-lg" onClick={closeFilter}>
               <img src="/cross_icon.svg" alt="Close" className="h-3 w-3" />

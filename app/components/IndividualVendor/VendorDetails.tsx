@@ -95,7 +95,7 @@ const VendorDetails = ({ vendorId }: { vendorId: string }) => {
                     <div className=" bg-white rounded-2xl p-4 shadow-custom">
                       <div className="grid grid-cols-3 gap-6">
                         <div className="p-4 border-r border-content-border">
-                          <h3 className="text-blue-600 mb-4  text-xl font-semibold">
+                          <h3 className="text-bg-blue-12 mb-4  text-xl font-semibold">
                             Primary Contact
                           </h3>
                           <div className="space-y-2">
@@ -119,7 +119,7 @@ const VendorDetails = ({ vendorId }: { vendorId: string }) => {
                         </div>
 
                         <div className=" p-4">
-                          <h3 className="text-blue-600 text-xl font-semibold mb-4">
+                          <h3 className="text-bg-blue-12 text-xl font-semibold mb-4">
                             Secondary Contact
                           </h3>
                           <div className="space-y-2">
@@ -145,7 +145,7 @@ const VendorDetails = ({ vendorId }: { vendorId: string }) => {
                         <div className="hidden md:block"></div>
 
                         <div className="p-4  border-r border-content-border">
-                          <h3 className="text-blue-600 text-xl font-semibold mb-4">
+                          <h3 className="text-bg-blue-12 text-xl font-semibold mb-4">
                             Agreement Details
                           </h3>
                           <div className="space-y-2">
@@ -171,7 +171,7 @@ const VendorDetails = ({ vendorId }: { vendorId: string }) => {
                         </div>
 
                         <div className=" border-r border-content-border p-4">
-                          <h3 className="text-blue-600 text-xl font-semibold mb-4">
+                          <h3 className="text-bg-blue-12 text-xl font-semibold mb-4">
                             Location
                           </h3>
                           <ul className="space-y-1">
@@ -184,7 +184,7 @@ const VendorDetails = ({ vendorId }: { vendorId: string }) => {
                         </div>
 
                         <div className=" p-4">
-                          <h3 className="text-blue-600 text-xl font-semibold mb-4">
+                          <h3 className="text-bg-blue-12 text-xl font-semibold mb-4">
                             Skills
                           </h3>
                           <ul className="space-y-1">
@@ -195,7 +195,7 @@ const VendorDetails = ({ vendorId }: { vendorId: string }) => {
                         </div>
 
                         <div className=" border-r border-content-border p-4">
-                          <h3 className="text-blue-600 text-xl font-semibold mb-4">
+                          <h3 className="text-bg-blue-12 text-xl font-semibold mb-4">
                             Payment Cycle
                           </h3>
                           <div className="flex gap-2">
@@ -205,7 +205,7 @@ const VendorDetails = ({ vendorId }: { vendorId: string }) => {
                         </div>
 
                         <div className=" p-4">
-                          <h3 className="text-blue-600 text-xl font-semibold mb-4">
+                          <h3 className="text-bg-blue-12 text-xl font-semibold mb-4">
                             No. Of Employee
                           </h3>
                           <span>{vendorData.employeeCount}</span>

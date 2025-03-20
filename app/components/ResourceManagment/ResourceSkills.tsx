@@ -88,7 +88,7 @@ const ResourceSkills: React.FC<ResourceSkillsProps> = ({ resourceData }) => {
                 <div className="grid grid-cols-2 gap-6">
                   {/* Skills Section */}
                   <div className="p-4 border-r border-content-border ">
-                    <h3 className="text-blue-600 mb-4 text-2xl font-semibold">
+                    <h3 className="text-bg-blue-12 mb-4 text-2xl font-semibold">
                       Technical Skills
                     </h3>
                     <ul className="flex flex-wrap gap-2">
@@ -109,7 +109,7 @@ const ResourceSkills: React.FC<ResourceSkillsProps> = ({ resourceData }) => {
 
                   {/* Experience Section */}
                   <div className="p-4">
-                    <h3 className="text-blue-600 mb-4 text-2xl font-semibold">
+                    <h3 className="text-bg-blue-12 mb-4 text-2xl font-semibold">
                       Experience Level
                     </h3>
                     <ul className="">

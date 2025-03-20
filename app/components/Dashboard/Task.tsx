@@ -54,7 +54,7 @@ const Task = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <div className="bg-white rounded-xl shadow-custom min-h-[300px]">
         <div className="border-b border-bg-blue-12">
           <div className="flex space-x-4 md:space-x-8 mb-4 overflow-x-auto ml-4">
