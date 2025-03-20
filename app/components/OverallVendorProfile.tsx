@@ -51,22 +51,17 @@ const OverallVendorProfile: React.FC = () => {
 
   const debouncedSearch = useCallback(
     _.debounce((query: string) => {
-      if (query.length >= 3 || query.length === 0) {
-        setSearchQuery(query);
-        setCurrentPage(1);
-      }
+      console.log("Debounced search triggered with query:", query);
+      setSearchQuery(query);
+      setCurrentPage(1);
     }, 500),
     []
   );
 
   const handleSearchChange = (query: string) => {
     setInputValue(query);
-    if (query.length >= 3 || query.length === 0) {
-      debouncedSearch(query);
-    } else if (searchQuery && query.length < 3) {
-      setSearchQuery("");
-      setCurrentPage(1);
-    }
+    console.log("Search input changed to:", query);
+    debouncedSearch(query); // Always debounce, backend can handle empty strings
   };
 
   const { vendors, totalItems, loading, error } = useVendors({
@@ -82,10 +77,12 @@ const OverallVendorProfile: React.FC = () => {
     vendorID: vendor.vendorID || "",
     vendor: vendor.companyName || "N/A",
     location: vendor.address || "N/A",
-    resources: vendor.resources?.length || "N/A",
+    resources: vendor.resources?.length.toString() || "N/A", // Ensure string type
     rating: vendor.performanceRatings?.length || 0,
     status: vendor.status || "N/A",
   }));
+
+  console.log("Mapped vendors:", mappedVendors);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -129,11 +126,13 @@ const OverallVendorProfile: React.FC = () => {
       id: "rating",
       title: "Rating",
       options: [
+        { id: "8star", label: "8", checked: false },
         { id: "5star", label: "5", checked: false },
         { id: "4star", label: "4", checked: false },
         { id: "3star", label: "3", checked: false },
         { id: "2star", label: "2", checked: false },
         { id: "1star", label: "1", checked: false },
+        { id: "0star", label: "0", checked: false },
       ],
     },
   ];
