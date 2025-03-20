@@ -9,7 +9,7 @@ import CampaignTable from "./CampaignTable";
 import AddCampaignForm from "./AddCampaignForm";
 import useCampaigns from "../api/apiService/campaignApiService";
 import Pagination from "../microComponents/Pagination";
-import FilterHandler from "./Filter/FilterHandler"; // Updated import
+import FilterHandler from "./Filter/FilterHandler";
 import _ from "lodash";
 
 export interface Campaign {
@@ -61,21 +61,21 @@ const Campaign: React.FC = () => {
 
   const { campaigns, totalItems, loading, error } = useCampaigns(
     currentPage,
-    itemsPerPage
-    // searchQuery,
-    // regionFilter,
-    // industryFilter
+    itemsPerPage,
+    searchQuery,
+    regionFilter,
+    industryFilter
   );
 
   console.log("Campaigns data:", campaigns);
 
   const filterSections = [
     {
-      id: "campign",
+      id: "campaign", // Adjusted to match filter key
       title: "Campaigns",
       options: [
-        { id: "tech-corp", label: "Tech Corp", checked: false },
-        { id: "innovate-solutions", label: "Innovate Solutions", checked: false },
+        { id: "Hiring", label: "Hiring", checked: false },
+        { id: "Working", label: "Working", checked: false },
         { id: "global-systems", label: "Global Systems", checked: false },
         { id: "nexgen-industries", label: "NexGen Industries", checked: false },
         { id: "visionary-tech", label: "Visionary Tech", checked: false },
@@ -109,9 +109,9 @@ const Campaign: React.FC = () => {
     const { filter } = payload;
     setRegionFilter(filter.region);
     setIndustryFilter(filter.industry);
+    setSearchQuery(filter.campaign || ""); // Map "campaign" filter to searchQuery
     setShowFilter(false);
     setCurrentPage(1);
-    // await refetch();
   };
 
   const handleOpenForm = () => {

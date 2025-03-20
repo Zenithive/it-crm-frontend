@@ -1,10 +1,8 @@
-// ResourceContainer.tsx
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Pagination from "../../microComponents/Pagination";
 import { useResourceList } from "../../api/apiService/resourcelistApiService";
-import { resourcelistJson } from "../../api/jsonService/resourcelistJsonService";
 
 interface Resource {
   id: string;
@@ -30,57 +28,29 @@ const ResourceContainer: React.FC<ResourceContainerProps> = ({
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(9);
-  const useDummyData = process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
 
   // Reset to first page when search query or filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, vendorNameFilter, experienceYearFilter, skillsFilter]);
 
-  // Map filter values to API parameters (adjust as per your backend requirements)
   const { data, loading, error, totalItems } = useResourceList({
     page: currentPage,
     pageSize: itemsPerPage,
-    firstName: null, // Could be adjusted if searchQuery targets firstName
-    status: null,
-    vendorID: vendorNameFilter || null, // Assuming vendorNameFilter maps to vendorID
-    skillIDs: skillsFilter ? [skillsFilter] : [], // Assuming skillsFilter is a single skill ID
     search: searchQuery || null,
-    // Add experience filter if supported by backend, e.g., totalExperience: experienceYearFilter
+    vendorName: vendorNameFilter || null,
+    totalExperience: experienceYearFilter || null,
+    skills: skillsFilter || null,
   });
 
-  // Process resources based on data source
-  const resources: Resource[] = useDummyData
-    ? resourcelistJson()
-        .filter((item) => {
-          const searchLower = searchQuery.toLowerCase();
-          const matchesSearch = !searchQuery || (
-            item.title.toLowerCase().includes(searchLower) ||
-            item.experience.toLowerCase().includes(searchLower) ||
-            item.company.toLowerCase().includes(searchLower) ||
-            item.tags.some(tag => tag.toLowerCase().includes(searchLower))
-          );
-          const matchesVendor = !vendorNameFilter || item.company.toLowerCase() === vendorNameFilter.toLowerCase();
-          const matchesExperience = !experienceYearFilter || item.experience.toLowerCase().includes(experienceYearFilter.toLowerCase());
-          const matchesSkills = !skillsFilter || item.tags.some(tag => tag.toLowerCase() === skillsFilter.toLowerCase());
-          return matchesSearch && matchesVendor && matchesExperience && matchesSkills;
-        })
-        .map((item, index) => ({
-          id: `dummy-${index}`,
-          ...item,
-        }))
-    : data?.getResourceProfiles.items.map((item) => ({
-        id: item.resourceProfileID,
-        title: `${item.firstName} ${item.lastName}`,
-        experience: `${item.totalExperience} years`,
-        company: item.vendor.companyName,
-        tags: item.resourceSkills.map((skill) => skill.skill.name),
-      })) || [];
-
-  // Apply pagination only for dummy data (API handles it server-side)
-  const currentItems = useDummyData
-    ? resources.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-    : resources;
+  // Map API data to Resource interface
+  const resources: Resource[] = data.map((item: any) => ({
+    id: item.resourceProfileID,
+    title: `${item.firstName} ${item.lastName}`,
+    experience: `${item.totalExperience} years`,
+    company: item.vendor.companyName,
+    tags: item.resourceSkills.map((skill: any) => skill.skill.name),
+  }));
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -105,10 +75,10 @@ const ResourceContainer: React.FC<ResourceContainerProps> = ({
               <p>Loading...</p>
             ) : error ? (
               <p className="text-red-500">{error.message}</p>
-            ) : currentItems.length === 0 ? (
+            ) : resources.length === 0 ? (
               <p className="col-span-3 text-center py-8">No resources found</p>
             ) : (
-              currentItems.map((resource, index) => (
+              resources.map((resource, index) => (
                 <div
                   key={index}
                   className="bg-blue_shadow p-4 sm:p-6 rounded-xl shadow-custom transition-all duration-300 flex flex-col min-h-[170px] h-full cursor-pointer"
@@ -161,7 +131,7 @@ const ResourceContainer: React.FC<ResourceContainerProps> = ({
       <div className="mt-6">
         <Pagination
           currentPage={currentPage}
-          totalItems={totalItems || (useDummyData ? resources.length : 0)}
+          totalItems={totalItems}
           itemsPerPage={itemsPerPage}
           onPageChange={handlePageChange}
           onItemsPerPageChange={handleItemsPerPageChange}

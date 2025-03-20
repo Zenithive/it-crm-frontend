@@ -1,4 +1,3 @@
-// ResourceList.tsx
 "use client";
 import React, { useState, useCallback } from "react";
 import Search from "../microComponents/Search";
@@ -8,7 +7,7 @@ import ResourceContainer from "./ResourceList/ResourceContainer";
 import { ResourceForm } from "./ResourceList/ResourceForm";
 import Title from "../microComponents/Title";
 import { Resourcetitle } from "./Path/TitlePaths";
-import FilterHandler from "./Filter/FilterHandler"; // Updated import
+import FilterHandler from "./Filter/FilterHandler";
 import _ from "lodash";
 
 interface FilterPayload {
@@ -73,8 +72,8 @@ const ResourceList = () => {
       id: "vendorName",
       title: "Vendor Name",
       options: [
-        { id: "vendorA", label: "Vendor A", checked: false },
-        { id: "vendorB", label: "Vendor B", checked: false },
+        { id: "John", label: "John", checked: false },
+        { id: "sachin", label: "sachin", checked: false },
         { id: "vendorC", label: "Vendor C", checked: false },
       ],
     },
@@ -91,10 +90,8 @@ const ResourceList = () => {
       id: "skills",
       title: "Skills",
       options: [
-        { id: "javascript", label: "JavaScript", checked: false },
-        { id: "python", label: "Python", checked: false },
-        { id: "java", label: "Java", checked: false },
-        { id: "react", label: "React", checked: false },
+        { id: "a442dcee-2ea7-4f25-b710-99a8e6411be7", label: "Golang", checked: false },
+        { id: "0b73f7ea-a3e8-44f4-93bd-648fc8e57275", label: "PostgreSQL", checked: false },
       ],
     },
   ];

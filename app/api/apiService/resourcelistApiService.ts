@@ -52,33 +52,70 @@ interface GetResourceProfilesResponse {
 interface ResourceListApiVariables {
     page: number;
     pageSize: number;
-    firstName?: string | null;
-    status?: string | null;
-    vendorID?: string | null;
-    skillIDs?: string[];
     search?: string | null;
+    vendorName?: string | null; // Maps to vendorID or search
+    totalExperience?: string | null; // Handled client-side
+    skills?: string | null; // Maps to skillIDs
 }
 
 export const useResourceList = (variables: ResourceListApiVariables) => {
-    const cleanVariables = {
-        ...variables,
-        search: variables.search && variables.search.trim() ? variables.search.trim() : null,
+    const { page, pageSize, search, vendorName, totalExperience, skills } = variables;
+
+    // Clean search parameter
+    const cleanSearch = search && search.trim() ? search.trim() : null;
+
+    // Map filters to query variables
+    const queryVariables: any = {
+        page,
+        pageSize,
+        firstName: null,
+        status: null,
+        vendorID: null,
+        skillIDs: [],
+        search: cleanSearch,
     };
+
+    // Vendor Name: Use search for now; replace with vendorID if you have a mapping
+    if (vendorName && !cleanSearch) {
+        queryVariables.search = vendorName; // Fallback to search
+        // If you have a vendorID mapping:
+        // queryVariables.vendorID = mapVendorNameToID(vendorName);
+    }
+
+    // Skills: Convert skillsFilter to skillIDs (assuming filter IDs match skill names for simplicity)
+    if (skills) {
+        queryVariables.skillIDs = [skills]; // Replace with actual skillID mapping if needed
+    }
 
     const { data, loading, error, refetch } = useQuery<GetResourceProfilesResponse>(
         GET_RESOURCE_PROFILES_QUERY,
-        { 
-            variables: cleanVariables,
-            // Adding fetchPolicy to ensure we always get fresh data when parameters change
-            fetchPolicy: "network-only"
+        {
+            variables: queryVariables,
+            fetchPolicy: "network-only",
         }
     );
 
-    return { 
-        data, 
-        loading, 
+    // Client-side filtering for totalExperience
+    const filteredItems = data?.getResourceProfiles?.items
+        .filter((resource: ResourceProfile) => {
+            if (!totalExperience) return true;
+
+            const expRange = totalExperience.split("-");
+            if (totalExperience === "5+") {
+                return resource.totalExperience >= 5;
+            }
+            const [min, max] = expRange.map(Number);
+            return resource.totalExperience >= min && (max ? resource.totalExperience <= max : true);
+        }) || [];
+
+    console.log(`useResourceList variables:`, queryVariables);
+    console.log(`useResourceList response:`, { data, filteredItems });
+
+    return {
+        data: filteredItems,
+        loading,
         error,
-        totalItems: data?.getResourceProfiles?.totalCount || 0,
-        refetch
+        totalItems: data?.getResourceProfiles?.totalCount || 0, // Note: totalCount won't reflect totalExperience filter
+        refetch,
     };
 };
