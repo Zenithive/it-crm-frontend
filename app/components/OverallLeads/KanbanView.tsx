@@ -8,8 +8,12 @@ import { ColumnForKanbanView } from "./OverallLeadsData";
 import ColumnComponent from "./KanbanColComp";
 
 const KanbanView: React.FC = () => {
+  
   const [columns, setColumns] = useState<ColumnForKanbanView[]>([]);
   const [visibleCards, setVisibleCards] = useState<number>(3);
+  const maxColumns = 5; 
+
+  const minColumns = 3;
 
   // const useAPI = process.env.NEXT_PUBLIC_USE_API === "false";
   useEffect(() => {
@@ -17,8 +21,7 @@ const KanbanView: React.FC = () => {
       // const data = useAPI ? await fetchFromAPIForKanbanView() : await fetchFromJSONForKanbanView();
       const page = 1; // Set your desired page number
       const pageSize = 100; // Set your desired page size
-      // const response = useAPI ? await fetchFromAPIForKanbanView(page, pageSize) : await fetchFromJSONForKanbanView();
-      // const response = await fetchFromJSONForKanbanView(page, pageSize);
+      
       const response = await fetchFromJSONForKanbanView(page, pageSize);
       const data = Array.isArray(response) ? response : response;
 
@@ -34,12 +37,15 @@ const KanbanView: React.FC = () => {
     fetchData();
   }, []);
 
+ 
   const handleAddCard = () => {
-    if (visibleCards < columns.length) {
+    if (visibleCards < columns.length && visibleCards < maxColumns) {
       setVisibleCards(visibleCards + 1);
     }
   };
 
+
+ 
   const moveCard = (
     draggedId: string,
     sourceColumnId: string,
@@ -77,6 +83,7 @@ const KanbanView: React.FC = () => {
     });
   };
 
+
   const cardWidth = `${80 / visibleCards}%`;
 
   return (
@@ -86,12 +93,14 @@ const KanbanView: React.FC = () => {
         style={{
           width: "100%",
           scrollBehavior: "smooth",
-          flexDirection: window.innerWidth < 768 ? "column" : "row", // Change direction based on screen size
-          maxHeight: window.innerWidth < 768 ? "80vh" : "auto", // Add max height for vertical scrolling
+          flexDirection: window.innerWidth < 768 ? "column" : "row", 
+          maxHeight: window.innerWidth < 768 ? "80vh" : "auto", 
         }}
       >
         {Array.isArray(columns) ? (
           columns
+         
+
             .slice(0, visibleCards)
             .map((column, columnIndex) => (
               <ColumnComponent
@@ -99,6 +108,10 @@ const KanbanView: React.FC = () => {
                 column={column}
                 moveCard={moveCard}
                 cardWidth={cardWidth}
+                visibleCards={visibleCards}
+  minColumns={3} // Set your minimum number of columns here
+  setColumns={setColumns}
+  setVisibleCards={setVisibleCards} 
               />
             ))
         ) : (
@@ -106,15 +119,18 @@ const KanbanView: React.FC = () => {
         )}
       </div>
 
-      <div className="flex justify-center mt-4">
-        <button
-          onClick={handleAddCard}
-          className="plus_icon bg-bg-blue-12 text-white px-4 py-2 rounded-[12px] hover:bg-blue-700"
-          aria-label="Add new item"
-        >
-          +
-        </button>
-      </div>
+
+{visibleCards < maxColumns && (
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={handleAddCard}
+            className="plus_icon bg-bg-blue-12 text-white px-4 py-2 rounded-[12px] hover:bg-blue-700"
+            aria-label="Add new item"
+          >
+            +
+          </button>
+        </div>
+      )}
     </main>
   );
 };
