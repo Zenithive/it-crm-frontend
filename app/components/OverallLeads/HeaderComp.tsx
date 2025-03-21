@@ -97,7 +97,7 @@ const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignF
 
   return (
     <>
-      <div className="pt-[48px] flex justify-between items-center px-[70px]">
+      <div className="pt-[30px] flex justify-between items-center px-[30px]">
         <div className="flex gap-[20px] items-center">
           <div className="text-bg-blue-12 font-bold text-[30px]">
             <Title title={data.title || ""} />

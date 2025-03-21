@@ -6,7 +6,8 @@ import LeadCardDnD from "./DragAndDrop";
 
 import { ColumnPropsForKanban } from "./OverallLeadsData";
 import useOverallLeadsData from "../../api/apiService/OverallLeadApiService";
-import { IoMdCloseCircleOutline } from "react-icons/io";
+
+import { RxCross2 } from "react-icons/rx";
 
 const columnToStageMap: Record<string, string> = {
   "New Lead": "NEW",
@@ -14,8 +15,14 @@ const columnToStageMap: Record<string, string> = {
   Qualified: "FOLLOW_UP",
 
   "Closed Win": "CLOSED_WON",
-  Lost: "CLOSED_LOST",
+  "Closed Lost": "CLOSED_LOST",
 };
+
+interface UpdatedColumnPropsForKanban extends ColumnPropsForKanban {
+  setVisibleColumns: React.Dispatch<React.SetStateAction<any[]>>;
+  setAvailableColumns: React.Dispatch<React.SetStateAction<any[]>>;
+}
+
 
 const ColumnComponent: React.FC<ColumnPropsForKanban> = ({
   column,
@@ -25,6 +32,8 @@ const ColumnComponent: React.FC<ColumnPropsForKanban> = ({
   minColumns,
   visibleCards,
   setVisibleCards,
+  setVisibleColumns,
+  setAvailableColumns
 }) => {
   const {
     leads: allLeads,
@@ -67,14 +76,28 @@ const ColumnComponent: React.FC<ColumnPropsForKanban> = ({
     }),
   });
 
-  const handleRemoveColumn = () => {
-    setColumns((prevColumns) => {
-      return prevColumns.filter((col) => col.title !== column.title);
-    });
 
+
+  const handleRemoveColumn = () => {
+    // Remove column from visible columns
+    if (setVisibleColumns) {
+      setVisibleColumns((prevVisibleColumns) => {
+        return prevVisibleColumns.filter((col) => col.title !== column.title);
+      });
+      
+      // Find the removed column in the original columns array
+      // No need to update the main columns array - just notify parent
+      const removedColumn = column;
+      
+      // Update the availableColumns in the parent component via callback
+      if (typeof column.onRemove === 'function' && removedColumn) {
+        column.onRemove(removedColumn);
+      }
+    }
+    
+    // Update the visible cards count
     setVisibleCards((prev) => Math.max(minColumns, prev - 1));
   };
-
   const dropRef = React.useRef<HTMLDivElement>(null);
   drop(dropRef);
 
@@ -82,7 +105,7 @@ const ColumnComponent: React.FC<ColumnPropsForKanban> = ({
     <div
       ref={dropRef}
       className={`h-[500px] bg-gray-50 rounded-lg shadow-prim mx-2 mainCard ${
-        isOver ? "bg-blue-300" : ""
+        isOver ? "bg-blue-300 " : ""
       }`}
       style={{ flex: `0 0 ${cardWidth}` }}
     >
@@ -94,7 +117,7 @@ const ColumnComponent: React.FC<ColumnPropsForKanban> = ({
           <span className="text-[18px]">({filteredLeads?.length || 0})</span>
         </div>
         {visibleCards > minColumns && (
-          <IoMdCloseCircleOutline
+          <RxCross2
             className="text-[20px] cursor-pointer"
             onClick={handleRemoveColumn}
           />

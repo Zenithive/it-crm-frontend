@@ -17,6 +17,7 @@ const Dashboard_Title: React.FC<DashboardTitleProps> = ({ Dashboardtitle }) => {
   return (
     <div>
       <div className="flex justify-between items-center">
+      
         <Title title={Dashboardtitle[0].titleName} />
 
         <div className="flex items-center space-x-4">
