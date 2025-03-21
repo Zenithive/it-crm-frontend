@@ -1,6 +1,7 @@
 
 
 
+
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -10,7 +11,10 @@ interface OptionType {
   value: string;
   label: string;
 }
+type CalendarValue = Date | Date[] | null;
 
+type ValuePiece = Date | null;
+type Value = ValuePiece | [ValuePiece, ValuePiece];
 interface FilterDropdownProps {
   selectData?: string;
   setSelectData?: (value: string) => void;
@@ -67,16 +71,20 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
 
   
 
-  const handleSelectStartDate = (date: Date) => {
-    const localDate = dayjs(date).startOf('day'); // Ensure date is at the start of the day
-    setStartDate(localDate.format('YYYY-MM-DD')); // Format as 'YYYY-MM-DD'
+
+  const handleSelectStartDate = (value: Value) => {
+    if (value instanceof Date) {
+      const localDate = dayjs(value).startOf('day');
+      setStartDate(localDate.format('YYYY-MM-DD'));
+    }
     setShowStartCalendar(false);
   };
-
-  // Handle selecting end date
-  const handleSelectEndDate = (date: Date) => {
-    const localDate = dayjs(date).startOf('day'); // Ensure date is at the start of the day
-    setEndDate(localDate.format('YYYY-MM-DD')); // Format as 'YYYY-MM-DD'
+  
+  const handleSelectEndDate = (value: Value) => {
+    if (value instanceof Date) {
+      const localDate = dayjs(value).startOf('day');
+      setEndDate(localDate.format('YYYY-MM-DD'));
+    }
     setShowEndCalendar(false);
   };
 
@@ -140,26 +148,25 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
         </div>
       </div>
 
-      {/* Show calendar when the input is focused */}
       {showStartCalendar && (
-        <div className="absolute z-10 mt-2 p-4 bg-white rounded-xl shadow-lg ">
-          <Calendar
-            onChange={handleSelectStartDate}
-            value={startDate ? new Date(startDate) : new Date()}
-            className="w-56 text-sm " 
-          />
-        </div>
-      )}
+  <div className="absolute z-10 mt-2 p-4 bg-white rounded-xl shadow-lg ">
+    <Calendar
+      onChange={(value) => handleSelectStartDate(value)}
+      value={startDate ? new Date(startDate) : new Date()}
+      className="w-56 text-sm " 
+    />
+  </div>
+)}
 
-      {showEndCalendar && (
-        <div className="absolute z-10 mt-2 p-4 bg-white rounded-xl shadow-lg">
-          <Calendar
-            onChange={handleSelectEndDate}
-            className="w-56 text-sm " 
-           
-          />
-        </div>
-      )}
+{showEndCalendar && (
+  <div className="absolute z-10 mt-2 p-4 bg-white rounded-xl shadow-lg">
+    <Calendar
+      onChange={(value) => handleSelectEndDate(value)}
+      value={endDate ? new Date(endDate) : new Date()}
+      className="w-56 text-sm " 
+    />
+  </div>
+)}
     </div>
   );
 };
