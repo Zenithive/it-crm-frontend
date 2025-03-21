@@ -87,24 +87,7 @@ const Contact = () => {
     // The hook will automatically refetch when the state changes
   };
   
-  // const handleFilter = async (payload: FilterPayload) => {
-  //   const { filter } = payload;
-   
-  //   setStageFilter(filter.stage);
-  //   setTypeFilter(filter.type);
-  //   setCampaignFilter(filter.campaign);
-  //   setCurrentPage(1);
-  //   await refetch({
-  //     pagination: { page: 1, pageSize: 100 },
-  //     sort: { field: "EMAIL", order: "ASC" },
-  //     filter: {
-  //       leadStage: filter.stage,
-  //       leadType: filter.type,
-  //       campaign: filter.campaign,
-       
-  //     },
-  //   });
-  // };
+ 
   const handleViewChange = (view: ViewType) => {
     setActiveView(view);
   };

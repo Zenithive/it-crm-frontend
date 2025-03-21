@@ -4,27 +4,13 @@ import Search from "../../microComponents/Search";
 import HeaderButtons from "../../microComponents/HeaderButtons";
 import { HeaderProps, ViewType } from "./OverallLeadsData";
 import AddLeadModal from "../AddLeadModal";
-import Filter from "../Filter/Filter";
-import FilterDropdown from "../../microComponents/FiterDropdown";
+
 import FilterHandler from "../Filter/FilterHandler";
 import useOverallLeadsData from "../../api/apiService/OverallLeadApiService";
 
 
 
 
-interface FilterPayload {
-  filter: {
-    [key: string]: string | undefined; // Dynamic filter keys
-  };
-  pagination: {
-    page: number;
-    pageSize: number;
-  };
-  sort: {
-    field: string;
-    order: string;
-  };
-}
 
 const HeaderComp: React.FC<HeaderProps> = ({
   data,
@@ -107,34 +93,8 @@ const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignF
     }
 
   ];
-  const handleFilterApply = async (payload: FilterPayload) => {
-    const { filter } = payload;
-   
-    setStageFilter(filter.stage);
-    setTypeFilter(filter.type);
-    setCampaignFilter(filter.campaign);
-    setCurrentPage(1);
-    await refetch({
-      pagination: { page: 1, pageSize: 100 },
-      sort: { field: "EMAIL", order: "ASC" },
-      filter: {
-        leadStage: filter.stage,
-        leadType: filter.type,
-        campaign: filter.campaign,
-       
-      },
-    });
-  };
+ 
 
-  // const handleFilterApply = async (payload: FilterPayload) => {
-  //   const { filter } = payload;
-    
-   
-  //   setShowFilter(false);
-  //   setCurrentPage(1);
-    
-  //   // await refetch();
-  // };
   return (
     <>
       <div className="pt-[48px] flex justify-between items-center px-[70px]">

@@ -43,23 +43,23 @@ export interface Lead {
   };
 }
 
-const useOverallLeadsData = (page: number, pageSize: number,searchQuery?: string,date?:string,stage?:string,fromdate?:string,todate?:string,type?:string,campaign?:string)=> {
+const useOverallLeadsData = (page: number, pageSize: number,searchQuery?: string,stage?:string,type?:string,campaign?:string)=> {
   const { token } = useSelector((state: RootState) => state.auth);
   
   const filter: any = {};
   
   
-  if(fromdate) {
+  // if(fromdate) {
     
-    filter.fromDate = fromdate; 
-  }
+  //   filter.fromDate = fromdate; 
+  // }
 
   
   
-  if(todate) {
+  // if(todate) {
     
-    filter.toDate = todate; 
-  }
+  //   filter.toDate = todate; 
+  // }
   if(stage) {
 
     filter.leadStage = stage; 
