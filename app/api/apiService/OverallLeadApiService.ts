@@ -67,20 +67,29 @@ const useOverallLeadsData = (page: number, pageSize: number,searchQuery?: string
   const filter: any = {};
   
   
+  // if(fromdate) {
+    
+  //   filter.fromDate = fromdate; 
+  // }
+
   
+  
+  // if(todate) {
+    
+  //   filter.toDate = todate; 
+  // }
   if(stage) {
-    // You're using "Stage" with uppercase S in your code but lowercase in the components
-    // Make sure it's consistent with your GraphQL schema
-    filter.leadStage = stage; // Changed from filter.Stage
+
+    filter.leadStage = stage; 
   }
   
   if(type) {
-    // Change this to match your GraphQL schema, such as "leadType" or whatever your backend expects
-    filter.leadType = type; // Changed from filter.type
+  
+    filter.leadType = type; 
   }
   
   if(campaign) {
-    filter.campaign = campaign;
+    filter.campaignName = campaign;
   }
   
   const queryVariables: any = {
@@ -131,7 +140,7 @@ export const useUpdateLead = () => {
     try {
       const updatedInput = {
         ...input,
-        leadType: 'SMALL', // Default to 'small' if leadType is not provided
+        leadType: 'SMALL', 
       };
       const response = await updateLeadMutation({
         variables: { leadID, input:updatedInput

@@ -144,6 +144,7 @@ export interface ColumnForKanbanView {
   id: string;
   title: string;
   number: number;
+  onRemove?: (column: ColumnForKanbanView) => void;
   items: {
     id: string;
     title: string;
@@ -163,5 +164,7 @@ export type ColumnPropsForKanban = {
   minColumns: number;
   setColumns: React.Dispatch<React.SetStateAction<ColumnForKanbanView[]>>;
   setVisibleCards: React.Dispatch<React.SetStateAction<number>>;  
+  setVisibleColumns?: React.Dispatch<React.SetStateAction<any[]>>;
+  setAvailableColumns?: React.Dispatch<React.SetStateAction<any[]>>;
  
 };

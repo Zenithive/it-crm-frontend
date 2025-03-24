@@ -4,6 +4,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useAddCaseStudy } from "../api/apiService/addCaseStudyApiService";
 import { message } from "antd";
 
+import Notes from "../microComponents/Notes";
+
 // Define the interface for form data
 interface CaseStudyFormData {
   projectName: string;
@@ -91,12 +93,12 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
     <div className="min-h-screen">
       {/* Case Study Form */}
       <div
-        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 "
         onClick={onClose} // Close modal when clicking outside
       >
       {activeForm === "caseStudy" && (
         <div
-          className="bg-white rounded-lg shadow-lg overflow-hidden mt-4 w-[900px]"
+          className="bg-white rounded-lg shadow-lg overflow-hidden w-[900px] "
           onClick={(e) => e.stopPropagation()}
         >
           <div className="bg-indigo-500 p-4 flex justify-between items-center">
@@ -112,7 +114,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
             onSubmit={caseStudyForm.handleSubmit(handleCaseStudySubmit)}
             className="p-6"
           >
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2">
               {/* Project Name */}
               <div>
                 <label className="block text-md text-indigo-600 font-medium mb-2">
@@ -233,7 +235,35 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
             </div>
 
             {/* Key Outcomes */}
-            <div className="mt-2">
+            {/* <div className="mt-2">
+              <label className="block text-md text-indigo-600 font-medium mb-2">
+                Key Outcomes
+              </label>
+             
+
+              <CaseStudyFormNotes vendorId={"1"}  {...caseStudyForm.register("keyOutcomes")}/>
+            </div> */}
+
+<div className="mt-2">
+  <label className="block text-md text-indigo-600 font-medium mb-2">
+    Key Outcomes
+  </label>
+  <Notes
+    vendorId={"1"}
+    value={caseStudyForm.watch("keyOutcomes") || ""}
+    onChange={(value) => caseStudyForm.setValue("keyOutcomes", value, { 
+      shouldValidate: true,
+      shouldDirty: true 
+    })}
+  />
+  {caseStudyForm.formState.errors.keyOutcomes && (
+    <span className="text-red-500 text-sm">
+      This field is required
+    </span>
+  )}
+</div>
+
+{/* <div className="mt-2">
               <label className="block text-md text-indigo-600 font-medium mb-2">
                 Key Outcomes
               </label>
@@ -243,7 +273,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
                 rows={3}
                 className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
               ></textarea>
-            </div>
+            </div> */}
 
             {/* Details */}
             {/* <div className="mt-2">
@@ -259,7 +289,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
               </div> */}
 
             {/* Save Button */}
-            <div className="mt-6">
+            <div className="mt-4">
               <button
                 type="submit"
                 disabled={loading}
@@ -348,7 +378,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
                 </div> */}
 
               {/* Submit Button */}
-              <div className="mt-6">
+              <div className="mt-2">
                 <button
                   type="submit"
                   disabled={loading}
