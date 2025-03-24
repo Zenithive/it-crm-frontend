@@ -308,7 +308,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#6366F1] mb-1">
+                <label className="block text-sm font-medium text-bg-blue-12 mb-1">
                   Note
                 </label>
                 <div className="border rounded-lg">
@@ -419,7 +419,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({
               </div>
 
               <button
-                className="w-full bg-[#6366F1] text-white py-3 rounded-lg hover:bg-[#5457E5] transition-colors"
+                className="w-full bg-[#6 text-white py-3 rounded-lg hover:bg-[#5457E5] transition-colors"
                 disabled={loading || mutationLoading || updateLoading}
               >
                 {isEditMode ? "Update" : "Save"}

@@ -48,7 +48,7 @@
 //               <li key={index} className="px-4 py-4 border-b  text-black font-semibold ">
 //                 <a 
 //                   href={item.link} 
-//                   className="flex items-center hover:text-indigo-600 "
+//                   className="flex items-center hover:text-bg-blue-12 "
 //                 >
 //                   <span className="inline-flex items-center justify-center w-8 h-8 mr-3 ">
 //                    <img src={item.icon} alt="icon" className="h-6  " />
@@ -119,7 +119,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 >
                   <a
                     href={item.link}
-                    className="flex items-center hover:text-indigo-600 transition-colors duration-200"
+                    className="flex items-center hover:text-bg-blue-12 transition-colors duration-200"
                   >
                     <span className="inline-flex items-center justify-center w-6 sm:w-7 md:w-8 h-6 sm:h-7 md:h-8 mr-2 md:mr-3">
                       <img src={item.icon} alt="icon" className="h-5 sm:h-6" />

@@ -89,7 +89,7 @@ export const CountrySelection: React.FC<CountrySelectionProps> = ({
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor="country" className="text-sm block font-medium text-[#6366F1]">
+      <label htmlFor="country" className="text-sm block font-medium text-bg-blue-12">
         Country
       </label>
       <Controller
