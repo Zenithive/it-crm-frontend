@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { message } from "antd";
-import { CREATE_VENDOR_MUTATION } from "../../../graphQl/mutation/addVendor.mutation"; // Adjust path if needed
+import { CREATE_VENDOR_MUTATION } from "../../../graphQl/mutation/addVendor.mutation";
 
 enum VendorStatus {
   ACTIVE = "ACTIVE",
@@ -25,7 +25,7 @@ export const useCreateVendor = () => {
       gstOrVatDetails: values.gstOrVatDetails || "",
       notes: values.notes || "New vendor added",
       skillIDs: values.skillIDs || [],
-      country: values.country || "India",
+      country: values.country || "India", // Restored with default
     };
 
     try {

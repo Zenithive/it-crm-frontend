@@ -29,11 +29,10 @@ interface VendorFormData {
   status: string;
   vendorSkills: string;
   paymentTerms: string;
-  // website: string;
   gstOrVatDetails: string;
   performanceRating: number;
   notes: string;
-  country: string;
+  country: string; // Must be present
   vendorDetails: VendorDetail[];
 }
 
@@ -76,14 +75,20 @@ interface CompanyProfile {
   }>;
 }
 
-const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorId }) => {
-  const { register, handleSubmit, reset, setValue } = useForm<VendorFormData>({
+const VendorForm: React.FC<AddVendorFormProps> = ({
+  onClose,
+  vendorData,
+  vendorId,
+
+}) => {
+  const { register, handleSubmit, reset, setValue ,  control, // Add control
+    formState: { errors },} = useForm<VendorFormData>({
     defaultValues: {
       performanceRating: 0,
       status: "ACTIVE",
       paymentTerms: "NET30",
       vendorDetails: [{ name: "", contact: "", number: "", designation: "" }],
-      country: "India",
+      country: "India", // Restored default value
     },
   });
   const [loading, setLoading] = useState(false);
@@ -104,10 +109,9 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
       setValue("status", vendorData.status);
       setValue("address", vendorData.address);
       setValue("paymentTerms", vendorData.paymentTerms);
-      // Map the first skill name to the select field (assuming single skill for simplicity)
       setValue("vendorSkills", vendorData.skills[0]?.name || "");
       setValue("gstOrVatDetails", vendorData.gstOrVatDetails || "");
-      setValue("country", vendorData.primaryContact?.location || "India");
+      setValue("country", vendorData.primaryContact?.location || "India"); // Restored
       setValue("notes", vendorData.notes || "");
       if (noteRef.current) noteRef.current.innerHTML = vendorData.notes || "";
     }
@@ -160,7 +164,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
       gstOrVatDetails: data.gstOrVatDetails || "",
       notes: data.notes || "",
       skillIDs: getSkillIDs(data.vendorSkills),
-      country: data.country,
+      country: data.country, // Restored
     };
   };
 
@@ -168,15 +172,20 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
     setLoading(true);
     try {
       const mutationInput = mapFormDataToMutationInput(data);
+      console.log("Mutation Input:", mutationInput); // Debug log
       if (isEditMode) {
         await updateVendor({ vendorID: vendorId!, ...mutationInput });
+        message.success("Vendor updated successfully!");
       } else {
         await createVendor(mutationInput);
+        message.success("Vendor created successfully!");
       }
       reset();
       onClose();
     } catch (error) {
-      message.error(`Failed to ${isEditMode ? "update" : "add"} vendor. Please try again.`);
+      message.error(
+        `Failed to ${isEditMode ? "update" : "add"} vendor. Please try again.`
+      );
       console.error("Submission error:", error);
     } finally {
       setLoading(false);
@@ -200,7 +209,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
               className="text-gray-500 bg-white hover:text-gray-700 p-3 rounded-lg"
               onClick={onClose}
             >
-              <img src="/cross_icon.svg" alt="Cross" className="h-3 w-3"></img>
+              <img src="/cross_icon.svg" alt="Cross" className="h-3 w-3" />
             </button>
           </div>
         </div>
@@ -214,7 +223,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                     Company Name
                   </label>
                   <input
-                    {...register("companyName")}
+                    {...register("companyName", { required: true })}
                     type="text"
                     placeholder="Enter name"
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
@@ -232,42 +241,36 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
-                  location
-                  </label>
-                  <select
-                    {...register("country", { required: true })}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
-                  >
-                    <option value="">Select Country</option>
-                    <option value="India">India</option>
-                    <option value="USA">USA</option>
-                    <option value="Germany">Germany</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
-                    Status
-                  </label>
-                  <select
-                    {...register("status")}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2  outline-none"
-                  >
-                    <option value="">Select Status</option>
-                    <option value="ACTIVE">Active</option>
-                    <option value="INACTIVE">InActive</option>
-                  </select>
+                <CountrySelection
+                    register={register}
+                    setValue={setValue}
+                    control={control}
+                    errors={errors}
+                  />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-bg-blue-12 mb-1">
+                    Status
+                  </label>
+                  <select
+                    {...register("status")}
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
+                  >
+                    <option value="">Select Status</option>
+                    <option value="ACTIVE">Active</option>
+                    <option value="INACTIVE">Inactive</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
                     Vendor Skills
                   </label>
                   <select
                     {...register("vendorSkills")}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2  outline-none"
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
                   >
                     <option value="">Select Skills</option>
                     <option value="GOLANG">Golang</option>
@@ -280,7 +283,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                   </label>
                   <select
                     {...register("paymentTerms")}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2  outline-none"
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
                   >
                     <option value="">Select Terms</option>
                     <option value="NET_30">NET 30</option>
@@ -288,35 +291,6 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                     <option value="NET_90">NET 90</option>
                   </select>
                 </div>
-
-                {/* <div>
-                  <label className="block text-sm font-medium text-[#6366F1] mb-1">
-                    Country
-                  </label>
-                  <select
-                    {...register("country")}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
-                  >
-                    <option value="">Select Country</option>
-                    <option value="NET_30">USA</option>
-                    <option value="NET_60">India</option>
-                    <option value="NET_90">China</option>
-                  </select>
-                </div> */}
-                <div><CountrySelection register={register} setValue={setValue} /></div>
-
-                
-                {/* <div>
-                  <label className="block text-sm font-medium text-[#6366F1] mb-1">
-                    Website
-                  </label>
-                  <input
-                    {...register("website")}
-                    type="url"
-                    placeholder="Link"
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
-                  />
-                </div> */}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -328,7 +302,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                     {...register("gstOrVatDetails")}
                     type="text"
                     placeholder="GST or VAT Number"
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2  outline-none"
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
                   />
                 </div>
               </div>
@@ -337,7 +311,6 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                 <label className="block text-sm font-medium text-[#6366F1] mb-1">
                   Note
                 </label>
-                <div className="border rounded-lg"></div>
                 <div className="border rounded-lg">
                   <div className="flex gap-1 border-b p-2">
                     <button
@@ -363,12 +336,17 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                     </button>
                     <button
                       type="button"
-                      onClick={() => applyFormat("createLink", prompt("Enter URL:") || "")}
+                      onClick={() =>
+                        applyFormat("createLink", prompt("Enter URL:") || "")
+                      }
                       className="p-1 hover:bg-gray-100 rounded"
                     >
                       <LinkIcon className="w-4 h-4" />
                     </button>
-                    <button type="button" className="p-1 hover:bg-gray-100 rounded">
+                    <button
+                      type="button"
+                      className="p-1 hover:bg-gray-100 rounded"
+                    >
                       <Image className="w-4 h-4" />
                     </button>
                     <div className="h-6 w-px bg-gray-300 mx-1" />
@@ -408,10 +386,16 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                     >
                       <ListOrdered className="w-4 h-4" />
                     </button>
-                    <button type="button" className="p-1 hover:bg-gray-100 rounded">
+                    <button
+                      type="button"
+                      className="p-1 hover:bg-gray-100 rounded"
+                    >
                       <Minus className="w-4 h-4" />
                     </button>
-                    <button type="button" className="p-1 hover:bg-gray-100 rounded">
+                    <button
+                      type="button"
+                      className="p-1 hover:bg-gray-100 rounded"
+                    >
                       <Check className="w-4 h-4" />
                     </button>
                   </div>
@@ -435,26 +419,11 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
               </div>
 
               <button
-                className="w-full bg-bg-blue-12 text-white py-3 rounded-lg transition-colors"
+                className="w-full bg-[#6366F1] text-white py-3 rounded-lg hover:bg-[#5457E5] transition-colors"
                 disabled={loading || mutationLoading || updateLoading}
               >
-                <span className="flex items-center justify-center">
-                  <img
-                    src="plus.svg"
-                    alt="add"
-                    className="w-3 h-3 items-center justify-center flex mr-2"
-                  ></img>
-                  <div className="">Add Detail</div>
-                </span>
-              </button> 
-              {/* Save Button */}
-
-
-
-              <div></div>
-          <button className="w-full bg-[#6366F1] text-white py-3 rounded-lg hover:bg-[#5457E5] transition-colors">
                 {isEditMode ? "Update" : "Save"}
-          </button>
+              </button>
             </div>
           </form>
         </div>
