@@ -25,7 +25,7 @@ export const useCreateVendor = () => {
       gstOrVatDetails: values.gstOrVatDetails || "",
       notes: values.notes || "New vendor added",
       skillIDs: values.skillIDs || [],
-      country: values.country || "India", // Restored with default
+      country: values.country || "India", 
     };
 
     try {

@@ -81,7 +81,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({
   vendorId,
 
 }) => {
-  const { register, handleSubmit, reset, setValue ,  control, // Add control
+  const { register, handleSubmit, reset, setValue,control, // Add control
     formState: { errors },} = useForm<VendorFormData>({
     defaultValues: {
       performanceRating: 0,
