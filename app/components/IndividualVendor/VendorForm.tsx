@@ -337,7 +337,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                 <label className="block text-sm font-medium text-[#6366F1] mb-1">
                   Note
                 </label>
-                <div className="border rounded-lg"></div>
+                
                 <div className="border rounded-lg">
                   <div className="flex gap-1 border-b p-2">
                     <button

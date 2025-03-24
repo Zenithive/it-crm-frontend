@@ -22,7 +22,7 @@ export const GET_VENDORS = gql`
         status
         paymentTerms
         address
-        country
+    
         gstOrVatDetails
         notes
         contactList {
