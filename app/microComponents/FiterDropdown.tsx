@@ -1,20 +1,24 @@
 
 
 
-import React from 'react';
 
-// Define interfaces for the component props and options
+import React, { useState } from 'react';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import dayjs from 'dayjs'; 
+
 interface OptionType {
   value: string;
   label: string;
 }
+type CalendarValue = Date | Date[] | null;
 
+type ValuePiece = Date | null;
+type Value = ValuePiece | [ValuePiece, ValuePiece];
 interface FilterDropdownProps {
   selectData?: string;
-//   setSelectData: (value: string) => void;
-setSelectData?: (value: string) => void;
-// Add showRangeDropdown to control visibility
-showRangeDropdown?: boolean;
+  setSelectData?: (value: string) => void;
+  showRangeDropdown?: boolean;
   startDate: string;
   setStartDate: (value: string) => void;
   endDate: string;
@@ -36,6 +40,10 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   endDateOptions,
   className
 }) => {
+  // Local state to manage calendar visibility
+  const [showStartCalendar, setShowStartCalendar] = useState(false);
+  const [showEndCalendar, setShowEndCalendar] = useState(false);
+
   // Default options if not provided
   const defaultRangeOptions: OptionType[] = [
     { value: "Last 7 Days", label: "Last 7 Days" },
@@ -61,10 +69,28 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   const startOptions = startDateOptions || defaultStartOptions;
   const endOptions = endDateOptions || defaultEndOptions;
 
+  
 
-return (
+
+  const handleSelectStartDate = (value: Value) => {
+    if (value instanceof Date) {
+      const localDate = dayjs(value).startOf('day');
+      setStartDate(localDate.format('YYYY-MM-DD'));
+    }
+    setShowStartCalendar(false);
+  };
+  
+  const handleSelectEndDate = (value: Value) => {
+    if (value instanceof Date) {
+      const localDate = dayjs(value).startOf('day');
+      setEndDate(localDate.format('YYYY-MM-DD'));
+    }
+    setShowEndCalendar(false);
+  };
+
+  
+  return (
     <div className={`flex flex-col gap-4 max-w-lg mx-auto ${className || ''}`}>
-     
       {showRangeDropdown && selectData !== undefined && setSelectData && (
         <div className="relative">
           <select
@@ -86,22 +112,18 @@ return (
 
       {/* Start Date and End Date section */}
       <div className="flex items-center gap-2">
-        {/* Start Date dropdown */}
+        {/* Start Date input */}
         <div className="relative flex-1">
-          <select
+          <input
+            type="text"
             value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            onFocus={() => setShowStartCalendar(true)} // Show calendar when the input is focused
+            onChange={() => {}}
             className="w-full p-3 pl-4 pr-10 bg-white text-gray-600 border rounded-xl border-bg-blue-12 appearance-none focus:outline-none"
-          >
-            <option value="" disabled>Start Date</option>
-            {startOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            placeholder="Start Date"
+          />
           <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <img src="dropdownFilter.svg" className="text-indigo-600" />
+            <img src="dropdownFilter.svg" className="text-indigo-600 cursor-pointer" />
           </div>
         </div>
 
@@ -110,25 +132,41 @@ return (
           <img src="swap.svg" className="h-5 w-5 text-white" />
         </div>
 
-        {/* End Date dropdown */}
+        {/* End Date input */}
         <div className="relative flex-1">
-          <select
+          <input
+            type="text"
             value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            onFocus={() => setShowEndCalendar(true)} // Show calendar when the input is focused
+            onChange={() => {}}
             className="w-full p-3 pl-4 pr-10 bg-white text-gray-600 border rounded-xl border-bg-blue-12 appearance-none focus:outline-none"
-          >
-            <option value="" disabled>End Date</option>
-            {endOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            placeholder="End Date"
+          />
           <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <img src="dropdownFilter.svg" className="text-indigo-600" />
+            <img src="dropdownFilter.svg" className="text-indigo-600 cursor-pointer" />
           </div>
         </div>
       </div>
+
+      {showStartCalendar && (
+  <div className="absolute z-10 mt-2 p-4 bg-white rounded-xl shadow-lg ">
+    <Calendar
+      onChange={(value) => handleSelectStartDate(value)}
+      value={startDate ? new Date(startDate) : new Date()}
+      className="w-56 text-sm " 
+    />
+  </div>
+)}
+
+{showEndCalendar && (
+  <div className="absolute z-10 mt-2 p-4 bg-white rounded-xl shadow-lg">
+    <Calendar
+      onChange={(value) => handleSelectEndDate(value)}
+      value={endDate ? new Date(endDate) : new Date()}
+      className="w-56 text-sm " 
+    />
+  </div>
+)}
     </div>
   );
 };

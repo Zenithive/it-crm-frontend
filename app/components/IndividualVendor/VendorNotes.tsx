@@ -5,6 +5,8 @@ import { individualvendor } from "../../api/jsonService/individualvendorJsonServ
 import JoditEditor from "jodit-react";
 import useIndividualVendorData from "../../api/apiService/individualvendorApiService";
 
+import Notes from "../../microComponents/Notes";
+
 interface Note {
   message: string;
   notes: string;
@@ -61,7 +63,7 @@ const VendorNotes = ({ vendorId}: { vendorId: string }) => {
     <div className="bg-white rounded-2xl p-6 shadow-custom mr-4 mt-4">
       <div className="bg-white rounded-2xl p-6 shadow-custom">
         <div className="bg-white rounded-2xl p-6 shadow-custom min-h-[200px] mr-4 mt-4">
-          <JoditEditor
+          {/* <JoditEditor
             ref={editor}
             value={content}
             onChange={(newContent) => setContent(newContent)}
@@ -73,7 +75,12 @@ const VendorNotes = ({ vendorId}: { vendorId: string }) => {
               showPlaceholder: false,
               style: { border: "none", minHeight: "150px" },
             }}
-          />
+          /> */}
+
+          <Notes   vendorId={"1"}
+    value={content || ""}
+    onChange={(newContent) => setContent(newContent)}
+   />
         </div>
         <div className="mt-6">
           <button className="bg-bg-blue-12 text-white rounded-lg p-2">

@@ -195,6 +195,8 @@ interface FilterProps {
     searchTerm: string // Add searchTerm as a parameter
   ) => React.ReactNode;
   selectedOptions: string[];
+  startDate?: string;
+  endDate?: string;
   setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>;
 }
 const Filter: React.FC<FilterProps> = ({

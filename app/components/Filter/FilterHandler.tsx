@@ -118,6 +118,7 @@ const FilterHandler: React.FC<FilterHandlerProps> = ({
       renderRightPanel={renderFilterRightPanel}
       selectedOptions={selectedOptions}
       setSelectedOptions={setSelectedOptions}
+   
     />
   );
 };
