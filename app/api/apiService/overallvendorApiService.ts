@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { GET_VENDORS } from "../../../graphQl/queries/getVendors.queries";
 import { GetVendorsResponse } from "../../types/vendors.types";
+import { UPDATE_VENDOR_MUTATION } from "../../../graphQl/mutation/updateVendor.mutation"; 
+import { useMutation } from "@apollo/client";
 
 interface UseVendorsParams {
   page?: number;
@@ -13,6 +15,18 @@ interface UseVendorsParams {
   search?: string;
   sortField?: string;
   sortOrder?: "ASC" | "DESC";
+}
+
+interface UpdateVendorInput {
+  vendorID: string;
+  companyName?: string;
+  status?: string;
+  paymentTerms?: string;
+  address?: string;
+  gstOrVatDetails?: string;
+  notes?: string;
+  // location?: string;
+  skillIDs?: string[];
 }
 
 export const useVendors = ({
@@ -71,4 +85,23 @@ export const useVendors = ({
     error: error ? error.message : null,
     refetch,
   };
+};
+
+export const useUpdateVendor = () => {
+  const [updateVendorMutation, { loading, error }] = useMutation(UPDATE_VENDOR_MUTATION);
+
+  const updateVendor = async (input: UpdateVendorInput) => {
+    try {
+      const response = await updateVendorMutation({
+        variables: {
+          ...input,
+        },
+      });
+      return response.data.updateVendor;
+    } catch (err) {
+      throw new Error("Failed to update vendor");
+    }
+  };
+
+  return { updateVendor, loading, error };
 };

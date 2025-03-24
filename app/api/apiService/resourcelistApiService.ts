@@ -92,7 +92,12 @@ export const useResourceList = (variables: ResourceListApiVariables) => {
     const exactValue = parseFloat(filter);
     return {
       min: exactValue,
-      max: exactValue
+      max: exactValue,
+      // data: filteredItems,
+      //   loading,
+      //   error,
+      //   totalItems: data?.getResourceProfiles?.totalCount || 0, 
+      //   refetch,
     };
   };
 

@@ -30,7 +30,7 @@ const UnreadMessages = () => {
 
   return (
     <div className="w-full relative">
-      <div className="bg-white rounded-xl p-4 md:p-6 shadow-custom">
+      <div className="bg-white rounded-xl p-4 md:p-6 shadow-custom min-h-[330px]">
         <div className="flex justify-between items-center mb-4 relative">
           <div className="font-semibold text-bg-blue-12 text-lg md:text-xl">
             Unread Messages
@@ -41,7 +41,7 @@ const UnreadMessages = () => {
           )}
         </div>
 
-        <div className="scrollbar-custom overflow-y-auto max-h-[200px]">
+        <div className="scrollbar-custom overflow-y-auto max-h-[230px]">
           {unreadMessages.length > 0 ? (
             unreadMessages.map((msg, index) => (
               <div

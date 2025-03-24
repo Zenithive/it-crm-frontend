@@ -1,8 +1,5 @@
 "use client";
 import React,{useState,useEffect} from "react";
-import VendorLayout from "./VendorLayout";
-
-import { individualvendor } from "../../api/jsonService/individualvendorJsonService";
 import useIndividualVendorData from "../../api/apiService/individualvendorApiService";
 
 interface Resource {

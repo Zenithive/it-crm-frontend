@@ -55,7 +55,7 @@ const Task = () => {
 
   return (
     <div className="w-full ">
-      <div className="bg-white rounded-xl shadow-custom min-h-[300px]">
+      <div className="bg-white rounded-xl shadow-custom min-h-[330px]">
         <div className="border-b border-bg-blue-12">
           <div className="flex space-x-4 md:space-x-8 mb-4 overflow-x-auto ml-4">
             <button
@@ -78,7 +78,7 @@ const Task = () => {
         </div>
 
         {activeView === "today" ? (
-          <div className="scrollbar-custom overflow-y-auto max-h-[220px] pl-6 pr-6 pb-6">
+          <div className="scrollbar-custom overflow-y-auto max-h-[330px] pl-6 pr-6 pb-6">
             {loading ? (
               <div className="flex justify-center items-center h-32">
                 <p>Loading tasks...</p>
