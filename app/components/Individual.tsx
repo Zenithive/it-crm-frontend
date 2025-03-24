@@ -29,7 +29,7 @@ const Individual = ({ leadId }: { leadId: string }) => {
 
             {/* Right Sidebar */}
             <div className="lg:col-span-3">
-              <RightSide />
+              <RightSide leadId={leadId}/>
             </div>
           </div>
         </div>

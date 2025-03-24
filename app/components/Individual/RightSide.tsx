@@ -4,7 +4,7 @@ import PipelineStages from "./PipelineStages";
 import { apiServiceRightSideDoc } from "../../api/apiService/individualApiService";
 import { jsonServiceRightSideDoc } from "../../api/jsonService/individualJsonService";
 
-const RightSide = () => {
+const RightSide = ({ leadId }: { leadId: string }) => {
   const [documents, setDocuments] = useState<{ name: string; url: string }[]>(
     []
   );
@@ -20,7 +20,7 @@ const RightSide = () => {
         {/* Documents Section with Fixed Header */}
         <div className="h-[210px] flex flex-col bg-white">
           {/* Fixed Header */}
-          <div className="flex justify-between items-center p-3 sticky top-0 bg-white z-10">
+          <div className="flex justify-between items-center p-3 sticky top-0 bg-white z-0">
             <h2 className="text-xl font-semibold text-bg-blue-12">
               Documents
             </h2>
@@ -74,7 +74,7 @@ const RightSide = () => {
         <h2 className="text-xl font-semibold text-bg-blue-12 ml-4">
           Pipeline Stage
         </h2>
-        <PipelineStages />
+        <PipelineStages leadId={leadId}/>
 
         <div className="border border-content-border ml-5 mr-5"></div>
 

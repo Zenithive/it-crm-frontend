@@ -117,7 +117,7 @@ const MonthlyLead = () => {
   }
 
   return (
-    <div className="bg-white rounded-[20px] p-6 shadow-custom w-full flex flex-col">
+    <div className="bg-white rounded-[20px] p-6 shadow-custom w-full flex flex-col min-h-[330px]">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-bg-blue-12 text-xl font-semibold">Total Leads</h3>
         <button className="text-gray-600">

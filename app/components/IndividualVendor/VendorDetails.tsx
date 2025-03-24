@@ -93,57 +93,52 @@ const VendorDetails = ({ vendorId }: { vendorId: string }) => {
                 {activeTab === "details" && (
                   <div className="mr-4">
                     <div className=" bg-white rounded-2xl p-4 shadow-custom">
-                      <div className="grid grid-cols-3 gap-6">
-                        <div className="p-4 border-r border-content-border">
-                          <h3 className="text-bg-blue-12 mb-4  text-xl font-semibold">
+                    <div className="flex flex-row w-full mb-6">
+                        {/* Primary Contact */}
+                        <div className="w-1/2 p-4 border-r border-content-border">
+                          <h3 className="text-bg-blue-12 mb-4 text-xl font-semibold">
                             Primary Contact
                           </h3>
                           <div className="space-y-2">
                             <div className="flex gap-2">
                               <span className="text-gray-500">Email</span>
-                              <span>: {vendorData.contactList[0]?.email}</span>
+                              <span>: {vendorData.contactList[0]?.email || "N/A"}</span>
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Phone</span>
-                              <span>
-                                : {vendorData.contactList[0]?.phoneNumber}
-                              </span>
+                              <span>: {vendorData.contactList[0]?.phoneNumber || "N/A"}</span>
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Location</span>
-                              <span>
-                                : {vendorData.contactList[0]?.location}
-                              </span>
+                              <span>: {vendorData.contactList[0]?.location || "N/A"}</span>
                             </div>
                           </div>
                         </div>
 
-                        <div className=" p-4">
+                        {/* Secondary Contact */}
+                        <div className="w-1/2 p-4">
                           <h3 className="text-bg-blue-12 text-xl font-semibold mb-4">
                             Secondary Contact
                           </h3>
                           <div className="space-y-2">
                             <div className="flex gap-2">
                               <span className="text-gray-500">Email</span>
-                              <span>: {vendorData.contactList[1]?.email}</span>
+                              <span>: {vendorData.contactList[1]?.email || "N/A"}</span>
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Phone</span>
-                              <span>
-                                : {vendorData.contactList[1]?.phoneNumber}
-                              </span>
+                              <span>: {vendorData.contactList[1]?.phoneNumber || "N/A"}</span>
                             </div>
                             <div className="flex gap-2">
                               <span className="text-gray-500">Location</span>
-                              <span>
-                                : {vendorData.contactList[1]?.location}
-                              </span>
+                              <span>: {vendorData.contactList[1]?.location || "N/A"}</span>
                             </div>
                           </div>
                         </div>
+                      </div>
 
-                        <div className="hidden md:block"></div>
-
+                        {/* <div className="hidden md:block"></div> */}
+                        <div className="grid grid-cols-3 gap-6">
                         <div className="p-4  border-r border-content-border">
                           <h3 className="text-bg-blue-12 text-xl font-semibold mb-4">
                             Agreement Details
@@ -188,9 +183,7 @@ const VendorDetails = ({ vendorId }: { vendorId: string }) => {
                             Skills
                           </h3>
                           <ul className="space-y-1">
-                            {vendorData.skills.map((skill, index) => (
-                              <li key={index}>• {skill}</li>
-                            ))}
+                          <p>Skills: {vendor?.skills?.map((s: { name: any; }) => s.name).join(", ") || "None"}</p>
                           </ul>
                         </div>
 
@@ -212,7 +205,7 @@ const VendorDetails = ({ vendorId }: { vendorId: string }) => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                   </div>             
                 )}
               </div>
             </div>

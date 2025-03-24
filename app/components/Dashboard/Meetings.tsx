@@ -312,7 +312,7 @@ const Meetings = () => {
 
   return (
     <div className="w-full h-40 md:h-56">
-      <div className="bg-white rounded-xl shadow-custom min-h-[385px]">
+      <div className="bg-white rounded-xl shadow-custom min-h-[370px]">
         <div className="border-b border-bg-blue-12 ">
           <div className="flex space-x-4 md:space-x-8 mb-4 overflow-x-auto ml-5">
             <button className="text-bg-blue-12 text-base md:text-lg font-semibold whitespace-nowrap mt-3">

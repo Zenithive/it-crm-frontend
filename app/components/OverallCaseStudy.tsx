@@ -72,7 +72,7 @@ const ResourceContainer = () => {
 
   const resources = caseStudies.map((item: any) => ({
     title: item.projectName || "No Title",
-    company: item.clientName || "No Company",
+    company: item.industryTarget || "No Company",
     tags: Array.isArray(item.tags) ? item.tags : (item.tags ? item.tags.split(", ").map((tag: any) => tag.trim()) : []),
     caseStudyID: item.caseStudyID || "No ID",
   }));

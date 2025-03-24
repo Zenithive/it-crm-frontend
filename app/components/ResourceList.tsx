@@ -69,12 +69,11 @@ const ResourceList = () => {
 
   const filterSections = [
     {
-      id: "vendorName",
-      title: "Vendor Name",
+      id: "skills",
+      title: "Skills",
       options: [
-        { id: "John", label: "John", checked: false },
-        { id: "sachin", label: "sachin", checked: false },
-        { id: "vendorC", label: "Vendor C", checked: false },
+        { id: "a442dcee-2ea7-4f25-b710-99a8e6411be7", label: "Golang", checked: false },
+        { id: "0b73f7ea-a3e8-44f4-93bd-648fc8e57275", label: "PostgreSQL", checked: false },
       ],
     },
     {
@@ -84,14 +83,6 @@ const ResourceList = () => {
         { id: "1-3", label: "1-3 Years", checked: false },
         { id: "3-5", label: "3-5 Years", checked: false },
         { id: "5+", label: "5+ Years", checked: false },
-      ],
-    },
-    {
-      id: "skills",
-      title: "Skills",
-      options: [
-        { id: "a442dcee-2ea7-4f25-b710-99a8e6411be7", label: "Golang", checked: false },
-        { id: "0b73f7ea-a3e8-44f4-93bd-648fc8e57275", label: "PostgreSQL", checked: false },
       ],
     },
   ];

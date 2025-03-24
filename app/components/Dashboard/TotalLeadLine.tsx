@@ -99,7 +99,7 @@ const TotalLeadLine = () => {
   
   return (
     <div className="w-full">
-      <div className="bg-white rounded-xl p-4 md:p-6 shadow-custom">
+      <div className="bg-white rounded-xl p-4 md:p-6 shadow-custom min-h-[370px]">
         <div className="flex justify-between items-center mb-4 md:mb-6">
           <h3 className="font-semibold text-bg-blue-12 text-lg md:text-xl">
             Total Lead Sources
