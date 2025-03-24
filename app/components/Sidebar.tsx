@@ -115,7 +115,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               {navItems.map((item, index) => (
                 <li 
                   key={index} 
-                  className="px-2 sm:px-3 md:px-4 py-3 md:py-4 border-b text-black font-semibold"
+                  className="px-2 sm:px-3 md:px-4 py-3 md:py-4 border-b last:border-b-0 text-black font-semibold"
                 >
                   <a
                     href={item.link}

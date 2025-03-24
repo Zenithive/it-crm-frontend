@@ -20,6 +20,7 @@ import {
   Minus,
   Check,
 } from "lucide-react";
+import { CountrySelection } from "./CountrySelection";
 
 // Define an interface for the form data
 interface VendorFormData {
@@ -29,6 +30,7 @@ interface VendorFormData {
   status:string;
   vendorSkills: string;
   paymentTerms: string;
+  country: string;
   // website: string;
   gstOrVatDetails: string;
   // linkedInUrl: string;
@@ -270,6 +272,24 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
                     <option value="NET_90">NET 90</option>
                   </select>
                 </div>
+
+                {/* <div>
+                  <label className="block text-sm font-medium text-[#6366F1] mb-1">
+                    Country
+                  </label>
+                  <select
+                    {...register("country")}
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
+                  >
+                    <option value="">Select Country</option>
+                    <option value="NET_30">USA</option>
+                    <option value="NET_60">India</option>
+                    <option value="NET_90">China</option>
+                  </select>
+                </div> */}
+<div><CountrySelection register={register} setValue={setValue} /></div>
+
+                
                 {/* <div>
                   <label className="block text-sm font-medium text-[#6366F1] mb-1">
                     Website
@@ -332,6 +352,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
                 <label className="block text-sm font-medium text-[#6366F1] mb-1">
                   Note
                 </label>
+                <div className="border rounded-lg"></div>
                 <div className="border rounded-lg">
                   <div className="flex gap-1 border-b p-2">
                     <button
@@ -517,6 +538,10 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
                 </span>
               </button> */}
               {/* Save Button */}
+
+
+
+              <div></div>
           <button className="w-full bg-[#6366F1] text-white py-3 rounded-lg hover:bg-[#5457E5] transition-colors">
             Save
           </button>
