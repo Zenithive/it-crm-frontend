@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import {
   individualcasestudyOutcomesApi,
   individualcasestudyDocApi,
@@ -15,6 +15,9 @@ interface Outcome {
 }
 
 interface Document {
+  id: any;
+  filePath: string | undefined;
+  title: ReactNode;
   name: string;
   url: string;
 }
@@ -43,9 +46,22 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
       if (useDummyData) {
         docResponse = await individualcasestudyDocJson();
       } else {
-        docResponse = caseStudy.documents || [];
+        if (caseStudy.caseStudyID) {
+          docResponse = await individualcasestudyDocApi(caseStudy.caseStudyID);
+          console.log(`docResponse`, docResponse);
+        } else {
+          docResponse = caseStudy.documents || [];
+        }
       }
-      setDocuments(docResponse ?? []);
+      setDocuments(
+        (docResponse ?? []).map((doc: { id: any; filePath: any; name: any; url: any; }) => ({
+          id: doc.id || null,
+          filePath: doc.filePath || undefined,
+          title: doc.name || "Untitled",
+          name: doc.name,
+          url: doc.url,
+        }))
+      );
       setDocError(null);
     } catch (err) {
       console.error("Error fetching documents:", err);
@@ -59,7 +75,12 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
     const fetchOutcomeData = async () => {
       try {
         let outcomeResponse;
+        
         if (useDummyData) {
+          console.log(`
+            useDummyData`, 
+            useDummyData
+          );
           outcomeResponse = await individualcasestudyOutcomesJson();
         } else {
           outcomeResponse = { outcomes: caseStudy.keyOutcomes || "No outcomes available." };
@@ -81,7 +102,15 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
         } else {
           docResponse = caseStudy.documents || [];
         }
-        setDocuments(docResponse ?? []);
+        setDocuments(
+          (docResponse ?? []).map((doc: { name: string; url: string }) => ({
+            id: null, // Assign a default value for id
+            filePath: undefined, // Assign a default value for filePath
+            title: doc.name || "Untitled", // Use name as title or default to "Untitled"
+            name: doc.name,
+            url: doc.url,
+          }))
+        );
       } catch (err) {
         console.error("Error fetching documents:", err);
         setDocError("Failed to load documents");
@@ -175,12 +204,12 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
             documents.map((doc, index) => (
               <div key={index} className="mb-2">
                 <a
-                  href={doc.url}
+                  href={`https://crmbackendapis.onrender.com/download?id=${doc.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 underline"
                 >
-                  {doc.name}
+                  {doc.title}
                 </a>
               </div>
             ))
