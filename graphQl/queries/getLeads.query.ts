@@ -14,7 +14,9 @@ export const GET_LEADS_QUERY = gql`
         country
         leadSource
         leadStage
+        leadNotes
         leadPriority
+        leadType
         linkedIn
         initialContactDate
         leadCreatedBy {
@@ -40,6 +42,31 @@ export const GET_LEADS_QUERY = gql`
         }
       }
       totalCount
+    }
+  }
+`;
+
+
+export const GET_LEAD_BY_ID = gql`
+  query GetLeadById($leadID: ID!) {
+    getLead(leadID: $leadID) {
+      leadID
+      firstName
+      lastName
+      email
+      phone
+      country
+      leadSource
+      leadStage
+      leadNotes
+      leadPriority
+      leadType
+      linkedIn
+      initialContactDate
+      leadCreatedBy { userID name email }
+      leadAssignedTo { userID name email }
+      organization { organizationID organizationName }
+      campaign { campaignID campaignName campaignCountry campaignRegion industryTargeted }
     }
   }
 `;

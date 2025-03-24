@@ -1,12 +1,13 @@
+// VendorForm.tsx
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { message } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import { useCreateVendor } from "../../api/apiService/addVendorApiService"
+import { useCreateVendor } from "../../api/apiService/addVendorApiService";
+import { useUpdateVendor } from "../../api/apiService/overallvendorApiService";
 import {
-  X,
   Bold,
   Italic,
   Underline,
@@ -22,20 +23,17 @@ import {
 } from "lucide-react";
 import { CountrySelection } from "./CountrySelection";
 
-// Define an interface for the form data
 interface VendorFormData {
   companyName: string;
-  // companyEmail: string;
   address: string;
-  status:string;
+  status: string;
   vendorSkills: string;
   paymentTerms: string;
-  country: string;
   // website: string;
   gstOrVatDetails: string;
-  // linkedInUrl: string;
   performanceRating: number;
   notes: string;
+  country: string;
   vendorDetails: VendorDetail[];
 }
 
@@ -48,15 +46,44 @@ interface VendorDetail {
 
 interface AddVendorFormProps {
   onClose: () => void;
+  vendorData?: CompanyProfile | null;
+  vendorId?: string;
 }
 
-const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
+interface CompanyProfile {
+  companyName: string;
+  status: string;
+  address: string;
+  skills: Array<{ skillID: string; name: string; description?: string }>;
+  paymentTerms: string;
+  gstOrVatDetails?: string;
+  notes?: string;
+  primaryContact?: {
+    email: string;
+    phone: string;
+    location: string;
+  };
+  agreement?: {
+    startDate: string;
+    endDate: string;
+    status: string;
+  };
+  employeeCount?: string;
+  recentActivity?: Array<{
+    type: string;
+    title: string;
+    timestamp: string;
+  }>;
+}
+
+const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorId }) => {
   const { register, handleSubmit, reset, setValue } = useForm<VendorFormData>({
     defaultValues: {
       performanceRating: 0,
       status: "ACTIVE",
       paymentTerms: "NET30",
       vendorDetails: [{ name: "", contact: "", number: "", designation: "" }],
+      country: "India",
     },
   });
   const [loading, setLoading] = useState(false);
@@ -67,15 +94,29 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
   const noteRef = useRef<HTMLDivElement | null>(null);
 
   const user = useSelector((state: RootState) => state.auth);
-
-  //graphQl mutation
   const { createVendor, loading: mutationLoading } = useCreateVendor();
+  const { updateVendor, loading: updateLoading } = useUpdateVendor();
+  const isEditMode = !!vendorData && !!vendorId;
+
+  useEffect(() => {
+    if (isEditMode && vendorData) {
+      setValue("companyName", vendorData.companyName);
+      setValue("status", vendorData.status);
+      setValue("address", vendorData.address);
+      setValue("paymentTerms", vendorData.paymentTerms);
+      // Map the first skill name to the select field (assuming single skill for simplicity)
+      setValue("vendorSkills", vendorData.skills[0]?.name || "");
+      setValue("gstOrVatDetails", vendorData.gstOrVatDetails || "");
+      setValue("country", vendorData.primaryContact?.location || "India");
+      setValue("notes", vendorData.notes || "");
+      if (noteRef.current) noteRef.current.innerHTML = vendorData.notes || "";
+    }
+  }, [vendorData, setValue, isEditMode]);
 
   const applyFormat = (command: string, value: string = "") => {
     if (noteRef.current) {
       noteRef.current.focus();
       document.execCommand(command, false, value);
-      // Update form value after formatting
       setValue("notes", noteRef.current.innerHTML);
     }
   };
@@ -83,38 +124,13 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
   const applyListFormat = (command: string) => {
     if (noteRef.current) {
       noteRef.current.focus();
-
-      // If there's no text, insert a placeholder to start the list
       if (noteRef.current.innerHTML.trim() === "") {
         noteRef.current.innerHTML = "<p><br></p>";
       }
-
       document.execCommand(command, false, "");
-      // Update form value after formatting
       setValue("notes", noteRef.current.innerHTML);
     }
   };
-
-  // const addVendorDetail = (e: React.MouseEvent) => {
-  //   e.stopPropagation();
-  //   const newVendorDetails = [
-  //     ...vendorDetails,
-  //     { name: "", contact: "", number: "", designation: "" },
-  //   ];
-  //   setVendorDetails(newVendorDetails);
-  //   setValue("vendorDetails", newVendorDetails);
-  // };
-
-  // const removeVendorDetail = (index: number) => {
-  //   const updatedVendorDetails = vendorDetails.filter((_, i) => i !== index);
-  //   setVendorDetails(updatedVendorDetails);
-  //   setValue("vendorDetails", updatedVendorDetails);
-  // };
-
-  // const handleRatingChange = (newRating: number) => {
-  //   setRating(newRating);
-  //   setValue("performanceRating", newRating);
-  // };
 
   const handleNoteChange = () => {
     if (noteRef.current) {
@@ -123,17 +139,18 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
   };
 
   const getSkillIDs = (skill: string): string[] => {
-    // This is a simplified approach - you may need to map skills to actual IDs from your backend
-    switch(skill) {
+    switch (skill) {
+      case "Golang":
       case "GOLANG":
-        return ["a442dcee-2ea7-4f25-b710-99a8e6411be7"]; // Replace with actual ID
+        return ["a442dcee-2ea7-4f25-b710-99a8e6411be7"];
+      case "PostgreSQL":
       case "POSTGRESQL":
-        return ["0b73f7ea-a3e8-44f4-93bd-648fc8e57275"]; // Replace with actual ID
+        return ["0b73f7ea-a3e8-44f4-93bd-648fc8e57275"];
       default:
         return [];
     }
   };
-  
+
   const mapFormDataToMutationInput = (data: VendorFormData) => {
     return {
       companyName: data.companyName,
@@ -143,29 +160,28 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
       gstOrVatDetails: data.gstOrVatDetails || "",
       notes: data.notes || "",
       skillIDs: getSkillIDs(data.vendorSkills),
+      country: data.country,
     };
   };
-  
+
   const onSubmit: SubmitHandler<VendorFormData> = async (data) => {
     setLoading(true);
     try {
-      // Map form data to mutation input format
       const mutationInput = mapFormDataToMutationInput(data);
-      
-      // Call the mutation hook with the formatted input
-      await createVendor(mutationInput);
-      
-      // Reset form and close modal on success
+      if (isEditMode) {
+        await updateVendor({ vendorID: vendorId!, ...mutationInput });
+      } else {
+        await createVendor(mutationInput);
+      }
       reset();
       onClose();
     } catch (error) {
-      message.error("Failed to add vendor. Please try again.");
+      message.error(`Failed to ${isEditMode ? "update" : "add"} vendor. Please try again.`);
       console.error("Submission error:", error);
     } finally {
       setLoading(false);
     }
   };
-
 
   return (
     <div
@@ -173,30 +189,28 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
       onClick={onClose}
     >
       <div className="p-6 relative" onClick={(e) => e.stopPropagation()}>
-        <div className="bg-[#6366F1] rounded-t-xl p-2 flex justify-between">
+        <div className="bg-bg-blue-12 rounded-t-xl p-2 flex justify-between">
           <div className="p-2">
-            <h2 className="text-2xl font-semibold text-white">Vendor Form</h2>
+            <h2 className="text-2xl font-semibold text-white">
+              {isEditMode ? "Edit Vendor" : "Vendor Form"}
+            </h2>
           </div>
           <div className="p-2">
             <button
               className="text-gray-500 bg-white hover:text-gray-700 p-3 rounded-lg"
               onClick={onClose}
             >
-                <img src="cross_icon.svg" alt="Cross" className="h-3 w-3"></img>
+              <img src="/cross_icon.svg" alt="Cross" className="h-3 w-3"></img>
             </button>
           </div>
         </div>
 
         <div className="bg-white rounded-b-xl shadow-lg w-full max-w-4xl">
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="p-6"
-          >
+          <form onSubmit={handleSubmit(onSubmit)} className="p-6">
             <div className="space-y-6">
-              {/* First Row */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#6366F1] mb-1">
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
                     Company Name
                   </label>
                   <input
@@ -206,52 +220,54 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
                   />
                 </div>
-                {/* <div>
-                  <label className="block text-sm font-medium text-[#6366F1] mb-1">
-                    Company Email
-                  </label>
-                  <input
-                    {...register("companyEmail")}
-                    type="email"
-                    placeholder="Email"
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
-                  />
-                </div> */}
                 <div>
-                  <label className="block text-sm font-medium text-[#6366F1] mb-1">
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
                     Address
                   </label>
                   <input
                     {...register("address")}
                     type="text"
                     placeholder="Address"
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#6366F1] mb-1">
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
+                  location
+                  </label>
+                  <select
+                    {...register("country", { required: true })}
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
+                  >
+                    <option value="">Select Country</option>
+                    <option value="India">India</option>
+                    <option value="USA">USA</option>
+                    <option value="Germany">Germany</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
                     Status
                   </label>
                   <select
                     {...register("status")}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2  outline-none"
                   >
                     <option value="">Select Status</option>
                     <option value="ACTIVE">Active</option>
-                    <option value="NON ACTIVE">Non Acitve</option>
+                    <option value="INACTIVE">InActive</option>
                   </select>
                 </div>
               </div>
 
-              {/* Second Row */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#6366F1] mb-1">
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
                     Vendor Skills
                   </label>
                   <select
                     {...register("vendorSkills")}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2  outline-none"
                   >
                     <option value="">Select Skills</option>
                     <option value="GOLANG">Golang</option>
@@ -259,12 +275,12 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#6366F1] mb-1">
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
                     Payment Terms
                   </label>
                   <select
                     {...register("paymentTerms")}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2  outline-none"
                   >
                     <option value="">Select Terms</option>
                     <option value="NET_30">NET 30</option>
@@ -287,7 +303,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
                     <option value="NET_90">China</option>
                   </select>
                 </div> */}
-<div><CountrySelection register={register} setValue={setValue} /></div>
+                <div><CountrySelection register={register} setValue={setValue} /></div>
 
                 
                 {/* <div>
@@ -303,51 +319,20 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
                 </div> */}
               </div>
 
-              {/* Third Row */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-[#6366F1] mb-1">
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
                     VAT/GST
                   </label>
                   <input
                     {...register("gstOrVatDetails")}
                     type="text"
                     placeholder="GST or VAT Number"
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
+                    className="w-full px-3 py-2 border rounded-lg focus:ring-2  outline-none"
                   />
                 </div>
-                {/* <div>
-                  <label className="block text-sm font-medium text-[#6366F1] mb-1">
-                    LinkedIn Profile URL
-                  </label>
-                  <input
-                    {...register("linkedInUrl")}
-                    type="url"
-                    placeholder="URL"
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
-                  />
-                </div> */}
-                {/* <div>
-                  <label className="block text-sm font-medium text-[#6366F1] mb-1">
-                    Performance Rating
-                  </label>
-                  <div className="flex gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`w-6 h-6 cursor-pointer ${
-                          star <= rating
-                            ? "fill-[#6366F1] text-[#6366F1]"
-                            : "text-gray-300"
-                        }`}
-                        onClick={() => handleRatingChange(star)}
-                      />
-                    ))}
-                  </div>
-                </div> */}
               </div>
 
-              {/* Note Section */}
               <div>
                 <label className="block text-sm font-medium text-[#6366F1] mb-1">
                   Note
@@ -378,17 +363,12 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
                     </button>
                     <button
                       type="button"
-                      onClick={() =>
-                        applyFormat("createLink", prompt("Enter URL:") || "")
-                      }
+                      onClick={() => applyFormat("createLink", prompt("Enter URL:") || "")}
                       className="p-1 hover:bg-gray-100 rounded"
                     >
                       <LinkIcon className="w-4 h-4" />
                     </button>
-                    <button
-                      type="button"
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" className="p-1 hover:bg-gray-100 rounded">
                       <Image className="w-4 h-4" />
                     </button>
                     <div className="h-6 w-px bg-gray-300 mx-1" />
@@ -428,29 +408,21 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
                     >
                       <ListOrdered className="w-4 h-4" />
                     </button>
-                    <button
-                      type="button"
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" className="p-1 hover:bg-gray-100 rounded">
                       <Minus className="w-4 h-4" />
                     </button>
-                    <button
-                      type="button"
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" className="p-1 hover:bg-gray-100 rounded">
                       <Check className="w-4 h-4" />
                     </button>
                   </div>
-                  {/* Editable Area */}
                   <div
                     ref={noteRef}
                     contentEditable="true"
                     onInput={handleNoteChange}
                     className="p-3 min-h-[80px] outline-none border-none w-full focus:ring-0 text-gray-900"
                   ></div>
-
                   <div className="p-3">
-                    <div className="flex gap-2 text-sm text-[#6366F1]">
+                    <div className="flex gap-2 text-sm text-bg-blue-12">
                       <button type="button" className="hover:underline">
                         @ Mention
                       </button>
@@ -462,71 +434,9 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
                 </div>
               </div>
 
-              {/* Vendor Detail Section */}
-              {/* <div>
-                <h3 className="text-lg font-medium text-[#6366F1] mb-4">
-                  Vendor Detail
-                </h3>
-                {vendorDetails.map((_, index) => (
-                  <div key={index} className="flex items-center gap-4 mb-4">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 flex-1">
-                      <div>
-                        <label className="block text-sm font-medium text-[#6366F1] mb-1">
-                          Name
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Name"
-                          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#6366F1] mb-1">
-                          Contact
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Contact"
-                          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#6366F1] mb-1">
-                          Number
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Number"
-                          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-[#6366F1] mb-1">
-                          Designation
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Ex: CEO"
-                          className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
-                        />
-                      </div>
-                    </div>
-
-                    {vendorDetails.length >= 1 && (
-                      <button
-                        onClick={() => removeVendorDetail(index)}
-                        className="bg-bg-blue-12 text-white rounded-md w-5 h-5 flex items-center justify-center text-sm mt-6"
-                      >
-                        −
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div> */}
-
-              {/* <button
-                onClick={addVendorDetail}
-                className="text-white bg-bg-blue-12 rounded-lg flex items-center gap-1 text-sm p-2"
+              <button
+                className="w-full bg-bg-blue-12 text-white py-3 rounded-lg transition-colors"
+                disabled={loading || mutationLoading || updateLoading}
               >
                 <span className="flex items-center justify-center">
                   <img
@@ -536,14 +446,14 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose }) => {
                   ></img>
                   <div className="">Add Detail</div>
                 </span>
-              </button> */}
+              </button> 
               {/* Save Button */}
 
 
 
               <div></div>
           <button className="w-full bg-[#6366F1] text-white py-3 rounded-lg hover:bg-[#5457E5] transition-colors">
-            Save
+                {isEditMode ? "Update" : "Save"}
           </button>
             </div>
           </form>

@@ -8,7 +8,19 @@ import { useQuery } from "@apollo/client";
 
 // Define type and status constants
 const RESOURCE_TYPES = ["CONSULTANT", "FREELANCER", "CONTRACTOR", "EMPLOYEE"];
-const STATUS_OPTIONS = ["ACTIVE", "INACTIVE"];
+const STATUS_OPTIONS = ["Available", "Not Available"];
+
+//mapping for active to available and inactive to not available
+const STATUS_MAP = {
+  frontendToBackend: {
+    "Available": "ACTIVE",
+    "Not Available": "INACTIVE",
+  },
+  backendToFrontend: {
+    "ACTIVE": "Available",
+    "INACTIVE": "Not Available",
+  },
+};
 
 // Define interfaces for proper typing
 interface Skill {
@@ -55,7 +67,7 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
 }) => {
   const [formData, setFormData] = useState({
     type: "EMPLOYEE",
-    status: "ACTIVE",
+    status: "Available",
     firstName: "",
     lastName: "",
     totalExperience: "",
@@ -116,7 +128,7 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
       
       setFormData({
         type: profile.type || "EMPLOYEE",
-        status: profile.status || "ACTIVE",
+        status: STATUS_MAP.backendToFrontend[profile.status as keyof typeof STATUS_MAP.backendToFrontend] || "Available",
         firstName: profile.firstName || "",
         lastName: profile.lastName || "",
         totalExperience: profile.totalExperience?.toString() || "",
@@ -173,7 +185,7 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
         // For update, don't include skillInputs at all since it's not in your schema
         const updateData = {
           type: formData.type,
-          status: formData.status,
+          status: STATUS_MAP.frontendToBackend[formData.status as keyof typeof STATUS_MAP.frontendToBackend], // Map frontend to backend
           firstName: formData.firstName,
           lastName: formData.lastName,
           totalExperience: parseFloat(formData.totalExperience) || 0,
@@ -204,7 +216,7 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
         // Create new resource
         const createData = {
           type: formData.type,
-          status: formData.status,
+          status: STATUS_MAP.frontendToBackend[formData.status as keyof typeof STATUS_MAP.frontendToBackend],
           firstName: formData.firstName,
           lastName: formData.lastName,
           totalExperience: parseFloat(formData.totalExperience) || 0,
@@ -246,16 +258,32 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={onClose}>
       <div className="rounded-lg shadow-lg w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
-        <div className="bg-bg-blue-12 rounded-t-2xl p-4 flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-white">
+        {/* <div className="bg-bg-blue-12 rounded-t-2xl p-2 flex justify-between items-center">
+          <h2 className="text-xl font-semibold text-white ml-3">
             {isEditMode ? "Edit Resource" : "Resource Form"}
           </h2>
           <button
-            className="text-white hover:text-gray-200 p-3 rounded-lg"
+            className="text-bg-blue-12 bg-white p-3 rounded-lg"
             onClick={onClose}
           >
             <span className="text-xl font-bold">&times;</span>
           </button>
+        </div> */}
+
+      <div className="bg-bg-blue-12 rounded-t-xl p-2 flex justify-between">
+          <div className="p-2">
+            <h2 className="text-2xl font-semibold text-white">
+              {isEditMode ? "Edit Vendor" : "Vendor Form"}
+            </h2>
+          </div>
+          <div className="p-2">
+            <button
+              className="text-gray-500 bg-white hover:text-gray-700 p-3 rounded-lg"
+              onClick={onClose}
+            >
+              <img src="/cross_icon.svg" alt="Cross" className="h-3 w-3"></img>
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 p-6 bg-white">
@@ -429,7 +457,7 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
 
           <button
             type="submit"
-            className="w-full bg-bg-blue-12 text-white py-2 rounded hover:bg-purple-700 transition-colors"
+            className="w-full bg-bg-blue-12 text-white py-2 rounded"
             disabled={createLoading || updateLoading}
           >
             {createLoading || updateLoading ? "Saving..." : (isEditMode ? "Update" : "Save")}
