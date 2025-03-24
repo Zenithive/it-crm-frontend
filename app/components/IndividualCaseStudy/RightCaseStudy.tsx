@@ -8,6 +8,7 @@ import {
   individualcasestudyDocJson,
 } from "../../api/jsonService/individualcasestudyJsonServices";
 import { CaseStudy } from "../../api/apiService/overallcasestudyApiService";
+import DocumentUploadForm from "../uploadfile";
 
 interface Outcome {
   outcomes: string;
@@ -33,6 +34,26 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   const [error, setError] = useState<string | null>(null);
   const [docLoading, setDocLoading] = useState(true);
   const [docError, setDocError] = useState<string | null>(null);
+  const [isUploadFormOpen, setIsUploadFormOpen] = useState(false);
+
+  const fetchDocumentData = async () => {
+    try {
+      setDocLoading(true);
+      let docResponse;
+      if (useDummyData) {
+        docResponse = await individualcasestudyDocJson();
+      } else {
+        docResponse = caseStudy.documents || [];
+      }
+      setDocuments(docResponse ?? []);
+      setDocError(null);
+    } catch (err) {
+      console.error("Error fetching documents:", err);
+      setDocError("Failed to load documents");
+    } finally {
+      setDocLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchOutcomeData = async () => {
@@ -73,6 +94,19 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
     fetchDocumentData();
   }, [caseStudy]);
 
+  const handleAddDocumentClick = () => {
+    setIsUploadFormOpen(true);
+  };
+
+  const handleCloseUploadForm = () => {
+    setIsUploadFormOpen(false);
+  };
+
+  const handleDocumentAdded = () => {
+    // Refresh document list after successful upload
+    fetchDocumentData();
+  };
+
   if (loading) return <p className="text-gray-500 text-center">Loading outcome...</p>;
   if (error) return <p className="text-red-500 text-center">{error}</p>;
 
@@ -92,7 +126,7 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
       <div className="border border-content-border"></div>
 
       <div className="bg-white rounded-lg shadow-custom p-2">
-        {/* <h3 className="text-lg font-semibold text-bg-blue-12">Documents</h3> */}
+         {/* <h3 className="text-lg font-semibold text-bg-blue-12">Documents</h3> */}
         {/* <div className="overflow-y-auto h-[210px] scrollbar-custom bg-white p-4">
           
           {docLoading ? (
@@ -119,40 +153,52 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
       </div> */}
 
 
-<div className="overflow-y-auto h-[210px] scrollbar-custom bg-white p-4">
-  <div className="flex justify-between items-center mb-4">
-    <h3 className="text-lg font-semibold text-bg-blue-12">Documents</h3>
-    <div className="flex justify-center items-center">
-      <div className="flex max-w-[180px] px-4 py-2 border shadow-custom border-gray-300 rounded-lg hover:bg-gray-50">
-        <img src="/doc_logo.svg" alt="Document" className="w-5 h-5 mr-3" />
-        <button className="text-black text-sm text-center">Add Document</button>
-      </div>
-    </div>
-  </div>
+        <div className="overflow-y-auto h-[210px] scrollbar-custom bg-white p-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-bg-blue-12">Documents</h3>
+            <div className="flex justify-center items-center">
+              <div 
+                className="flex max-w-[180px] px-4 py-2 border shadow-custom border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer"
+                onClick={handleAddDocumentClick}
+              >
+                <img src="/doc_logo.svg" alt="Document" className="w-5 h-5 mr-3" />
+                <button className="text-black text-sm text-center">Add Document</button>
+              </div>
+            </div>
+          </div>
 
-  {docLoading ? (
-    <p className="text-gray-500 text-center">Loading documents...</p>
-  ) : docError ? (
-    <p className="text-red-500 text-center">{docError}</p>
-  ) : documents.length > 0 ? (
-    documents.map((doc, index) => (
-      <div key={index} className="mb-2">
-        <a
-          href={doc.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500 underline"
-        >
-          {doc.name}
-        </a>
+          {docLoading ? (
+            <p className="text-gray-500 text-center">Loading documents...</p>
+          ) : docError ? (
+            <p className="text-red-500 text-center">{docError}</p>
+          ) : documents.length > 0 ? (
+            documents.map((doc, index) => (
+              <div key={index} className="mb-2">
+                <a
+                  href={doc.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline"
+                >
+                  {doc.name}
+                </a>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-500">No documents available.</p>
+          )}
+        </div>
       </div>
-    ))
-  ) : (
-    <p className="text-gray-500">No documents available.</p>
-  )}
-</div>
-</div>
 
+      {/* Document Upload Form Modal */}
+      {isUploadFormOpen && (
+        <DocumentUploadForm
+          isOpen={isUploadFormOpen}
+          onClose={handleCloseUploadForm}
+          referenceID={caseStudy.caseStudyID} // Assuming caseStudy has an id property
+          onDocumentAdded={handleDocumentAdded}
+        />
+      )}
     </div>
   );
 };
