@@ -131,12 +131,12 @@ const VendorLayout: React.FC<VendorLayoutProps> = ({ vendorId }) => {
           </div>
         </div>
 
-        <div className="w-1/3 mt-10 flex-shrink-0 bg-white rounded-xlxl p-6 shadow-custom">
+        <div className="w-1/3 mt-10 flex-shrink-0 bg-white rounded-xl p-6 shadow-custom">
           <h3 className="text-bg-blue-12 text-xl font-semibold mb-4">Recent Activity</h3>
           <div className="space-y-4">
             {vendorData?.recentActivity?.length ? (
               vendorData.recentActivity.map((activity, index) => (
-                <div key={index} className="flex gap-3 bg-blue_shadow p-4 rounded-xlxl">
+                <div key={index} className="flex gap-3 bg-blue_shadow p-4 rounded-xl">
                   <img
                     src={activity.type === "review" ? "/vendor_icon_2.svg" : "/vendor_icon_1.svg"}
                     alt="vendor"

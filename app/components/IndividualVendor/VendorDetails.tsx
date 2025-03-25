@@ -92,7 +92,7 @@ const VendorDetails = ({ vendorId }: { vendorId: string }) => {
               <div className="w-full">
                 {activeTab === "details" && (
                   <div className="mr-4">
-                    <div className=" bg-white rounded-xlxl p-4 shadow-custom">
+                    <div className=" bg-white rounded-xl p-4 shadow-custom">
                     <div className="flex flex-row w-full mb-6">
                         {/* Primary Contact */}
                         <div className="w-1/2 p-4 border-r border-content-border">

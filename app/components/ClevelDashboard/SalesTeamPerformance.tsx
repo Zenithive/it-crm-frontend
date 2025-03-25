@@ -26,7 +26,7 @@ const SalesTeamPerformance = () => {
       </div>
 
       {/* Sales Performance Container */}
-      <div className="bg-white rounded-xlxl shadow-custom p-4">
+      <div className="bg-white rounded-xl shadow-custom p-4">
         <div className="p-4 space-y-4 scrollbar-custom overflow-y-auto max-h-[450px] pr-5 pl-4">
           {salesTeamData.length > 0 ? (
             salesTeamData.map((team, index) => (
