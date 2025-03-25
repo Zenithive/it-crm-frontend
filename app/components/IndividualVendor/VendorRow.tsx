@@ -16,11 +16,11 @@ interface Vendor {
   resources: string;
   rating: number;
   status: string;
-  paymentTerms: string;
-  gstOrVatDetails: string;
-  notes: string;
+  paymentTerms?: string;
+  gstOrVatDetails?: string;
+  notes?: string;
   skillIDs?: string[];
-  country: string;
+  country?: string;
 }
 
 interface CompanyProfile {
@@ -122,7 +122,7 @@ const VendorRow: React.FC<VendorRowProps> = ({ vendor, onVendorDeleted }) => {
     status: vendor.status,
     address: vendor.location,
     skills: [],
-    paymentTerms: vendor.paymentTerms,
+    paymentTerms: vendor.paymentTerms || "",
     gstOrVatDetails: vendor.gstOrVatDetails,
     notes: vendor.notes,
     country: vendor.country,

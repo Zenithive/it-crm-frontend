@@ -8,11 +8,11 @@ interface Vendor {
   resources: string;
   rating: number;
   status: string;
-  paymentTerms:string;
-  gstOrVatDetails:string;
-  notes:string;
-  country: string;
-  skillIDs: string[];
+  paymentTerms?:string;
+  gstOrVatDetails?:string;
+  notes?:string;
+  country?: string;
+  skillIDs?: string[];
 }
 
 interface VendorTableProps {
