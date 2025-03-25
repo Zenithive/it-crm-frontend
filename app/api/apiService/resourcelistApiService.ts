@@ -43,12 +43,12 @@ interface GetResourceProfilesResponse {
   };
 }
 interface ResourceListApiVariables {
-  page: number;
-  pageSize: number;
-  search?: string | null;
-  vendorName?: string | null;
-  totalExperience?: string | null;
-  skills?: string | null;
+    page: number;
+    pageSize: number;
+    search?: string | null;
+    vendorName?: string | null; // Maps to vendorID or search
+    totalExperience?: string | null; // Handled client-side
+    skills?: string | null; // Maps to skillIDs 
 }
 
 export const useResourceList = (variables: ResourceListApiVariables) => {
@@ -71,6 +71,32 @@ export const useResourceList = (variables: ResourceListApiVariables) => {
       };
     }
     const exactValue = parseFloat(filter);
+
+    const { data, loading, error, refetch } = useQuery<GetResourceProfilesResponse>(
+        GET_RESOURCE_PROFILES_QUERY,
+        {
+            variables: queryVariables,
+            fetchPolicy: "network-only",
+            pollInterval: 1000,
+        }
+    );
+
+    // Client-side filtering for totalExperience
+    const filteredItems = data?.getResourceProfiles?.items
+        .filter((resource: ResourceProfile) => {
+            if (!totalExperience) return true;
+
+            const expRange = totalExperience.split("-");
+            if (totalExperience === "5+") {
+                return resource.totalExperience >= 5;
+            }
+            const [min, max] = expRange.map(Number);
+            return resource.totalExperience >= min && (max ? resource.totalExperience <= max : true);
+        }) || [];
+
+    console.log(`useResourceList variables:`, queryVariables);
+    console.log(`useResourceList response:`, { data, filteredItems });
+
     return {
       min: exactValue,
       max: exactValue

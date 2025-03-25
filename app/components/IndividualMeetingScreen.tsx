@@ -1,70 +1,40 @@
-"use client";
-import React, { useState, useEffect } from "react";
+"use client"
+import React, { useState, useMemo } from "react";
 import Pagination from "../microComponents/Pagination";
 import HeaderButtons from "../microComponents/HeaderButtons";
 import Title from "../microComponents/Title";
 import Search from "../microComponents/Search";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
-import { individualmeetingscreenApi } from "../api/apiService/individualmeetingscreenApiService";
-import { individualmeetingscreen } from "../api/jsonService/individualmeetingscreenJsonService";
 import { headerbutton, search, nav } from "./Path/TaskData";
-import {IndividualMeetingScreentitle} from "./Path/TitlePaths";
-
-interface Lead {
-  id: number;
-  name: string;
-  date: string;
-  time: string;
-  owner: string;
-  callType: string;
-}
-
+import { IndividualMeetingScreentitle } from "./Path/TitlePaths";
+import leadsApiService from "../api/apiService/leadsApiService";
+import { Calendar } from 'lucide-react';
 
 const IndividualMeetingScreen: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalItems, setTotalItems] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const user = useSelector((state: RootState) => state.auth);
-  const useDummyData =
-    process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
+  const { 
+    integratedMeetings, 
+    googleMeetingsLoading, 
+    googleMeetingsError 
+  } = leadsApiService(currentPage, itemsPerPage);
 
-  useEffect(() => {
-    const fetchVendorData = async () => {
-      try {
-        setLoading(true);
-        const response = useDummyData
-          ? await individualmeetingscreenApi()
-          : await individualmeetingscreen();
-        setLeads(response);
-        setTotalItems(response.length);
-      } catch (err) {
-        console.error("Error fetching resources:", err);
-        setError("Failed to load resources");
-      } finally {
-        setLoading(false);
-      }
-    };
+  const processedMeetings = useMemo(() => {
+    const filteredMeetings = integratedMeetings.filter(meeting => 
+      meeting.lead?.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      meeting.lead?.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      meeting.meeting.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
-    fetchVendorData();
-  }, []);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return filteredMeetings.slice(indexOfFirstItem, indexOfLastItem);
+  }, [integratedMeetings, currentPage, itemsPerPage, searchTerm]);
 
-  const getCallTypeStyle = (callType: string) => {
-    const typeMap: Record<string, string> = {
-      Offline: "bg-green-100 text-green-800",
-      Virtual: "bg-indigo-100 text-indigo-800",
-    };
-    return typeMap[callType] || "";
-  };
-
-  // Pagination Logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentLeads = leads.slice(indexOfFirstItem, indexOfLastItem);
+  const totalItems = integratedMeetings.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const handlePageChange = (newPage: number) => {
@@ -73,19 +43,34 @@ const IndividualMeetingScreen: React.FC = () => {
     }
   };
 
+  const getCallTypeStyle = (lead?: { campaign?: { campaignCountry?: string } }) => {
+    const callType = lead?.campaign?.campaignCountry || "Virtual";
+    const typeMap: Record<string, string> = {
+      Virtual: "bg-indigo-100 text-indigo-800",
+      Offline: "bg-green-100 text-green-800",
+    };
+    return typeMap[callType] || "bg-gray-100 text-gray-800";
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
+  if (googleMeetingsLoading) return <div>Loading meetings...</div>;
+  if (googleMeetingsError) return <div>Error: {googleMeetingsError}</div>;
+
   return (
     <div className="p-4 max-w-[1350px] mx-auto">
-      {/* <div>
-        <h1>Welcome, {user?.name || "Guest"}!</h1>
-      </div> */}
-
       <div className="flex flex-col sm:flex-row items-center mb-6 justify-between">
-        <div className="flex">
+        <div className="flex items-center">
           <Title title={IndividualMeetingScreentitle[0].titleName} />
           <div className="ml-5">
-            <Search searchText={search[2].searchText} value={""} onChange={function (value: string): void {
-              throw new Error("Function not implemented.");
-            } } />
+            <Search 
+              searchText={search[2].searchText} 
+              value={searchTerm} 
+              onChange={handleSearchChange} 
+            />
           </div>
         </div>
         <div>
@@ -95,10 +80,10 @@ const IndividualMeetingScreen: React.FC = () => {
                    flex items-center justify-center gap-2 w-full sm:w-auto 
                     min-w-[100px]"
             >
-              <img src="calender_icon.svg" className="w-6 h-6" alt="Calender" />
-              <div className="text-[12px] sm:text-sm whitespace-nowrap">
-                Calender
-              </div>
+              <Calendar className="w-5 h-5" />
+              <span className="text-[12px] sm:text-sm whitespace-nowrap">
+                Calendar
+              </span>
             </button>
             <HeaderButtons
               button1Text={headerbutton[2].button1text}
@@ -110,46 +95,48 @@ const IndividualMeetingScreen: React.FC = () => {
         </div>
       </div>
 
-      {loading ? (
-        <p className="text-center">Loading leads...</p>
-      ) : error ? (
-        <p className="text-center text-red-500">{error}</p>
-      ) : (
-        <div className="overflow-x-auto rounded-lg shadow-custom">
-          <table className="min-w-full bg-white">
-            <thead className="bg-bg-blue-12 text-white ">
-              <tr>
-                <th className="px-6 py-4 text-left">Lead</th>
-                <th className="px-6 py-4 text-left">Date</th>
-                <th className="px-6 py-4 text-left">Time</th>
-                <th className="px-6 py-4 text-left">Lead Owner</th>
-                <th className="px-6 py-4 text-left">Call Type</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {currentLeads.map((lead) => (
-                <tr key={lead.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-5">{lead.name}</td>
-                  <td className="px-6 py-5">{lead.date}</td>
-                  <td className="px-6 py-5">{lead.time}</td>
-                  <td className="px-6 py-5">{lead.owner}</td>
-                  <td className="px-6 py-5">
-                    <span
-                      className={`px-3 py-1 rounded-lg text-sm font-medium ${getCallTypeStyle(
-                        lead.callType
-                      )}`}
-                    >
-                      {lead.callType}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <div className="overflow-x-auto rounded-lg shadow-custom">
+        <table className="min-w-full bg-white">
+          <thead className="bg-bg-blue-12 text-white">
+            <tr>
+              <th className="px-6 py-4 text-left">Lead</th>
+              <th className="px-6 py-4 text-left">Date</th>
+              <th className="px-6 py-4 text-left">Time</th>
+              <th className="px-6 py-4 text-left">Lead Owner</th>
+              <th className="px-6 py-4 text-left">Call Type</th>
+  
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {processedMeetings.map((item, index) => (
+              <tr key={index} className="hover:bg-gray-50">
+                <td className="px-6 py-5">
+                  {item.lead 
+                    ? `${item.lead.firstName} ${item.lead.lastName}` 
+                    : 'Unassigned'}
+                </td>
 
-      {/* Pagination Section */}
+                <td className="px-6 py-5">
+                  {item.meeting.date.toLocaleDateString()}
+                </td>
+                <td className="px-6 py-5">{item.meeting.time}</td>
+                <td className="px-6 py-5">
+                  {item.lead?.leadAssignedTo?.name || 'Unassigned'}
+                </td>
+                <td className="px-6 py-5">
+                  <span
+                    className={`px-3 py-1 rounded-lg text-sm font-medium ${getCallTypeStyle(item.lead)}`}
+                  >
+                    {item.lead?.campaign?.campaignCountry || 'Virtual'}
+                  </span>
+                </td>
+            
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
       <div className="flex justify-between items-center mt-4">
         <div className="flex items-center">
           <div className="relative">
@@ -167,42 +154,33 @@ const IndividualMeetingScreen: React.FC = () => {
             </select>
           </div>
           <span className="ml-4 text-sm text-gray-600">
-            Showing {indexOfFirstItem + 1} to{" "}
-            {Math.min(indexOfLastItem, totalItems)} of {totalItems} results
+            Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+            {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} results
           </span>
         </div>
         <div className="flex space-x-1">
-          <button
-            onClick={() => handlePageChange(1)}
-            className={`px-3 py-1 font-medium rounded ${
-              currentPage === 1 ? "bg-indigo-600 text-white" : "bg-white border"
-            }`}
-          >
-            1
-          </button>
-          <button
-            onClick={() => handlePageChange(2)}
-            className={`px-3 py-1 font-medium rounded ${
-              currentPage === 2 ? "bg-indigo-600 text-white" : "bg-white border"
-            }`}
-          >
-            2
-          </button>
-          <button
-            onClick={() => handlePageChange(3)}
-            className={`px-3 py-1 font-medium rounded ${
-              currentPage === 3 ? "bg-indigo-600 text-white" : "bg-white border"
-            }`}
-          >
-            3
-          </button>
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            className="px-3 py-1 bg-white text-gray-700 font-medium rounded border"
-            disabled={currentPage >= totalPages}
-          >
-            &gt;
-          </button>
+          {[...Array(Math.min(3, totalPages))].map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handlePageChange(index + 1)}
+              className={`px-3 py-1 font-medium rounded ${
+                currentPage === index + 1 
+                  ? "bg-indigo-600 text-white" 
+                  : "bg-white border"
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+          {totalPages > 3 && (
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              className="px-3 py-1 bg-white text-gray-700 font-medium rounded border"
+              disabled={currentPage >= totalPages}
+            >
+              &gt;
+            </button>
+          )}
         </div>
       </div>
     </div>

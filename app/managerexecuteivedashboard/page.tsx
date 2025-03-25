@@ -6,6 +6,7 @@ import TeamPerformanceTable from "../components/ManagerDashboard/TeamPerformance
 import PipelineMap from "../components/ManagerDashboard/PipelineMap";
 import LeadSourceChart from "../components/ManagerDashboard/LeadSource";
 import dummyData from "../dummyData/dummydata.json";
+import leadsApiService from "../api/apiService/leadsApiService";
 
 // Define interfaces for your data structure
 interface KeyMetric {
@@ -43,6 +44,19 @@ const SalesDashboard: React.FC = () => {
   // Import data from the JSON file and type it
   const { keyMetrics, teamData, leadSourceData } = dummyData as DummyData;
 
+  const { 
+    countryLeadStats,
+    loading,
+    error 
+  } = leadsApiService(1, 10, true); 
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
   return (
     <div className="">
       <div className="bg-blue-background">
@@ -76,7 +90,7 @@ const SalesDashboard: React.FC = () => {
           {/* Charts and Map Section */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 ">
             {/* Pipeline Map */}
-            <PipelineMap />
+            <PipelineMap countryLeadStats={countryLeadStats} />
 
             {/* Lead Source Chart */}
             <LeadSourceChart/>

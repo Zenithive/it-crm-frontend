@@ -7,14 +7,22 @@ export const GET_DEALS = gql`
     $sort: DealSortInput
   ) {
     getDeals(filter: $filter, pagination: $pagination, sort: $sort) {
-      dealID
-      dealName
-      leadID
-      dealStartDate
-      dealEndDate
-      projectRequirements
-      dealAmount
-      dealStatus
+      totalCount
+      items {
+        dealID
+        dealName
+        leadID
+        dealStartDate
+        dealEndDate
+        projectRequirements
+        dealAmount
+        dealStatus
+        userID
+        user {
+          userID
+          name
+        }
+      }
     }
   }
 `;
@@ -30,6 +38,11 @@ export const GET_DEAL = gql`
       projectRequirements
       dealAmount
       dealStatus
+      userID
+      user {
+        userID
+        name
+      }
     }
   }
 `;
