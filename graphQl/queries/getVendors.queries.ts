@@ -73,3 +73,25 @@ export const GET_VENDORS = gql`
     }
   }
 `;
+
+export const GET_VENDOR_BY_ID = gql`
+  query GetVendorById($vendorID: ID!) {
+    getVendor(vendorID: $vendorID) {
+      vendorID
+      companyName
+      address
+      status
+      paymentTerms
+      gstOrVatDetails
+      notes
+      country
+      skills {
+        skillID
+        name
+      }
+      performanceRatings {
+        rating
+      }
+    }
+  }
+`;

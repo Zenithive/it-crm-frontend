@@ -1,25 +1,19 @@
-
-
 import { useQuery } from "@apollo/client";
 import { GET_RESOURCE_PROFILES_QUERY } from "../../../graphQl/queries/getAllResources.queries";
-
 export interface Vendor {
   vendorID: string;
   companyName: string;
 }
-
 interface Skill {
   skillID: string;
   name: string;
   description: string;
   skilltype: string;
 }
-
 interface ResourceSkill {
   skill: Skill;
   experienceYears: number;
 }
-
 interface PastProject {
   pastProjectID: string;
   createdAt: string;
@@ -28,7 +22,6 @@ interface PastProject {
   projectName: string;
   description: string;
 }
-
 export interface ResourceProfile {
   resourceProfileID: string;
   type: string;
@@ -43,14 +36,12 @@ export interface ResourceProfile {
   resourceSkills: ResourceSkill[];
   pastProjects: PastProject[];
 }
-
 interface GetResourceProfilesResponse {
   getResourceProfiles: {
     items: ResourceProfile[];
     totalCount: number;
   };
 }
-
 interface ResourceListApiVariables {
   page: number;
   pageSize: number;
@@ -59,27 +50,16 @@ interface ResourceListApiVariables {
   totalExperience?: string | null;
   skills?: string | null;
 }
-
-interface ExperienceRange {
-  min: number | null;
-  max: number | null;
-}
-
 export const useResourceList = (variables: ResourceListApiVariables) => {
   const { page, pageSize, search, vendorName, totalExperience, skills } = variables;
-
-
-  const parseExperienceFilter = (filter: string | null): ExperienceRange => {
+  const parseExperienceFilter = (filter: string | null): { min: number | null; max: number | null } => {
     if (!filter) return { min: null, max: null };
-
- 
     if (filter.endsWith('+')) {
       return {
         min: parseFloat(filter.slice(0, -1)),
         max: null
       };
     }
-
     if (filter.includes('-')) {
       const [minStr, maxStr] = filter.split('-');
       return {
@@ -87,27 +67,14 @@ export const useResourceList = (variables: ResourceListApiVariables) => {
         max: parseFloat(maxStr)
       };
     }
-
- 
     const exactValue = parseFloat(filter);
     return {
       min: exactValue,
-      max: exactValue,
-      // data: filteredItems,
-      //   loading,
-      //   error,
-      //   totalItems: data?.getResourceProfiles?.totalCount || 0, 
-      //   refetch,
+      max: exactValue
     };
   };
-
-
   const cleanSearch = search && search.trim() ? search.trim() : null;
-  
-
   const experienceRange = parseExperienceFilter(totalExperience || null);
-
-  
   const queryVariables = {
     page,
     pageSize,
@@ -116,24 +83,17 @@ export const useResourceList = (variables: ResourceListApiVariables) => {
     vendorID: null,
     skillIDs: [] as string[],
     search: cleanSearch,
+    totalExperienceMin: experienceRange.min,
+    totalExperienceMax: experienceRange.max
   };
-
   if (vendorName) {
-  
     if (!cleanSearch) {
       queryVariables.search = vendorName;
     }
-   
   }
-
   if (skills) {
     queryVariables.skillIDs = [skills];
   }
-
-  // If we're filtering by experience, increase the page size to ensure we have enough results after filtering
-  const adjustedPageSize = totalExperience ? pageSize * 3 : pageSize;
-  queryVariables.pageSize = adjustedPageSize;
-
   const { data, loading, error, refetch } = useQuery<GetResourceProfilesResponse>(
     GET_RESOURCE_PROFILES_QUERY,
     {
@@ -141,48 +101,18 @@ export const useResourceList = (variables: ResourceListApiVariables) => {
       fetchPolicy: "network-only",
     }
   );
-
-  // Apply client-side filtering for experience if needed
-  let filteredItems: ResourceProfile[] = [];
-  
-  if (data?.getResourceProfiles?.items) {
-    filteredItems = data.getResourceProfiles.items.filter(item => {
-      // If no experience filter is applied, include all items
-      if (!totalExperience) return true;
-      
-      const { min, max } = experienceRange;
-      
-      // Apply minimum experience filter
-      if (min !== null && item.totalExperience < min) {
-        return false;
-      }
-      
-      // Apply maximum experience filter (if specified)
-      if (max !== null && item.totalExperience > max) {
-        return false;
-      }
-      
-      return true;
-    });
-  }
-
-  // Calculate pagination indicators for client-side filtered results
-  const startIndex = (page - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  
-  // Get the current page slice of filtered items
-  const currentPageItems = filteredItems.slice(startIndex, endIndex);
-  
-  // Calculate total count after filtering
-  const filteredTotalCount = filteredItems.length;
-
-
-
   return {
-    data: currentPageItems,
+    data: data?.getResourceProfiles?.items || [],
     loading,
     error,
-    totalItems: filteredTotalCount,
+    totalItems: data?.getResourceProfiles?.totalCount || 0,
     refetch,
   };
 };
+
+
+
+
+
+
+

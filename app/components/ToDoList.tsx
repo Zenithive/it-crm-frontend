@@ -102,9 +102,9 @@ const [showFilter, setShowFilter] = useState(false);
         id: "status",
         title: "Status",
         options: [
-          { id: "inProgress", label: "In Progress", checked: false },
-          { id: "schedule", label: "Schedule", checked: false },
-          { id: "complete", label: "Complete", checked: false },
+          { id: "in_Progress", label: "In Progress", checked: false },
+          { id: "todo", label: "Schedule", checked: false },
+          { id: "completed", label: "Complete", checked: false },
         ]
       },
     
