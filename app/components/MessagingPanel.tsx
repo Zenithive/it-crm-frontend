@@ -56,7 +56,7 @@ const MessagingPanel: React.FC = () => {
 
   return (
     <div className="flex w-full h-screen bg-blue-background mb-2">
-      <div className="flex flex-col w-full mx-auto shadow-lg bg-white mt-4 max-w-[1400px] rounded-xlxl">
+      <div className="flex flex-col w-full mx-auto shadow-lg bg-white mt-4 max-w-[1400px] rounded-xl">
         {/* Header */}
         <div className="flex bg-indigo-500 text-white rounded-t-lg">
           <div className="w-4/12 px-4 py-4 text-xl font-medium">All Messages</div>

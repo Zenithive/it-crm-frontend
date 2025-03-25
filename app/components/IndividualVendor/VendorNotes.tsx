@@ -60,8 +60,8 @@ const VendorNotes = ({ vendorId}: { vendorId: string }) => {
   // }, [vendor, vendorLoading, vendorError]);
 
   return (
-    <div className="bg-white rounded-xlxl p-6 shadow-custom mr-6 mt-4">
-      <div className="bg-white rounded-xlxl p-6 shadow-custom">
+    <div className="bg-white rounded-xl p-6 shadow-custom mr-6 mt-4">
+      <div className="bg-white rounded-xl p-6 shadow-custom">
         <div className="">
           {/* <JoditEditor
             ref={editor}

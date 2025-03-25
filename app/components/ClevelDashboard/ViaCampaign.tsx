@@ -41,7 +41,7 @@ const ViaCampaign = () => {
       </div>
 
       {/* Opportunities Container */}
-      <div className="bg-white rounded-xlxl shadow-custom p-4">
+      <div className="bg-white rounded-xl shadow-custom p-4">
         <div className="space-y-4 scrollbar-custom overflow-y-auto max-h-[305px] pr-5 pl-4">
           {Object.entries(campaignCountryCounts).map(([country, count], index) => (
             <div

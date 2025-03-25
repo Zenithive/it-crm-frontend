@@ -44,7 +44,7 @@ const ResourceDoc = () => {
   return (
    
     <div className=" w-full">
-      <div className="bg-white rounded-xlxl p-6 shadow-custom mt-4 mr-6">
+      <div className="bg-white rounded-xl p-6 shadow-custom mt-4 mr-6">
         <div className="flex flex-col bg-white min-h-[210px]">
           {/* Scrollable Content */}
           <div className="flex-1 px-4 pb-4 mt-2">

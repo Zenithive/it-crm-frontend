@@ -84,7 +84,7 @@ const ResourceSkills: React.FC<ResourceSkillsProps> = ({ resourceData }) => {
         <div className="w-full">
           {activeTab === "details" && (
             <div className="flex mr-6 mt-4">
-              <div className="bg-white rounded-xlxl p-4 shadow-custom w-full h-[500px]">
+              <div className="bg-white rounded-xl p-4 shadow-custom w-full h-[500px]">
                 <div className="grid grid-cols-2 gap-6">
                   {/* Skills Section */}
                   <div className="p-4 border-r border-content-border ">

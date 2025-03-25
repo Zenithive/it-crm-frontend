@@ -40,7 +40,7 @@ const VendorPerformance = ({ vendorId}: { vendorId:String  }) => {
 
   return (
   
-      <div className=" bg-white rounded-xlxl p-6 shadow-custom min-h-[400px] mr-4 mt-4">
+      <div className=" bg-white rounded-xl p-6 shadow-custom min-h-[400px] mr-4 mt-4">
         <div className="grid grid-cols-3 gap-6">
           <div className=" border-r border-content-border">
             <div className="text-bg-blue-12 font-semibold text-2xl items-center justify-center flex">

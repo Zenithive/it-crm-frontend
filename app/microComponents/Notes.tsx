@@ -36,7 +36,7 @@ const Notes: React.FC<CaseStudyFormNotesProps> = ({
 
   return (
     <div className="bg-white">
-      <div className="bg-white rounded-xlxl shadow-custom">
+      <div className="bg-white rounded-xl shadow-custom">
         <JoditEditor
           ref={editor}
           value={value} // Ensure this binds the initial content
