@@ -43,7 +43,7 @@ const IndividualTitle = ({ leadId }: { leadId: string }) => {
               ? `${lead.firstName} ${lead.lastName}`
               : "No Data Available"}
           </div>
-          <span className="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-full text-sm">
+          <span className="px-3 py-1 bg-indigo-100 text-bg-blue-12 rounded-full text-sm">
             {loading ? "Loading..." : lead ? `${lead.leadStage}` : "No Data Available"}
           </span>
         </div>

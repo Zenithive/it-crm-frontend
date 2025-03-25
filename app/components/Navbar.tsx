@@ -138,7 +138,7 @@ const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar}) => {
       <div className="px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-8">
           <div className="flex items-center gap-4 justify-center space-x-3">
-            <img src="hamburger.svg" alt="icon" className="h-7 cursor-pointer" onClick={toggleSidebar} />
+            <img src="/hamburger.svg" alt="icon" className="h-7 cursor-pointer" onClick={toggleSidebar} />
             <img src="/logo.svg" alt="logo" className="h-6" />
           </div>
 

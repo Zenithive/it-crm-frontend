@@ -105,7 +105,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
             ))}
           </select>
           <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <img src="dropdownFilter.svg" className="text-indigo-600" />
+            <img src="dropdownFilter.svg" className="text-bg-blue-12" />
           </div>
         </div>
       )}
@@ -123,7 +123,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
             placeholder="Start Date"
           />
           <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <img src="dropdownFilter.svg" className="text-indigo-600 cursor-pointer" />
+            <img src="dropdownFilter.svg" className="text-bg-blue-12 cursor-pointer" />
           </div>
         </div>
 
@@ -143,7 +143,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
             placeholder="End Date"
           />
           <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <img src="dropdownFilter.svg" className="text-indigo-600 cursor-pointer" />
+            <img src="dropdownFilter.svg" className="text-bg-blue-12 cursor-pointer" />
           </div>
         </div>
       </div>
