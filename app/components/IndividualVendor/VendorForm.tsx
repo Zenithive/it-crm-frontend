@@ -1,4 +1,3 @@
-// VendorForm.tsx
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -6,7 +5,7 @@ import { message } from "antd";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { useCreateVendor } from "../../api/apiService/addVendorApiService";
-import { useUpdateVendor } from "../../api/apiService/overallvendorApiService";
+import { useVendors } from "../../api/apiService/overallvendorApiService";
 import {
   Bold,
   Italic,
@@ -32,7 +31,7 @@ interface VendorFormData {
   gstOrVatDetails: string;
   performanceRating: number;
   notes: string;
-  country: string; // Must be present
+  country: string;
   vendorDetails: VendorDetail[];
 }
 
@@ -62,58 +61,93 @@ interface CompanyProfile {
     phone: string;
     location: string;
   };
-  agreement?: {
-    startDate: string;
-    endDate: string;
-    status: string;
-  };
-  employeeCount?: string;
-  recentActivity?: Array<{
-    type: string;
-    title: string;
-    timestamp: string;
-  }>;
 }
 
-const VendorForm: React.FC<AddVendorFormProps> = ({
-  onClose,
-  vendorData,
-  vendorId,
-
-}) => {
-  const { register, handleSubmit, reset, setValue,control, // Add control
-    formState: { errors },} = useForm<VendorFormData>({
-    defaultValues: {
+const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorId }) => {
+  const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<VendorFormData>({
+    defaultValues: vendorData && vendorId ? {
+      companyName: vendorData.companyName || "",
+      address: vendorData.address || "",
+      status: vendorData.status || "ACTIVE",
+      vendorSkills: vendorData.skills && vendorData.skills.length > 0 ? vendorData.skills[0].name : "",
+      paymentTerms: vendorData.paymentTerms || "",
+      gstOrVatDetails: vendorData.gstOrVatDetails || "",
       performanceRating: 0,
-      status: "ACTIVE",
-      paymentTerms: "NET30",
+      notes: vendorData.notes || "",
+      country: vendorData.primaryContact?.location || "India",
       vendorDetails: [{ name: "", contact: "", number: "", designation: "" }],
-      country: "India", // Restored default value
+    } : {
+      companyName: "",
+      address: "",
+      status: "ACTIVE",
+      vendorSkills: "",
+      paymentTerms: "NET30",
+      gstOrVatDetails: "",
+      performanceRating: 0,
+      notes: "",
+      country: "India",
+      vendorDetails: [{ name: "", contact: "", number: "", designation: "" }],
     },
   });
   const [loading, setLoading] = useState(false);
   const [rating, setRating] = useState(0);
-  const [vendorDetails, setVendorDetails] = useState([
-    { name: "", contact: "", number: "", designation: "" },
-  ]);
   const noteRef = useRef<HTMLDivElement | null>(null);
-
-  const user = useSelector((state: RootState) => state.auth);
   const { createVendor, loading: mutationLoading } = useCreateVendor();
-  const { updateVendor, loading: updateLoading } = useUpdateVendor();
+  const { updateVendor, loading: updateLoading, error: updateError } = useVendors();
   const isEditMode = !!vendorData && !!vendorId;
+
+  // Add useEffect to log initial form state
+  useEffect(() => {
+    console.log("Initial form defaultValues:", {
+      companyName: vendorData?.companyName,
+      address: vendorData?.address,
+      status: vendorData?.status,
+      vendorSkills: vendorData?.skills && vendorData.skills.length > 0 ? vendorData.skills[0].name : "",
+      paymentTerms: vendorData?.paymentTerms,
+      gstOrVatDetails: vendorData?.gstOrVatDetails,
+      notes: vendorData?.notes,
+      country: vendorData?.primaryContact?.location,
+    });
+  }, []);
 
   useEffect(() => {
     if (isEditMode && vendorData) {
-      setValue("companyName", vendorData.companyName);
-      setValue("status", vendorData.status);
-      setValue("address", vendorData.address);
-      setValue("paymentTerms", vendorData.paymentTerms);
-      setValue("vendorSkills", vendorData.skills[0]?.name || "");
-      setValue("gstOrVatDetails", vendorData.gstOrVatDetails || "");
-      setValue("country", vendorData.primaryContact?.location || "India"); // Restored
-      setValue("notes", vendorData.notes || "");
-      if (noteRef.current) noteRef.current.innerHTML = vendorData.notes || "";
+
+      const skillName = vendorData.skills && vendorData.skills.length > 0 
+      ? vendorData.skills[0].name.toUpperCase() // Normalize to match options
+      : "";
+      // Explicitly set all form fields
+      reset({
+        companyName: vendorData.companyName || "",
+        address: vendorData.address || "",
+        status: vendorData.status || "ACTIVE",
+        vendorSkills: skillName,
+        paymentTerms: vendorData.paymentTerms || "NET30",
+        gstOrVatDetails: vendorData.gstOrVatDetails || "",
+        performanceRating: 0,
+        notes: vendorData.notes || "",
+        country: vendorData.primaryContact?.location || "India",
+        vendorDetails: [{ name: "", contact: "", number: "", designation: "" }],
+      });
+  
+      if (noteRef.current) {
+        noteRef.current.innerHTML = vendorData.notes || "";
+        console.log("Notes set in contentEditable:", noteRef.current.innerHTML);
+      }
+
+      // Log the form state after setting values
+      console.log("Form state after setValue:", {
+        companyName: vendorData.companyName,
+        address: vendorData.address,
+        status: vendorData.status,
+        vendorSkills: vendorData.skills && vendorData.skills.length > 0 ? vendorData.skills[0].name : "",
+        paymentTerms: vendorData.paymentTerms,
+        gstOrVatDetails: vendorData.gstOrVatDetails,
+        notes: vendorData.notes,
+        country: vendorData.primaryContact?.location,
+      });
+    } else {
+      console.log("Not in edit mode or vendorData missing:", { isEditMode, vendorData });
     }
   }, [vendorData, setValue, isEditMode]);
 
@@ -164,7 +198,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({
       gstOrVatDetails: data.gstOrVatDetails || "",
       notes: data.notes || "",
       skillIDs: getSkillIDs(data.vendorSkills),
-      country: data.country, // Restored
+      country: data.country,
     };
   };
 
@@ -172,7 +206,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({
     setLoading(true);
     try {
       const mutationInput = mapFormDataToMutationInput(data);
-      console.log("Mutation Input:", mutationInput); // Debug log
+      console.log("Mutation Input:", mutationInput);
       if (isEditMode) {
         await updateVendor({ vendorID: vendorId!, ...mutationInput });
         message.success("Vendor updated successfully!");
@@ -183,9 +217,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({
       reset();
       onClose();
     } catch (error) {
-      message.error(
-        `Failed to ${isEditMode ? "update" : "add"} vendor. Please try again.`
-      );
+      message.error(`Failed to ${isEditMode ? "update" : "add"} vendor. Please try again.`);
       console.error("Submission error:", error);
     } finally {
       setLoading(false);
@@ -241,7 +273,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({
                   />
                 </div>
                 <div>
-                <CountrySelection
+                  <CountrySelection
                     register={register}
                     setValue={setValue}
                     control={control}
@@ -419,7 +451,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({
               </div>
 
               <button
-                className="w-full bg-[#6 text-white py-3 rounded-lg hover:bg-[#5457E5] transition-colors"
+                className="w-full bg-bg-blue-12 text-white py-3 rounded-lg"
                 disabled={loading || mutationLoading || updateLoading}
               >
                 {isEditMode ? "Update" : "Save"}
