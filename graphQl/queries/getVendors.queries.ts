@@ -22,7 +22,6 @@ export const GET_VENDORS = gql`
         status
         paymentTerms
         address
-    
         gstOrVatDetails
         notes
         contactList {
@@ -71,6 +70,28 @@ export const GET_VENDORS = gql`
         }
       }
       totalCount
+    }
+  }
+`;
+
+export const GET_VENDOR_BY_ID = gql`
+  query GetVendorById($vendorID: ID!) {
+    getVendor(vendorID: $vendorID) {
+      vendorID
+      companyName
+      address
+      status
+      paymentTerms
+      gstOrVatDetails
+      notes
+      country
+      skills {
+        skillID
+        name
+      }
+      performanceRatings {
+        rating
+      }
     }
   }
 `;

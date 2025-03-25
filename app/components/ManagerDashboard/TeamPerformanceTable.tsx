@@ -65,7 +65,7 @@ const TeamPerformanceTable: React.FC = () => {
 
       <CardContent className="p-4">
         <div className="overflow-x-auto">
-          <table className="w-full rounded-2xl overflow-hidden shadow-2xl">
+          <table className="w-full rounded-xlxl overflow-hidden shadow-2xl">
             <thead>
               <tr className="bg-bg-blue-12 text-white">
                 <th className="p-4 text-left font-medium">Employee Name</th>

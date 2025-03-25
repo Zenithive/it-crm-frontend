@@ -44,7 +44,7 @@ const FilterHandler: React.FC<FilterHandlerProps> = ({
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [selectdata, setSelecteData] = useState('Last 7 Days');
+  const [selectdata, setSelecteData] = useState('');
   
 
 
@@ -66,6 +66,7 @@ const FilterHandler: React.FC<FilterHandlerProps> = ({
           startDate={startDate}
           setStartDate={setStartDate}
           endDate={endDate}
+          pageType={isContactPage ? "leads" : "todo"}
           setEndDate={setEndDate}
         />
       );
@@ -105,7 +106,76 @@ const FilterHandler: React.FC<FilterHandlerProps> = ({
     );
   };
 
-  const handleFilterApply = async (payload: FilterPayload) => {
+ 
+
+  const handleFilterApplyTodo = async () => {
+    const payload: FilterPayload = {
+      filter: {
+        startDate,
+        endDate,
+        // Include other filters based on selected options
+        status: selectedOptions.filter(opt => 
+          filterSections.some(section => 
+            section.id === 'status' && 
+            section.options.some(o => o.id === opt)
+          )
+        ).join(','),
+        priority: selectedOptions.filter(opt => 
+          filterSections.some(section => 
+            section.id === 'priority' && 
+            section.options.some(o => o.id === opt)
+          )
+        ).join(',')
+      },
+      pagination: {
+        page: 1,
+        pageSize: 10
+      },
+      sort: {
+        field: 'createdAt',
+        order: 'desc'
+      }
+    };
+
+    await onFilterApply(payload);
+    setShowFilter(false);
+  };
+
+  const handleFilterApply = async () => {
+    const payload: FilterPayload = {
+      filter: {
+        startDate,
+        endDate,
+        // Include other filters based on selected options
+        stage: selectedOptions.filter(opt => 
+          filterSections.some(section => 
+            section.id === 'stage' && 
+            section.options.some(o => o.id === opt)
+          )
+        ).join(','),
+        type: selectedOptions.filter(opt => 
+          filterSections.some(section => 
+            section.id === 'type' && 
+            section.options.some(o => o.id === opt)
+          )
+        ).join(','),
+        campaign: selectedOptions.filter(opt => 
+          filterSections.some(section => 
+            section.id === 'campaign' && 
+            section.options.some(o => o.id === opt)
+          )
+        ).join(',')
+      },
+      pagination: {
+        page: 1,
+        pageSize: 10
+      },
+      sort: {
+        field: 'createdAt',
+        order: 'desc'
+      }
+    };
+
     await onFilterApply(payload);
     setShowFilter(false);
   };
@@ -113,7 +183,9 @@ const FilterHandler: React.FC<FilterHandlerProps> = ({
   return (
     <Filter
       onClose={() => setShowFilter(false)}
-      onApply={handleFilterApply}
+      // onApply={handleFilterApply}
+      onApply={pageType === 'contact' ? handleFilterApply : handleFilterApplyTodo}
+
       sections={filterSections}
       renderRightPanel={renderFilterRightPanel}
       selectedOptions={selectedOptions}

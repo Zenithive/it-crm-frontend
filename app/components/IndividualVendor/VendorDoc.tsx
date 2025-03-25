@@ -44,7 +44,7 @@ const VendorDoc = ({ vendorId}: { vendorId:String  }) => {
 
   return (
    
-      <div className="bg-white rounded-2xl p-6 shadow-custom mr-4 mt-4">
+      <div className="bg-white rounded-xlxl p-6 shadow-custom mr-4 mt-4">
         <div className="flex flex-col bg-white min-h-[210px]">
           {/* Scrollable Content */}
           <div className="flex-1 px-4 pb-4 mt-2">

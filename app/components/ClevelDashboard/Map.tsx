@@ -14,7 +14,7 @@ const Map = () => {
       </div>
 
       {/* Map Container */}
-      <div className="bg-white rounded-2xl shadow-custom p-4 h-auto flex flex-col">
+      <div className="bg-white rounded-xlxl shadow-custom p-4 h-auto flex flex-col">
         <div className="flex-grow flex justify-center items-center">
           <ComposableMap
             projection="geoMercator"

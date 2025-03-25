@@ -1,6 +1,7 @@
 
 import React, { useState } from "react";
 import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface NavbarProps {
   nav: {
@@ -12,6 +13,11 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar}) => {
+
+  const router = useRouter();
+  const handleRedirect = () => {
+    router.push("/dashboard"); // Redirect to /dashboard
+  };
   const { name, designation } = nav || {};
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -42,7 +48,7 @@ const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar}) => {
         </div>
 
         <div className="hidden sm:flex items-center space-x-2">
-          <button className="p-2 hover:bg-gray-100 rounded-lg">
+          <button className="p-2 hover:bg-gray-100 rounded-lg" onClick={handleRedirect}>
             <img src="/nav_icon1.svg" alt="Navbar" className="w-5 h-5" />
           </button>
           <div className="h-8 w-px border-l border-gray-300"></div>

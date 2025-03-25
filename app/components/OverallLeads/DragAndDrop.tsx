@@ -142,8 +142,8 @@ const ItemType = "LEAD_CARD";
 
 const leadStageMap: { [key: string]: string } = {
   "New Lead": "NEW",
-  Negotiation: "IN_PROGRESS",
-  Qualified: "FOLLOW_UP", 
+  Negotiation: "NEGOTIATION",
+  Qualified: "QUALIFIED", 
   "Closed Win": "CLOSED_WON",
   "Closed Lost": "CLOSED_LOST",
 };

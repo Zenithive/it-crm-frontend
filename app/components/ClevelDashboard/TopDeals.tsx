@@ -58,7 +58,7 @@ const TopDeals = () => {
       </div>
 
      
-      <div className="bg-white rounded-2xl shadow-custom p-4">
+      <div className="bg-white rounded-xlxl shadow-custom p-4">
         <div className="space-y-2 scrollbar-custom overflow-y-auto max-h-[450px] pr-4">
           {deals.map((deal:Deal, index:number) => (
             <div

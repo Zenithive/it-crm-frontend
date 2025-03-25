@@ -177,7 +177,7 @@ const KanbanView: React.FC = () => {
         <div className="flex justify-center mt-4">
           <button
             onClick={handleAddCard}
-            className="plus_icon bg-bg-blue-12 text-white px-4 py-2 rounded-[12px] hover:bg-blue-700"
+            className="plus_icon bg-bg-blue-12 text-white px-4 py-2 rounded-xl hover:bg-blue-700"
             aria-label="Add new item"
           >
             +

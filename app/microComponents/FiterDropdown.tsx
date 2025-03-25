@@ -2,7 +2,12 @@
 
 
 
-import React, { useState } from 'react';
+
+
+
+
+
+import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import dayjs from 'dayjs'; 
@@ -26,6 +31,7 @@ interface FilterDropdownProps {
   startDateOptions?: OptionType[];
   endDateOptions?: OptionType[];
   className?: string;
+  pageType?:string
 }
 
 const FilterDropdown: React.FC<FilterDropdownProps> = ({
@@ -38,44 +44,80 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   setEndDate,
   startDateOptions,
   endDateOptions,
-  className
+  className,
+  pageType='other'
 }) => {
-  // Local state to manage calendar visibility
   const [showStartCalendar, setShowStartCalendar] = useState(false);
   const [showEndCalendar, setShowEndCalendar] = useState(false);
 
-  // Default options if not provided
+  // Default options with dynamic date calculation
   const defaultRangeOptions: OptionType[] = [
+    { value: "", label: "Select Range" },
+    { value: "Today", label: "Today" },
+   
     { value: "Last 7 Days", label: "Last 7 Days" },
+    { value: "Last 15 Days", label: "Last 15 Days" },
     { value: "Last 30 Days", label: "Last 30 Days" },
-    { value: "Last 90 Days", label: "Last 90 Days" },
-    { value: "Custom", label: "Custom" }
-  ];
-
-  const defaultStartOptions: OptionType[] = [
-    { value: "2025-03-01", label: "Mar 1, 2025" },
-    { value: "2025-03-10", label: "Mar 10, 2025" },
-    { value: "2025-03-15", label: "Mar 15, 2025" }
-  ];
-
-  const defaultEndOptions: OptionType[] = [
-    { value: "2025-03-15", label: "Mar 15, 2025" },
-    { value: "2025-03-20", label: "Mar 20, 2025" },
-    { value: "2025-03-31", label: "Mar 31, 2025" }
-  ];
-
-  // Use provided options or defaults
-  const rangeOptions = defaultRangeOptions;
-  const startOptions = startDateOptions || defaultStartOptions;
-  const endOptions = endDateOptions || defaultEndOptions;
-
   
+  ];
 
+  // Function to calculate dates based on selected range
+  const calculateDateRange = (range: string) => {
+    // Skip calculation for todo page type
+    if (pageType === 'todo') return;
+
+    const today = dayjs();
+    let startDateCalc, endDateCalc;
+
+    switch (range) {
+      case "Today":
+        startDateCalc = today;
+        endDateCalc = today;
+        break;
+
+        
+      case "Last 7 Days":
+        startDateCalc = today.subtract(7, 'day');
+        endDateCalc = today;
+        break;
+      case "Last 15 Days":
+        startDateCalc = today.subtract(15, 'day');
+        endDateCalc = today;
+        break;
+      case "Last 30 Days":
+        startDateCalc = today.subtract(30, 'day');
+        endDateCalc = today;
+        break;
+      default:
+        return;
+    }
+
+    // Update start and end dates
+    setStartDate(startDateCalc.format('YYYY-MM-DD'));
+    setEndDate(endDateCalc.format('YYYY-MM-DD'));
+  };
+
+  // Effect to handle range selection
+  useEffect(() => {
+    if (selectData && selectData !== "Custom" && pageType !== 'todo') {
+      calculateDateRange(selectData);
+    }
+  }, [selectData, pageType]);
 
   const handleSelectStartDate = (value: Value) => {
     if (value instanceof Date) {
       const localDate = dayjs(value).startOf('day');
       setStartDate(localDate.format('YYYY-MM-DD'));
+      
+      // If end date is before start date, update end date
+      if (dayjs(endDate).isBefore(localDate)) {
+        setEndDate(localDate.format('YYYY-MM-DD'));
+      }
+      
+      // Change dropdown to Custom when manually selecting
+      if (setSelectData) {
+        setSelectData("Custom");
+      }
     }
     setShowStartCalendar(false);
   };
@@ -83,10 +125,22 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   const handleSelectEndDate = (value: Value) => {
     if (value instanceof Date) {
       const localDate = dayjs(value).startOf('day');
-      setEndDate(localDate.format('YYYY-MM-DD'));
+      
+      // Ensure end date is not before start date
+      const effectiveEndDate = dayjs(startDate).isAfter(localDate) 
+        ? dayjs(startDate).format('YYYY-MM-DD')
+        : localDate.format('YYYY-MM-DD');
+      
+      setEndDate(effectiveEndDate);
+      
+      // Change dropdown to Custom when manually selecting
+      if (setSelectData) {
+        setSelectData("Custom");
+      }
     }
     setShowEndCalendar(false);
   };
+
 
   
   return (
@@ -94,21 +148,31 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
       {showRangeDropdown && selectData !== undefined && setSelectData && (
         <div className="relative">
           <select
-            value={selectData}
-            onChange={(e) => setSelectData(e.target.value)}
+            // value={selectData || ""}
+            // onChange={(e) => setSelectData(e.target.value)}
+            onChange={(e) => {
+              const selectedValue = e.target.value;
+              setSelectData(selectedValue);
+              
+              // Only calculate date range if a specific range is selected
+              if (selectedValue && selectedValue !== "Custom") {
+                calculateDateRange(selectedValue);
+              }
+            }}
             className="w-full p-3 pl-4 pr-10 bg-white text-gray-600 border rounded-xl border-bg-blue-12 appearance-none focus:outline-none"
           >
-            {rangeOptions.map(option => (
+            {defaultRangeOptions.map(option => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
           </select>
           <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <img src="dropdownFilter.svg" className="text-indigo-600" />
+            <img src="dropdownFilter.svg" className="text-bg-blue-12" />
           </div>
         </div>
       )}
+
 
       {/* Start Date and End Date section */}
       <div className="flex items-center gap-2">
@@ -123,7 +187,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
             placeholder="Start Date"
           />
           <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <img src="dropdownFilter.svg" className="text-indigo-600 cursor-pointer" />
+            <img src="dropdownFilter.svg" className="text-bg-blue-12 cursor-pointer" />
           </div>
         </div>
 
@@ -143,7 +207,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
             placeholder="End Date"
           />
           <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <img src="dropdownFilter.svg" className="text-indigo-600 cursor-pointer" />
+            <img src="dropdownFilter.svg" className="text-bg-blue-12 cursor-pointer" />
           </div>
         </div>
       </div>
