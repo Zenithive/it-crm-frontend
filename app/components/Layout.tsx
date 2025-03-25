@@ -44,7 +44,7 @@ const Layout: React.FC<LayoutProps> = ({ children, nav }) => {
       <div className="flex-1 flex relative">
        
         <div 
-          className={`flex-1 overflow-auto transition-all duration-300 ease-in-out  mx-auto container ${
+          className={`flex-1 overflow-auto transition-all duration-300 ease-in-out  mx-auto container bg-blue-background ${
             isSidebarOpen ? "filter blur-sm " : ""
           }`}
         >
