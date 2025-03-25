@@ -36,10 +36,8 @@ const Contact = () => {
   const [pageSize, setPageSize] = useState<number>(5);
   const [inputValue, setInputValue] = useState<string>("");
 
-   const [fromDate, setFromDate] = useState<string | undefined>(undefined);
-  const [toDate, setToDate] = useState<string | undefined>(
-    undefined
-  );
+   const [startDate, setStartDate] = useState<string | undefined>(undefined);
+   const [endDate, setEndDate] = useState<string | undefined>(undefined);
   const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
   const [campaignFilter, setCampaignFilter] = useState<string | undefined>(undefined);
   const [stageFilter, setStageFilter] = useState<string | undefined>(undefined);
@@ -79,8 +77,8 @@ const Contact = () => {
     setStageFilter(filter.stage);
     setTypeFilter(filter.type);
     setCampaignFilter(filter.campaign);
-    setFromDate(filter.fromDate);
-    setToDate(filter.toDate);
+    setStartDate(filter.startDate);
+    setEndDate(filter.endDate);
     setCurrentPage(1);
     
     // Remove this separate refetch call - it's causing confusion
@@ -105,7 +103,10 @@ const Contact = () => {
     searchQuery,
     stageFilter,
     typeFilter,
-    campaignFilter
+    campaignFilter,
+    startDate,
+    endDate
+
   );
   
   

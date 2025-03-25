@@ -50,10 +50,13 @@ interface ResourceListApiVariables {
   totalExperience?: string | null;
   skills?: string | null;
 }
+
 export const useResourceList = (variables: ResourceListApiVariables) => {
   const { page, pageSize, search, vendorName, totalExperience, skills } = variables;
+
   const parseExperienceFilter = (filter: string | null): { min: number | null; max: number | null } => {
     if (!filter) return { min: null, max: null };
+
     if (filter.endsWith('+')) {
       return {
         min: parseFloat(filter.slice(0, -1)),
@@ -73,8 +76,10 @@ export const useResourceList = (variables: ResourceListApiVariables) => {
       max: exactValue
     };
   };
+
   const cleanSearch = search && search.trim() ? search.trim() : null;
   const experienceRange = parseExperienceFilter(totalExperience || null);
+
   const queryVariables = {
     page,
     pageSize,

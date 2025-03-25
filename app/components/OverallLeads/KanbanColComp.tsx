@@ -11,8 +11,8 @@ import { RxCross2 } from "react-icons/rx";
 
 const columnToStageMap: Record<string, string> = {
   "New Lead": "NEW",
-  Negotiation: "IN_PROGRESS",
-  Qualified: "FOLLOW_UP",
+  Negotiation: "NEGOTIATION",
+  Qualified: "QUALIFIED",
 
   "Closed Win": "CLOSED_WON",
   "Closed Lost": "CLOSED_LOST",

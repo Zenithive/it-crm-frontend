@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { resourcemanagmentApi } from "../../api/apiService/resourcemanagmentApiService";
 import { resourcemanagment } from "../../api/jsonService/resourcemanagmentJsonService";
 import JoditEditor from "jodit-react";
+import Notes from "../../microComponents/Notes";
 
 interface Note {
   message: string;
@@ -44,10 +45,10 @@ const ResourceNote = () => {
   }, [useDummyData]);
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-custom mr-6 mt-4">
-      <div className="bg-white rounded-2xl p-6 shadow-custom">
-        <div className="bg-white rounded-2xl p-6 shadow-custom min-h-[150px] mr-4 mt-4">
-          <JoditEditor
+    <div className="bg-white rounded-xlxl p-6 shadow-custom mr-6 mt-4">
+      <div className="bg-white rounded-xlxl p-6 shadow-custom">
+        <div className="">
+          {/* <JoditEditor
             ref={editor}
             value={content} 
             onChange={setContent} 
@@ -59,7 +60,9 @@ const ResourceNote = () => {
               showPlaceholder: false,
               style: { border: "none", minHeight: "150px" },
             }}
-          />
+          /> */}
+
+          <Notes/>
         </div>
         <div className="mt-6">
           <button className="bg-bg-blue-12 text-white rounded-lg p-2">

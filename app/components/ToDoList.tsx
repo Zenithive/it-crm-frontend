@@ -38,7 +38,8 @@ const TodoList: React.FC = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
 const [showFilter, setShowFilter] = useState(false);
   
-
+const [startDate, setStartDate] = useState<string | undefined>(undefined);
+const [endDate, setEndDate] = useState<string | undefined>(undefined);
     
   const [dateFilter, setDateFilter] = useState<string | undefined>(undefined);
   const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
@@ -46,7 +47,9 @@ const [showFilter, setShowFilter] = useState(false);
   const { todos, loading, error, totalItems, refetch } = useTodoListApiService(
     currentPage,
     itemsPerPage,
-    dateFilter,
+    startDate,     // Pass startDate
+    endDate, 
+ 
     priorityFilter,
     statusFilter
   );
@@ -118,7 +121,8 @@ const [showFilter, setShowFilter] = useState(false);
 
   const handleFilterApply = async (payload: FilterPayload) => {
     const { filter } = payload;
-    setDateFilter(filter.date);
+    setStartDate(filter.startDate);
+    setEndDate(filter.endDate);
     setStatusFilter(filter.status);
     setPriorityFilter(filter.priority);
     setCurrentPage(1);

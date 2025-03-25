@@ -9,10 +9,21 @@ export const GET_RESOURCE_PROFILES_QUERY = gql`
         $vendorID: ID
         $skillIDs: [ID!]
         $search: String
+         $totalExperienceMin: Float,
+  $totalExperienceMax: Float
     ) {
         getResourceProfiles(
             pagination: { page: $page, pageSize: $pageSize }
-            filter: { firstName: $firstName, status: $status, vendorID: $vendorID, skillIDs: $skillIDs, search: $search }
+            
+            filter: {
+      firstName: $firstName, 
+      status: $status, 
+      vendorID: $vendorID, 
+      skillIDs: $skillIDs, 
+      search: $search,
+      totalExperienceMin: $totalExperienceMin,
+      totalExperienceMax: $totalExperienceMax
+    }
             sort: { field: createdAt, order: ASC }
         ) {
             items {

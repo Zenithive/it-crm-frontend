@@ -22,7 +22,7 @@ const IndividualMain = ({ caseStudyId }: { caseStudyId: string }) => {
 
   return (
     <div className="max-w-[1400px] mx-auto p-4 md:p-6">
-      <div className="bg-white rounded-2xl p-4 md:p-6 shadow-custom">
+      <div className="bg-white rounded-xlxl p-4 md:p-6 shadow-custom">
         {/* Header */}
         <div className="flex justify-between items-start mb-6 md:mb-8">
           <h2 className="text-lg md:text-xl text-bg-blue-12 font-semibold">

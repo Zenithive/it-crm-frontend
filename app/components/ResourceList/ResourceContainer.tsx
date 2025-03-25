@@ -69,7 +69,7 @@ const ResourceContainer: React.FC<ResourceContainerProps> = ({
   return (
     <div className="w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-[70px]">
       <div className="flex-grow mt-6">
-        <div className="bg-white shadow-custom rounded-2xl">
+        <div className="bg-white shadow-custom rounded-xlxl">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 sm:p-6 lg:p-8">
             {loading ? (
               <p>Loading...</p>
