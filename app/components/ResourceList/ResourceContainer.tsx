@@ -41,6 +41,7 @@ const ResourceContainer: React.FC<ResourceContainerProps> = ({
     vendorName: vendorNameFilter || null,
     totalExperience: experienceYearFilter || null,
     skills: skillsFilter || null,
+    
   });
 
   // Map API data to Resource interface
