@@ -273,7 +273,7 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
       <div className="bg-bg-blue-12 rounded-t-xl p-2 flex justify-between">
           <div className="p-2">
             <h2 className="text-2xl font-semibold text-white">
-              {isEditMode ? "Edit Vendor" : "Vendor Form"}
+              {isEditMode ? "Edit Resource" : "Resource Form"}
             </h2>
           </div>
           <div className="p-2">
