@@ -33,9 +33,11 @@ const Form = () => {
 
   // Handle Google login - just redirect to your backend's Google auth endpoint
   const handleGoogleLogin = () => {
-    // Redirect to your backend Google auth endpoint
-    window.location.href = "https://crmbackendapis.onrender.com/auth/google";
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
   };
+  
+
+  console.log("API Base URL:", process.env.NEXT_PUBLIC_API_BASE_URL);
 
   return (
     <>

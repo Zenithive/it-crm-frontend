@@ -150,7 +150,7 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
     
     const token = localStorage.getItem('token') || ''; // Get the token from localStorage
     
-    fetch(`https://crmbackendapis.onrender.com/download?id=${fileId}`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/download?id=${fileId}`, {
       method: "GET",
       headers: { Authorization: token },
     })

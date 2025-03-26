@@ -117,7 +117,7 @@ const DocumentUploadForm: React.FC<{
         });
 
         const token = localStorage.getItem("token");
-        await axios.post("https://crmbackendapis.onrender.com/upload", formData, {
+        await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/upload`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
