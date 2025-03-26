@@ -183,7 +183,7 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
 
         {/* Pipeline Stage */}
         <h2 className="text-xl font-semibold text-bg-blue-12 ml-4">
-          Pipeline Stage
+          Pipeline Stag
         </h2>
         <PipelineStages leadId={leadId}/>
 
