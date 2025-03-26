@@ -20,7 +20,7 @@ import React, { useState } from "react";
 //   } | null;
 // }
 
-interface ResourceSkillsProps {
+export interface ResourceSkillsProps {
   resourceData: {
     name?: string;
     isAvailable?: boolean;
@@ -40,7 +40,6 @@ interface ResourceSkillsProps {
       project: string;
       time: string;
     }>;
-    // Keep the existing expected properties
     resourceSkills?: Array<{
       skill: {
         skillID: string;
@@ -55,6 +54,11 @@ interface ResourceSkillsProps {
       projectName: string;
       description: string;
     }>;
+    // Add the rawProfile property
+    rawProfile?: {
+      resourceProfileID?: string;
+      // Add other properties of rawProfile if known
+    };
   } | null;
 }
 

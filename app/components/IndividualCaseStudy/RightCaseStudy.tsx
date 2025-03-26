@@ -22,6 +22,13 @@ interface Document {
   url: string;
 }
 
+interface DocumentResponse {
+  id: string;
+  filePath: string;
+  title: string;
+  // ... other properties from the response
+}
+
 // export interface CaseStudy {
 //   keyOutcomes?: string;
 //   documents?: { name: string; url: string }[];
@@ -104,12 +111,12 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
           docResponse = caseStudy.documents || [];
         }
         setDocuments(
-          (docResponse ?? []).map((doc: { title: string; url: string }) => ({
-            id: null, // Assign a default value for id
-            filePath: undefined, // Assign a default value for filePath
-            title: doc.title, // Use name as title or default to "Untitled"
+          (docResponse as unknown as DocumentResponse[] ?? []).map((doc) => ({
+            id: doc.id,
+            filePath: doc.filePath,
+            title: doc.title,
             name: doc.title,
-            url: doc.url,
+            url: doc.filePath
           }))
         );
       } catch (err) {
