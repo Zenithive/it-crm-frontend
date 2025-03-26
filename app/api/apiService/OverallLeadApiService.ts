@@ -249,14 +249,30 @@ const useOverallLeadsData = (
   stage?: string,
   type?: string,
   campaign?: string,
+  startDate?: string,
+  endDate?: string,
   leadId?: string
 ) => {
   const { token } = useSelector((state: RootState) => state.auth);
 
   const filter: any = {};
-  if (stage) filter.leadStage = stage;
+
+  // Date filtering logic
+  if (startDate && endDate) {
+    // If both start and end dates are provided
+    filter.fromDate = startDate;
+    filter.toDate = endDate;
+  } else if (startDate) {
+    // If only start date is provided
+    filter.fromDate = startDate;
+  } else if (endDate) {
+    // If only end date is provided
+    filter.toDate = endDate;
+  }
+
+  if (stage) filter.leadStage = stage.toUpperCase();
   if (type) filter.leadType = type;
-  if (campaign) filter.campaign = campaign;
+  if (campaign) filter.campaignName = campaign;
   if (searchQuery) filter.search = searchQuery;
 
   const queryVariables = leadId
@@ -365,120 +381,3 @@ export default useOverallLeadsData;
 
 
 
-
-
-// import { useQuery } from "@apollo/client";
-// import { useSelector } from "react-redux";
-// import { RootState } from "../../redux/store/store";
-// import { GET_LEADS_QUERY } from "../../../graphQl/queries/getLeads.query";
-// import client from "../../../lib/appoloClient";
-// import { UPDATE_TASK_MUTATION } from "../../../graphQl/mutation/updateTask.mutation";
-// import { useEffect } from "react";
-
-// const getDateRange = () => {
-//   const today = new Date();
-//   const fromDate = new Date();
-//   fromDate.setDate(today.getDate() - 30);
-
-//   const formatDate = (date: Date) => date.toISOString().split("T")[0];
-
-//   return {
-//     fromDate: formatDate(fromDate),
-//     toDate: formatDate(today),
-//   };
-// };
-
-// export interface Lead {
-//   leadID: string;
-//   firstName: string;
-//   lastName: string;
-//   email: string;
-//   phone: string;
-//   country: string;
-//   leadSource: string;
-//   leadStage: string;
-//   leadPriority: string;
-//   linkedIn?: string;
-//   initialContactDate?: string;
-//   leadCreatedBy: {
-//     userID: string;
-//     name: string;
-//     email: string;
-//   };
-//   leadAssignedTo: {
-//     userID: string;
-//     name: string;
-//     email: string;
-//   };
-//   organization: {
-//     organizationID: string;
-//     organizationName: string;
-//   };
-//   campaign: {
-//     campaignID: string;
-//     campaignName: string;
-//     campaignCountry: string;
-//     campaignRegion: string;
-//     industryTargeted: string;
-//   };
-// }
-
-// const useOverallLeadsData = (page: number, pageSize: number, searchQuery: string) => {
-//   const { token, name: currentUseName } = useSelector((state: RootState) => state.auth);
-//   const { fromDate, toDate } = getDateRange();
-
-//   const queryVariables: any = {
-//     filter: {
-//       fromDate,
-//       toDate,
-//       assignedToUserId: currentUseName
-//     },
-//     pagination: { page, pageSize },
-//     sort: { field: "EMAIL", order: "ASC" },
-//   };
-//   console.log("queryVariables",queryVariables);
-
-//   if (searchQuery) {
-//     queryVariables.filter.search = searchQuery;
-//   }
-
-//   const { data, loading, error } = useQuery(GET_LEADS_QUERY, {
-//     variables: queryVariables,
-//     context: {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     },
-//   });
-
-//   useEffect(() => {
-//     console.log("Query Variables:", queryVariables);
-//     console.log("Leads Data:", data);
-//     console.log("Loading State:", loading);
-//     console.log("Error:", error);
-//   }, [data, loading, error]);
-
-//   return {
-//     leads: data?.getLeads?.items || [],
-//     totalCount: data?.getLeads?.totalCount || 0,
-//     loading,
-//     error: error ? error.message : null,
-//   };
-// };
-
-// export default useOverallLeadsData;
-
-// export const updateTaskAPI = async (taskID: string, input: any) => {
-//   try {
-//     const { data } = await client.mutate({
-//       mutation: UPDATE_TASK_MUTATION,
-//       variables: { taskID, input },
-//     });
-
-//     return data?.updateTask;
-//   } catch (error) {
-//     console.error("Failed to update task:", error);
-//     throw error;
-//   }
-// };
-// export default useOverallLeadsData;

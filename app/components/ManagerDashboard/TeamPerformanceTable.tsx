@@ -27,19 +27,21 @@ const TeamPerformanceTable: React.FC = () => {
     loading, 
     error 
   } = leadsApiService(currentPage, itemsPerPage, true);
-
+  
+  console.log("teamPerformance",teamPerformance);
+  
   if (loading) {
     return (
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between ml-6 mb-2 mt-6">
-          <CardTitle className="text-bg-blue-12">Team Performance</CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between ml-6 mb-2 mt-6">
+      <CardTitle className="text-bg-blue-12">Team Performance</CardTitle>
         </CardHeader>
         <CardContent className="p-4">
-          <p>Loading team performance data...</p>
+        <p>Loading team performance data...</p>
         </CardContent>
-      </Card>
-    );
-  }
+        </Card>
+      );
+    }
 
   if (error) {
     return (
@@ -65,7 +67,7 @@ const TeamPerformanceTable: React.FC = () => {
 
       <CardContent className="p-4">
         <div className="overflow-x-auto">
-          <table className="w-full rounded-2xl overflow-hidden shadow-2xl">
+          <table className="w-full rounded-xl overflow-hidden shadow-2xl">
             <thead>
               <tr className="bg-bg-blue-12 text-white">
                 <th className="p-4 text-left font-medium">Employee Name</th>

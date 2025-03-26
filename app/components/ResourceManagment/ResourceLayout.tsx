@@ -215,7 +215,68 @@ const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
           {activeTab === "Documents" && <ResourceDoc resourceData={resourceData}/>}
           {activeTab === "Notes" && <ResourceNote />}
         </div>
-        {/* Rest of the component remains unchanged */}
+        <div className="w-full md:w-1/3 mt-10 flex-shrink-0 bg-white rounded-2xl p-6 shadow-custom">
+          <h3 className="text-bg-blue-12 text-2xl font-bold mb-4">Performance Overview</h3>
+
+          {resourceData?.performance ? (
+            <>
+              <Flex vertical gap="small">
+                {/* Performance Completion Rate */}
+                <div>
+                  <p className="text-gray-text mb-2 flex justify-between">
+                    <span>Performance Completion Rate</span>
+                    <span className="text-xl text-bg-blue-12">{resourceData?.performance?.rate}%</span>
+                  </p>
+                  <Progress
+                    percent={parseFloat(resourceData?.performance?.rate || "0")}
+                    status="active"
+                    strokeColor="#6158FF"
+                    showInfo={false}
+                  />
+                </div>
+
+                {/* Client Satisfaction */}
+                <div className="mt-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-text mb-2">Client Satisfaction</span>
+                    <Rate
+                      allowHalf
+                      value={parseFloat(resourceData?.performance?.satisfaction || "0") / 20}
+                      disabled
+                      style={{ color: "#6158FF" }}
+                    />
+                  </div>
+                  <Progress
+                    percent={parseFloat(resourceData?.performance?.satisfaction || "0")}
+                    status="active"
+                    strokeColor="#6158FF"
+                    showInfo={false}
+                  />
+                </div>
+              </Flex>
+
+              {/* Performance Overview */}
+              <div className="mt-5">
+                <div className="border-b border-content-border"></div>
+                <h3 className="text-bg-blue-12 text-2xl font-bold mb-4 mt-5">Project History</h3>
+                {resourceData?.overview?.map((item: { project: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; time: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
+                  <div key={index}>
+                    <div className="flex justify-between items-center mt-6">
+                      <img src="right_icon.svg" alt="right" className="mr-6" />
+                      <div className="text-gray-text">{item.project}</div>
+                      <div className="font-medium text-md text-bg-blue-12 whitespace-nowrap">{item.time}</div>
+                    </div>
+                    {resourceData?.overview && index !== resourceData.overview.length - 1 && (
+                      <div className="border-b border-content-border mt-4 mb-4"></div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <p className="text-gray-500">No performance data available.</p>
+          )}
+        </div>
       </div>
     </div>
   );

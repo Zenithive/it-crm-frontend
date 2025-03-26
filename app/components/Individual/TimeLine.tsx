@@ -80,7 +80,7 @@ const TimeLine: React.FC = () => {
                   <p className="font-medium">{item.sender}</p>
                   <p className="text-sm text-gray-500">to {item.recipient}</p>
                 </div>
-                <button className="ml-auto text-indigo-600 hover:text-indigo-700 flex items-center gap-1">
+                <button className="ml-auto text-bg-blue-12 hover:text-indigo-700 flex items-center gap-1">
                   Details <ChevronDown size={16} />
                 </button>
               </div>
@@ -111,7 +111,7 @@ const TimeLine: React.FC = () => {
                   Deal {item.dealNumber} {item.dealTitle}
                 </span>
                 <span className="text-gray-500">{item.status}</span>
-                <button className="text-indigo-600 hover:text-indigo-700 ml-2">
+                <button className="text-bg-blue-12 hover:text-indigo-700 ml-2">
                   View details
                 </button>
               </div>

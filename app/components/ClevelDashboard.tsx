@@ -32,7 +32,7 @@ const ClevelDashboard: React.FC = () => {
         <Title title={Dashboardtitle[0].titleName} />
         <TimeDropDown />
       </div>
-      <div className="bg-gray-50 min-h-screen p-4 lg:p-8">
+      <div className="min-h-screen p-4 lg:p-8">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="grid grid-cols-2 md:grid-cols-2 gap-6">

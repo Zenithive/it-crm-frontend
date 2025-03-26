@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { useQuery, useLazyQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { GET_DEALS, GET_DEAL } from "../../../graphQl/queries/deals.queries";
+import { GET_LEADS } from "../../../graphQl/queries/leads.queries";
 
 export interface Deal {
   dealID: string;
@@ -13,14 +14,30 @@ export interface Deal {
   projectRequirements: string;
   dealAmount: string;
   dealStatus: string;
+    user: {
+    userID: string;
+    name: string;
+  };
+  
+}
+
+interface Lead {
+  leadID: string;
+  country: string;
 }
 
 interface DealsResponse {
-  getDeals: Deal[];
+  getDeals: {
+    items: Deal[];
+    totalCount: number;
+  };
 }
 
-interface DealResponse {
-  getDeal: Deal;
+interface LeadsResponse {
+  getLeads: {
+    items: Lead[];
+    totalCount: number;
+  };
 }
 
 interface DateFilter {
@@ -30,59 +47,19 @@ interface DateFilter {
 
 const useDealsApiService = () => {
   const [totalDealAmount, setTotalDealAmount] = useState<number>(0);
-  const [selectedDeal, setSelectedDeal] = useState<Deal | null>(null);
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const [dateFilter, setDateFilter] = useState<DateFilter | null>(null);
+  const [dealsByCountry, setDealsByCountry] = useState<{[country: string]: Deal[]}>({});
+
   const user = useSelector((state: RootState) => state.auth);
 
-  // Function to format date as YYYY-MM-DD
-  function formatDate(date: Date): string {
-    return date.toISOString().split('T')[0];
-  }
-
-  // Function to get date range based on filter type
-  function getDateRangeForFilter(filterType: string): DateFilter | null {
-    if (!filterType || filterType === "none") {
-      return null;
-    }
-    
-    const today = new Date();
-    const startDate = new Date(today);
-    
-    if (filterType === "yearly") {
-      // Set start date to 1 year ago from today
-      startDate.setFullYear(today.getFullYear() - 1);
-    } else if (filterType === "half-yearly") {
-      // Set start date to 6 months ago from today
-      startDate.setMonth(today.getMonth() - 6);
-    } else {
-      return null;
-    }
-    
-    return {
-      dealStartDateMin: formatDate(startDate),
-      dealStartDateMax: formatDate(today)
-    };
-  }
-
-  // Create filter object for the GraphQL query
-  const createQueryFilter = () => {
-    if (dateFilter) {
-      return { ...dateFilter };
-    }
-    return null;
-  };
-
-  // Update date filter when active filter changes
-  useEffect(() => {
-    setDateFilter(getDateRangeForFilter(activeFilter || ""));
-  }, [activeFilter]);
-
-  const { data, loading, error, refetch } = useQuery<DealsResponse>(GET_DEALS, {
+  const {
+    data: dealsData,
+    loading: dealsLoading,
+    error: dealsError
+  } = useQuery<DealsResponse>(GET_DEALS, {
     variables: {
-      filter: createQueryFilter(),
-      pagination: { page: 1, pageSize: 10 },
-      sort: { field: "dealStartDate", order: "ASC" },
+      filter: null,
+      pagination: { page: 1, pageSize: 1000 },
+      sort: { field: "dealAmount", order: "ASC" },
     },
     context: {
       headers: {
@@ -92,58 +69,63 @@ const useDealsApiService = () => {
     onError: (err) => console.error("Error fetching deals:", err),
   });
 
-  // Function to update filter type
-  const updateFilter = (filterType: string) => {
-    setActiveFilter(filterType === "none" ? null : filterType);
-  };
-
-  // Refetch data when date filter changes
-  useEffect(() => {
-    refetch({
-      filter: createQueryFilter(),
-      pagination: { page: 1, pageSize: 10 },
-      sort: { field: "dealStartDate", order: "ASC" },
-    });
-  }, [dateFilter, refetch]);
-
-  const [fetchDealById, { data: dealData, loading: dealLoading, error: dealError }] = useLazyQuery<DealResponse>(
-    GET_DEAL,
-    {
-      context: {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+  const {
+    data: leadsData,
+    loading: leadsLoading,
+    error: leadsError
+  } = useQuery<LeadsResponse>(GET_LEADS, {
+    variables: {
+      filter: null,
+      pagination: { page: 1, pageSize: 1000 },
+      sort: null,
+    },
+    context: {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
       },
-      onError: (err) => console.error("Error fetching deal:", err),
-    }
-  );
+    },
+    onError: (err) => console.error("Error fetching leads:", err),
+  });
 
   useEffect(() => {
-    if (dealData?.getDeal) {
-      setSelectedDeal(dealData.getDeal);
+    if (dealsData?.getDeals?.items && leadsData?.getLeads.items) {
+      const leadsMap = new Map(
+        leadsData.getLeads.items.map(lead => [lead.leadID, lead.country])
+      );
+
+      const countryDealsMap: {[country: string]: Deal[]} = {};
+
+      dealsData.getDeals.items.forEach(deal => {
+        const country = leadsMap.get(deal.leadID);
+        if (country) {
+          if (!countryDealsMap[country]) {
+            countryDealsMap[country] = [];
+          }
+          countryDealsMap[country].push(deal);
+        }
+      });
+
+      setDealsByCountry(countryDealsMap);
     }
-  }, [dealData]);
+  }, [dealsData, leadsData]);
 
   useEffect(() => {
-    if (data?.getDeals) {
-      const fetchedDeals = data.getDeals;
-      const totalAmount = fetchedDeals.reduce((sum, deal) => sum + (parseFloat(deal.dealAmount) || 0), 0);
+    if (dealsData?.getDeals?.items) {
+      const totalAmount = dealsData.getDeals.items.reduce(
+        (sum, deal) => sum + (parseFloat(deal.dealAmount) || 0), 
+        0
+      );
       setTotalDealAmount(totalAmount);
     }
-  }, [data]);
+  }, [dealsData]);
 
   return {
-    deals: data?.getDeals || [],
-    loading,
-    error: error ? error.message : null,
+    deals: dealsData?.getDeals?.items || [],
+    dealsByCountry,
+    loading: dealsLoading || leadsLoading,
+    error: dealsError?.message || leadsError?.message,
     totalDealAmount,
-    fetchDealById: (dealID: string) => fetchDealById({ variables: { dealID } }),
-    selectedDeal,
-    dealLoading,
-    dealError: dealError ? dealError.message : null,
-    activeFilter,
-    updateFilter,
-    dateFilter
+    totalLeads: leadsData?.getLeads.totalCount || 0,
   };
 };
 

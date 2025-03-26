@@ -1,14 +1,14 @@
 import { gql } from "@apollo/client";
 
 export const GET_RESOURCE_PROFILE = gql`
-query GetUsers($filter: UserFilter, $pagination: PaginationInput, $sort: UserSortInput) {
-  getUsers(filter: $filter, pagination: $pagination, sort: $sort) {
+query Users($filter: UserFilter, $pagination: PaginationInput, $sort: UserSortInput) {
+  Users(filter: $filter, pagination: $pagination, sort: $sort) {
     items {
       userID
       name
       email
       role
-      campaigns{
+      campaigns {
         campaignID
         campaignName
         campaignCountry
@@ -18,5 +18,4 @@ query GetUsers($filter: UserFilter, $pagination: PaginationInput, $sort: UserSor
     totalCount
   }
 }
-
-`
+`;

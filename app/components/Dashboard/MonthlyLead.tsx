@@ -7,9 +7,10 @@ import { dashboardTotalLeadJson } from "../../api/jsonService/dashboardJsonServi
 
 const COLORS = {
   NEW: "#6366F1", // Purple
-  FOLLOW_UP: "#EF4444", // Red
+  NEGOTIATION: "#EF4444", // Red
   CLOSED_LOST: "#10B981", // Green
-  IN_PROGRESS: "#374151", // Dark gray
+  QUALIFIED: "#374151", // Dark gray
+  DEAL:"#374151",
 };
 
 const RADIAN = Math.PI / 180;

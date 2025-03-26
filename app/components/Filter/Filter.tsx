@@ -71,7 +71,7 @@
 //   };
 
 //   return (
-//     <div className="bg-white rounded-2xl w-full max-w-[600px] overflow-hidden">
+//     <div className="bg-white rounded-xl w-full max-w-[600px] overflow-hidden">
 //       {/* Header */}
 //       <div className="bg-indigo-600 px-6 py-4 flex justify-between items-center">
 //         <h2 className="text-xl font-semibold text-white">Filters</h2>
@@ -230,7 +230,7 @@ const Filter: React.FC<FilterProps> = ({
     return section ? section.title.toLowerCase() : sectionId;
   };
   return (
-    <div className="bg-white rounded-2xl w-full max-w-[600px] overflow-hidden">
+    <div className="bg-white rounded-xl w-full max-w-[600px] overflow-hidden">
       <div className="bg-bg-blue-12 px-6 py-4 flex justify-between items-center">
         <h2 className="text-xl font-semibold text-white">Filters</h2>
         <button onClick={onClose} className="text-white hover:text-gray-200">

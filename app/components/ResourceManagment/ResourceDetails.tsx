@@ -25,7 +25,7 @@ const ResourceDetails: React.FC<ResourceDetailsProps> = ({ resourceData }) => {
         <div className="w-full ">
           {activeTab === "details" && (
             <div className="flex mr-6 mt-4">
-              <div className="bg-white rounded-2xl p-4 shadow-custom w-full h-[500px]">
+              <div className="bg-white rounded-xl p-4 shadow-custom w-full h-[500px]">
                 <div className="grid grid-cols-3 sm:grid-cols-2 gap-6 ">
                   {/* Primary Contact */}
                   <div className="p-4">

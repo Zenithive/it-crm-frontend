@@ -23,7 +23,7 @@ const TablerLayoutPage: React.FC<TablerLayoutProps> = ({ resources, loading, err
       ) : error ? (
         <p className="text-red-500 text-center mt-6">{error}</p>
       ) : (
-        <div className="bg-white shadow-custom rounded-2xl p-4 sm:p-6 lg:p-8">
+        <div className="bg-white shadow-custom rounded-xl p-4 sm:p-6 lg:p-8">
           {resources.length === 0 ? (
             <p className="text-center text-gray-500 py-8">No resources found</p>
           ) : (

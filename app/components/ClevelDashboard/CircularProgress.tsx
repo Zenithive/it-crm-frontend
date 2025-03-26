@@ -21,7 +21,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCur
   const COLORS = ["#6158FF", "#E5E7EB"];
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center">
+    <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center">
       <div className="flex justify-between items-center w-full mb-2">
         <div className='flex justify-center items-center'>
         <img src={img} alt='Image' className="w-5 h-5 " ></img>

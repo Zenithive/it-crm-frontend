@@ -54,8 +54,8 @@ interface SkillInput {
 
 interface ResourceFormProps {
   onClose: () => void;
-  resourceProfileId?: string; // Optional ID for edit mode
-  isEditMode?: boolean; // Flag to determine if we're in edit mode
+  resourceProfileId?: string; 
+  isEditMode?: boolean;
   onUpdateSuccess?: () => void;
 }
 
@@ -192,12 +192,12 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
           googleDriveLink: formData.googleDriveLink,
           vendorID: formData.vendorID,
           contactInformation,
-          // skillInputs: formData.skillInputs
-          // .filter(skill => skill.skillID.trim() !== "")
-          // .map((skill) => ({
-          //   skillID: skill.skillID,
-          //   experienceYears: parseFloat(skill.experienceYears) || 0,
-          // })),
+          skillInputs: formData.skillInputs
+          .filter(skill => skill.skillID.trim() !== "")
+          .map((skill) => ({
+            skillID: skill.skillID,
+            experienceYears: parseFloat(skill.experienceYears) || 0,
+          })),
           // NO skills field for update - your GraphQL schema doesn't support it
         };
         
@@ -273,7 +273,7 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
       <div className="bg-bg-blue-12 rounded-t-xl p-2 flex justify-between">
           <div className="p-2">
             <h2 className="text-2xl font-semibold text-white">
-              {isEditMode ? "Edit Vendor" : "Vendor Form"}
+              {isEditMode ? "Edit Resource" : "Resource Form"}
             </h2>
           </div>
           <div className="p-2">

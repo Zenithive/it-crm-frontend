@@ -67,8 +67,8 @@ const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignF
       title: "Stage",
       options: [
         { id: "NEW", label: "New Lead", checked: false },
-        { id: "FOLLOW_UP", label: "Qualified", checked: false },
-        { id: "IN_PROGRESS", label: "Negotiation", checked: false },
+        { id: "Qualified", label: "Qualified", checked: false },
+        { id: "Negotiation", label: "Negotiation", checked: false },
         { id: "CLOSED_WON", label: "Close Won", checked: false },
         { id: "CLOSED_LOST", label: "Close Lost", checked: false }
       ]
@@ -97,12 +97,12 @@ const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignF
 
   return (
     <>
-      <div className="pt-[30px] flex justify-between items-center px-[30px]">
-        <div className="flex gap-[20px] items-center">
+      <div className="pt-7 flex justify-between items-center px-7">
+        <div className="flex gap-5 items-center">
           <div className="text-bg-blue-12 font-bold text-[30px]">
             <Title title={data.title || ""} />
           </div>
-          <div className="flex gap-[48px] items-center">
+          <div className="flex gap-12 items-center">
             <Search
               searchText={data.searchText}
               value={searchQuery || ""}
@@ -110,7 +110,7 @@ const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignF
             />
             <div className="flex gap-5 items-center justify-start">
               <div
-                className={`flex items-center cursor-pointer px-[20px] py-[7px] rounded-[12px] gap-[10px] ${
+                className={`flex items-center cursor-pointer px-5 py-2 rounded-xl gap-2 ${
                   activeView === "list" ? "border border-1 shadow-custom" : ""
                 }`}
                 onClick={() => handleViewChange("list")}
@@ -123,15 +123,15 @@ const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignF
                   }`}
                 />
                 {activeView === "list" && (
-                  <div className="font-semibold text-[15px] text-[#333333]">
+                  <div className="font-semibold text-[15px] text-gray-text">
                     List View
                   </div>
                 )}
               </div>
               <div
-                className={`flex items-center cursor-pointer px-[20px] py-[7px] rounded-[12px] gap-[10px] ${
+                className={`flex items-center cursor-pointer px-5 py-2 rounded-xl gap-2 ${
                   activeView === "kanban"
-                    ? "border border-1 shadow-custom rounded-[12px]"
+                    ? "border border-1 shadow-custom rounded-xl"
                     : ""
                 }`}
                 onClick={() => handleViewChange("kanban")}
@@ -144,7 +144,7 @@ const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignF
                   }`}
                 />
                 {activeView === "kanban" && (
-                  <div className="font-semibold text-[15px] text-[#333333]">
+                  <div className="font-semibold text-[15px] text-gray-text">
                     Kanban View
                   </div>
                 )}

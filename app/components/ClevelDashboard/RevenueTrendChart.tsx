@@ -55,7 +55,7 @@ const RevenueTrendChart: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-custom p-4 z-100">
+    <div className="bg-white rounded-xl shadow-custom p-4 z-100">
       <div className="flex justify-between items-center ">
         <h3 className="text-2xl font-semibold mb-4 text-bg-blue-12 p-3">
           Revenue Trend

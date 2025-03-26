@@ -7,7 +7,7 @@ const TimeDropdown = () => {
   const options = ["Day", "Week", "Month", "Year"];
 
   return (
-    <div className="relative bg-white shadow-custom rounded-2xl mr-8 cursor-pointer z-50">
+    <div className="relative bg-white shadow-custom rounded-xl mr-8 cursor-pointer z-50">
       <div className="p-3 flex items-center" onClick={() => setIsOpen(!isOpen)}>
         <span className="ml-3 text-gray-text-color">{selectedOption}</span>
         <img src="dropdown_black.svg" alt="Dropdown" className="ml-8" />

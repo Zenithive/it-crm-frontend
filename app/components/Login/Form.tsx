@@ -40,7 +40,7 @@ const Form = () => {
   return (
     <>
       <div className="w-full max-w-md mx-auto">
-        <div className="border border-bg-blue-11 border-opacity-30 rounded-2xl p-4">
+        <div className="border border-bg-blue-11 border-opacity-30 rounded-xl p-4">
           <div
             className="w-full rounded-xl p-6"
             style={{ backgroundColor: formBg || "white" }}

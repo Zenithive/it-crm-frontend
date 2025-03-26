@@ -1,10 +1,11 @@
-import { useQuery } from "@apollo/client";
+// api/apiService/overallvendorApiService.tsx
+import { useQuery, useMutation } from "@apollo/client";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import { GET_VENDORS } from "../../../graphQl/queries/getVendors.queries";
+import { GET_VENDORS, GET_VENDOR_BY_ID } from "../../../graphQl/queries/getVendors.queries";
+import { UPDATE_VENDOR_MUTATION } from "../../../graphQl/mutation/updateVendor.mutation";
 import { GetVendorsResponse } from "../../types/vendors.types";
-import { UPDATE_VENDOR_MUTATION } from "../../../graphQl/mutation/updateVendor.mutation"; 
-import { useMutation } from "@apollo/client";
+import client from "../../../lib/appoloClient";
 
 interface UseVendorsParams {
   page?: number;
@@ -15,6 +16,7 @@ interface UseVendorsParams {
   search?: string;
   sortField?: string;
   sortOrder?: "ASC" | "DESC";
+  vendorId?: string; // For single vendor fetch
 }
 
 interface UpdateVendorInput {
@@ -25,7 +27,7 @@ interface UpdateVendorInput {
   address?: string;
   gstOrVatDetails?: string;
   notes?: string;
-  // location?: string;
+  country?: string;
   skillIDs?: string[];
 }
 
@@ -38,70 +40,118 @@ export const useVendors = ({
   search,
   sortField = "createdAt",
   sortOrder = "DESC",
+  vendorId,
 }: UseVendorsParams = {}) => {
   const { token } = useSelector((state: RootState) => state.auth);
 
-  const variables = {
-    page,
-    pageSize,
-    search: search?.trim() || undefined, // Pass search directly
-    status: status ? status.toUpperCase() : undefined, // Map to enum
-    // Note: address and rating aren't directly supported by GET_VENDORS
+  // Query setup
+  const variables = vendorId
+    ? { vendorID: vendorId } // For GET_VENDOR_BY_ID
+    : {
+        page,
+        pageSize,
+        search: search?.trim() || undefined,
+        status: status ? status.toUpperCase() : undefined,
+      };
+
+  const { data, loading: queryLoading, error: queryError, refetch } = useQuery(
+    vendorId ? GET_VENDOR_BY_ID : GET_VENDORS,
+    {
+      variables,
+      context: { headers: { Authorization: `Bearer ${token}` } },
+      fetchPolicy: "network-only",
+    }
+  );
+
+  // Mutation setup
+  const [updateVendorMutation, { loading: mutationLoading, error: mutationError }] = useMutation(
+    UPDATE_VENDOR_MUTATION,
+    {
+      context: { headers: { Authorization: `Bearer ${token}` } },
+    }
+  );
+
+  // Client-side filtering for rating and address (only for list query)
+  const filteredItems = vendorId
+    ? data?.getVendor
+      ? [data.getVendor]
+      : []
+    : (data?.getVendors?.items || [])
+        .filter((vendor: any) => {
+          if (rating) {
+            const ratingValue = parseInt(rating.replace("star", ""), 10);
+            const vendorRating = vendor.performanceRatings?.length || 0;
+            return vendorRating === ratingValue;
+          }
+          return true;
+        })
+        .filter((vendor: any) => {
+          if (address) {
+            return vendor.address?.toLowerCase().includes(address.toLowerCase());
+          }
+          return true;
+        });
+
+  // Update vendor function
+  const updateVendor = async (input: UpdateVendorInput) => {
+    try {
+      console.log("Input from form:", input);
+
+      // Fetch current vendor data to preserve fields
+      const { data: currentVendorData } = await client.query({
+        query: GET_VENDOR_BY_ID,
+        variables: { vendorID: input.vendorID },
+        context: { headers: { Authorization: `Bearer ${token}` } },
+      });
+
+      const currentVendor = currentVendorData?.getVendor || {};
+      const currentSkills = currentVendor.skills?.map((skill: { skillID: string }) => skill.skillID) || [];
+      const currentCountry = currentVendor.country || "India";
+      const currentNotes = currentVendor.notes || "";
+      const currentPaymentTerms = currentVendor.paymentTerms || "NET30";
+      const currentGstOrVatDetails = currentVendor.gstOrVatDetails || "";
+      const currentStatus = currentVendor.status || "ACTIVE";
+      const currentAddress = currentVendor.address || "";
+      const currentCompanyName = currentVendor.companyName || "";
+
+      const updatedInput: UpdateVendorInput = {
+        vendorID: input.vendorID,
+        companyName: input.companyName || currentCompanyName,
+        address: input.address || currentAddress,
+        status: input.status || currentStatus,
+        paymentTerms: input.paymentTerms || currentPaymentTerms,
+        gstOrVatDetails: input.gstOrVatDetails || currentGstOrVatDetails,
+        notes: input.notes || currentNotes,
+        country: input.country || currentCountry,
+        skillIDs: input.skillIDs || currentSkills,
+      };
+
+      console.log("Updated input for mutation:", updatedInput);
+
+      const response = await updateVendorMutation({
+        variables: updatedInput,
+      });
+
+      // Refetch the query to update the UI
+      await refetch();
+
+      return response.data.updateVendor;
+    } catch (err) {
+      console.error("Failed to update vendor:", err);
+      throw new Error("Failed to update vendor");
+    }
   };
-
-  const { data, loading, error, refetch } = useQuery<GetVendorsResponse>(GET_VENDORS, {
-    variables,
-    context: { headers: { Authorization: `Bearer ${token}` } },
-    fetchPolicy: "network-only",
-  });
-
-  // Client-side filtering for rating and address (if backend doesn't support)
-  const filteredItems =
-    data?.getVendors?.items
-      .filter((vendor: any) => {
-        // Filter by rating
-        if (rating) {
-          const ratingValue = parseInt(rating.replace("star", ""), 10);
-          const vendorRating = vendor.performanceRatings?.length || 0; // Adjust if rating is an average
-          return vendorRating === ratingValue;
-        }
-        return true;
-      })
-      .filter((vendor: any) => {
-        // Filter by address (client-side, since GET_VENDORS doesn't support it natively)
-        if (address) {
-          return vendor.address?.toLowerCase().includes(address.toLowerCase());
-        }
-        return true;
-      }) || [];
 
   console.log("useVendors variables:", variables);
   console.log("useVendors response:", { data, filteredItems });
 
   return {
     vendors: filteredItems,
-    totalItems: data?.getVendors?.totalCount || 0, // Note: totalCount won't reflect client-side filters
-    loading,
-    error: error ? error.message : null,
+    vendor: vendorId ? data?.getVendor || null : null,
+    totalItems: vendorId ? (data?.getVendor ? 1 : 0) : data?.getVendors?.totalCount || 0,
+    loading: queryLoading || mutationLoading,
+    error: queryError ? queryError.message : mutationError ? mutationError.message : null,
     refetch,
+    updateVendor, // Expose the update function
   };
-};
-
-export const useUpdateVendor = () => {
-  const [updateVendorMutation, { loading, error }] = useMutation(UPDATE_VENDOR_MUTATION);
-
-  const updateVendor = async (input: UpdateVendorInput) => {
-    try {
-      const response = await updateVendorMutation({
-        variables: {
-          ...input,
-        },
-      });
-      return response.data.updateVendor;
-    } catch (err) {
-      throw new Error("Failed to update vendor");
-    }
-  };
-
-  return { updateVendor, loading, error };
 };
