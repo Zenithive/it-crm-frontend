@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useCallback, useEffect, useState } from "react";
 import {
   individualcasestudyOutcomesApi,
   individualcasestudyDocApi,
@@ -47,7 +47,28 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   const [isUploadFormOpen, setIsUploadFormOpen] = useState(false);
   const [downloadMessage, setDownloadMessage] = useState<string>("");
 
-  const fetchDocumentData = async () => {
+  // Refactored fetchOutcomeData to be a useCallback function
+  const fetchOutcomeData = useCallback(async () => {
+    try {
+      setLoading(true);
+      let outcomeResponse;
+      
+      if (useDummyData) {
+        outcomeResponse = await individualcasestudyOutcomesJson();
+      } else {
+        outcomeResponse = { outcomes: caseStudy.keyOutcomes || "No outcomes available." };
+      }
+      setOutcome(outcomeResponse ?? null);
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching outcome data:", err);
+      setError("Failed to load outcome data");
+    } finally {
+      setLoading(false);
+    }
+  }, [caseStudy]);
+
+  const fetchDocumentData = useCallback(async () => {
     try {
       setDocLoading(true);
       let docResponse;
@@ -56,7 +77,6 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
       } else {
         if (caseStudy.caseStudyID) {
           docResponse = await individualcasestudyDocApi(caseStudy.caseStudyID);
-          console.log(`docResponse`, docResponse);
         } else {
           docResponse = caseStudy.documents || [];
         }
@@ -77,59 +97,69 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
     } finally {
       setDocLoading(false);
     }
-  };
+  }, [caseStudy]);
+
+  // useEffect(() => {
+  //   const fetchOutcomeData = async () => {
+  //     try {
+  //       let outcomeResponse;
+        
+  //       if (useDummyData) {
+  //         console.log(`
+  //           useDummyData`, 
+  //           useDummyData
+  //         );
+  //         outcomeResponse = await individualcasestudyOutcomesJson();
+  //       } else {
+  //         outcomeResponse = { outcomes: caseStudy.keyOutcomes || "No outcomes available." };
+  //       }
+  //       setOutcome(outcomeResponse ?? null);
+  //     } catch (err) {
+  //       console.error("Error fetching outcome data:", err);
+  //       setError("Failed to load outcome data");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   const fetchDocumentData = async () => {
+  //     try {
+  //       let docResponse;
+  //       if (useDummyData) {
+  //         docResponse = await individualcasestudyDocJson();
+  //       } else {
+  //         docResponse = caseStudy.documents || [];
+  //       }
+  //       setDocuments(
+  //         (docResponse as unknown as DocumentResponse[] ?? []).map((doc) => ({
+  //           id: doc.id,
+  //           filePath: doc.filePath,
+  //           title: doc.title,
+  //           name: doc.title,
+  //           url: doc.filePath
+  //         }))
+  //       );
+  //     } catch (err) {
+  //       console.error("Error fetching documents:", err);
+  //       setDocError("Failed to load documents");
+  //     } finally {
+  //       setDocLoading(false);
+  //     }
+  //   };
+
+  //   fetchOutcomeData();
+  //   fetchDocumentData();
+  // }, [caseStudy]);
+
+
 
   useEffect(() => {
-    const fetchOutcomeData = async () => {
-      try {
-        let outcomeResponse;
-        
-        if (useDummyData) {
-          console.log(`
-            useDummyData`, 
-            useDummyData
-          );
-          outcomeResponse = await individualcasestudyOutcomesJson();
-        } else {
-          outcomeResponse = { outcomes: caseStudy.keyOutcomes || "No outcomes available." };
-        }
-        setOutcome(outcomeResponse ?? null);
-      } catch (err) {
-        console.error("Error fetching outcome data:", err);
-        setError("Failed to load outcome data");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchDocumentData = async () => {
-      try {
-        let docResponse;
-        if (useDummyData) {
-          docResponse = await individualcasestudyDocJson();
-        } else {
-          docResponse = caseStudy.documents || [];
-        }
-        setDocuments(
-          (docResponse as unknown as DocumentResponse[] ?? []).map((doc) => ({
-            id: doc.id,
-            filePath: doc.filePath,
-            title: doc.title,
-            name: doc.title,
-            url: doc.filePath
-          }))
-        );
-      } catch (err) {
-        console.error("Error fetching documents:", err);
-        setDocError("Failed to load documents");
-      } finally {
-        setDocLoading(false);
-      }
-    };
-
-    fetchOutcomeData();
-    fetchDocumentData();
-  }, [caseStudy]);
+    // Only fetch data if caseStudy is available
+    if (caseStudy) {
+      fetchOutcomeData();
+      fetchDocumentData();
+    }
+  }, [caseStudy, fetchOutcomeData, fetchDocumentData]);
 
   const handleAddDocumentClick = () => {
     setIsUploadFormOpen(true);

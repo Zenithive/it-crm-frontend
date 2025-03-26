@@ -23,6 +23,7 @@ interface DocumentData {
 
 // Component props interface
 interface Document {
+  id: string;
   title: ReactNode;
   createdAt: ReactNode;
   name: string;
@@ -37,6 +38,7 @@ const ResourceDoc: React.FC<ResourceSkillsProps> = ({ resourceData }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [isUploadFormOpen, setIsUploadFormOpen] = useState(false);
+  const [downloadMessage, setDownloadMessage] = useState<string>("");
 
   const useDummyData =
     process.env.NEXT_PUBLIC_USE_DUMMY_DATA1?.trim().toLowerCase() === "true";
@@ -65,6 +67,7 @@ const ResourceDoc: React.FC<ResourceSkillsProps> = ({ resourceData }) => {
       : rawDocs;
     
     return resourceDocs.map(doc => ({
+      id: doc.id,
       title: doc.title,
       createdAt: formatDate(doc.createdAt),
       name: doc.title,
@@ -72,6 +75,40 @@ const ResourceDoc: React.FC<ResourceSkillsProps> = ({ resourceData }) => {
       date: formatDate(doc.createdAt),
       designation: doc.referenceType,
     }));
+  };
+
+  // Download function implementation
+  const downloadFile = (fileId: string, filename: string) => {
+    setDownloadMessage("Starting download...");
+    
+    const token = localStorage.getItem('token') || ''; // Get the token from localStorage
+    
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/download?id=${fileId}`, {
+      method: "GET",
+      headers: { Authorization: token },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((text) => {
+            throw new Error(`Server Error: ${text}`);
+          });
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        setDownloadMessage("Download started.");
+      })
+      .catch((error) => {
+        setDownloadMessage("Download failed: " + error.message);
+      });
   };
 
   // Move fetchData outside of useEffect so it can be called from other functions
@@ -171,20 +208,23 @@ const ResourceDoc: React.FC<ResourceSkillsProps> = ({ resourceData }) => {
 
                       {/* Download Button */}
                       <div className="w-1/3 flex justify-end">
-                        <a
-                          href={doc.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          onClick={() => downloadFile(doc.id, String(doc.title))}
                           className="text-bg-blue-12 font-semibold hover:underline"
                         >
                           Download
-                        </a>
+                        </button>
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
             )}
+
+            {downloadMessage && (
+              <div className="mt-3 text-sm text-gray-600">{downloadMessage}</div>
+            )}
+
             <div className="mt-6">
               <button 
                 onClick={handleAddDocumentClick} 
