@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import leadApiService from "../../api/apiService/individualleadService";
 import "../Dashboard/Dashboard.css";
 
-interface LeftSideProps {
+export interface LeftSideProps {
   leadId: string;
 }
 

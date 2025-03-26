@@ -40,6 +40,11 @@ interface LeadsResponse {
   };
 }
 
+interface DateFilter {
+  dealStartDateMin?: string;
+  dealStartDateMax?: string;
+}
+
 const useDealsApiService = () => {
   const [totalDealAmount, setTotalDealAmount] = useState<number>(0);
   const [dealsByCountry, setDealsByCountry] = useState<{[country: string]: Deal[]}>({});

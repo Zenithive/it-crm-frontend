@@ -24,7 +24,26 @@ export const individualcasestudyOutcomesApi = async () =>{
 }
 
 
-export const individualcasestudyDocApi = async () =>{
-    const response = await axios.get('api-endpoint');
-    return response.data;
-}
+// In api/apiService/individualcasestudyApiServices.js
+export const individualcasestudyDocApi = async (caseStudyID: any) => {
+    const token = localStorage.getItem('token'); // Assuming you store your token in localStorage
+    console.log(`token`, token);
+    
+    try {
+      const response = await fetch(`https://crmbackendapis.onrender.com/documents?id=${caseStudyID}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching documents:", error);
+      throw error;
+    }
+  };

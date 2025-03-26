@@ -8,7 +8,6 @@ export const CREATE_VENDOR_MUTATION = gql`
       status
       paymentTerms
       address
-   
       gstOrVatDetails
       notes
       skills {

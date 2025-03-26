@@ -212,7 +212,7 @@ const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
         <div className="mt-6 w-full md:w-2/3">
           {activeTab === "Details" && <ResourceDetails resourceData={resourceData} />}
           {activeTab === "Skills & Experience" && <ResourceSkills resourceData={resourceData} />}
-          {activeTab === "Documents" && <ResourceDoc />}
+          {activeTab === "Documents" && <ResourceDoc resourceData={resourceData}/>}
           {activeTab === "Notes" && <ResourceNote />}
         </div>
         <div className="w-full md:w-1/3 mt-10 flex-shrink-0 bg-white rounded-2xl p-6 shadow-custom">
