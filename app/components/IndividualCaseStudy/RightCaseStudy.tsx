@@ -38,6 +38,7 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   const [docLoading, setDocLoading] = useState(true);
   const [docError, setDocError] = useState<string | null>(null);
   const [isUploadFormOpen, setIsUploadFormOpen] = useState(false);
+  const [downloadMessage, setDownloadMessage] = useState<string>("");
 
   const fetchDocumentData = async () => {
     try {
@@ -54,11 +55,11 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
         }
       }
       setDocuments(
-        (docResponse ?? []).map((doc: { id: any; filePath: any; name: any; url: any; }) => ({
+        (docResponse ?? []).map((doc: { id: any; filePath: any; title: any; url: any; }) => ({
           id: doc.id || null,
           filePath: doc.filePath || undefined,
-          title: doc.name || "Untitled",
-          name: doc.name,
+          title: doc.title,
+          name: doc.title,
           url: doc.url,
         }))
       );
@@ -103,11 +104,11 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
           docResponse = caseStudy.documents || [];
         }
         setDocuments(
-          (docResponse ?? []).map((doc: { name: string; url: string }) => ({
+          (docResponse ?? []).map((doc: { title: string; url: string }) => ({
             id: null, // Assign a default value for id
             filePath: undefined, // Assign a default value for filePath
-            title: doc.name || "Untitled", // Use name as title or default to "Untitled"
-            name: doc.name,
+            title: doc.title, // Use name as title or default to "Untitled"
+            name: doc.title,
             url: doc.url,
           }))
         );
@@ -134,6 +135,40 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   const handleDocumentAdded = () => {
     // Refresh document list after successful upload
     fetchDocumentData();
+  };
+
+  // Download function implementation
+  const downloadFile = (fileId: any, filename: string) => {
+    setDownloadMessage("Starting download...");
+    
+    const token = localStorage.getItem('token') || ''; // Get the token from localStorage
+    
+    fetch(`https://crmbackendapis.onrender.com/download?id=${fileId}`, {
+      method: "GET",
+      headers: { Authorization: token },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.text().then((text) => {
+            throw new Error(`Server Error: ${text}`);
+          });
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url); // Clean up the URL object
+        document.body.removeChild(a);
+        setDownloadMessage("Download started.");
+      })
+      .catch((error) => {
+        setDownloadMessage("Download failed: " + error.message);
+      });
   };
 
   if (loading) return <p className="text-gray-500 text-center">Loading outcome...</p>;
@@ -201,18 +236,29 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
           ) : docError ? (
             <p className="text-red-500 text-center">{docError}</p>
           ) : documents.length > 0 ? (
-            documents.map((doc, index) => (
-              <div key={index} className="mb-2">
-                <a
-                  href={`https://crmbackendapis.onrender.com/download?id=${doc.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 underline"
-                >
-                  {doc.title}
-                </a>
-              </div>
-            ))
+            <div>
+              {documents.map((doc, index) => (
+                <div key={index} className="mb-3 flex justify-between items-center">
+                  <a
+                    // href={`https://crmbackendapis.onrender.com/download?id=${doc.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 underline"
+                  >
+                    {doc.title}
+                  </a>
+                  <button
+                    onClick={() => downloadFile(doc.id, String(doc.title))}
+                    className="ml-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Download
+                  </button>
+                </div>
+              ))}
+              {downloadMessage && (
+                <div className="mt-3 text-sm text-gray-600">{downloadMessage}</div>
+              )}
+            </div>
           ) : (
             <p className="text-gray-500">No documents available.</p>
           )}
@@ -225,6 +271,7 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
           isOpen={isUploadFormOpen}
           onClose={handleCloseUploadForm}
           referenceID={caseStudy.caseStudyID} // Assuming caseStudy has an id property
+          referenceType="CASESTUDY"
           onDocumentAdded={handleDocumentAdded}
         />
       )}

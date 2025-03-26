@@ -5,11 +5,13 @@ const DocumentUploadForm: React.FC<{
   isOpen: boolean; 
   onClose: () => void; 
   referenceID: string; 
+  referenceType: string; 
   onDocumentAdded?: () => void; 
 }> = ({ 
   isOpen, 
   onClose, 
   referenceID, 
+  referenceType,
   onDocumentAdded 
 }) => {
   const [file, setFile] = useState<File | null>(null);
@@ -75,7 +77,7 @@ const DocumentUploadForm: React.FC<{
       const formData = new FormData();
       formData.append("file", file);
       formData.append("referenceID", referenceID);
-      formData.append("referenceType", "CASESTUDY");
+      formData.append("referenceType", referenceType);
       
       // Add all tags to the formData
       tags.forEach(tag => {
