@@ -30,7 +30,7 @@ export const individualcasestudyDocApi = async (caseStudyID: any) => {
     console.log(`token`, token);
     
     try {
-      const response = await fetch(`https://crmbackendapis.onrender.com/documents?id=${caseStudyID}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/documents?id=${caseStudyID}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
