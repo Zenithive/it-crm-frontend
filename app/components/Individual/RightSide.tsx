@@ -4,7 +4,7 @@ import PipelineStages from "./PipelineStages";
 import { individualcasestudyDocApi } from "../../api/apiService/individualcasestudyApiServices";
 import { jsonServiceRightSideDoc } from "../../api/jsonService/individualJsonService";
 import { LeftSideProps } from "./LeftSide";
-import DocumentUploadForm from "../uploadfile";
+import DocumentUploadForm from "../Uploadfile";
 
 interface Document {
   id: any;
