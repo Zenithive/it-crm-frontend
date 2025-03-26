@@ -198,6 +198,7 @@ interface FilterProps {
   startDate?: string;
   endDate?: string;
   setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>;
+  pageType?:string;
 }
 const Filter: React.FC<FilterProps> = ({
   onClose,
@@ -206,9 +207,15 @@ const Filter: React.FC<FilterProps> = ({
   renderRightPanel,
   selectedOptions,
   setSelectedOptions,
+  pageType
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeSection, setActiveSection] = useState<string>(sections[0]?.id || "");
+
+  const filteredSections = pageType === 'deals' 
+  ? sections.filter(section => section.id !== 'stage')
+  : sections;
+
   const handleApply = () => {
     const filterPayload = {
       filter: {

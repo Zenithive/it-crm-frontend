@@ -30,7 +30,7 @@ interface FilterHandlerProps {
   filterSections: FilterSection[];
   onFilterApply: (payload: FilterPayload) => void | Promise<void>;
   setShowFilter: (show: boolean) => void;
-  pageType?: "contact" | "todo";
+  pageType?: "contact" | "todo"|"deals";
 }
 
 const FilterHandler: React.FC<FilterHandlerProps> = ({

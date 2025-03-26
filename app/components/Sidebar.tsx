@@ -124,7 +124,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   // Navigation items for sidebar with unique IDs   
   const navItems: NavItem[] = [        
     { id: 'leads', name: "Leads", icon: "/customer-engagement.svg", link: "/leads" },     
-    { id: 'deals', name: "Deals", icon: "/handshake.svg", link: "/deal" },     
+    { id: 'deals', name: "Deals", icon: "/handshake.svg", link: "/deals" },     
     { id: 'resources', name: "Resources", icon: "/utilization.svg", link: "/resourcelist" },     
     { id: 'vendors', name: "Vendors", icon: "/vendor.svg", link: "/overallvendorprofile" },     
     { id: 'case-studies', name: "Case-Studies", icon: "/case-studies.svg", link: "/overallcasestudy" },     
