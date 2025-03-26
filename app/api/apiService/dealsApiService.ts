@@ -14,6 +14,10 @@ export interface Deal {
   projectRequirements: string;
   dealAmount: string;
   dealStatus: string;
+    user: {
+    userID: string;
+    name: string;
+  };
   
 }
 
