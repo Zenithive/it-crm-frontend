@@ -5,7 +5,7 @@ import { individualcasestudyDocApi } from "../../api/apiService/individualcasest
 import { jsonServiceRightSideDoc } from "../../api/jsonService/individualJsonService";
 import { LeftSideProps } from "./LeftSide";
 import DocumentUploadForm from "../uploadfile";
-// import DocumentUploadForm from "../Uploadfile";
+import { gql, useQuery, useMutation } from "@apollo/client";
 
 interface Document {
   id: any;
@@ -15,6 +15,42 @@ interface Document {
   url: string;
 }
 
+interface Note {
+  noteID: string;
+  note: string;
+  referenceID: string;
+  referenceType: string;
+  userID: string;
+  createdAt?: string;
+}
+
+// GraphQL Queries and Mutations
+const GET_NOTES_BY_REFERENCE = gql`
+  query GetNotesByReference($referenceID: ID!, $referenceType: String!) {
+    getNotesByReference(referenceID: $referenceID, referenceType: $referenceType) {
+      noteID
+      note
+      referenceID
+      referenceType
+      userID
+      createdAt
+    }
+  }
+`;
+
+const CREATE_NOTE_MUTATION = gql`
+  mutation CreateNote($input: CreateNoteInput!) {
+    createNote(input: $input) {
+      noteID
+      note
+      referenceID
+      referenceType
+      userID
+      createdAt
+    }
+  }
+`;
+
 const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
   console.log(`leadId232`, leadId);
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -22,14 +58,42 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
   const [isUploadFormOpen, setIsUploadFormOpen] = useState(false);
   const [error, setError] = useState("");
   const [downloadMessage, setDownloadMessage] = useState<string>("");
+  const [noteContent, setNoteContent] = useState<string>("");
   
+  // Fetch Notes Query
+  const { 
+    data: notesData, 
+    loading: notesLoading, 
+    error: notesError, 
+    refetch: refetchNotes 
+  } = useQuery(GET_NOTES_BY_REFERENCE, {
+    variables: { 
+      referenceID: leadId, 
+      referenceType: "LEAD" 
+    },
+    skip: !leadId, // Skip query if leadId is not available
+  });
+
+  // Note Creation Mutation
+  const [createNote, { loading: noteCreationLoading }] = useMutation(CREATE_NOTE_MUTATION, {
+    onCompleted: () => {
+      // Refetch notes after successful creation
+      refetchNotes();
+      setNoteContent(""); // Clear note input
+    },
+    onError: (error) => {
+      console.error("Error adding note:", error);
+      alert("Failed to add note. Please try again.");
+    }
+  });
+
   const useDummyData = (process.env.NEXT_PUBLIC_USE_DUMMY_DATA || "").toLowerCase() === "true";
 
   // Fetch document data function
-
   useEffect(() => {
     fetchDocumentData();
   }, [leadId]);
+
   const fetchDocumentData = async () => {
     try {
       setIsLoading(true);
@@ -115,6 +179,40 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
     fetchDocumentData();
   };
 
+  // Handle Note Creation
+  const handleAddNote = async () => {
+    if (!noteContent.trim()) {
+      alert("Note content cannot be empty");
+      return;
+    }
+
+    try {
+      await createNote({
+        variables: {
+          input: {
+            noteData: noteContent,
+            referenceID: leadId, // Use the leadId as the referenceID
+            referenceType: "LEAD" // Assuming the reference type is LEAD
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Error adding note:", error);
+    }
+  };
+
+  // Format date function
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-custom p-1">
       <div className="space-y-4">
@@ -192,18 +290,50 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
 
         {/* Notes Section */}
         <div className="flex justify-between items-center ml-4">
-          <h2 className="text-xl font-semibold text-bg-blue-12">Note</h2>
-          <button className="flex items-center gap-2 text-white bg-bg-blue-12 p-2 text-[14px] rounded-md mr-5">
+          <h2 className="text-xl font-semibold text-bg-blue-12">Notes</h2>
+          <button 
+            onClick={handleAddNote}
+            disabled={noteCreationLoading}
+            className="flex items-center gap-2 text-white bg-bg-blue-12 p-2 text-[14px] rounded-md mr-5"
+          >
             <img src="/plus.svg" alt="Plus" className="mr-1"></img>
-            Add Note
+            {noteCreationLoading ? "Adding..." : "Add Note"}
           </button>
         </div>
         <div className="p-2">
           <textarea
-            placeholder="Add a notes..."
+            value={noteContent}
+            onChange={(e) => setNoteContent(e.target.value)}
+            placeholder="Add a note..."
             className="w-full p-4 border rounded-lg focus:ring focus:outline-none"
             rows={4}
           />
+        </div>
+
+        {/* Notes List */}
+        <div className="p-4">
+          {notesLoading ? (
+            <p className="text-center text-gray-500">Loading notes...</p>
+          ) : notesError ? (
+            <p className="text-center text-red-500">Error loading notes: {notesError.message}</p>
+          ) : notesData?.getNotesByReference?.length === 0 ? (
+            <p className="text-center text-gray-500">No notes found</p>
+          ) : (
+            <div className="space-y-4">
+              {notesData?.getNotesByReference?.map((note: Note) => (
+                <div 
+                  key={note.noteID} 
+                  className="border rounded-lg p-3 bg-gray-50"
+                >
+                  <p className="text-gray-800 mb-2">{note.note}</p>
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>User: {note.userID}</span>
+                    <span>{formatDate(note.createdAt)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       {isUploadFormOpen && (

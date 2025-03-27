@@ -20,6 +20,13 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   if (!showFilter) return null;
 
   return (
+
+
+    <div 
+             className="absolute right-0 top-full mt-2 z-50 bg-white shadow-lg rounded-lg "
+             style={{ minWidth: '150px' ,right:"-14px"}}
+           >
+                <div className="absolute -top-2 right-2 transform -translate-x-1/2 rotate-45 w-4 h-4 bg-white border-t border-l border-gray-300"></div>
     <div className="bg-white shadow-lg rounded-lg border border-gray-200 p-2 min-w-[250px] z-100 ">
      {pageType === 'CircularProgress' && (<>
      <button 
@@ -53,6 +60,15 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
       >
         Half Yearly
       </button>
+      <button 
+        onClick={() => applyFilter("none")} 
+        className={`w-full text-left px-3 py-2 hover:bg-gray-100 font-semibold ${
+          activeFilter === "none" ? "bg-blue-100 text-blue-700" : "text-black"
+        }`}
+      >
+        None
+      </button>
+    </div>
     </div>
   );
 };

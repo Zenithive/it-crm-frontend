@@ -196,6 +196,7 @@ const OverallVendorProfile: React.FC = () => {
             filterSections={filterSections}
             onFilterApply={handleFilterApply}
             setShowFilter={setShowFilter}
+            pageType="vendor"
           />
         </div>
       )}

@@ -104,7 +104,7 @@ const ColumnComponent: React.FC<ColumnPropsForKanban> = ({
   return (
     <div
       ref={dropRef}
-      className={`h-[500px] bg-gray-50 rounded-lg shadow-prim mx-2 mainCard ${
+      className={`h-[500px] bg-gray-50 rounded-lg shadow-prim  mainCard ${
         isOver ? "bg-blue-300 " : ""
       }`}
       style={{ flex: `0 0 ${cardWidth}` }}

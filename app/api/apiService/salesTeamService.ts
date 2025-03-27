@@ -59,8 +59,11 @@ interface LeadsResponse {
     totalCount: number;
   };
 }
-
-export const useSalesTeamData = (page: number, pageSize: number) => {
+interface DateFilter {
+  dealStartDateMin?: string;
+  dealStartDateMax?: string;
+}
+export const useSalesTeamData = (page: number, pageSize: number,dateFilter?: DateFilter) => {
   const user = useSelector((state: RootState) => state.auth);
 
   const {
@@ -69,7 +72,10 @@ export const useSalesTeamData = (page: number, pageSize: number) => {
     error: dealsError,
   } = useQuery<DealsResponse>(GET_DEALS, {
     variables: {
-      filter: null,
+      filter: dateFilter ? {
+        dealStartDateMin: dateFilter.dealStartDateMin,
+        dealStartDateMax: dateFilter.dealStartDateMax
+      } : null,
       pagination: { page, pageSize },
       sort: { field: "dealAmount", order: "ASC" },
     },

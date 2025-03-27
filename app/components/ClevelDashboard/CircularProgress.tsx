@@ -7,16 +7,23 @@ interface CircularProgressProps {
   title: string;
   isCurrency?: boolean; 
   img: string;
+  onFilterChange?: (filter: string) => void;
+  activeFilter?: string;
 }
 
-const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCurrency = false ,img}) => {
+const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCurrency = false ,img, onFilterChange,
+  activeFilter}) => {
 
    const [showFilter, setShowFilter] = useState(false);
-    const [activeFilter, setActiveFilter] = useState("none");
+    // const [activeFilter, setActiveFilter] = useState("none");
     const filterRef = useRef<HTMLDivElement>(null);
   const isActiveLeads = title === "Active Leads"; 
   const safeValue = isCurrency ? value : Math.min(value, 100); 
   const displayValue = isCurrency ? `$${value.toLocaleString()}` : `${safeValue}%`; 
+    // const [dateFilter, setDateFilter] = useState<{
+    //    dealStartDateMin?: string;
+    //    dealStartDateMax?: string;
+    //  }>({});
 
   const data = [
     { name: "Completed", value: safeValue },
@@ -42,36 +49,48 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCur
 
   const handleFilterClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent event from bubbling
-    console.log('Filter clicked', !showFilter);
+   
     setShowFilter(prevState => !prevState);
   };
 
+  // const applyFilter = (filterType: string) => {
+  //   console.log('Applying filter:', filterType);
+  //   if (filterType === 'none') return {};
+  //   setActiveFilter(filterType);
+  //   setShowFilter(false);
+
+  //   switch(filterType) {
+  //     case "monthly":
+    
+  //       break;
+  //       case "quarterly":
+       
+  //         break;
+  //         case "yearly":
+           
+  //           break;
+  //     case "half-yearly":
+     
+  //       break;
+  //     default:
+  //       // No filter
+  //       break;
+  //   }
+  // };
+
   const applyFilter = (filterType: string) => {
     console.log('Applying filter:', filterType);
-    setActiveFilter(filterType);
-    setShowFilter(false);
-
-    switch(filterType) {
-      case "monthly":
     
-        break;
-        case "quarterly":
-       
-          break;
-          case "yearly":
-           
-            break;
-      case "half-yearly":
-     
-        break;
-      default:
-        // No filter
-        break;
-    }
+  if (onFilterChange) {
+    onFilterChange(filterType);
+  }
+    
+    setShowFilter(false);
   };
+  
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center ">
-      <div className="flex justify-between items-center w-full mb-2 relative">
+      <div className="flex justify-between items-center w-full mb-2 relative gap-2">
         <div className='flex justify-center items-center'ref={filterRef} >
         <img src={img} alt='Image' className="w-5 h-5 " ></img>
         <span className="text-2xl font-semibold text-bg-blue-12 ml-4">{title}</span>
@@ -83,18 +102,16 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCur
             onClick={handleFilterClick} 
           />
           {showFilter && (
-            <div 
-              className="absolute right-0 top-full mt-2 z-50 bg-white shadow-lg rounded-lg"
-              style={{ minWidth: '150px' }}
-            >
+           
+               
               <FilterDropdown
                 showFilter={showFilter}
                 toggleFilter={() => setShowFilter(false)}
                 applyFilter={applyFilter}
-                activeFilter={activeFilter}
+                activeFilter={activeFilter || ""}
                 pageType="CircularProgress"
               />
-            </div>
+          
           )}
          
       </div>

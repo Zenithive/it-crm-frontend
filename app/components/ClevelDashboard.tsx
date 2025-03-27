@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Title from "../microComponents/Title";
 import { Dashboardtitle } from "./Path/TitlePaths";
 import TimeDropDown from "./ClevelDashboard/TimeDropDown";
@@ -18,13 +18,64 @@ import TopDeals from "./ClevelDashboard/TopDeals";
 
 const ClevelDashboard: React.FC = () => {
   // Sample data (you would replace this with actual data from your backend)
- 
-
-  // Calculate Active Leads Total
-  const { newLeads, inProgressLeads, followUpLeads, closedWonLeads, totalItems, loading } = leadsApiService(1, 500);
+  const [startDate, setStartDate] = useState<string | undefined>(undefined);
+  const [endDate, setEndDate] = useState<string | undefined>(undefined);
+  const [activeFilter, setActiveFilter] = useState<string>("none");
+  const { newLeads, inProgressLeads, followUpLeads, closedWonLeads, totalItems, loading } = leadsApiService(1, 500,true,startDate, endDate);
   const activeLeads = newLeads + inProgressLeads + followUpLeads;
-
+  
   const {totalDealAmount} = dealsApiService();
+
+    const applyTimeFilter = (filterType: string) => {
+      setActiveFilter(filterType);
+  
+      // Reset dates first
+      const now = new Date();
+      
+      switch(filterType) {
+        case "monthly":
+          // From one month ago to today
+          const pastMonth = new Date();
+          pastMonth.setMonth(now.getMonth() - 1);
+          setStartDate(pastMonth.toISOString().split('T')[0]);
+          setEndDate(now.toISOString().split('T')[0]);
+          break;
+        
+        case "quarterly":
+          // From three months ago to today
+          const pastQuarter = new Date();
+          pastQuarter.setMonth(now.getMonth() - 3);
+          setStartDate(pastQuarter.toISOString().split('T')[0]);
+          setEndDate(now.toISOString().split('T')[0]);
+          break;
+        
+        case "half-yearly":
+          // From six months ago to today
+          const pastHalfYear = new Date();
+          pastHalfYear.setMonth(now.getMonth() - 6);
+          setStartDate(pastHalfYear.toISOString().split('T')[0]);
+          setEndDate(now.toISOString().split('T')[0]);
+          break;
+        
+        case "yearly":
+          // From one year ago to today
+          const pastYear = new Date();
+          pastYear.setFullYear(now.getFullYear() - 1);
+          setStartDate(pastYear.toISOString().split('T')[0]);
+          setEndDate(now.toISOString().split('T')[0]);
+          break;
+        
+        case "none":
+          // No filter, reset to undefined
+          setStartDate(undefined);
+          setEndDate(undefined);
+          break;
+        
+        default:
+          break;
+      }
+    };
+  // Calculate Active Leads Total
 
   return (
     <>
@@ -40,9 +91,11 @@ const ClevelDashboard: React.FC = () => {
                 <p>Loading...</p>
               ) : (
                 <>
-                  <CircularProgress value={activeLeads} title="Active Leads" img="/activeLead_icon.svg"/>
+                  <CircularProgress value={activeLeads} title="Active Leads" img="/activeLead_icon.svg" onFilterChange={applyTimeFilter}
+                    activeFilter={activeFilter} />
                   <CircularProgress value={80} title="Deal Closed" img="/dealClose_icon.svg"/>
-                  <CircularProgress value={Math.round((closedWonLeads / totalItems) * 100)} title="Lead Conversion" img="/conversation_icon.svg"/>
+                  <CircularProgress value={Math.round((closedWonLeads / totalItems) * 100)} title="Lead Conversion" img="/conversation_icon.svg" onFilterChange={applyTimeFilter}
+                    activeFilter={activeFilter}/>
                   <CircularProgress value={totalDealAmount} title="Revenue Growth" isCurrency={true} img="/totalRevenue_icon.svg" />
                 </>
               )}
@@ -64,3 +117,4 @@ const ClevelDashboard: React.FC = () => {
 };
 
 export default ClevelDashboard;
+

@@ -20,6 +20,7 @@ interface Lead {
   };
   leadSource: string;
   initialContactDate: string;
+  
   leadAssignedTo?: LeadAssignedTo; 
   country: string;
   firstName: string;
@@ -93,7 +94,10 @@ interface IntegratedMeeting {
   attendeeEmail?: string;
 }
 
-const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: boolean = false) => {
+
+
+const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: boolean = false,startDate?: string,
+  endDate?: string) => {
   // State declarations (unchanged)
   const [newLeads, setNewLeads] = useState(0);
   const [inProgressLeads, setInProgressLeads] = useState(0);
@@ -114,6 +118,20 @@ const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: bo
   const user = useSelector((state: RootState) => state.auth);
   const { googleAccessToken } = user || {};
 
+  const filter: any = {};
+
+  // Date filtering logic
+  if (startDate && endDate) {
+    // If both start and end dates are provided
+    filter.fromDate = startDate;
+    filter.toDate = endDate;
+  } else if (startDate) {
+    // If only start date is provided
+    filter.fromDate = startDate;
+  } else if (endDate) {
+    // If only end date is provided
+    filter.toDate = endDate;
+  }
   // Fetch Leads Query
   const { 
     data: leadsData, 
@@ -121,7 +139,7 @@ const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: bo
     error: leadsError 
   } = useQuery(GET_LEADS, {
     variables: {
-      filter: {},
+      filter: filter,
       sort: { field: "EMAIL", order: "ASC" },
     },
     context: {
@@ -154,6 +172,9 @@ const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: bo
     });
 
   console.log("dealsData",dealsData);
+
+
+  
 
   // Existing helper functions (formatCurrency, fetchGoogleCalendarEvents, etc.)
   const formatCurrency = (amount: number): string => {
