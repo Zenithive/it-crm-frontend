@@ -57,16 +57,26 @@ export interface ResourceSkillsProps {
     // Add the rawProfile property
     rawProfile?: {
       resourceProfileID?: string;
-      // Add other properties of rawProfile if known
+      resourceSkills?: Array<{
+        skill: {
+          skillID: string;
+          name: string;
+          description: string;
+          skilltype: string;
+        };
+        experienceYears: number;
+      }>;
     };
   } | null;
 }
 
 const ResourceSkills: React.FC<ResourceSkillsProps> = ({ resourceData }) => {
+  console.log(`resourceData`, resourceData);
   const [activeTab] = useState<"details">("details");
 
   // Extract skills from resourceData
-  const skills = resourceData?.resourceSkills?.map(item => item.skill.name) || [];
+  const skills = resourceData?.rawProfile?.resourceSkills?.map((item: { skill: { name: any; }; }) => item.skill.name) || [];
+  console.log(`skills`, skills);
   
   // Create experience from pastProjects and resourceSkills
   const experience = resourceData?.pastProjects?.map(project => ({
@@ -97,7 +107,7 @@ const ResourceSkills: React.FC<ResourceSkillsProps> = ({ resourceData }) => {
                     </h3>
                     <ul className="flex flex-wrap gap-2">
                       {skills.length > 0 ? (
-                        skills.map((skill, index) => (
+                        skills.map((skill: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, index: React.Key | null | undefined) => (
                           <li
                             key={index}
                             className="bg-blue_shadow px-4 py-2 inline-flex justify-center items-center rounded-lg text-bg-blue-12 font-semibold min-w-fit whitespace-nowrap"
