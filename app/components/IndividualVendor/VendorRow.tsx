@@ -42,9 +42,10 @@ interface CompanyProfile {
 interface VendorRowProps {
   vendor: Vendor;
   onVendorDeleted?: (vendorID: string) => void;
+  refetchVendors?: () => void;
 }
 
-const VendorRow: React.FC<VendorRowProps> = ({ vendor, onVendorDeleted }) => {
+const VendorRow: React.FC<VendorRowProps> = ({ vendor, onVendorDeleted,refetchVendors }) => {
   const router = useRouter();
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
@@ -91,6 +92,7 @@ const VendorRow: React.FC<VendorRowProps> = ({ vendor, onVendorDeleted }) => {
 
   const handleFormClose = () => {
     setIsEditFormOpen(false);
+    if (refetchVendors) refetchVendors();
   };
 
   const handleDeleteClick = () => {
@@ -103,6 +105,7 @@ const VendorRow: React.FC<VendorRowProps> = ({ vendor, onVendorDeleted }) => {
       if (result) {
         console.log("Vendor deleted successfully:", result.companyName);
         if (onVendorDeleted) onVendorDeleted(vendor.vendorID);
+        if (refetchVendors) refetchVendors();
       } else {
         console.error("Delete failed: No result returned");
       }

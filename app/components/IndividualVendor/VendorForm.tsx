@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useRef, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { message } from "antd";
@@ -21,6 +22,13 @@ import {
   Check,
 } from "lucide-react";
 import { CountrySelection } from "./CountrySelection";
+import PerformanceFormModal from "./PerformanceModal"; // Updated import
+
+interface PerformanceRatingData {
+  pastProjectsCount: number;
+  rating: number;
+  review: string;
+}
 
 interface VendorFormData {
   companyName: string;
@@ -29,7 +37,7 @@ interface VendorFormData {
   vendorSkills: string;
   paymentTerms: string;
   gstOrVatDetails: string;
-  performanceRating: number;
+  performanceRatings: PerformanceRatingData[]; // Updated field name
   notes: string;
   country: string;
   vendorDetails: VendorDetail[];
@@ -46,6 +54,7 @@ interface AddVendorFormProps {
   onClose: () => void;
   vendorData?: CompanyProfile | null;
   vendorId?: string;
+  refetchVendors?: () => void;
 }
 
 interface CompanyProfile {
@@ -61,9 +70,10 @@ interface CompanyProfile {
     phone: string;
     location: string;
   };
+  performanceRatings?: PerformanceRatingData[]; // Add this if available in edit mode
 }
 
-const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorId }) => {
+const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorId, refetchVendors }) => {
   const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<VendorFormData>({
     defaultValues: vendorData && vendorId ? {
       companyName: vendorData.companyName || "",
@@ -72,9 +82,9 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
       vendorSkills: vendorData.skills && vendorData.skills.length > 0 ? vendorData.skills[0].name : "",
       paymentTerms: vendorData.paymentTerms || "",
       gstOrVatDetails: vendorData.gstOrVatDetails || "",
-      performanceRating: 0,
+      performanceRatings: vendorData.performanceRatings || [], // Use existing ratings if available
       notes: vendorData.notes || "",
-      country: vendorData.primaryContact?.location || "India",
+      country: vendorData.primaryContact?.location || "",
       vendorDetails: [{ name: "", contact: "", number: "", designation: "" }],
     } : {
       companyName: "",
@@ -83,40 +93,26 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
       vendorSkills: "",
       paymentTerms: "NET30",
       gstOrVatDetails: "",
-      performanceRating: 0,
+      performanceRatings: [],
       notes: "",
-      country: "India",
+      country: "",
       vendorDetails: [{ name: "", contact: "", number: "", designation: "" }],
     },
   });
+
   const [loading, setLoading] = useState(false);
-  const [rating, setRating] = useState(0);
+  const [showPerformanceModal, setShowPerformanceModal] = useState(false);
+  const [performanceRatings, setPerformanceRatings] = useState<PerformanceRatingData[]>(vendorData?.performanceRatings || []);
   const noteRef = useRef<HTMLDivElement | null>(null);
   const { createVendor, loading: mutationLoading } = useCreateVendor();
-  const { updateVendor, loading: updateLoading, error: updateError } = useVendors();
+  const { updateVendor, loading: updateLoading } = useVendors();
   const isEditMode = !!vendorData && !!vendorId;
-
-  // Add useEffect to log initial form state
-  useEffect(() => {
-    console.log("Initial form defaultValues:", {
-      companyName: vendorData?.companyName,
-      address: vendorData?.address,
-      status: vendorData?.status,
-      vendorSkills: vendorData?.skills && vendorData.skills.length > 0 ? vendorData.skills[0].name : "",
-      paymentTerms: vendorData?.paymentTerms,
-      gstOrVatDetails: vendorData?.gstOrVatDetails,
-      notes: vendorData?.notes,
-      country: vendorData?.primaryContact?.location,
-    });
-  }, []);
 
   useEffect(() => {
     if (isEditMode && vendorData) {
-
       const skillName = vendorData.skills && vendorData.skills.length > 0 
-      ? vendorData.skills[0].name.toUpperCase() // Normalize to match options
-      : "";
-      // Explicitly set all form fields
+        ? vendorData.skills[0].name.toUpperCase()
+        : "";
       reset({
         companyName: vendorData.companyName || "",
         address: vendorData.address || "",
@@ -124,32 +120,15 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
         vendorSkills: skillName,
         paymentTerms: vendorData.paymentTerms || "NET30",
         gstOrVatDetails: vendorData.gstOrVatDetails || "",
-        performanceRating: 0,
+        performanceRatings: vendorData.performanceRatings || [],
         notes: vendorData.notes || "",
-        country: vendorData.primaryContact?.location || "India",
+        country: vendorData.primaryContact?.location || "",
         vendorDetails: [{ name: "", contact: "", number: "", designation: "" }],
       });
-  
-      if (noteRef.current) {
-        noteRef.current.innerHTML = vendorData.notes || "";
-        console.log("Notes set in contentEditable:", noteRef.current.innerHTML);
-      }
-
-      // Log the form state after setting values
-      console.log("Form state after setValue:", {
-        companyName: vendorData.companyName,
-        address: vendorData.address,
-        status: vendorData.status,
-        vendorSkills: vendorData.skills && vendorData.skills.length > 0 ? vendorData.skills[0].name : "",
-        paymentTerms: vendorData.paymentTerms,
-        gstOrVatDetails: vendorData.gstOrVatDetails,
-        notes: vendorData.notes,
-        country: vendorData.primaryContact?.location,
-      });
-    } else {
-      console.log("Not in edit mode or vendorData missing:", { isEditMode, vendorData });
+      setPerformanceRatings(vendorData.performanceRatings || []);
+      if (noteRef.current) noteRef.current.innerHTML = vendorData.notes || "";
     }
-  }, [vendorData, setValue, isEditMode]);
+  }, [vendorData, setValue, isEditMode, reset]);
 
   const applyFormat = (command: string, value: string = "") => {
     if (noteRef.current) {
@@ -171,9 +150,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
   };
 
   const handleNoteChange = () => {
-    if (noteRef.current) {
-      setValue("notes", noteRef.current.textContent || "");
-    }
+    if (noteRef.current) setValue("notes", noteRef.current.textContent || "");
   };
 
   const getSkillIDs = (skill: string): string[] => {
@@ -189,6 +166,12 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
     }
   };
 
+  const addPerformance = (data: PerformanceRatingData) => {
+    const newPerformanceRatings = [...performanceRatings, data];
+    setPerformanceRatings(newPerformanceRatings);
+    setValue("performanceRatings", newPerformanceRatings);
+  };
+
   const mapFormDataToMutationInput = (data: VendorFormData) => {
     return {
       companyName: data.companyName,
@@ -199,6 +182,11 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
       notes: data.notes || "",
       skillIDs: getSkillIDs(data.vendorSkills),
       country: data.country,
+      performanceRatings: data.performanceRatings.map((perf) => ({
+        pastProjectsCount: perf.pastProjectsCount,
+        rating: perf.rating,
+        review: perf.review,
+      })),
     };
   };
 
@@ -213,22 +201,22 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
       } else {
         await createVendor(mutationInput);
         message.success("Vendor created successfully!");
+        if (refetchVendors) refetchVendors();
       }
+      
       reset();
       onClose();
     } catch (error) {
-      message.error(`Failed to ${isEditMode ? "update" : "add"} vendor. Please try again.`);
+      message.error(`Failed to ${isEditMode ? "update" : "add"} vendor.`);
       console.error("Submission error:", error);
     } finally {
       setLoading(false);
     }
   };
 
+
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={onClose}>
       <div className="p-6 relative" onClick={(e) => e.stopPropagation()}>
         <div className="bg-bg-blue-12 rounded-t-xl p-2 flex justify-between">
           <div className="p-2">
@@ -251,9 +239,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
-                    Company Name
-                  </label>
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">Company Name</label>
                   <input
                     {...register("companyName", { required: true })}
                     type="text"
@@ -262,9 +248,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
-                    Address
-                  </label>
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">Address</label>
                   <input
                     {...register("address")}
                     type="text"
@@ -284,9 +268,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
-                    Status
-                  </label>
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">Status</label>
                   <select
                     {...register("status")}
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
@@ -297,9 +279,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
-                    Vendor Skills
-                  </label>
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">Vendor Skills</label>
                   <select
                     {...register("vendorSkills")}
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
@@ -310,9 +290,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
-                    Payment Terms
-                  </label>
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">Payment Terms</label>
                   <select
                     {...register("paymentTerms")}
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
@@ -327,9 +305,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">
-                    VAT/GST
-                  </label>
+                  <label className="block text-sm font-medium text-bg-blue-12 mb-1">VAT/GST</label>
                   <input
                     {...register("gstOrVatDetails")}
                     type="text"
@@ -340,94 +316,67 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-bg-blue-12 mb-1">
-                  Note
-                </label>
+                <label className="block text-sm font-medium text-bg-blue-12 mb-1">Performance Ratings</label>
+                <button
+                  type="button"
+                  onClick={() => setShowPerformanceModal(true)}
+                  className="px-4 py-2 bg-blue-100 text-bg-blue-12 rounded-lg hover:bg-blue-200"
+                >
+                  Add Performance
+                </button>
+                {performanceRatings.length > 0 && (
+                  <div className="mt-2">
+                    {performanceRatings.map((perf, index) => (
+                      <div key={index} className="flex gap-4 text-sm text-gray-600">
+                        <span>Past Projects: {perf.pastProjectsCount}</span>
+                        <span>Rating: {perf.rating}</span>
+                        <span>Review: {perf.review}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-bg-blue-12 mb-1">Note</label>
                 <div className="border rounded-lg">
                   <div className="flex gap-1 border-b p-2">
-                    <button
-                      type="button"
-                      onClick={() => applyFormat("bold")}
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" onClick={() => applyFormat("bold")} className="p-1 hover:bg-gray-100 rounded">
                       <Bold className="w-4 h-4" />
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => applyFormat("italic")}
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" onClick={() => applyFormat("italic")} className="p-1 hover:bg-gray-100 rounded">
                       <Italic className="w-4 h-4" />
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => applyFormat("underline")}
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" onClick={() => applyFormat("underline")} className="p-1 hover:bg-gray-100 rounded">
                       <Underline className="w-4 h-4" />
                     </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        applyFormat("createLink", prompt("Enter URL:") || "")
-                      }
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" onClick={() => applyFormat("createLink", prompt("Enter URL:") || "")} className="p-1 hover:bg-gray-100 rounded">
                       <LinkIcon className="w-4 h-4" />
                     </button>
-                    <button
-                      type="button"
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" className="p-1 hover:bg-gray-100 rounded">
                       <Image className="w-4 h-4" />
                     </button>
                     <div className="h-6 w-px bg-gray-300 mx-1" />
-                    <button
-                      type="button"
-                      onClick={() => applyFormat("justifyLeft")}
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" onClick={() => applyFormat("justifyLeft")} className="p-1 hover:bg-gray-100 rounded">
                       <AlignLeft className="w-4 h-4" />
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => applyFormat("justifyCenter")}
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" onClick={() => applyFormat("justifyCenter")} className="p-1 hover:bg-gray-100 rounded">
                       <AlignCenter className="w-4 h-4" />
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => applyFormat("justifyRight")}
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" onClick={() => applyFormat("justifyRight")} className="p-1 hover:bg-gray-100 rounded">
                       <AlignRight className="w-4 h-4" />
                     </button>
                     <div className="h-6 w-px bg-gray-300 mx-1" />
-                    <button
-                      type="button"
-                      onClick={() => applyListFormat("insertUnorderedList")}
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" onClick={() => applyListFormat("insertUnorderedList")} className="p-1 hover:bg-gray-100 rounded">
                       <List className="w-4 h-4" />
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => applyListFormat("insertOrderedList")}
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" onClick={() => applyListFormat("insertOrderedList")} className="p-1 hover:bg-gray-100 rounded">
                       <ListOrdered className="w-4 h-4" />
                     </button>
-                    <button
-                      type="button"
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" className="p-1 hover:bg-gray-100 rounded">
                       <Minus className="w-4 h-4" />
                     </button>
-                    <button
-                      type="button"
-                      className="p-1 hover:bg-gray-100 rounded"
-                    >
+                    <button type="button" className="p-1 hover:bg-gray-100 rounded">
                       <Check className="w-4 h-4" />
                     </button>
                   </div>
@@ -439,12 +388,8 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                   ></div>
                   <div className="p-3">
                     <div className="flex gap-2 text-sm text-bg-blue-12">
-                      <button type="button" className="hover:underline">
-                        @ Mention
-                      </button>
-                      <button type="button" className="hover:underline">
-                        Document
-                      </button>
+                      <button type="button" className="hover:underline">@ Mention</button>
+                      <button type="button" className="hover:underline">Document</button>
                     </div>
                   </div>
                 </div>
@@ -460,6 +405,13 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
           </form>
         </div>
       </div>
+
+      {showPerformanceModal && (
+        <PerformanceFormModal
+          onClose={() => setShowPerformanceModal(false)}
+          onAddPerformance={addPerformance}
+        />
+      )}
     </div>
   );
 };

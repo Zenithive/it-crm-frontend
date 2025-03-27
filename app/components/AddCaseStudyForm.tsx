@@ -36,12 +36,14 @@ interface CaseStudyPageProps {
     formType: FormType
   ) => Promise<void>;
   onClose: () => void;
+  refetchCaseStudies?: () => void;
 }
 
 const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
   initialData,
   onSubmit,
   onClose,
+  refetchCaseStudies,
 }) => {
   const [activeForm, setActiveForm] = useState<FormType>("caseStudy");
   const [loading, setLoading] = useState(false);
@@ -64,6 +66,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
     setLoading(true);
     try {
       await addCaseStudy(data);
+      if (refetchCaseStudies) refetchCaseStudies();
       // No need to show success message here as it's already shown in the hook
       onClose(); // Close the form after successful submission
     } catch (error) {

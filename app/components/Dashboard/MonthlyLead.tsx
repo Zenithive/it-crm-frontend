@@ -5,12 +5,22 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import useOverallLeadsData from "../../api/apiService/OverallLeadApiService";
 import { dashboardTotalLeadJson } from "../../api/jsonService/dashboardJsonService"; // Keep JSON Service for fallback
 
+const STAGE_SEQUENCE = [
+  "NEW",
+  "QUALIFIED",
+  "NEGOTIATION",
+  "DEAL",
+  "CLOSED_WON",
+  "CLOSED_LOST"
+];
+
 const COLORS = {
   NEW: "#6366F1", // Purple
-  NEGOTIATION: "#EF4444", // Red
-  CLOSED_LOST: "#10B981", // Green
   QUALIFIED: "#374151", // Dark gray
+  NEGOTIATION: "#EF4444", // Red
   DEAL:"#374151",
+  CLOSED_WON:"#374151",
+  CLOSED_LOST: "#10B981", // Green
 };
 
 const RADIAN = Math.PI / 180;
@@ -92,7 +102,12 @@ const MonthlyLead = () => {
           color: COLORS[name as keyof typeof COLORS] || "#9CA3AF" // Default color for undefined stages
         }));
         
-        setData(chartData);
+        const sortedData = STAGE_SEQUENCE.map(stage => {
+          const found = chartData.find(item => item.name === stage);
+          return found || { name: stage, value: 0, color: COLORS[stage as keyof typeof COLORS] || "#9CA3AF" };
+        }).filter(item => item.value > 0); // Only show stages with values
+  
+        setData(sortedData);
       }
     };
 
@@ -155,20 +170,36 @@ const MonthlyLead = () => {
         )}
       </div>
 
-      <div className="flex flex-wrap gap-3 mt-4 justify-center ml-6">
-        {data.map((item, index) => (
-          <div
-            key={index}
-            className="flex space-x-2 basis-1/3"
-          >
-            <span
-              className="w-4 h-4 rounded-sm"
-              style={{ background: item.color }}
-            ></span>
-            <span className="text-sm text-gray-600">{item.name}</span>
-          </div>
-        ))}
+      <div className="flex gap-6 mt-4 ml-6">
+  <div className="flex flex-col gap-3">
+    {data.slice(0, 3).map((item, index) => (
+      <div
+        key={index}
+        className="flex space-x-2"
+      >
+        <span
+          className="w-4 h-4 rounded-sm"
+          style={{ background: item.color }}
+        ></span>
+        <span className="text-sm text-gray-600">{item.name}</span>
       </div>
+    ))}
+  </div>
+  <div className="flex flex-col gap-3">
+    {data.slice(3, 6).map((item, index) => (
+      <div
+        key={index}
+        className="flex space-x-2"
+      >
+        <span
+          className="w-4 h-4 rounded-sm"
+          style={{ background: item.color }}
+        ></span>
+        <span className="text-sm text-gray-600">{item.name}</span>
+      </div>
+    ))}
+  </div>
+</div>
     </div>
   );
 };

@@ -15,7 +15,7 @@ const topDeals: TopDeal[] = [
     amount: 850000,
     type: "Negotiable",
   },
-  {
+  { 
     name: "Enterprise Solution",
     status: "Closed",
     amount: 850000,
