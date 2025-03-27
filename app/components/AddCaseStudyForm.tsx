@@ -53,9 +53,41 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
     defaultValues: initialData as CaseStudyFormData,
   });
 
+  const {
+    register: caseStudyRegister,
+    handleSubmit: caseStudyHandleSubmit,
+    watch: caseStudyWatch,
+    setValue: caseStudySetValue,
+    formState: { errors: caseStudyErrors },
+  } = useForm<CaseStudyFormData>({
+    defaultValues: initialData as CaseStudyFormData || {
+      projectName: "",
+      clientName: "",
+      techStack: "",
+      projectDuration: "",
+      keyOutcomes: "",
+      industryTarget: "",
+      tags: [],
+      document: "",
+    },
+  });
+
   // Form for Lead Close
   const leadCloseForm = useForm<LeadCloseFormData>({
     defaultValues: initialData as LeadCloseFormData,
+  });
+
+  const {
+    register: leadCloseRegister,
+    handleSubmit: leadCloseHandleSubmit,
+    formState: { errors: leadCloseErrors },
+  } = useForm<LeadCloseFormData>({
+    defaultValues: initialData as LeadCloseFormData || {
+      dealName: "",
+      dealStartDate: "",
+      projectRequirement: "",
+      dealStatus: "",
+    },
   });
 
   const { addCaseStudy } = useAddCaseStudy();
@@ -114,7 +146,7 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
             </div>
 
             <form
-              onSubmit={caseStudyForm.handleSubmit(handleCaseStudySubmit)}
+              onSubmit={caseStudyHandleSubmit(handleCaseStudySubmit)}
               className="p-6"
             >
               <div className="grid grid-cols-2 gap-2">
@@ -126,14 +158,15 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
                   <input
                     type="text"
                     placeholder="Enter name"
-                    {...caseStudyForm.register("projectName", {
-                      required: true,
+                    {...caseStudyRegister("projectName", {
+                      required: "Project name is required",
+                      minLength: { value: 2, message: "Minimum 2 characters required" },
                     })}
                     className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
-                  {caseStudyForm.formState.errors.projectName && (
+                  {caseStudyErrors.projectName && (
                     <span className="text-red-500 text-sm">
-                      This field is required
+                      {caseStudyErrors.projectName.message}
                     </span>
                   )}
                 </div>
@@ -146,14 +179,15 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
                   <input
                     type="text"
                     placeholder="Name"
-                    {...caseStudyForm.register("clientName", {
-                      required: true,
+                    {...caseStudyRegister("clientName", {
+                      required: "Client name is required",
+                      minLength: { value: 2, message: "Minimum 2 characters required" },
                     })}
                     className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
-                  {caseStudyForm.formState.errors.clientName && (
+                  {caseStudyErrors.clientName && (
                     <span className="text-red-500 text-sm">
-                      This field is required
+                      {caseStudyErrors.clientName.message}
                     </span>
                   )}
                 </div>
@@ -178,10 +212,21 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
                   </label>
                   <input
                     type="text"
-                    placeholder="Duration"
-                    {...caseStudyForm.register("projectDuration")}
+                    placeholder="Duration (e.g., 3 months)"
+                    {...caseStudyRegister("projectDuration", {
+                      required: "Project duration is required",
+                      pattern: {
+                        value: /^[0-9]+(\s*(months?|years?|days?))?$/i,
+                        message: "Enter a valid duration (e.g., '3 months')",
+                      },
+                    })}
                     className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
+                  {caseStudyErrors.projectDuration && (
+                    <span className="text-red-500 text-sm">
+                      {caseStudyErrors.projectDuration.message}
+                    </span>
+                  )}
                 </div>
 
                 {/* Tech Stack */}
@@ -191,36 +236,57 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
                   </label>
                   <input
                     type="text"
-                    placeholder="Tech"
-                    {...caseStudyForm.register("techStack")}
+                    placeholder="Tech (e.g., React, Node.js)"
+                    {...caseStudyRegister("techStack", {
+                      required: "Tech stack is required",
+                    })}
                     className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
+                  {caseStudyErrors.techStack && (
+                    <span className="text-red-500 text-sm">
+                      {caseStudyErrors.techStack.message}
+                    </span>
+                  )}
                 </div>
 
                 {/* Industry Targeted */}
+               <div>
+                  <label className="block text-md text-bg-blue-12 font-medium mb-2">
+                    Industry Targeted
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Targeted Industry"
+                    {...caseStudyRegister("industryTarget", {
+                      required: "Industry target is required",
+                    })}
+                    className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                  {caseStudyErrors.industryTarget && (
+                    <span className="text-red-500 text-sm">
+                      {caseStudyErrors.industryTarget.message}
+                    </span>
+                  )}
+                </div>
+
+                {/* Document */}
                 <div>
                   <label className="block text-md text-bg-blue-12 font-medium mb-2">
                     Industry Targeted
                   </label>
                   <input
                     type="text"
-                    placeholder="Targeted"
-                    {...caseStudyForm.register("industryTarget")}
+                    placeholder="Targeted Industry"
+                    {...caseStudyRegister("industryTarget", {
+                      required: "Industry target is required",
+                    })}
                     className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
-                </div>
-
-                {/* Document */}
-                <div>
-                  <label className="block text-md text-bg-blue-12 font-medium mb-2">
-                    Document
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Document"
-                    {...caseStudyForm.register("document")}
-                    className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
+                  {caseStudyErrors.industryTarget && (
+                    <span className="text-red-500 text-sm">
+                      {caseStudyErrors.industryTarget.message}
+                    </span>
+                  )}
                 </div>
 
                 {/* Searchable Tags */}
@@ -230,22 +296,25 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
                   </label>
                   <input
                     type="text"
-                    placeholder="Tags"
-                    {...caseStudyForm.register("tags")}
+                    placeholder="Tags (comma-separated)"
+                    {...caseStudyRegister("tags", {
+                      required: "At least one tag is required",
+                      setValueAs: (value) => {
+                        if (!value || typeof value !== "string") return [];
+                        return value.split(",").map((tag) => tag.trim()).filter((tag) => tag.length > 0);
+                      },
+                      validate: (value) =>
+                        (value && value.length > 0) || "At least one valid tag is required",
+                    })}
                     className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
+                  {caseStudyErrors.tags && (
+                    <span className="text-red-500 text-sm">
+                      {caseStudyErrors.tags.message}
+                    </span>
+                  )}
                 </div>
               </div>
-
-              {/* Key Outcomes */}
-              {/* <div className="mt-2">
-              <label className="block text-md text-bg-blue-12 font-medium mb-2">
-                Key Outcomes
-              </label>
-             
-
-              <CaseStudyFormNotes vendorId={"1"}  {...caseStudyForm.register("keyOutcomes")}/>
-            </div> */}
 
               <div className="mt-2">
                 <label className="block text-md text-bg-blue-12 font-medium mb-2">
@@ -253,52 +322,33 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
                 </label>
                 <Notes
                   vendorId={"1"}
-                  value={caseStudyForm.watch("keyOutcomes") || ""}
+                  value={caseStudyWatch("keyOutcomes") || ""}
                   onChange={(value) =>
-                    caseStudyForm.setValue("keyOutcomes", value, {
+                    caseStudySetValue("keyOutcomes", value, {
                       shouldValidate: true,
                       shouldDirty: true,
                     })
                   }
                 />
-                {caseStudyForm.formState.errors.keyOutcomes && (
+                <input
+                  type="hidden"
+                  {...caseStudyRegister("keyOutcomes", {
+                    required: "Key outcomes are required",
+                    minLength: { value: 10, message: "Minimum 10 characters required" },
+                  })}
+                />
+                {caseStudyErrors.keyOutcomes && (
                   <span className="text-red-500 text-sm">
-                    This field is required
+                    {caseStudyErrors.keyOutcomes.message}
                   </span>
                 )}
               </div>
 
-              {/* <div className="mt-2">
-              <label className="block text-md text-bg-blue-12 font-medium mb-2">
-                Key Outcomes
-              </label>
-              <textarea
-                placeholder="Enter key outcomes..."
-                {...caseStudyForm.register("keyOutcomes")}
-                rows={3}
-                className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-              ></textarea>
-            </div> */}
-
-              {/* Details */}
-              {/* <div className="mt-2">
-                <label className="block text-md text-bg-blue-12 font-medium mb-2">
-                  Details
-                </label>
-                <textarea
-                  placeholder="Enter details..."
-                  {...caseStudyForm.register("details")}
-                  rows={3}
-                  className="w-full px-4 py-2 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                ></textarea>
-              </div> */}
-
-              {/* Save Button */}
               <div className="mt-4">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3 bg-bg-blue-12 text-white rounded-lg font-medium "
+                  className="w-full py-3 bg-bg-blue-12 text-white rounded-lg font-medium"
                 >
                   {loading ? "Saving..." : "Save"}
                 </button>
@@ -307,82 +357,100 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
           </div>
         )}
 
-        {/* Lead Close Form */}
         {activeForm === "leadClose" && (
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="bg-indigo-500 p-4 flex justify-between items-center">
-              <h2 className="text-2xl font-semibold text-white">
-                Lead Close Form
-              </h2>
+              <h2 className="text-2xl font-semibold text-white">Lead Close Form</h2>
               <button className="bg-white p-2 rounded-lg" onClick={onClose}>
                 <img src="cross_icon.svg" alt="Close" className="h-3 w-3" />
               </button>
             </div>
 
             <form
-              onSubmit={leadCloseForm.handleSubmit(handleLeadCloseSubmit)}
+              onSubmit={leadCloseHandleSubmit(handleLeadCloseSubmit)}
               className="p-6"
             >
               <div className="grid grid-cols-1 gap-6">
-                {/* Deal Name */}
-                {/* <div>
+                <div>
                   <label className="block text-md text-bg-blue-12 font-medium mb-2">
                     Deal Name
                   </label>
                   <input
                     type="text"
                     placeholder="Enter name"
-                    {...leadCloseForm.register("dealName", { required: true })}
+                    {...leadCloseRegister("dealName", {
+                      required: "Deal name is required",
+                      minLength: { value: 2, message: "Minimum 2 characters required" },
+                    })}
                     className="w-full px-4 py-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
-                  {leadCloseForm.formState.errors.dealName && (
-                    <span className="text-red-500 text-sm">This field is required</span>
+                  {leadCloseErrors.dealName && (
+                    <span className="text-red-500 text-sm">
+                      {leadCloseErrors.dealName.message}
+                    </span>
                   )}
-                </div> */}
+                </div>
 
-                {/* Deal Start Date */}
-                {/* <div>
+                <div>
                   <label className="block text-md text-bg-blue-12 font-medium mb-2">
                     Deal Start Date
                   </label>
                   <input
                     type="date"
-                    placeholder="Start date"
-                    {...leadCloseForm.register("dealStartDate", { required: true })}
+                    {...leadCloseRegister("dealStartDate", {
+                      required: "Deal start date is required",
+                    })}
                     className="w-full px-4 py-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
-                  {leadCloseForm.formState.errors.dealStartDate && (
-                    <span className="text-red-500 text-sm">This field is required</span>
+                  {leadCloseErrors.dealStartDate && (
+                    <span className="text-red-500 text-sm">
+                      {leadCloseErrors.dealStartDate.message}
+                    </span>
                   )}
-                </div> */}
+                </div>
 
-                {/* Project Requirement */}
-                {/* <div>
+                <div>
                   <label className="block text-md text-bg-blue-12 font-medium mb-2">
                     Project Requirement
                   </label>
                   <input
                     type="text"
-                    placeholder="Project"
-                    {...leadCloseForm.register("projectRequirement")}
+                    placeholder="Project requirements"
+                    {...leadCloseRegister("projectRequirement", {
+                      required: "Project requirement is required",
+                      minLength: { value: 5, message: "Minimum 5 characters required" },
+                    })}
                     className="w-full px-4 py-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
-                </div> */}
+                  {leadCloseErrors.projectRequirement && (
+                    <span className="text-red-500 text-sm">
+                      {leadCloseErrors.projectRequirement.message}
+                    </span>
+                  )}
+                </div>
 
-                {/* Deal Status */}
-                {/* <div>
+                <div>
                   <label className="block text-md text-bg-blue-12 font-medium mb-2">
                     Deal Status
                   </label>
-                  <input
-                    type="text"
-                    placeholder="Deal"
-                    {...leadCloseForm.register("dealStatus")}
+                  <select
+                    {...leadCloseRegister("dealStatus", {
+                      required: "Deal status is required",
+                    })}
                     className="w-full px-4 py-3 border border-indigo-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div> */}
+                  >
+                    <option value="" disabled>Select status</option>
+                    <option value="OPEN">Open</option>
+                    <option value="CLOSED_WON">Closed Won</option>
+                    <option value="CLOSED_LOST">Closed Lost</option>
+                  </select>
+                  {leadCloseErrors.dealStatus && (
+                    <span className="text-red-500 text-sm">
+                      {leadCloseErrors.dealStatus.message}
+                    </span>
+                  )}
+                </div>
 
-                {/* Submit Button */}
                 <div className="mt-2">
                   <button
                     type="submit"

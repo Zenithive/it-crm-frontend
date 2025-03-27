@@ -13,7 +13,7 @@ const IndividualTitle = ({ leadId }: { leadId: string }) => {
   const user = useSelector((state: RootState) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
 
-  const { data, loading, error } = useQuery(GET_LEAD, {
+  const { data, loading, error,refetch } = useQuery(GET_LEAD, {
     variables: { leadID: String(leadId) },
     context: {
       headers: {
@@ -30,6 +30,7 @@ const IndividualTitle = ({ leadId }: { leadId: string }) => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false); // Close the modal
+    refetch();
   };
 
   return (

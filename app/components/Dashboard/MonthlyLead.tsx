@@ -15,12 +15,12 @@ const STAGE_SEQUENCE = [
 ];
 
 const COLORS = {
-  NEW: "#6366F1", // Purple
-  QUALIFIED: "#374151", // Dark gray
-  NEGOTIATION: "#EF4444", // Red
-  DEAL:"#374151",
-  CLOSED_WON:"#374151",
-  CLOSED_LOST: "#10B981", // Green
+  NEW: "#6A5ACD", // Purple
+  QUALIFIED: "#1ABC9C", // Dark gray
+  NEGOTIATION: "#F39C12", // Red
+  DEAL:"#E74C3C",
+  CLOSED_WON:"#3498DB",
+  CLOSED_LOST: "#9B59B6", // Green
 };
 
 const RADIAN = Math.PI / 180;

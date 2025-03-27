@@ -22,7 +22,7 @@ import {
   Check,
 } from "lucide-react";
 import { CountrySelection } from "./CountrySelection";
-import PerformanceFormModal from "./PerformanceModal"; // Updated import
+import PerformanceFormModal from "./PerformanceModal";
 
 interface PerformanceRatingData {
   pastProjectsCount: number;
@@ -37,7 +37,7 @@ interface VendorFormData {
   vendorSkills: string;
   paymentTerms: string;
   gstOrVatDetails: string;
-  performanceRatings: PerformanceRatingData[]; // Updated field name
+  performanceRatings: PerformanceRatingData[];
   notes: string;
   country: string;
   vendorDetails: VendorDetail[];
@@ -70,11 +70,19 @@ interface CompanyProfile {
     phone: string;
     location: string;
   };
-  performanceRatings?: PerformanceRatingData[]; // Add this if available in edit mode
+  performanceRatings?: PerformanceRatingData[];
 }
 
 const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorId, refetchVendors }) => {
-  const { register, handleSubmit, reset, setValue, control, formState: { errors } } = useForm<VendorFormData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    control,
+    watch,
+    formState: { errors },
+  } = useForm<VendorFormData>({
     defaultValues: vendorData && vendorId ? {
       companyName: vendorData.companyName || "",
       address: vendorData.address || "",
@@ -82,7 +90,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
       vendorSkills: vendorData.skills && vendorData.skills.length > 0 ? vendorData.skills[0].name : "",
       paymentTerms: vendorData.paymentTerms || "",
       gstOrVatDetails: vendorData.gstOrVatDetails || "",
-      performanceRatings: vendorData.performanceRatings || [], // Use existing ratings if available
+      performanceRatings: vendorData.performanceRatings || [],
       notes: vendorData.notes || "",
       country: vendorData.primaryContact?.location || "",
       vendorDetails: [{ name: "", contact: "", number: "", designation: "" }],
@@ -134,7 +142,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
     if (noteRef.current) {
       noteRef.current.focus();
       document.execCommand(command, false, value);
-      setValue("notes", noteRef.current.innerHTML);
+      setValue("notes", noteRef.current.innerHTML, { shouldValidate: true });
     }
   };
 
@@ -145,12 +153,14 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
         noteRef.current.innerHTML = "<p><br></p>";
       }
       document.execCommand(command, false, "");
-      setValue("notes", noteRef.current.innerHTML);
+      setValue("notes", noteRef.current.innerHTML, { shouldValidate: true });
     }
   };
 
   const handleNoteChange = () => {
-    if (noteRef.current) setValue("notes", noteRef.current.textContent || "");
+    if (noteRef.current) {
+      setValue("notes", noteRef.current.textContent || "", { shouldValidate: true });
+    }
   };
 
   const getSkillIDs = (skill: string): string[] => {
@@ -169,7 +179,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
   const addPerformance = (data: PerformanceRatingData) => {
     const newPerformanceRatings = [...performanceRatings, data];
     setPerformanceRatings(newPerformanceRatings);
-    setValue("performanceRatings", newPerformanceRatings);
+    setValue("performanceRatings", newPerformanceRatings, { shouldValidate: true });
   };
 
   const mapFormDataToMutationInput = (data: VendorFormData) => {
@@ -203,7 +213,6 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
         message.success("Vendor created successfully!");
         if (refetchVendors) refetchVendors();
       }
-      
       reset();
       onClose();
     } catch (error) {
@@ -213,7 +222,6 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
       setLoading(false);
     }
   };
-
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={onClose}>
@@ -241,20 +249,32 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                 <div>
                   <label className="block text-sm font-medium text-bg-blue-12 mb-1">Company Name</label>
                   <input
-                    {...register("companyName", { required: true })}
+                    {...register("companyName", {
+                      required: "Company name is required",
+                      minLength: { value: 2, message: "Minimum 2 characters required" },
+                    })}
                     type="text"
                     placeholder="Enter name"
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-[#6366F1] outline-none"
                   />
+                  {errors.companyName && (
+                    <span className="text-red-500 text-sm">{errors.companyName.message}</span>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-bg-blue-12 mb-1">Address</label>
                   <input
-                    {...register("address")}
+                    {...register("address", {
+                      required: "Address is required",
+                      minLength: { value: 5, message: "Minimum 5 characters required" },
+                    })}
                     type="text"
                     placeholder="Address"
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
                   />
+                  {errors.address && (
+                    <span className="text-red-500 text-sm">{errors.address.message}</span>
+                  )}
                 </div>
                 <div>
                   <CountrySelection
@@ -270,36 +290,45 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                 <div>
                   <label className="block text-sm font-medium text-bg-blue-12 mb-1">Status</label>
                   <select
-                    {...register("status")}
+                    {...register("status", { required: "Status is required" })}
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
                   >
-                    <option value="">Select Status</option>
+                    <option value="" disabled>Select Status</option>
                     <option value="ACTIVE">Active</option>
                     <option value="INACTIVE">Inactive</option>
                   </select>
+                  {errors.status && (
+                    <span className="text-red-500 text-sm">{errors.status.message}</span>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-bg-blue-12 mb-1">Vendor Skills</label>
                   <select
-                    {...register("vendorSkills")}
+                    {...register("vendorSkills", { required: "Vendor skills are required" })}
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
                   >
-                    <option value="">Select Skills</option>
+                    <option value="" disabled>Select Skills</option>
                     <option value="GOLANG">Golang</option>
                     <option value="POSTGRESQL">PostgreSQL</option>
                   </select>
+                  {errors.vendorSkills && (
+                    <span className="text-red-500 text-sm">{errors.vendorSkills.message}</span>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-bg-blue-12 mb-1">Payment Terms</label>
                   <select
-                    {...register("paymentTerms")}
+                    {...register("paymentTerms", { required: "Payment terms are required" })}
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
                   >
-                    <option value="">Select Terms</option>
+                    <option value="" disabled>Select Terms</option>
                     <option value="NET_30">NET 30</option>
                     <option value="NET_60">NET 60</option>
                     <option value="NET_90">NET 90</option>
                   </select>
+                  {errors.paymentTerms && (
+                    <span className="text-red-500 text-sm">{errors.paymentTerms.message}</span>
+                  )}
                 </div>
               </div>
 
@@ -307,11 +336,19 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                 <div>
                   <label className="block text-sm font-medium text-bg-blue-12 mb-1">VAT/GST</label>
                   <input
-                    {...register("gstOrVatDetails")}
+                    {...register("gstOrVatDetails", {
+                      pattern: {
+                        value: /^[A-Z0-9]{5,15}$/,
+                        message: "Enter a valid GST/VAT number (5-15 alphanumeric characters)",
+                      },
+                    })}
                     type="text"
                     placeholder="GST or VAT Number"
                     className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
                   />
+                  {errors.gstOrVatDetails && (
+                    <span className="text-red-500 text-sm">{errors.gstOrVatDetails.message}</span>
+                  )}
                 </div>
               </div>
 
@@ -334,6 +371,10 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                       </div>
                     ))}
                   </div>
+                )}
+                {/* Optional: Add validation message if no ratings are added */}
+                {errors.performanceRatings && (
+                  <span className="text-red-500 text-sm">{errors.performanceRatings.message}</span>
                 )}
               </div>
 
@@ -385,7 +426,17 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                     contentEditable="true"
                     onInput={handleNoteChange}
                     className="p-3 min-h-[80px] outline-none border-none w-full focus:ring-0 text-gray-900"
-                  ></div>
+                  />
+                  <input
+                    type="hidden"
+                    {...register("notes", {
+                      required: "Notes are required",
+                      minLength: { value: 5, message: "Minimum 5 characters required" },
+                    })}
+                  />
+                  {errors.notes && (
+                    <span className="text-red-500 text-sm">{errors.notes.message}</span>
+                  )}
                   <div className="p-3">
                     <div className="flex gap-2 text-sm text-bg-blue-12">
                       <button type="button" className="hover:underline">@ Mention</button>
