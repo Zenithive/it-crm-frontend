@@ -213,7 +213,7 @@ const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
           {activeTab === "Details" && <ResourceDetails resourceData={resourceData} />}
           {activeTab === "Skills & Experience" && <ResourceSkills resourceData={resourceData} />}
           {activeTab === "Documents" && <ResourceDoc resourceData={resourceData}/>}
-          {activeTab === "Notes" && <ResourceNote />}
+          {activeTab === "Notes" && <ResourceNote resourceData={resourceData}/>}
         </div>
         <div className="w-full md:w-1/3 mt-10 flex-shrink-0 bg-white rounded-2xl p-6 shadow-custom">
           <h3 className="text-bg-blue-12 text-2xl font-bold mb-4">Performance Overview</h3>

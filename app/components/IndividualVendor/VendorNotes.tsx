@@ -1,101 +1,143 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
-
-import { individualvendor } from "../../api/jsonService/individualvendorJsonService";
-import JoditEditor from "jodit-react";
-import useIndividualVendorData from "../../api/apiService/individualvendorApiService";
-
+import React, { useState } from "react";
+import { gql, useMutation, useQuery } from '@apollo/client';
 import Notes from "../../microComponents/Notes";
 
+// GraphQL Mutations and Queries
+const CREATE_NOTE_MUTATION = gql`
+  mutation CreateNote($input: CreateNoteInput!) {
+    createNote(input: $input) {
+      noteID
+      note
+      referenceID
+      referenceType
+      userID
+    }
+  }
+`;
+
+const GET_NOTES_QUERY = gql`
+  query GetNotesByReference($referenceID: ID!, $referenceType: String!) {
+    getNotesByReference(referenceID: $referenceID, referenceType: $referenceType) {
+      noteID
+      note
+      referenceID
+      referenceType
+      userID
+    }
+  }
+`;
+
 interface Note {
-  message: string;
-  notes: string;
-  profile: string;
-  name: string;
-  date: string;
+  noteID?: string;
+  note: string;
+  message?: string;
+  referenceID: string;
+  referenceType: string;
+  userID?: string;
+  name?: string;
+  date?: string;
+  profile?: string;
 }
 
-const VendorNotes = ({ vendorId}: { vendorId: string }) => {
-  const [notes, setNotes] = useState<Note[]>([]);
-  // const [notes, setNotes] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const editor = useRef(null);
+const VendorNotes = ({ vendorId }: { vendorId: string }) => {
   const [content, setContent] = useState('');
 
-  const useDummyData =
-    process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
+  // Define reference type for vendor notes
+  const referenceType = "VENDOR";
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const response =  individualvendor();
-        const notesData = response?.notes?.map((note: any) => ({
-          ...note,
-          notes: note.notes || ""
-        })) ?? [];
-        setNotes(Array.isArray(notesData) ? notesData : []);
-      } catch (err) {
-        console.error("Error fetching resources:", err);
-        setError("Failed to load resources");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, [useDummyData]);
-
-  // const { vendor, loading: vendorLoading, error: vendorError } = useIndividualVendorData(vendorId);
+  // Create note mutation
+  const [createNote, { loading: createLoading, error: createError }] = useMutation(CREATE_NOTE_MUTATION);
   
-  // useEffect(() => {
-  //   if (vendor?.notes) {
-  //           setNotes(vendor.notes);
-  //   }
-  //   if (vendorError) {
-  //     setError(vendorError);
-  //   }
-  //   setIsLoading(vendorLoading);
-  // }, [vendor, vendorLoading, vendorError]);
+  // Get notes query
+  const { 
+    data, 
+    loading: fetchLoading, 
+    error: fetchError, 
+    refetch 
+  } = useQuery(GET_NOTES_QUERY, {
+    variables: { 
+      referenceID: vendorId, 
+      referenceType 
+    },
+    fetchPolicy: 'cache-and-network'
+  });
+
+  const handleUpdateNote = async () => {
+    if (!content.trim()) return; // Prevent empty notes
+
+    try {
+      await createNote({
+        variables: {
+          input: {
+            noteData: content,
+            referenceID: vendorId,
+            referenceType
+          }
+        }
+      });
+
+      // Clear the content after successful submission
+      setContent("");
+      
+      // Refetch notes to update the list
+      refetch();
+    } catch (err) {
+      console.error("Error creating note:", err);
+    }
+  };
+
+  // Transform notes from query to match existing interface
+  const transformedNotes: Note[] = data?.getNotesByReference?.map((note: Note) => ({
+    ...note,
+    message: note.note,
+    name: note.userID || 'Unknown', // You might want to map this to actual user name
+    date: new Date().toLocaleDateString(), // You might want to use actual date from backend
+    profile: "/image.svg" // Default profile image
+  })) || [];
+
+  // Loading and error states
+  if (fetchLoading) return <div>Loading notes...</div>;
+  if (fetchError) return <div>Error loading notes: {fetchError.message}</div>;
 
   return (
     <div className="bg-white rounded-xl p-6 shadow-custom mr-6 mt-4">
       <div className="bg-white rounded-xl p-6 shadow-custom">
         <div className="">
-          {/* <JoditEditor
-            ref={editor}
-            value={content}
+          <Notes   
+            vendorId={vendorId}
+            value={content || ""}
             onChange={(newContent) => setContent(newContent)}
-            config={{
-              toolbarSticky: false,
-              showXPathInStatusbar: false,
-              showCharsCounter: false,
-              showWordsCounter: false,
-              showPlaceholder: false,
-              style: { border: "none", minHeight: "150px" },
-            }}
-          /> */}
-
-          <Notes   vendorId={"1"}
-    value={content || ""}
-    onChange={(newContent) => setContent(newContent)}
-   />
+          />
         </div>
         <div className="mt-6">
-          <button className="bg-bg-blue-12 text-white rounded-lg p-2">
-            <div className="text-white">Update</div>
+          <button 
+            className="bg-bg-blue-12 text-white rounded-lg p-2"
+            onClick={handleUpdateNote}
+            disabled={createLoading}
+          >
+            <div className="text-white">
+              {createLoading ? 'Updating...' : 'Update'}
+            </div>
           </button>
         </div>
-  </div>
+      </div>
+
+      {/* Error handling */}
+      {createError && (
+        <div className="text-red-500 mt-4">
+          {createError.message}
+        </div>
+      )}
+
       <div className="mt-4">
         <div className="space-y-4">
-          {notes?.map((note, index) => (
-            <div key={index} className="p-4 rounded-lg shadow-custom bg-white">
+          {transformedNotes.map((note, index) => (
+            <div key={note.noteID || index} className="p-4 rounded-lg shadow-custom bg-white">
               <div className="font-medium text-xl">{note.message}</div>
               <div className="flex mt-3">
                 <img
-                  src="/image.svg"
+                  src={note.profile || "/image.svg"}
                   alt={note.name}
                   className="w-8 h-8 md:w-10 md:h-10 rounded-full"
                 />
@@ -105,8 +147,6 @@ const VendorNotes = ({ vendorId}: { vendorId: string }) => {
               </div>
             </div>
           ))}
-
-          {/* <div className="">{notes}</div> */}
         </div>
       </div>
     </div>

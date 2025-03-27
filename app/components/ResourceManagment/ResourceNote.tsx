@@ -2,80 +2,140 @@
 import React, { useState, useEffect, useRef } from "react";
 import { resourcemanagmentApi } from "../../api/apiService/resourcemanagmentApiService";
 import { resourcemanagment } from "../../api/jsonService/resourcemanagmentJsonService";
-import JoditEditor from "jodit-react";
 import Notes from "../../microComponents/Notes";
+import { useMutation, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
+
+// GraphQL Mutations and Queries
+const CREATE_NOTE_MUTATION = gql`
+  mutation CreateNote($input: CreateNoteInput!) {
+    createNote(input: $input) {
+      noteID
+      note
+      referenceID
+      referenceType
+      userID
+    }
+  }
+`;
+
+const GET_NOTES_QUERY = gql`
+  query GetNotesByReference($referenceID: ID!, $referenceType: String!) {
+    getNotesByReference(referenceID: $referenceID, referenceType: $referenceType) {
+      noteID
+      note
+      referenceID
+      referenceType
+      userID
+    }
+  }
+`;
 
 interface Note {
-  message: string;
-  profile: string;
-  name: string;
-  date: string;
+  noteID?: string;
+  note: string;
+  referenceID: string;
+  referenceType: string;
+  userID?: string;
+  name?: string;
+  date?: string;
 }
 
-const ResourceNote = () => {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+interface ResourceNoteProps {
+  resourceData: {
+    // Define the structure of resourceData here
+    // Example:
+    id: string;
+    name: string;
+    rawProfile:{
+      resourceProfileID: string;
+    }
+  };
+}
 
-  const editor = useRef(null);
+const ResourceNote = ({ resourceData }: ResourceNoteProps) => {
+  console.log(`resourceData`, resourceData.rawProfile.resourceProfileID);
+  // Assuming you have a specific reference ID and type for this resource
+  const referenceID = resourceData.rawProfile.resourceProfileID; // Replace with actual reference ID
+  const referenceType = "RESOURCE"; // Replace with actual reference type
+
   const [content, setContent] = useState("");
+  
+  // Create note mutation
+  const [createNote, { loading: createLoading, error: createError }] = useMutation(CREATE_NOTE_MUTATION);
+  
+  // Get notes query
+  const { data, loading: fetchLoading, error: fetchError, refetch } = useQuery(GET_NOTES_QUERY, {
+    variables: { referenceID, referenceType },
+    fetchPolicy: 'cache-and-network'
+  });
 
-  const useDummyData =
-    process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
+  const handleUpdateNote = async () => {
+    if (!content.trim()) return; // Prevent empty notes
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const response = useDummyData
-          ? await resourcemanagmentApi()
-          : resourcemanagment();
+    try {
+      await createNote({
+        variables: {
+          input: {
+            noteData: content,
+            referenceID,
+            referenceType
+          }
+        }
+      });
 
-        const notesData = response?.notes ?? [];
-        setNotes(Array.isArray(notesData) ? notesData : []);
-      } catch (err) {
-        console.error("Error fetching resources:", err);
-        setError("Failed to load resources");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      // Clear the content after successful submission
+      setContent("");
+      
+      // Refetch notes to update the list
+      refetch();
+    } catch (err) {
+      console.error("Error creating note:", err);
+    }
+  };
 
-    fetchData();
-  }, [useDummyData]);
+  // Transform notes from query to match existing interface
+  const transformedNotes: Note[] = data?.getNotesByReference?.map((note: Note) => ({
+    ...note,
+    message: note.note,
+    name: note.userID || 'Unknown', // You might want to map this to actual user name
+    date: new Date().toLocaleDateString() // You might want to use actual date from backend
+  })) || [];
 
   return (
     <div className="bg-white rounded-xl p-6 shadow-custom mr-6 mt-4">
       <div className="bg-white rounded-xl p-6 shadow-custom">
         <div className="">
-          {/* <JoditEditor
-            ref={editor}
-            value={content} 
-            onChange={setContent} 
-            config={{
-              toolbarSticky: false,
-              showXPathInStatusbar: false,
-              showCharsCounter: false,
-              showWordsCounter: false,
-              showPlaceholder: false,
-              style: { border: "none", minHeight: "150px" },
-            }}
-          /> */}
-
-          <Notes/>
+          <Notes 
+            value={content}
+            onChange={setContent}
+          />
         </div>
         <div className="mt-6">
-          <button className="bg-bg-blue-12 text-white rounded-lg p-2">
-            <div className="text-white">Update</div>
+          <button 
+            className="bg-bg-blue-12 text-white rounded-lg p-2"
+            onClick={handleUpdateNote}
+            disabled={createLoading}
+          >
+            <div className="text-white">
+              {createLoading ? 'Updating...' : 'Update'}
+            </div>
           </button>
         </div>
       </div>
 
+      {/* Error handling */}
+      {(createError || fetchError) && (
+        <div className="text-red-500 mt-4">
+          {createError?.message || fetchError?.message}
+        </div>
+      )}
+
       <div className="mt-4">
         <div className="space-y-4">
-          {notes.map((note, index) => (
-            <div key={index} className="p-4 rounded-lg shadow-custom bg-white">
-              <div className="font-medium text-xl">{note.message}</div>
+          {transformedNotes.map((note, index) => (
+            <div key={note.noteID || index} className="p-4 rounded-lg shadow-custom bg-white">
+              <div className="font-medium text-xl">{note.note}</div> 
               <div className="flex mt-3">
                 <img
                   src="/image.svg"
@@ -83,7 +143,7 @@ const ResourceNote = () => {
                   className="w-8 h-8 md:w-10 md:h-10"
                 />
                 <div className="justify-center items-center flex ml-2 text-gray-500">
-                  <div>Add by {note.name} - {note.date}</div>
+                  <div>Added by {note.name} - {note.date}</div>
                 </div>
               </div>
             </div>
