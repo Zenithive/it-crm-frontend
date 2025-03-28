@@ -28,7 +28,7 @@ const calculatePercentageChange = (current: number, previous: number): { change:
 };
 
 const SalesDashboard: React.FC = () => {
-  const [timeFilter, setTimeFilter] = useState<'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('yearly');
+
 
   // Use leadsApiService to fetch data
   const {
@@ -38,8 +38,7 @@ const SalesDashboard: React.FC = () => {
     leadPerformanceMetrics,
     teamPerformance,
     leadSourceCounts,
-    setTimeFilter: updateApiTimeFilter
-  } = leadsApiService(1, 10, true, undefined, undefined, timeFilter);
+  } = leadsApiService(1, 10, true);
 
   // Hardcoded previous metrics for comparison (consider fetching these dynamically)
   const previousMetrics = useMemo(() => ({
@@ -49,10 +48,7 @@ const SalesDashboard: React.FC = () => {
     avgDaysToClose: 55
   }), []);
 
-  const handleFilterChange = (filter: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
-    setTimeFilter(filter);
-    updateApiTimeFilter(filter);
-  };
+  
 
   const keyMetrics = useMemo(() => [
     {
@@ -105,7 +101,6 @@ const SalesDashboard: React.FC = () => {
           {/* Key Metrics Card */}
           <KeyMetricsCard 
             keyMetrics={keyMetrics} 
-            onFilterChange={handleFilterChange} 
           />
 
           {/* Charts and Map Section */}
