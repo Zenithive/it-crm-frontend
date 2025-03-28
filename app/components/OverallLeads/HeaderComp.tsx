@@ -19,7 +19,7 @@ const HeaderComp: React.FC<HeaderProps> = ({
   onAddLead,
   onFilter,
   onViewChange,
-  
+  pageType
   
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -96,87 +96,93 @@ const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignF
  
 
   return (
-    <>
-      <div className="pt-7 flex justify-between items-center px-7">
-        <div className="flex gap-5 items-center">
-          <div className="text-bg-blue-12 font-bold text-[30px]">
-            <Title title={data.title || ""} />
-          </div>
-          <div className="flex gap-12 items-center">
-            <Search
-              searchText={data.searchText}
-              value={searchQuery || ""}
-              onChange={handleSearchChange}
-            />
-            <div className="flex gap-5 items-center justify-start">
-              <div
-                className={`flex items-center cursor-pointer px-5 py-2 rounded-xl gap-2 ${
-                  activeView === "list" ? "border border-1 shadow-custom" : ""
-                }`}
-                onClick={() => handleViewChange("list")}
-              >
-                <img
-                  src={data.Listlogo}
-                  alt="List View"
-                  className={`h-7 w-7 ${
-                    activeView === "list" ? "opacity-100" : "opacity-50"
-                  }`}
-                />
-                {activeView === "list" && (
-                  <div className="font-semibold text-[15px] text-gray-text">
-                    List View
-                  </div>
-                )}
-              </div>
-              <div
-                className={`flex items-center cursor-pointer px-5 py-2 rounded-xl gap-2 ${
-                  activeView === "kanban"
-                    ? "border border-1 shadow-custom rounded-xl"
-                    : ""
-                }`}
-                onClick={() => handleViewChange("kanban")}
-              >
-                <img
-                  src={data.Kanbanlogo}
-                  alt="Kanban View"
-                  className={`h-7 w-7 ${
-                    activeView === "kanban" ? "opacity-100" : "opacity-50"
-                  }`}
-                />
-                {activeView === "kanban" && (
-                  <div className="font-semibold text-[15px] text-gray-text">
-                    Kanban View
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        <HeaderButtons
-          button1Text={"Filters"}
-          button2Text={"Add Lead"}
-          button1img={"/filterC.svg"}
-          button2img={"/plus.svg"}
-          button1width="w-[102px]"
-          button2width="w-[124px]"
-          onClick2={showLeadModal}
-          onClick1={() => setShowFilter(true)}
-        />
-      </div>
-      {isLeadModalVisible && <AddLeadModal onClose={hideLeadModal} />}
-      {showFilter && (
-        <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
-         
 
-<FilterHandler
-            filterSections={filterSections}
-            onFilterApply={onFilter || (() => {})}
-            setShowFilter={setShowFilter}
-             pageType="contact"
-          />
+<>
+<div className="pt-7 flex justify-between items-center px-7">
+  <div className="flex gap-5 items-center">
+    <div className="text-bg-blue-12 font-bold text-[30px]">
+      <Title title={data.title || ""} />
+    </div>
+    <div className="flex gap-12 items-center">
+      <Search
+        searchText={data.searchText}
+        value={searchQuery || ""}
+        onChange={handleSearchChange}
+      />
+      {pageType === 'contact' && (
+        <div className="flex gap-5 items-center justify-start">
+          <div
+            className={`flex items-center cursor-pointer px-5 py-2 rounded-xl gap-2 ${
+              activeView === "list" ? "border border-1 shadow-custom" : ""
+            }`}
+            onClick={() => handleViewChange("list")}
+          >
+            <img
+              src={data.Listlogo}
+              alt="List View"
+              className={`h-7 w-7 ${
+                activeView === "list" ? "opacity-100" : "opacity-50"
+              }`}
+            />
+            {activeView === "list" && (
+              <div className="font-semibold text-[15px] text-gray-text">
+                List View
+              </div>
+            )}
+          </div>
+          <div
+            className={`flex items-center cursor-pointer px-5 py-2 rounded-xl gap-2 ${
+              activeView === "kanban"
+                ? "border border-1 shadow-custom rounded-xl"
+                : ""
+            }`}
+            onClick={() => handleViewChange("kanban")}
+          >
+            <img
+              src={data.Kanbanlogo}
+              alt="Kanban View"
+              className={`h-7 w-7 ${
+                activeView === "kanban" ? "opacity-100" : "opacity-50"
+              }`}
+            />
+            {activeView === "kanban" && (
+              <div className="font-semibold text-[15px] text-gray-text">
+                Kanban View
+              </div>
+            )}
+          </div>
         </div>
       )}
-    </>
+    </div>
+  </div>
+  <HeaderButtons
+          button1Text={"Filters"}
+          button1img={"/filterC.svg"}
+          button1width="w-[102px]"
+         
+          {...(pageType === 'contact' ? {
+            button2Text: "Add Lead",
+            button2img: "/plus.svg",
+            button2width: "w-[124px]",
+            onClick2: showLeadModal
+          } : {})}
+          onClick1={() => setShowFilter(true)}
+        />
+</div>
+{pageType === 'contact' && isLeadModalVisible && <AddLeadModal onClose={hideLeadModal} />}
+{showFilter && (
+  <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <FilterHandler
+      filterSections={pageType === 'deals' 
+        ? filterSections.filter(section => section.id !== 'stage')
+        : filterSections}
+      onFilterApply={onFilter || (() => {})}
+      setShowFilter={setShowFilter}
+      pageType="contact"
+    />
+  </div>
+)}
+</>
   );
 };
 

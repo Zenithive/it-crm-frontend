@@ -30,7 +30,7 @@ interface FilterHandlerProps {
   filterSections: FilterSection[];
   onFilterApply: (payload: FilterPayload) => void | Promise<void>;
   setShowFilter: (show: boolean) => void;
-  pageType?: "contact" | "todo";
+  pageType?:string;
 }
 
 const FilterHandler: React.FC<FilterHandlerProps> = ({
@@ -180,11 +180,132 @@ const FilterHandler: React.FC<FilterHandlerProps> = ({
     setShowFilter(false);
   };
 
+
+
+  const handleFilterApplyResource = async () => {
+    const payload: FilterPayload = {
+      filter: {
+        
+        // Include other filters based on selected options
+        skills: selectedOptions.filter(opt => 
+          filterSections.some(section => 
+            section.id === 'skills' && 
+            section.options.some(o => o.id === opt)
+          )
+        ).join(','),
+        experienceYear: selectedOptions.filter(opt => 
+          filterSections.some(section => 
+            section.id === 'experienceYear' && 
+            section.options.some(o => o.id === opt)
+          )
+        ).join(','),
+      
+      },
+      pagination: {
+        page: 1,
+        pageSize: 10
+      },
+      sort: {
+        field: 'createdAt',
+        order: 'desc'
+      }
+    };
+
+    await onFilterApply(payload);
+    setShowFilter(false);
+  };
+
+
+
+  const handleFilterApplyVendor = async () => {
+    const payload: FilterPayload = {
+      filter: {
+        
+        // Include other filters based on selected options
+        location: selectedOptions.filter(opt => 
+          filterSections.some(section => 
+            section.id === 'location' && 
+            section.options.some(o => o.id === opt)
+          )
+        ).join(','),
+        status: selectedOptions.filter(opt => 
+          filterSections.some(section => 
+            section.id === 'status' && 
+            section.options.some(o => o.id === opt)
+          )
+        ).join(','),
+        rating: selectedOptions.filter(opt => 
+          filterSections.some(section => 
+            section.id === 'rating' && 
+            section.options.some(o => o.id === opt)
+          )
+        ).join(','),
+      
+      },
+      pagination: {
+        page: 1,
+        pageSize: 10
+      },
+      sort: {
+        field: 'createdAt',
+        order: 'desc'
+      }
+    };
+
+    await onFilterApply(payload);
+    setShowFilter(false);
+  };
+
+
+  const handleFilterApplyCaseStudy = async () => {
+    const payload: FilterPayload = {
+      filter: {
+        
+        // Include other filters based on selected options
+        industry: selectedOptions.filter(opt => 
+          filterSections.some(section => 
+            section.id === 'industry' && 
+            section.options.some(o => o.id === opt)
+          )
+        ).join(','),
+        technology: selectedOptions.filter(opt => 
+          filterSections.some(section => 
+            section.id === 'technology' && 
+            section.options.some(o => o.id === opt)
+          )
+        ).join(','),
+       
+      
+      },
+      pagination: {
+        page: 1,
+        pageSize: 10
+      },
+      sort: {
+        field: 'createdAt',
+        order: 'desc'
+      }
+    };
+
+    await onFilterApply(payload);
+    setShowFilter(false);
+  };
   return (
     <Filter
       onClose={() => setShowFilter(false)}
-      // onApply={handleFilterApply}
-      onApply={pageType === 'contact' ? handleFilterApply : handleFilterApplyTodo}
+     
+
+      onApply={
+        pageType === 'contact' 
+          ? handleFilterApply 
+          : pageType === 'casestudy'
+          ? handleFilterApplyCaseStudy
+          : pageType === 'resource'
+          ? handleFilterApplyResource
+          : pageType === 'vendor'
+          ? handleFilterApplyVendor
+          : handleFilterApplyTodo
+      }
 
       sections={filterSections}
       renderRightPanel={renderFilterRightPanel}

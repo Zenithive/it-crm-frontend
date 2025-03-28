@@ -228,6 +228,7 @@ const ResourceContainer = () => {
             filterSections={filterSections}
             onFilterApply={handleFilterApply}
             setShowFilter={setShowFilter}
+            pageType="casestudy"
           />
         </div>
       )}

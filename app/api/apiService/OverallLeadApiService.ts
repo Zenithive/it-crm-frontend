@@ -242,6 +242,7 @@ export interface Lead {
   campaign: { campaignID: string; campaignName: string; campaignCountry: string; campaignRegion: string; industryTargeted: string };
 }
 
+
 const useOverallLeadsData = (
   page: number,
   pageSize: number,
@@ -269,6 +270,8 @@ const useOverallLeadsData = (
     // If only end date is provided
     filter.toDate = endDate;
   }
+ 
+
 
   if (stage) filter.leadStage = stage.toUpperCase();
   if (type) filter.leadType = type;

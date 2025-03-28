@@ -152,6 +152,7 @@ const ResourceList = () => {
             filterSections={filterSections}
             onFilterApply={handleFilterApply}
             setShowFilter={setShowFilter}
+            pageType="resource"
           />
         </div>
       )}

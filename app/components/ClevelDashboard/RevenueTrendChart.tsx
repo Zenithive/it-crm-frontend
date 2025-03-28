@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useState, useRef, useEffect } from "react";
 import {
   BarChart,
   Bar,
@@ -8,6 +9,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import FilterDropdown from "../CleveldashboardFilter/cleveldashboard.filter";
 
 const RevenueTrendChart: React.FC = () => {
   const data = [
@@ -19,6 +21,52 @@ const RevenueTrendChart: React.FC = () => {
     { month: "Jun", revenue: 175 },
     { month: "July", revenue: 175 },
   ];
+  const [showFilter, setShowFilter] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("none");
+  const filterRef = useRef<HTMLDivElement>(null);
+
+
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        filterRef.current &&
+        !filterRef.current.contains(event.target as Node)
+      ) {
+        setShowFilter(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleFilterClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event from bubbling
+    console.log('Filter clicked', !showFilter);
+    setShowFilter(prevState => !prevState);
+  };
+
+  const applyFilter = (filterType: string) => {
+    console.log('Applying filter:', filterType);
+    if (filterType === 'none') return {};
+    setActiveFilter(filterType);
+    setShowFilter(false);
+
+    switch(filterType) {
+      case "yearly":
+        // Example: Filter data for yearly view
+        break;
+      case "half-yearly":
+        // Example: Filter data for half-yearly view
+        break;
+      default:
+        // No filter
+        break;
+    }
+  };
 
   const CustomBar = (props: any) => {
     const { x, y, width, height, fill } = props;
@@ -46,7 +94,7 @@ const RevenueTrendChart: React.FC = () => {
           cy={y}
           r={9}
           fill="#4A3AFF"
-          stroke="#ffffff" // White border color
+          stroke="#ffffff"
           strokeWidth={2}
           filter="url(#circleShadow)"
         />
@@ -55,12 +103,33 @@ const RevenueTrendChart: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-custom p-4 z-100">
-      <div className="flex justify-between items-center ">
+    <div className="bg-white rounded-xl shadow-custom p-4 relative">
+      <div className="flex justify-between items-center">
         <h3 className="text-2xl font-semibold mb-4 text-bg-blue-12 p-3">
           Revenue Trend
         </h3>
-        <img src="filter.svg" alt="Filter"></img>
+        <div 
+          ref={filterRef} 
+          className="relative "
+        >
+          <img 
+            src="filter.svg" 
+            alt="Filter" 
+            className="cursor-pointer" 
+            onClick={handleFilterClick} 
+          />
+          {showFilter && (
+           <div className="pt-2"> <FilterDropdown
+           showFilter={showFilter}
+           toggleFilter={() => setShowFilter(false)}
+           applyFilter={applyFilter}
+           activeFilter={activeFilter}
+         /></div>
+              
+             
+        
+          )}
+        </div>
       </div>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart

@@ -21,7 +21,8 @@ const todoListApiService = (
   itemsPerPage: number,   
   startDate?: string,
   endDate?: string,
-  priority?: string,   
+  priority?: string, 
+  searchQuery?: string,  
   status?: string 
 ) => {   
   const [todos, setTodos] = useState<Task[]>([]);   
@@ -55,7 +56,10 @@ const todoListApiService = (
     if (status) {       
       filter.status = status.toUpperCase();     
     }      
-
+    if (searchQuery && searchQuery.trim() !== "") {
+      filter.search = searchQuery.trim();
+    }
+  
     try {       
       if (!apiUrl) {         
         throw new Error("API URL is not defined");       
@@ -98,7 +102,7 @@ const todoListApiService = (
 
   useEffect(() => {     
     fetchTasks();   
-  }, [currentPage, itemsPerPage, user.token, startDate, endDate, priority, status]);    
+  }, [currentPage, itemsPerPage, user.token, startDate, endDate, priority,searchQuery, status]);    
 
   useEffect(() => {     
     console.log("Received todos in component:", todos);   
