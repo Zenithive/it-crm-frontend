@@ -67,11 +67,8 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
     error: notesError, 
     refetch: refetchNotes 
   } = useQuery(GET_NOTES_BY_REFERENCE, {
-    variables: { 
-      referenceID: leadId, 
-      referenceType: "LEAD" 
-    },
-    skip: !leadId, // Skip query if leadId is not available
+    variables: { referenceID: leadId, referenceType: "LEAD" },
+    skip: !leadId,
   });
 
   // Note Creation Mutation
@@ -282,7 +279,7 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
 
         {/* Pipeline Stage */}
         <h2 className="text-xl font-semibold text-bg-blue-12 ml-4">
-          Pipeline Stag
+          Pipeline Stages
         </h2>
         <PipelineStages leadId={leadId}/>
 

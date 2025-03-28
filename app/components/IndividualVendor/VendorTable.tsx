@@ -17,9 +17,10 @@ interface Vendor {
 
 interface VendorTableProps {
   vendors: Vendor[];
+  refetchVendors?: () => void;
 }
 
-const VendorTable: React.FC<VendorTableProps> = ({ vendors }) => {
+const VendorTable: React.FC<VendorTableProps> = ({ vendors,refetchVendors }) => {
   return (
     <div className="overflow-x-auto rounded-lg shadow-custom">
       <table className="min-w-full bg-white">
@@ -35,7 +36,7 @@ const VendorTable: React.FC<VendorTableProps> = ({ vendors }) => {
         </thead>
         <tbody className="divide-y divide-gray-200">
           {vendors.map((vendor) => (
-            <VendorRow key={vendor.vendorID} vendor={vendor} />
+            <VendorRow key={vendor.vendorID} vendor={vendor} refetchVendors={refetchVendors} />
           ))}
         </tbody>
       </table>

@@ -1,10 +1,8 @@
-// api/apiService/overallvendorApiService.tsx
 import { useQuery, useMutation } from "@apollo/client";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { GET_VENDORS, GET_VENDOR_BY_ID } from "../../../graphQl/queries/getVendors.queries";
 import { UPDATE_VENDOR_MUTATION } from "../../../graphQl/mutation/updateVendor.mutation";
-import { GetVendorsResponse } from "../../types/vendors.types";
 import client from "../../../lib/appoloClient";
 
 interface UseVendorsParams {
@@ -16,7 +14,14 @@ interface UseVendorsParams {
   search?: string;
   sortField?: string;
   sortOrder?: "ASC" | "DESC";
-  vendorId?: string; // For single vendor fetch
+  vendorId?: string;
+}
+
+interface PerformanceRatingInput {
+  performanceRatingsID?: string; // Optional for updates
+  rating: number;
+  review: string;
+  pastProjectsCount: number;
 }
 
 interface UpdateVendorInput {
@@ -29,6 +34,7 @@ interface UpdateVendorInput {
   notes?: string;
   country?: string;
   skillIDs?: string[];
+  performanceRatings?: PerformanceRatingInput[];
 }
 
 export const useVendors = ({
@@ -80,8 +86,8 @@ export const useVendors = ({
         .filter((vendor: any) => {
           if (rating) {
             const ratingValue = parseInt(rating.replace("star", ""), 10);
-            const vendorRating = vendor.performanceRatings?.length || 0;
-            return vendorRating === ratingValue;
+            // Filter by actual rating value instead of length
+            return vendor.performanceRatings?.some((pr: any) => pr.rating === ratingValue);
           }
           return true;
         })
@@ -113,6 +119,7 @@ export const useVendors = ({
       const currentStatus = currentVendor.status || "ACTIVE";
       const currentAddress = currentVendor.address || "";
       const currentCompanyName = currentVendor.companyName || "";
+      const currentPerformanceRatings = currentVendor.performanceRatings || [];
 
       const updatedInput: UpdateVendorInput = {
         vendorID: input.vendorID,
@@ -124,6 +131,7 @@ export const useVendors = ({
         notes: input.notes || currentNotes,
         country: input.country || currentCountry,
         skillIDs: input.skillIDs || currentSkills,
+        performanceRatings: input.performanceRatings || currentPerformanceRatings, // Include performanceRatings
       };
 
       console.log("Updated input for mutation:", updatedInput);
@@ -132,9 +140,7 @@ export const useVendors = ({
         variables: updatedInput,
       });
 
-      // Refetch the query to update the UI
       await refetch();
-
       return response.data.updateVendor;
     } catch (err) {
       console.error("Failed to update vendor:", err);
@@ -152,6 +158,6 @@ export const useVendors = ({
     loading: queryLoading || mutationLoading,
     error: queryError ? queryError.message : mutationError ? mutationError.message : null,
     refetch,
-    updateVendor, // Expose the update function
+    updateVendor,
   };
 };

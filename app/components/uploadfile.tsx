@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useRef } from "react";
 import axios from "axios";
 
@@ -6,18 +8,18 @@ interface FileWithTags {
   tags: string[];
 }
 
-const DocumentUploadForm: React.FC<{ 
-  isOpen: boolean; 
-  onClose: () => void; 
-  referenceID: string; 
-  referenceType: string; 
-  onDocumentAdded?: () => void; 
-}> = ({ 
-  isOpen, 
-  onClose, 
-  referenceID, 
+const DocumentUploadForm: React.FC<{
+  isOpen: boolean;
+  onClose: () => void;
+  referenceID: string;
+  referenceType: string;
+  onDocumentAdded?: () => void;
+}> = ({
+  isOpen,
+  onClose,
+  referenceID,
   referenceType,
-  onDocumentAdded 
+  onDocumentAdded,
 }) => {
   const [files, setFiles] = useState<FileWithTags[]>([]);
   const [tagInputs, setTagInputs] = useState<string[]>([]);
@@ -31,12 +33,11 @@ const DocumentUploadForm: React.FC<{
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
     if (selectedFiles) {
-      const fileList = Array.from(selectedFiles).map(file => ({
+      const fileList = Array.from(selectedFiles).map((file) => ({
         file,
-        tags: []
+        tags: [],
       }));
       setFiles(fileList);
-      // Initialize tag inputs for each file
       setTagInputs(new Array(fileList.length).fill(""));
       setError(null);
     }
@@ -47,12 +48,11 @@ const DocumentUploadForm: React.FC<{
     if (tagInput.trim()) {
       const updatedFiles = [...files];
       const currentFile = updatedFiles[fileIndex];
-      
+
       if (!currentFile.tags.includes(tagInput.trim())) {
         currentFile.tags.push(tagInput.trim());
         setFiles(updatedFiles);
 
-        // Clear the tag input for this file
         const updatedTagInputs = [...tagInputs];
         updatedTagInputs[fileIndex] = "";
         setTagInputs(updatedTagInputs);
@@ -67,7 +67,7 @@ const DocumentUploadForm: React.FC<{
   };
 
   const handleTagInputKeyPress = (
-    e: React.KeyboardEvent<HTMLInputElement>, 
+    e: React.KeyboardEvent<HTMLInputElement>,
     fileIndex: number
   ) => {
     if (e.key === "Enter") {
@@ -94,8 +94,7 @@ const DocumentUploadForm: React.FC<{
   };
 
   const handleUploadFiles = async () => {
-    // Validate that all files have tags
-    const filesWithoutTags = files.filter(file => file.tags.length === 0);
+    const filesWithoutTags = files.filter((file) => file.tags.length === 0);
     if (filesWithoutTags.length > 0) {
       setError("Please add at least one tag to each file");
       return;
@@ -110,9 +109,8 @@ const DocumentUploadForm: React.FC<{
         formData.append("file", fileWithTags.file);
         formData.append("referenceID", referenceID);
         formData.append("referenceType", referenceType);
-        
-        // Add all tags to the formData
-        fileWithTags.tags.forEach(tag => {
+
+        fileWithTags.tags.forEach((tag) => {
           formData.append("tags", tag);
         });
 
@@ -130,7 +128,7 @@ const DocumentUploadForm: React.FC<{
         onClose();
         resetForm();
         if (onDocumentAdded) {
-          onDocumentAdded(); // Callback to refresh document list
+          onDocumentAdded();
         }
       }, 1500);
     } catch (err) {
@@ -145,118 +143,131 @@ const DocumentUploadForm: React.FC<{
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-bg-blue-12">Upload Documents</h3>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-          >
-            ✕
-          </button>
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      onClick={onClose}
+    >
+      <div className="p-6 relative max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
+        <div className="bg-bg-blue-12 rounded-t-xl p-2 flex justify-between items-center">
+          <div className="p-2">
+            <h2 className="text-2xl font-semibold text-white">Upload Documents</h2>
+          </div>
+          <div className="p-2">
+            <button
+              className="text-gray-500 bg-white hover:text-gray-700 p-3 rounded-lg"
+              onClick={onClose}
+            >
+              <img src="/cross_icon.svg" alt="Cross" className="h-3 w-3" />
+            </button>
+          </div>
         </div>
 
-        {success ? (
-          <div className="text-green-600 bg-green-50 p-3 rounded mb-4">
-            Documents uploaded successfully!
-          </div>
-        ) : (
-          <div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Select Files
-              </label>
-              <input
-                type="file"
-                multiple
-                onChange={handleFileChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                ref={fileInputRef}
-              />
-            </div>
-
-            {files.length > 0 && (
+        <div className="bg-white rounded-b-xl shadow-lg w-full">
+          <div className="p-6">
+            {success ? (
+              <div className="text-green-600 bg-green-50 p-3 rounded-lg mb-4">
+                Documents uploaded successfully!
+              </div>
+            ) : (
               <div>
-                {files.map((fileWithTags, fileIndex) => (
-                  <div key={fileIndex} className="mb-4 border-b pb-4">
-                    <p className="text-sm text-gray-700 mb-2 font-medium">
-                      {fileWithTags.file.name}
-                    </p>
+                <div className="mb-6">
+                  <label className="block text-md text-bg-blue-12 font-medium mb-2">
+                    Select Files
+                  </label>
+                  <input
+                    type="file"
+                    multiple
+                    onChange={handleFileChange}
+                    className="w-full px-4 py-3 border border-bg-blue-12 rounded-lg focus:outline-none"
+                    ref={fileInputRef}
+                  />
+                </div>
 
-                    <div className="mb-2">
-                      <label className="block text-xs font-medium text-gray-600 mb-1">
-                        Tags
-                      </label>
-                      <div className="flex mb-2">
-                        <input
-                          type="text"
-                          value={tagInputs[fileIndex]}
-                          onChange={(e) => handleTagInputChange(fileIndex, e.target.value)}
-                          onKeyPress={(e) => handleTagInputKeyPress(e, fileIndex)}
-                          className="flex-grow px-3 py-2 border border-gray-300 rounded-l-md"
-                          placeholder="Add a tag"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleAddTag(fileIndex)}
-                          className="bg-blue-500 text-white px-4 py-2 rounded-r-md"
-                        >
-                          Add
-                        </button>
-                      </div>
-                    
-                    {fileWithTags.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {fileWithTags.tags.map((tag, tagIndex) => (
-                          <span
-                            key={tagIndex}
-                            className="bg-gray-100 px-2 py-1 rounded-full text-sm flex items-center"
-                          >
-                            {tag}
+                {files.length > 0 && (
+                  <div>
+                    {files.map((fileWithTags, fileIndex) => (
+                      <div key={fileIndex} className="mb-6">
+                        <p className="text-md text-bg-blue-12 font-medium mb-2">
+                          {fileWithTags.file.name}
+                        </p>
+
+                        <div>
+                          <label className="block text-md text-bg-blue-12 font-medium mb-2">
+                            Tags
+                          </label>
+                          <div className="flex mb-2">
+                            <input
+                              type="text"
+                              value={tagInputs[fileIndex]}
+                              onChange={(e) =>
+                                handleTagInputChange(fileIndex, e.target.value)
+                              }
+                              onKeyPress={(e) => handleTagInputKeyPress(e, fileIndex)}
+                              className="flex-grow px-4 py-3 border border-bg-blue-12 rounded-l-lg focus:outline-none"
+                              placeholder="Add a tag"
+                            />
                             <button
                               type="button"
-                              onClick={() => handleRemoveTag(fileIndex, tagIndex)}
-                              className="ml-1 text-gray-500 hover:text-gray-700"
+                              onClick={() => handleAddTag(fileIndex)}
+                              className="bg-bg-blue-12 text-white px-4 py-3 rounded-r-lg font-medium"
                             >
-                              ✕
+                              Add
                             </button>
-                          </span>
-                        ))}
+                          </div>
+
+                          {fileWithTags.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                              {fileWithTags.tags.map((tag, tagIndex) => (
+                                <span
+                                  key={tagIndex}
+                                  className="bg-gray-100 px-2 py-1 rounded-full text-sm flex items-center"
+                                >
+                                  {tag}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleRemoveTag(fileIndex, tagIndex)}
+                                    className="ml-1 text-gray-500 hover:text-gray-700"
+                                  >
+                                    ✕
+                                  </button>
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+
+                    {error && (
+                      <div className="text-red-600 bg-red-50 p-3 rounded-lg mb-4">
+                        {error}
                       </div>
                     )}
+
+                    <div className="flex justify-end space-x-3 mt-6">
+                      <button
+                        type="button"
+                        onClick={onClose}
+                        className="px-4 py-2 border border-bg-blue-12 rounded-lg text-bg-blue-12 font-medium hover:bg-gray-50"
+                        disabled={isUploading}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleUploadFiles}
+                        className="px-4 py-2 bg-bg-blue-12 text-white rounded-lg font-medium hover:bg-blue-600"
+                        disabled={isUploading}
+                      >
+                        {isUploading ? "Uploading..." : "Upload All"}
+                      </button>
                     </div>
                   </div>
-                ))}
-
-                {error && (
-                  <div className="text-red-600 bg-red-50 p-3 rounded mb-4">
-                    {error}
-                  </div>
                 )}
-
-                <div className="flex justify-end space-x-3">
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                    disabled={isUploading}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleUploadFiles}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                    disabled={isUploading}
-                  >
-                    {isUploading ? "Uploading..." : "Upload All"}
-                  </button>
-                </div>
               </div>
             )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
