@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import "./Dashboard.css";
 import useTasksData from "../../hooks/useGetTaskForDashboard";
 import { GET_LEADS } from "../../../graphQl/queries/leads.queries";
+import { useUpdateTask } from "../../hooks/useUpdateTask";
 
 export interface Lead {
   leadID: string;
@@ -63,6 +64,9 @@ const Task = () => {
   const [followup, setFollowup] = useState<Followup[]>([]);
   const [activeView, setActiveView] = useState("today");
 
+  // Use the useUpdateTask hook
+  const { handleConfirmUpdate } = useUpdateTask(refetch);
+
   const {
     loading: leadsLoading,
     error: leadsError,
@@ -106,8 +110,15 @@ const Task = () => {
   }, [leadsData]);
 
   const handleCheckboxChange = (taskIndex: number) => {
-    console.log(`Task ${tasks[taskIndex].taskID} status toggled`);
-    refetch();
+    const task = tasks[taskIndex];
+    
+    // Prepare the input for updating the task status
+    const updateInput = {
+      status: task.completed ? "TODO" : "COMPLETED"
+    };
+
+    // Call the mutation to update the task
+    handleConfirmUpdate(task.taskID, updateInput);
   };
 
   return (
@@ -158,8 +169,15 @@ const Task = () => {
                       : "mr-4"
                   }`}
                 >
-                  <div className="min-w-0 flex-1 pr-4 mt-3">
-                    <h3 className="task_title">{task.title}</h3>
+                  <div className="min-w-0 flex-1 pr-4 mt-3 relative">
+                    <div className="flex items-center">
+                      <h3 className="task_title mr-2">{task.title}</h3>
+                      {task.completed && (
+                        <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                          Completed
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs md:text-sm text-gray-500">
                       {task.dueTime}
                     </p>
@@ -198,6 +216,7 @@ const Task = () => {
             )}
           </div>
         ) : (
+          // Follow-ups section remains the same
           <div className="scrollbar-custom overflow-y-auto max-h-[220px] pl-6 pr-6 pb-6">
             {leadsLoading ? (
               <div className="flex justify-center items-center h-32">
