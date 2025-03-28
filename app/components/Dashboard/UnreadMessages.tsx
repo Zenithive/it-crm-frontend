@@ -1,32 +1,71 @@
 import React, { useState, useEffect } from "react";
-import { dashboardUnreadMessagesApi } from "../../api/apiService/dashboardApiService";
+import { useSelector } from "react-redux";
 import { dashboardUnreadMessagesJson } from "../../api/jsonService/dashboardJsonService";
+import { fetchGoogleUnreadEmails } from "../../api/apiService/googleunnread.service";
 
 interface Message {
   name: string;
   message: string;
+  date?: Date;
 }
 
 const UnreadMessages = () => {
   const [unreadMessages, setUnreadMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Get auth tokens from Redux store
+  const auth = useSelector((state: any) => state.auth);
+  const { googleAccessToken } = auth || {};
+
+  // Determine whether to use dummy data based on environment
   const useDummyData = String(process.env.NEXT_PUBLIC_USE_DUMMY_DATA || "false").trim().toLowerCase() === "true";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const messagesData = useDummyData
-          ? await dashboardUnreadMessagesApi()
-          : dashboardUnreadMessagesJson();
+        setIsLoading(true);
 
-          setUnreadMessages(useDummyData ? messagesData?.messages ?? [] : messagesData ?? []);
+        // If Google access token is available, try to fetch real emails
+        if (googleAccessToken) {
+          try {
+            const googleUnreadEmails = await fetchGoogleUnreadEmails(googleAccessToken);
+
+            console.log("googleUnreadEmails",googleUnreadEmails);
+            
+            if (googleUnreadEmails.length > 0) {
+              setUnreadMessages(googleUnreadEmails);
+              setIsLoading(false);
+              return;
+            }
+          } catch (googleError) {
+            console.error("Error fetching Google unread emails:", googleError);
+            // Fall back to dummy data if Google fetch fails
+          }
+        }
+
+        // Fallback to local JSON data
+        const messagesData = dashboardUnreadMessagesJson();
+        setUnreadMessages(messagesData ?? []);
       } catch (error) {
         console.error("Error fetching unread messages:", error);
+        setError("Failed to load messages");
+        setUnreadMessages([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [useDummyData]);
+  }, [googleAccessToken, useDummyData]);
+
+  if (isLoading) {
+    return <div className="text-center text-gray-500">Loading messages...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500">{error}</div>;
+  }
 
   return (
     <div className="w-full relative">
@@ -35,7 +74,7 @@ const UnreadMessages = () => {
           <div className="font-semibold text-bg-blue-12 text-lg md:text-xl">
             Unread Messages
           </div>
-
+          
           {unreadMessages.length > 0 && (
             <div className="unread_icon">{unreadMessages.length}</div>
           )}

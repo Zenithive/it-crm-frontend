@@ -1,5 +1,28 @@
 import { gql } from "@apollo/client";
 
+export enum DealSortFields {
+  CREATED_AT = "createdAt",
+  UPDATED_AT = "updatedAt",
+  DEAL_START_DATE = "dealStartDate",
+  DEAL_END_DATE = "dealEndDate",
+  DEAL_AMOUNT = "dealAmount"
+}
+
+export enum SortOrders {
+  ASC = "ASC",
+  DESC = "DESC"
+}
+
+export interface DealFilter {
+  dealName?: string;
+  leadId?: string;
+  dealAmount?: string;
+  dealStartDateMin?: string;
+  dealStartDateMax?: string;
+  dealEndDateMin?: string;
+  dealEndDateMax?: string;
+}
+
 export const GET_DEALS = gql`
   query GetDeals(
     $filter: DealFilter

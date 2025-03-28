@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import { GET_LEADS } from "../../../graphQl/queries/leads.queries";
-import { GET_DEALS } from "../../../graphQl/queries/deals.queries";
+import { GET_LEADS,LeadSortField,SortOrder } from "../../../graphQl/queries/leads.queries";
+import { DealSortFields, GET_DEALS, SortOrders} from "../../../graphQl/queries/deals.queries";
+import { useGoogleCalendarService } from "./googlecalendar.service";
 
-// Interfaces (unchanged from original)
+
 interface LeadAssignedTo {
   userID: string;
   name: string;
@@ -46,7 +47,7 @@ function isDealsArray(data: any): data is Deal[] {
   return Array.isArray(data);
 }
 
-// Flexible interface for deals response
+
 interface DealsResponse {
   getDeals?: {
     items?: Deal[];
@@ -93,8 +94,21 @@ interface IntegratedMeeting {
   attendeeEmail?: string;
 }
 
-const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: boolean = false) => {
-  // State declarations (unchanged)
+
+interface LeadPerformanceMetrics {
+  totalSales: number;
+  winRate: number;
+  avgDaysToClose: number;
+}
+
+
+const leadsApiService = (  currentPage: number, 
+  itemsPerPage: number, 
+  fetchAll: boolean = false,
+  leadSort?: { field: LeadSortField; order: SortOrder },
+  dealSort?: { field: DealSortFields; order: SortOrders },
+  initialTimeFilter?: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+
   const [newLeads, setNewLeads] = useState(0);
   const [inProgressLeads, setInProgressLeads] = useState(0);
   const [followUpLeads, setFollowUpLeads] = useState(0);
@@ -105,25 +119,142 @@ const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: bo
   const [leadSourceCounts, setLeadSourceCounts] = useState<{ [key: string]: number }>({});
   const [teamPerformance, setTeamPerformance] = useState<TeamMember[]>([]);
   const [countryLeadStats, setCountryLeadStats] = useState<{ [key: string]: CountryLeadStats }>({});
-
   const [integratedMeetings, setIntegratedMeetings] = useState<IntegratedMeeting[]>([]);
-  const [googleMeetingsLoading, setGoogleMeetingsLoading] = useState(false);
-  const [googleMeetingsError, setGoogleMeetingsError] = useState<string | null>(null);
+  const [leadPerformanceMetrics, setLeadPerformanceMetrics] = useState<LeadPerformanceMetrics>({
+    totalSales: 0,
+    winRate: 0,
+    avgDaysToClose: 0
+  });
+  const [selectedTimeFilter, setSelectedTimeFilter] = useState<string | null>(initialTimeFilter || null);
   
-  // Get user from Redux store
+ 
   const user = useSelector((state: RootState) => state.auth);
   const { googleAccessToken } = user || {};
+
+
+
+  const getDateRangeForFilter = (filter: string): { fromDate: string; toDate: string } => {
+    const now = new Date();
+    let startDate: Date;
+  
+    console.log('Current Date:', now);
+    console.log('Selected Time Filter:', filter);
+  
+    switch (filter) {
+      case 'monthly':
+        // For monthly, start from the first day of the current month
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        console.log('Monthly Start Date:', startDate);
+        console.log('Month Details:', {
+          currentMonth: now.getMonth(),
+          firstDayOfMonth: startDate
+        });
+        break;
+  
+      case 'quarterly':
+        // Determine the start of the current quarter
+        const currentQuarter = Math.floor(now.getMonth() / 3);
+        startDate = new Date(now.getFullYear(), currentQuarter * 3, 1);
+        console.log('Quarterly Start Date:', startDate);
+        console.log('Quarter Details:', {
+          currentQuarter: currentQuarter,
+          quarterStartMonth: currentQuarter * 3,
+          firstDayOfQuarter: startDate
+        });
+        break;
+  
+      case 'half-yearly':
+        // Start from either January 1st or July 1st based on current month
+        startDate = new Date(now.getFullYear(), now.getMonth() >= 6 ? 6 : 0, 1);
+        console.log('Half-Yearly Start Date:', startDate);
+        console.log('Half-Year Details:', {
+          startingMonth: now.getMonth() >= 6 ? 'July' : 'January',
+          firstDayOfHalfYear: startDate
+        });
+        break;
+  
+      case 'yearly':
+      default:
+        // For yearly, always start from January 1st of the current year
+        startDate = new Date(now.getFullYear(), 0, 1);
+        console.log('Yearly Start Date:', startDate);
+        console.log('Year Details:', {
+          currentYear: now.getFullYear(),
+          firstDayOfYear: startDate
+        });
+        break;
+    }
+  
+    // Format dates to ISO string and extract just the date part
+    const formatDate = (date: Date) => date.toISOString().split('T')[0];
+  
+    const fromDate = formatDate(startDate);
+    const toDate = formatDate(now);
+  
+    console.log('Final Date Range:', { fromDate, toDate });
+  
+    return { fromDate, toDate };
+  };
+  
+
+
+  // Updated query variables for leads
+  const leadsQueryVariables = {
+    filter: selectedTimeFilter 
+      ? { 
+          fromDate: getDateRangeForFilter(selectedTimeFilter).fromDate,
+          toDate: getDateRangeForFilter(selectedTimeFilter).toDate,
+        } 
+      : {},
+    pagination: {
+      page: currentPage,
+      pageSize: fetchAll ? 10000 : itemsPerPage
+    },
+    sort: leadSort || { field: LeadSortField.CREATED_AT, order: SortOrder.DESC }
+  };
+
+  // Updated query variables for deals
+  const dealsQueryVariables = {
+    filter: selectedTimeFilter 
+      ? { 
+          dealStartDateMin: getDateRangeForFilter(selectedTimeFilter).fromDate,
+          dealStartDateMax: getDateRangeForFilter(selectedTimeFilter).toDate,
+        } 
+      : {},
+    pagination: {
+      page: currentPage,
+      pageSize: fetchAll ? 10000 : itemsPerPage
+    },
+    sort: dealSort || { field: DealSortFields.DEAL_AMOUNT, order: SortOrders.ASC }
+  };
+
+  console.log("Leads Query Variables", leadsQueryVariables);
+  console.log("Deals Query Variables", dealsQueryVariables);
+
+
+
+
+  const setTimeFilter = (filter: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+    setSelectedTimeFilter(filter);
+  };
+
+
+
+  const { 
+    fetchGoogleCalendarEvents, 
+    integrateLeadsAndMeetings,
+    googleMeetingsLoading,
+    googleMeetingsError 
+  } = useGoogleCalendarService(googleAccessToken);
 
   // Fetch Leads Query
   const { 
     data: leadsData, 
     loading: leadsLoading, 
-    error: leadsError 
+    error: leadsError,
+    refetch: refetchLeads
   } = useQuery(GET_LEADS, {
-    variables: {
-      filter: {},
-      sort: { field: "EMAIL", order: "ASC" },
-    },
+    variables: leadsQueryVariables,
     context: {
       headers: {
         Authorization: `Bearer ${user.token}`,
@@ -136,24 +267,23 @@ const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: bo
   
   // Fetch Deals Query
   const { 
-      data: dealsData, 
-      loading: dealsLoading, 
-      error: dealsError 
-    } = useQuery<DealsResponse>(GET_DEALS, {
-      variables: {
-        filter: null,
-        pagination: { page: 1, pageSize: 1000 },
-        sort: { field: "dealAmount", order: "ASC" },
+    data: dealsData, 
+    loading: dealsLoading, 
+    error: dealsError,
+    refetch: refetchDeals
+  } = useQuery<DealsResponse>(GET_DEALS, {
+    variables: dealsQueryVariables,
+    context: {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
       },
-      context: {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      },
-      onError: (err) => console.error("Error fetching deals:", err),
-    });
+    },
+    onError: (err) => console.error("Error fetching deals:", err),
+  });
 
   console.log("dealsData",dealsData);
+
+
 
   // Existing helper functions (formatCurrency, fetchGoogleCalendarEvents, etc.)
   const formatCurrency = (amount: number): string => {
@@ -165,152 +295,13 @@ const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: bo
     }).format(amount);
   };
 
-  // Google Calendar Events Fetching (unchanged from original)
-  const fetchGoogleCalendarEvents = async (): Promise<Meeting[]> => {
-    if (!googleAccessToken) return [];
+ 
 
-    try {
-      const now = new Date();
-      const sevenDaysAgo = new Date(now);
-      sevenDaysAgo.setDate(now.getDate() - 7);
-      const sevenDaysLater = new Date(now);
-      sevenDaysLater.setDate(now.getDate() + 7);
-
-      const response = await fetch(
-        `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${sevenDaysAgo.toISOString()}&timeMax=${sevenDaysLater.toISOString()}&maxResults=50&orderBy=startTime&singleEvents=true`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${googleAccessToken}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch calendar events: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
-      return data.items
-        .filter((event: any) => 
-          event.conferenceData || 
-          (event.summary && 
-            (event.summary.toLowerCase().includes("meeting") || 
-             event.summary.toLowerCase().includes("call")))
-        )
-        .map((event: any) => ({
-          title: event.summary || "Untitled Meeting",
-          time: formatEventTime(event),
-          date: new Date(event.start?.dateTime || event.start?.date),
-          meetingLink: getMeetingLink(event),
-          attendees: event.attendees || [],
-          organizer: event.organizer?.email || ''
-        }));
-
-    } catch (error) {
-      console.error("Error fetching Google Calendar events:", error);
-      return [];
-    }
-  };
-
-  // Helper functions for event formatting (unchanged)
-  const formatEventTime = (event: any): string => {
-    const start = new Date(event.start?.dateTime || event.start?.date);
-    const end = new Date(event.end?.dateTime || event.end?.date);
-    
-    if (!event.start?.dateTime) {
-      return "All day";
-    }
-    
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    
-    const startDate = new Date(start);
-    startDate.setHours(0, 0, 0, 0);
-    
-    let datePrefix = "";
-    if (startDate.getTime() === today.getTime()) {
-      datePrefix = "Today, ";
-    } else if (startDate.getTime() === tomorrow.getTime()) {
-      datePrefix = "Tomorrow, ";
-    } else {
-      datePrefix = start.toLocaleDateString([], { month: 'short', day: 'numeric' }) + ", ";
-    }
-    
-    const startTime = start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const endTime = end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    
-    return `${datePrefix}${startTime} - ${endTime}`;
-  };
-
-  const getMeetingLink = (event: any): string => {
-    if (event.conferenceData && event.conferenceData.entryPoints) {
-      const videoEntry = event.conferenceData.entryPoints.find(
-        (entry: any) => entry.entryPointType === "video"
-      );
-      if (videoEntry) {
-        return videoEntry.uri;
-      }
-    }
-    
-    if (event.description) {
-      const urlRegex = /(https?:\/\/[^\s]+)/g;
-      const matches = event.description.match(urlRegex);
-      if (matches && matches.length > 0) {
-        return matches[0];
-      }
-    }
-    
-    return "";
-  };
-
-  // Integrate Leads and Meetings (unchanged)
-  const integrateLeadsAndMeetings = (
-    meetings: Meeting[], 
-    leads: Lead[]
-  ): IntegratedMeeting[] => {
-    const integrated: IntegratedMeeting[] = [];
-
-    meetings.forEach(meeting => {
-      const attendeeEmails = meeting.attendees
-        .filter(attendee => attendee.email !== meeting.organizer)
-        .map(attendee => attendee.email.toLowerCase());
-        
-      const matchedLeads = leads.filter(lead => 
-        lead.email && attendeeEmails.includes(lead.email.toLowerCase())
-      );
-
-      if (matchedLeads.length > 0) {
-        matchedLeads.forEach(lead => {
-          integrated.push({
-            lead,
-            meeting: {
-              title: meeting.title,
-              time: meeting.time,
-              date: meeting.date,
-              meetingLink: meeting.meetingLink,
-              attendees: meeting.attendees,
-              organizer: meeting.organizer
-            }
-          });
-        });
-      }
-    });
-
-    return integrated;
-  };
-
-  // First UseEffect for Google Calendar Integration
+  
   useEffect(() => {
     const fetchIntegratedMeetings = async () => {
       if (googleAccessToken && leadsData?.getLeads) {
         try {
-          setGoogleMeetingsLoading(true);
           const googleMeetings = await fetchGoogleCalendarEvents();
           const leads = leadsData.getLeads.items;
           
@@ -318,15 +309,21 @@ const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: bo
           setIntegratedMeetings(integrated);
         } catch (error) {
           console.error('Error integrating meetings:', error);
-          setGoogleMeetingsError('Failed to integrate meetings');
-        } finally {
-          setGoogleMeetingsLoading(false);
         }
       }
     };
 
     fetchIntegratedMeetings();
   }, [googleAccessToken, leadsData]);
+
+
+
+  const calculateDaysBetween = (startDate: string, endDate: string): number => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const timeDiff = Math.abs(end.getTime() - start.getTime());
+    return Math.ceil(timeDiff / (1000 * 3600 * 24));
+  };
   
   // Second UseEffect for Leads and Deals Processing
   useEffect(() => {
@@ -391,6 +388,14 @@ const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: bo
     const leadSourceMap: { [key: string]: number } = {};
     const countryStats: { [key: string]: CountryLeadStats } = {};
     const leadToDealsMap: { [leadID: string]: Deal[] } = {};
+
+
+    let totalSales = 0;
+    let wonDeals = 0;
+    let totalDeals = 0;
+    let totalDaysToClose = 0;
+    let closedWonDealsWithDates = 0;
+
   
     // Process deals mapping
     fetchedDeals.forEach((deal: Deal) => {
@@ -401,6 +406,41 @@ const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: bo
         leadToDealsMap[deal.leadID].push(deal);
       }
     });
+
+    fetchedDeals.forEach((deal: Deal) => {
+      const dealAmount = parseFloat(deal.dealAmount.replace(/[^0-9.-]+/g,"")) || 0;
+      
+      // Find corresponding lead
+      const correspondingLead = fetchedLeads.find((lead: Lead) => lead.leadID === deal.leadID);
+
+      if (correspondingLead) {
+        if (correspondingLead.leadStage === "CLOSED_WON") {
+          totalSales += dealAmount;
+          wonDeals++;
+
+          // Calculate days to close if both lead and deal have dates
+          if (correspondingLead.initialContactDate && deal.dealEndDate) {
+            const daysToClose = calculateDaysBetween(
+              correspondingLead.initialContactDate, 
+              deal.dealEndDate
+            );
+            totalDaysToClose += daysToClose;
+            closedWonDealsWithDates++;
+          }
+        }
+
+
+        totalDeals++;
+      }
+    });
+
+    const winRate = totalDeals > 0 
+    ? (wonDeals / totalDeals) * 100 
+    : 0;
+
+  const avgDaysToClose = closedWonDealsWithDates > 0
+    ? totalDaysToClose / closedWonDealsWithDates
+    : 0;
   
     // Team performance tracking
     const teamMap: { [key: string]: TeamMember & { revenueAmount: number } } = {};
@@ -518,6 +558,11 @@ const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: bo
     setLeadSourceCounts(leadSourceMap);
     setCountryLeadStats(countryStats);
     setTeamPerformance(teamArray);
+    setLeadPerformanceMetrics({
+      totalSales,
+      winRate,
+      avgDaysToClose
+    });
   
     // Lead conversion calculation
     if (totalLeads > 0) {
@@ -557,6 +602,11 @@ const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: bo
     leadSourceCounts,
     teamPerformance,
     countryLeadStats,
+    leadPerformanceMetrics,
+
+
+    setTimeFilter,
+    currentTimeFilter: selectedTimeFilter,
     
     getTargetedLeadSources: () => {
       const linkedin = leadSourceCounts["linkedin"] || 0;
@@ -571,6 +621,8 @@ const leadsApiService = (currentPage: number, itemsPerPage: number, fetchAll: bo
         other
       };
     }
+
+    
   };
 };
 

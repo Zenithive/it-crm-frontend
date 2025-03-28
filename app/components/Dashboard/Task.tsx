@@ -1,60 +1,117 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useQuery } from "@apollo/client";
 import "./Dashboard.css";
-import {
-  dashboardFollowupJson,
-} from "../../api/jsonService/dashboardJsonService";
-import {
-  dashboardFollowupApi,
-} from "../../api/apiService/dashboardApiService";
-import useTasksData from "../../hooks/useGetTaskForDashboard"; // Import the new hook
+import useTasksData from "../../hooks/useGetTaskForDashboard";
+import { GET_LEADS } from "../../../graphQl/queries/leads.queries";
 
-const Task = () => {
-  interface Followup {
-    profileImage: string;
+export interface Lead {
+  leadID: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  country: string;
+  leadSource: string;
+  leadStage: string;
+  leadPriority: string;
+  linkedIn: string;
+  leadType: string;
+  initialContactDate: string;
+  leadCreatedBy: {
+    userID: string;
     name: string;
-    message: string;
-  }
+    email: string;
+  };
+  leadAssignedTo: {
+    userID: string;
+    name: string;
+    email: string;
+  };
+  activities: LeadActivity[];
+  organization: {
+    organizationID: string;
+    organizationName: string;
+  };
+  campaign: {
+    campaignID: string;
+    campaignName: string;
+    campaignCountry: string;
+    campaignRegion: string;
+    industryTargeted: string;
+  };
+}
 
-  const { tasks, loading, error, refetch } = useTasksData(); // Use the custom hook
+export interface LeadActivity {
+  activityID: string;
+  activityType: string;
+  dateTime: string;
+  communicationChannel: string;
+  contentNotes: string;
+  participantDetails: string;
+  followUpActions: string;
+}
+
+export interface Followup {
+  profileImage?: string;
+  name: string;
+  message: string;
+  activityID?: string;
+  dateTime?: string;
+}
+const Task = () => {
+  const { tasks, loading, error, refetch } = useTasksData();
   const [followup, setFollowup] = useState<Followup[]>([]);
-  const [activeView, setActiveView] = useState("today"); // 'today' or 'followup'
-  const [followupLoading, setFollowupLoading] = useState(true);
+  const [activeView, setActiveView] = useState("today");
 
-  const useDummyData =
-    process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
+  const {
+    loading: leadsLoading,
+    error: leadsError,
+    data: leadsData
+  } = useQuery(GET_LEADS, {
+    variables: {
+      filter: { email: "faizm@zenithive.com" }, 
+      pagination: { page: 1, pageSize: 20 },
+      sort: { field: "EMAIL", order: "ASC" }
+    },
+    skip: activeView !== "followup"
+  });
 
-  React.useEffect(() => {
-    const fetchFollowupData = async () => {
-      setFollowupLoading(true);
-      try {
-        const followupData = useDummyData
-          ? dashboardFollowupJson() // JSON data
-          : await dashboardFollowupApi(); // API data
+  // Transform lead activities to followup format
+  useEffect(() => {
+    if (leadsData?.getLeads?.items) {
+      const uniqueActivities = new Set<string>();
+      const transformedFollowups: Followup[] = [];
 
-        setFollowup(
-          useDummyData ? followupData ?? [] : followupData.followup ?? []
-        );
-      } catch (error) {
-        console.error("Error fetching followup data:", error);
-      } finally {
-        setFollowupLoading(false);
-      }
-    };
+      leadsData.getLeads.items.forEach((lead: Lead) => {
+        lead.activities.forEach((activity: LeadActivity) => {
+          // Create a unique key based on activity details
+          const activityKey = `${activity.activityID}-${activity.contentNotes}-${activity.dateTime}`;
+          
+          // Only add if this activity hasn't been seen before
+          if (!uniqueActivities.has(activityKey)) {
+            transformedFollowups.push({
+              name: `${lead.firstName} ${lead.lastName}`,
+              message: activity.contentNotes,
+              activityID: activity.activityID,
+              dateTime: activity.dateTime,
+              profileImage: '' 
+            });
+            uniqueActivities.add(activityKey);
+          }
+        });
+      });
 
-    fetchFollowupData();
-  }, [useDummyData]);
+      setFollowup(transformedFollowups);
+    }
+  }, [leadsData]);
 
   const handleCheckboxChange = (taskIndex: number) => {
-    // Here you would implement the API call to update the task status
     console.log(`Task ${tasks[taskIndex].taskID} status toggled`);
-    
-    // After the API call succeeds, you can refetch the tasks
-    // This is a simple approach - you could optimize this with optimistic UI updates
     refetch();
   };
 
   return (
-    <div className="w-full ">
+    <div className="w-full">
       <div className="bg-white rounded-xl shadow-custom min-h-[330px]">
         <div className="border-b border-bg-blue-12">
           <div className="flex space-x-4 md:space-x-8 mb-4 overflow-x-auto ml-4">
@@ -142,9 +199,13 @@ const Task = () => {
           </div>
         ) : (
           <div className="scrollbar-custom overflow-y-auto max-h-[220px] pl-6 pr-6 pb-6">
-            {followupLoading ? (
+            {leadsLoading ? (
               <div className="flex justify-center items-center h-32">
                 <p>Loading follow-ups...</p>
+              </div>
+            ) : leadsError ? (
+              <div className="flex justify-center items-center h-32 text-red-500">
+                <p>Error loading follow-ups</p>
               </div>
             ) : followup.length === 0 ? (
               <div className="flex justify-center items-center h-32">
@@ -153,7 +214,7 @@ const Task = () => {
             ) : (
               followup.map((msg, index) => (
                 <div
-                  key={index}
+                  key={msg.activityID || index}
                   className={`flex items-center justify-between pb-4 mr-4 ${
                     index !== followup.length - 1
                       ? "border-b border-content-border"
@@ -161,9 +222,9 @@ const Task = () => {
                   }`}
                 >
                   <img
-                    src={msg.profileImage}
+                    src={msg.profileImage || '/default-profile.png'}
                     alt={msg.name}
-                    className="w-8 h-8 md:w-10 md:h-10 mt-4 flex-shrink-0"
+                    className="w-8 h-8 md:w-10 md:h-10 mt-4 flex-shrink-0 rounded-full"
                   />
                   <div className="flex-1 min-w-0 mx-3">
                     <h4 className="font-medium text-gray-800 text-sm md:text-base truncate mt-4">
