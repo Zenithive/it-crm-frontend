@@ -211,12 +211,12 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-custom p-1">
-      <div className="space-y-4">
-        {/* Documents Section with Fixed Header */}
-        <div className="h-[210px] flex flex-col bg-white">
+    <div className="bg-white rounded-lg shadow-custom p-1 h-full flex flex-col">
+      <div className="flex-1 overflow-y-auto">
+        {/* Documents Section with Scrollable Content */}
+        <div className="h-[250px] flex flex-col bg-white mb-4">
           {/* Fixed Header */}
-          <div className="flex justify-between items-center p-3 sticky top-0 bg-white z-0">
+          <div className="flex justify-between items-center p-3 sticky top-0 bg-white z-10">
             <h2 className="text-xl font-semibold text-bg-blue-12">
               Documents
             </h2>
@@ -277,16 +277,18 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
 
         <div className="border border-content-border mt-5 ml-5 mr-5"></div>
 
-        {/* Pipeline Stage */}
-        <h2 className="text-xl font-semibold text-bg-blue-12 ml-4">
-          Pipeline Stages
-        </h2>
-        <PipelineStages leadId={leadId}/>
+        {/* Pipeline Stage Section */}
+        <div className="max-h-[250px] overflow-y-auto">
+          <h2 className="text-xl font-semibold text-bg-blue-12 ml-4 sticky top-0 bg-white z-10 pb-2">
+            Pipeline Stages
+          </h2>
+          <PipelineStages leadId={leadId}/>
+        </div>
 
-        <div className="border border-content-border ml-5 mr-5"></div>
+        <div className="border border-content-border ml-5 mr-5 my-4"></div>
 
         {/* Notes Section */}
-        <div className="flex justify-between items-center ml-4">
+        <div className="flex justify-between items-center ml-4 sticky top-0 bg-white z-10 pb-2">
           <h2 className="text-xl font-semibold text-bg-blue-12">Notes</h2>
           <button 
             onClick={handleAddNote}
@@ -297,7 +299,9 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
             {noteCreationLoading ? "Adding..." : "Add Note"}
           </button>
         </div>
-        <div className="p-2">
+
+        {/* Note Input */}
+        <div className="p-2 sticky top-0 bg-white z-10">
           <textarea
             value={noteContent}
             onChange={(e) => setNoteContent(e.target.value)}
@@ -307,8 +311,8 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
           />
         </div>
 
-        {/* Notes List */}
-        <div className="p-4">
+        {/* Notes List - Scrollable */}
+        <div className="max-h-[300px] overflow-y-auto p-4">
           {notesLoading ? (
             <p className="text-center text-gray-500">Loading notes...</p>
           ) : notesError ? (
