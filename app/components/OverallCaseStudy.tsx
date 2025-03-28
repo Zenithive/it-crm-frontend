@@ -84,7 +84,6 @@ const ResourceContainer = () => {
 
   const handleCaseStudyAdded = async () => {
     setShowForm(false);
-    await refetch();
   };
 
   const handleFilterApply = async (payload: FilterPayload) => {
@@ -220,7 +219,7 @@ const ResourceContainer = () => {
       </div>
       {showForm && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <AddCaseStudyForm onClose={() => setShowForm(false)} onSubmit={handleCaseStudyAdded} />
+          <AddCaseStudyForm onClose={() => setShowForm(false)} onSubmit={handleCaseStudyAdded} refetchCaseStudies={refetch}/>
         </div>
       )}
       {showFilter && (

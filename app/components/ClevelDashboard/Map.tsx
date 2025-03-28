@@ -6,6 +6,13 @@ import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import useDealsApiService from '../../api/apiService/dealsApiService';
 import worldTopo from "../../../public/world-topo.json";
 import FilterDropdown from '../CleveldashboardFilter/cleveldashboard.filter';
+import { 
+  subYears, 
+  subMonths, 
+  format, 
+  startOfToday, 
+  endOfToday 
+} from 'date-fns';
 
 const Map = () => {
   // Ensure consistent hook order
@@ -17,37 +24,42 @@ const Map = () => {
        dealStartDateMin?: string;
        dealStartDateMax?: string;
      }>({});
-     const getDateRange = (period: string) => {
-      if (period === 'none') return {};
-      const now = new Date();
-      let startDate: Date;
-    
-      switch(period) {
-        case 'yearly':
-          startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
-          return {
-            dealStartDateMin: startDate.toISOString().split('T')[0],
-            dealStartDateMax: now.toISOString().split('T')[0]
-          };
-        case 'half-yearly':
-          startDate = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
-          return {
-            dealStartDateMin: startDate.toISOString().split('T')[0],
-            dealStartDateMax: now.toISOString().split('T')[0]
-          };
-        case 'quarterly':
-          startDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
-          return {
-            dealStartDateMin: startDate.toISOString().split('T')[0],
-            dealStartDateMax: now.toISOString().split('T')[0]
-          };
-        default:
-          return {};
-      }
-    };
-  // Move API service hook to the top of the function component
+  
+ 
   const { dealsByCountry, loading, error } = useDealsApiService(dateFilter);
-
+  const getDateRange = (period: string) => {
+    const now = new Date();
+  
+    switch(period) {
+      case 'yearly':
+        return {
+          dealStartDateMin: format(subYears(now, 1), 'yyyy-MM-dd'),
+          dealStartDateMax: format(now, 'yyyy-MM-dd')
+        };
+  
+      case 'half-yearly':
+        return {
+          dealStartDateMin: format(subMonths(now, 6), 'yyyy-MM-dd'),
+          dealStartDateMax: format(now, 'yyyy-MM-dd')
+        };
+  
+      case 'quarterly':
+        return {
+          dealStartDateMin: format(subMonths(now, 3), 'yyyy-MM-dd'),
+          dealStartDateMax: format(now, 'yyyy-MM-dd')
+        };
+  
+      case 'monthly':
+        return {
+          dealStartDateMin: format(subMonths(now, 1), 'yyyy-MM-dd'),
+          dealStartDateMax: format(now, 'yyyy-MM-dd')
+        };
+  
+      case 'none':
+      default:
+        return {};
+    }
+  };
   // Consistent filter-related side effects
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -105,6 +117,7 @@ const Map = () => {
           Territory Wise Opportunity Count
            {/* {activeFilter !== 'none' && ` (${activeFilter})`} */}
         </h3>
+        <div>
         <img 
           src="filter.svg" 
           alt="Filter" 
@@ -114,7 +127,7 @@ const Map = () => {
         {showFilter && (
           <div 
          
-            ref={filterRef}
+           
           >
               
             <FilterDropdown
@@ -126,6 +139,8 @@ const Map = () => {
             />
           </div>
         )}
+
+</div>
       </div>
 
       {/* Map Container */}

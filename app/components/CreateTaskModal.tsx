@@ -47,6 +47,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
   
   useEffect(() => {
     if (initialTaskData) {
+      console.log(`initialTaskData`, initialTaskData);
       setValue("title", initialTaskData.title);
       setValue("description", initialTaskData.description || "");
       setValue("status", initialTaskData.status);

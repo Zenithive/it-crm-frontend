@@ -69,7 +69,7 @@ const OverallVendorProfile: React.FC = () => {
     debouncedSearch(query); // Always debounce, backend can handle empty strings
   };
 
-  const { vendors, totalItems, loading, error } = useVendors({
+  const { vendors, totalItems, loading, error,refetch } = useVendors({
     page: currentPage,
     pageSize: itemsPerPage,
     search: searchQuery,
@@ -173,7 +173,7 @@ const OverallVendorProfile: React.FC = () => {
       ) : mappedVendors.length === 0 ? (
         <p className="text-center py-8">No vendors found</p>
       ) : (
-        <VendorTable vendors={mappedVendors} />
+        <VendorTable vendors={mappedVendors} refetchVendors={refetch}/>
       )}
 
       <Pagination
@@ -186,7 +186,7 @@ const OverallVendorProfile: React.FC = () => {
 
       {showForm && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <VendorForm onClose={() => setShowForm(false)} />
+          <VendorForm onClose={() => setShowForm(false)} refetchVendors={refetch}/>
         </div>
       )}
 

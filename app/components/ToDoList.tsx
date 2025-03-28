@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Pagination from "../microComponents/Pagination";
 import HeaderButtons from "../microComponents/HeaderButtons";
 import Title from "../microComponents/Title";
@@ -15,6 +15,7 @@ import { useUpdateTask } from "../hooks/useUpdateTask";
 import Filter from "./Filter/Filter";
 import FilterDropdown from "../microComponents/FiterDropdown";
 import FilterHandler from "./Filter/FilterHandler";
+import _ from "lodash";
 
 
 
@@ -44,13 +45,26 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
   const [dateFilter, setDateFilter] = useState<string | undefined>(undefined);
   const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
  const [priorityFilter, setPriorityFilter] = useState<string | undefined>(undefined);
+  const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearch = useCallback(
+    _.debounce((query: string) => {
+      setSearchQuery(query);
+      setCurrentPage(1);
+    }, 500),
+    []
+  );
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    debouncedSearch(value);
+  };
   const { todos, loading, error, totalItems, refetch } = useTodoListApiService(
     currentPage,
     itemsPerPage,
     startDate,     // Pass startDate
     endDate, 
- 
     priorityFilter,
+    searchQuery,
     statusFilter
   );
 
@@ -116,9 +130,10 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
 
   
   const { handleConfirmUpdate } = useUpdateTask(refetch); // Use the update hook
+ 
 
 
-
+ 
   const handleFilterApply = async (payload: FilterPayload) => {
     const { filter } = payload;
     setStartDate(filter.startDate);
@@ -126,6 +141,7 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
     setStatusFilter(filter.status);
     setPriorityFilter(filter.priority);
     setCurrentPage(1);
+    
    
   };
   return (
@@ -134,9 +150,8 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
         <div className="flex">
           <Title title={Todolisttitle[0].titleName} />
           <div className="ml-4">
-            <Search searchText={search[2].searchText} value={""} onChange={function (value: string): void {
-              throw new Error("Function not implemented.");
-            } } />
+            <Search searchText={search[2].searchText}    value={searchQuery}
+              onChange={handleSearchChange} />
           </div>
         </div>
         <HeaderButtons

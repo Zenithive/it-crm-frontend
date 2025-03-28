@@ -19,11 +19,9 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCur
     const filterRef = useRef<HTMLDivElement>(null);
   const isActiveLeads = title === "Active Leads"; 
   const safeValue = isCurrency ? value : Math.min(value, 100); 
+  const dropdownRef = useRef<HTMLDivElement>(null); 
   const displayValue = isCurrency ? `$${value.toLocaleString()}` : `${safeValue}%`; 
-    // const [dateFilter, setDateFilter] = useState<{
-    //    dealStartDateMin?: string;
-    //    dealStartDateMax?: string;
-    //  }>({});
+ 
 
   const data = [
     { name: "Completed", value: safeValue },
@@ -31,52 +29,48 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCur
   ];
 
   const COLORS = ["#6158FF", "#E5E7EB"];
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     if (
+  //       filterRef.current &&
+  //       !filterRef.current.contains(event.target as Node)
+  //     ) {
+  //       // setShowFilter(false);
+  //     }
+  //   };
+
+  //   document.addEventListener('mousedown', handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClickOutside);
+  //   };
+  // }, []);
+
+  // const handleFilterClick = (e: React.MouseEvent) => {
+  //   e.stopPropagation(); // Prevent event from bubbling
+   
+  //   setShowFilter(prevState => !prevState);
+  // };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        filterRef.current &&
-        !filterRef.current.contains(event.target as Node)
+        filterRef.current && !filterRef.current.contains(event.target as Node) &&
+        dropdownRef.current && !dropdownRef.current.contains(event.target as Node)
       ) {
         setShowFilter(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   const handleFilterClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent event from bubbling
-   
     setShowFilter(prevState => !prevState);
   };
-
-  // const applyFilter = (filterType: string) => {
-  //   console.log('Applying filter:', filterType);
-  //   if (filterType === 'none') return {};
-  //   setActiveFilter(filterType);
-  //   setShowFilter(false);
-
-  //   switch(filterType) {
-  //     case "monthly":
-    
-  //       break;
-  //       case "quarterly":
-       
-  //         break;
-  //         case "yearly":
-           
-  //           break;
-  //     case "half-yearly":
-     
-  //       break;
-  //     default:
-  //       // No filter
-  //       break;
-  //   }
-  // };
 
   const applyFilter = (filterType: string) => {
     console.log('Applying filter:', filterType);
@@ -95,6 +89,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCur
         <img src={img} alt='Image' className="w-5 h-5 " ></img>
         <span className="text-2xl font-semibold text-bg-blue-12 ml-4">{title}</span>
         </div>
+        <div  ref={dropdownRef} >
         <img 
             src="filter.svg" 
             alt="Filter" 
@@ -102,18 +97,19 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ value, title, isCur
             onClick={handleFilterClick} 
           />
           {showFilter && (
+            <div onClick={(e) => e.stopPropagation()} > <FilterDropdown
+            showFilter={showFilter}
+            toggleFilter={() => setShowFilter(false)}
+            applyFilter={applyFilter}
+            activeFilter={activeFilter || ""}
+            pageType="CircularProgress"
+            /></div>
+           
            
                
-              <FilterDropdown
-                showFilter={showFilter}
-                toggleFilter={() => setShowFilter(false)}
-                applyFilter={applyFilter}
-                activeFilter={activeFilter || ""}
-                pageType="CircularProgress"
-              />
           
           )}
-         
+         </div>
       </div>
 
       <div className="relative w-[140px] h-[140px] flex items-center justify-center">

@@ -1,7 +1,6 @@
 
 
 import React from "react";
-
 interface FilterDropdownProps {
   showFilter: boolean;
   toggleFilter: () => void;
@@ -9,7 +8,6 @@ interface FilterDropdownProps {
   activeFilter: string;
   pageType?:string
 }
-
 const FilterDropdown: React.FC<FilterDropdownProps> = ({
   showFilter,
   toggleFilter,
@@ -18,12 +16,9 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
   pageType
 }) => {
   if (!showFilter) return null;
-
   return (
-
-
-    <div 
-             className="absolute right-0 top-full mt-2 z-50 bg-white shadow-lg rounded-lg "
+    <div
+             className="absolute right-0 top-full mt-2 z-50 bg-white shadow-lg rounded-lg"
              style={{ minWidth: '150px' ,right:"-14px"}}
            >
                 <div className="absolute -top-2 right-2 transform -translate-x-1/2 rotate-45 w-4 h-4 bg-white border-t border-l border-gray-300"></div>
@@ -72,5 +67,4 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
     </div>
   );
 };
-
 export default FilterDropdown;

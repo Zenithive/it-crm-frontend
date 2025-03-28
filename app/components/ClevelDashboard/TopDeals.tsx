@@ -5,6 +5,13 @@ import useDealsApiService from '../../api/apiService/dealsApiService';
 import { Deal } from '../../api/apiService/dealsApiService';
 import "../Dashboard/Dashboard.css"
 import FilterDropdown from '../CleveldashboardFilter/cleveldashboard.filter';
+import { 
+  subYears, 
+  subMonths, 
+  format, 
+  startOfToday, 
+  endOfToday 
+} from 'date-fns';
 
 
 const TopDeals = () => {
@@ -16,35 +23,41 @@ const TopDeals = () => {
      dealStartDateMax?: string;
    }>({});
 
-   const getDateRange = (period: string) => {
-    if (period === 'none') return {};
+ 
+
+ const getDateRange = (period: string) => {
     const now = new Date();
-    let startDate: Date;
   
     switch(period) {
       case 'yearly':
-        startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
         return {
-          dealStartDateMin: startDate.toISOString().split('T')[0],
-          dealStartDateMax: now.toISOString().split('T')[0]
+          dealStartDateMin: format(subYears(now, 1), 'yyyy-MM-dd'),
+          dealStartDateMax: format(now, 'yyyy-MM-dd')
         };
+  
       case 'half-yearly':
-        startDate = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
         return {
-          dealStartDateMin: startDate.toISOString().split('T')[0],
-          dealStartDateMax: now.toISOString().split('T')[0]
+          dealStartDateMin: format(subMonths(now, 6), 'yyyy-MM-dd'),
+          dealStartDateMax: format(now, 'yyyy-MM-dd')
         };
+  
       case 'quarterly':
-        startDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
         return {
-          dealStartDateMin: startDate.toISOString().split('T')[0],
-          dealStartDateMax: now.toISOString().split('T')[0]
+          dealStartDateMin: format(subMonths(now, 3), 'yyyy-MM-dd'),
+          dealStartDateMax: format(now, 'yyyy-MM-dd')
         };
+  
+      case 'monthly':
+        return {
+          dealStartDateMin: format(subMonths(now, 1), 'yyyy-MM-dd'),
+          dealStartDateMax: format(now, 'yyyy-MM-dd')
+        };
+  
+      case 'none':
       default:
         return {};
     }
   };
-
    useEffect(() => {
      const handleClickOutside = (event: MouseEvent) => {
        if (

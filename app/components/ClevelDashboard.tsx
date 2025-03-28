@@ -14,6 +14,7 @@ import leadsApiService from "../api/apiService/leadsApiService";
 import dealsApiService from "../api/apiService/dealsApiService";
 import SalesTeamPerformance from "./ClevelDashboard/SalesTeamPerformance";
 import TopDeals from "./ClevelDashboard/TopDeals";
+import { addMonths, startOfDay, endOfDay, subYears,format, subMonths } from 'date-fns';
 // Types for data
 
 const ClevelDashboard: React.FC = () => {
@@ -23,59 +24,98 @@ const ClevelDashboard: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<string>("none");
   const { newLeads, inProgressLeads, followUpLeads, closedWonLeads, totalItems, loading } = leadsApiService(1, 500,true,startDate, endDate);
   const activeLeads = newLeads + inProgressLeads + followUpLeads;
-  
-  const {totalDealAmount} = dealsApiService();
+     const [dateFilter, setDateFilter] = useState<{
+       dealStartDateMin?: string;
+       dealStartDateMax?: string;
+     }>({});
+  const {totalDealAmount} = dealsApiService(dateFilter);
 
-    const applyTimeFilter = (filterType: string) => {
-      setActiveFilter(filterType);
+    
+
   
-      // Reset dates first
+   const getDateRange = (period: string) => {
       const now = new Date();
-      
-      switch(filterType) {
-        case "monthly":
-          // From one month ago to today
-          const pastMonth = new Date();
-          pastMonth.setMonth(now.getMonth() - 1);
-          setStartDate(pastMonth.toISOString().split('T')[0]);
-          setEndDate(now.toISOString().split('T')[0]);
-          break;
-        
-        case "quarterly":
-          // From three months ago to today
-          const pastQuarter = new Date();
-          pastQuarter.setMonth(now.getMonth() - 3);
-          setStartDate(pastQuarter.toISOString().split('T')[0]);
-          setEndDate(now.toISOString().split('T')[0]);
-          break;
-        
-        case "half-yearly":
-          // From six months ago to today
-          const pastHalfYear = new Date();
-          pastHalfYear.setMonth(now.getMonth() - 6);
-          setStartDate(pastHalfYear.toISOString().split('T')[0]);
-          setEndDate(now.toISOString().split('T')[0]);
-          break;
-        
-        case "yearly":
-          // From one year ago to today
-          const pastYear = new Date();
-          pastYear.setFullYear(now.getFullYear() - 1);
-          setStartDate(pastYear.toISOString().split('T')[0]);
-          setEndDate(now.toISOString().split('T')[0]);
-          break;
-        
-        case "none":
-          // No filter, reset to undefined
-          setStartDate(undefined);
-          setEndDate(undefined);
-          break;
-        
+    
+      switch(period) {
+        case 'yearly':
+          return {
+            dealStartDateMin: format(subYears(now, 1), 'yyyy-MM-dd'),
+            dealStartDateMax: format(now, 'yyyy-MM-dd')
+          };
+    
+        case 'half-yearly':
+          return {
+            dealStartDateMin: format(subMonths(now, 6), 'yyyy-MM-dd'),
+            dealStartDateMax: format(now, 'yyyy-MM-dd')
+          };
+    
+        case 'quarterly':
+          return {
+            dealStartDateMin: format(subMonths(now, 3), 'yyyy-MM-dd'),
+            dealStartDateMax: format(now, 'yyyy-MM-dd')
+          };
+    
+        case 'monthly':
+          return {
+            dealStartDateMin: format(subMonths(now, 1), 'yyyy-MM-dd'),
+            dealStartDateMax: format(now, 'yyyy-MM-dd')
+          };
+    
+        case 'none':
         default:
-          break;
+          return {};
       }
     };
-  // Calculate Active Leads Total
+  const applyTimeFilter = (filterType: string) => {
+    setActiveFilter(filterType);
+  
+    const now = new Date();
+
+
+    
+    switch(filterType) {
+      case "monthly":
+        setStartDate(startOfDay(addMonths(now, -1)).toISOString());
+        setEndDate(endOfDay(now).toISOString());
+        break;
+      
+      case "quarterly":
+        setStartDate(startOfDay(addMonths(now, -3)).toISOString());
+        setEndDate(endOfDay(now).toISOString());
+        break;
+      
+      case "half-yearly":
+        setStartDate(startOfDay(addMonths(now, -6)).toISOString());
+        setEndDate(endOfDay(now).toISOString());
+        break;
+      
+      case "yearly":
+        setStartDate(startOfDay(subYears(now, 1)).toISOString());
+        setEndDate(endOfDay(now).toISOString());
+        break;
+      
+      case "none":
+        setStartDate(undefined);
+        setEndDate(undefined);
+        break;
+      
+      default:
+        console.warn(`Unhandled filter type: ${filterType}`);
+        break;
+    }
+  };
+
+
+
+  const applyFilterForRevenuew = (filterType: string) => {
+    console.log('Applying filter:', filterType);
+    setActiveFilter(filterType);
+   
+
+    // Get date range based on filter type
+    const newDateFilter = getDateRange(filterType);
+    setDateFilter(newDateFilter);
+  };
 
   return (
     <>
@@ -96,7 +136,7 @@ const ClevelDashboard: React.FC = () => {
                   <CircularProgress value={80} title="Deal Closed" img="/dealClose_icon.svg"/>
                   <CircularProgress value={Math.round((closedWonLeads / totalItems) * 100)} title="Lead Conversion" img="/conversation_icon.svg" onFilterChange={applyTimeFilter}
                     activeFilter={activeFilter}/>
-                  <CircularProgress value={totalDealAmount} title="Revenue Growth" isCurrency={true} img="/totalRevenue_icon.svg" />
+                  <CircularProgress value={totalDealAmount} title="Revenue Growth" isCurrency={true} img="/totalRevenue_icon.svg" onFilterChange={applyFilterForRevenuew}/>
                 </>
               )}
             </div>

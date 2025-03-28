@@ -40,6 +40,7 @@ export const GET_VENDORS = gql`
           performanceRatingsID
           rating
           review
+          pastProjectsCount
         }
         resources {
           resourceProfileID

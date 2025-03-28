@@ -36,50 +36,72 @@ const ViaCampaign = () => {
      setShowFilter(prevState => !prevState);
    };
 
-   const applyFilter = (filterType: string) => {
-     console.log('Applying filter:', filterType);
-     setActiveFilter(filterType);
-     setShowFilter(false);
 
-     // Reset dates first
-     setStartDate(undefined);
-     setEndDate(undefined);
 
-     // Get current date
-     const now = new Date();
-    //  const currentYear = now.getFullYear();
-     
-    switch(filterType) {
-      case "yearly":
-        // From one year ago to today
-        const pastYear = new Date();
-        pastYear.setFullYear(now.getFullYear() - 1);
-        
-        setStartDate(pastYear.toISOString().split('T')[0]); 
-        setEndDate(now.toISOString().split('T')[0]);
-        break;
-      
-      case "half-yearly":
-        // From six months ago to today
-        const pastHalfYear = new Date();
-        pastHalfYear.setMonth(now.getMonth() - 6);
-        
-        setStartDate(pastHalfYear.toISOString().split('T')[0]); 
-        setEndDate(now.toISOString().split('T')[0]);
-        break;
-      
-      case "none":
-        // No filter, reset to undefined
-        setStartDate(undefined);
-        setEndDate(undefined);
-        break;
-      
-      default:
-        break;
-    }
+  const applyFilter = (filterType: string) => {
+  console.log('Applying filter:', filterType);
   
-   };
+  // Set active filter
+  setActiveFilter(filterType);
+  
+  // Close filter dropdown
+  setShowFilter(false);
+  
+  // Reset dates first
+  setStartDate(undefined);
+  setEndDate(undefined);
+  
+  // Get current date
+  const now = new Date();
+  let startDate: Date;
 
+  switch(filterType) {
+    case "yearly":
+      // From one year ago to today
+      startDate = new Date(now);
+      startDate.setFullYear(now.getFullYear() - 1);
+      
+      setStartDate(startDate.toISOString().split('T')[0]);
+      setEndDate(now.toISOString().split('T')[0]);
+      break;
+    
+    case "quarterly":
+      // From three months ago to today
+      startDate = new Date(now);
+      startDate.setMonth(now.getMonth() - 3);
+      
+      setStartDate(startDate.toISOString().split('T')[0]);
+      setEndDate(now.toISOString().split('T')[0]);
+      break;
+    
+    case "half-yearly":
+      // From six months ago to today
+      startDate = new Date(now);
+      startDate.setMonth(now.getMonth() - 6);
+      
+      setStartDate(startDate.toISOString().split('T')[0]);
+      setEndDate(now.toISOString().split('T')[0]);
+      break;
+    
+    case "monthly":
+      // From one month ago to today
+      startDate = new Date(now);
+      startDate.setMonth(now.getMonth() - 1);
+      
+      setStartDate(startDate.toISOString().split('T')[0]);
+      setEndDate(now.toISOString().split('T')[0]);
+      break;
+    
+    case "none":
+      // No filter, reset to undefined
+      setStartDate(undefined);
+      setEndDate(undefined);
+      break;
+    
+    default:
+      break;
+  }
+};
    return (
      <div>
        <div className="flex justify-between items-center mb-4 relative" ref={filterRef}>

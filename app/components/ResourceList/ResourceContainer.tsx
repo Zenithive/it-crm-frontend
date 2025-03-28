@@ -34,7 +34,7 @@ const ResourceContainer: React.FC<ResourceContainerProps> = ({
     setCurrentPage(1);
   }, [searchQuery, vendorNameFilter, experienceYearFilter, skillsFilter]);
 
-  const { data, loading, error, totalItems } = useResourceList({
+  const { data, loading, error, totalItems,refetch } = useResourceList({
     page: currentPage,
     pageSize: itemsPerPage,
     search: searchQuery || null,

@@ -237,7 +237,14 @@ const Filter: React.FC<FilterProps> = ({
     return section ? section.title.toLowerCase() : sectionId;
   };
   return (
-    <div className="bg-white rounded-xl w-full max-w-[600px] overflow-hidden">
+    <div
+    className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+    onClick={onClose} // Close when clicking outside
+  >
+    <div
+      className="bg-white rounded-xl w-full max-w-[600px] overflow-hidden"
+      onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+    >
       <div className="bg-bg-blue-12 px-6 py-4 flex justify-between items-center">
         <h2 className="text-xl font-semibold text-white">Filters</h2>
         <button onClick={onClose} className="text-white hover:text-gray-200">
@@ -317,6 +324,7 @@ const Filter: React.FC<FilterProps> = ({
           Show Result
         </button>
       </div>
+    </div>
     </div>
   );
 };

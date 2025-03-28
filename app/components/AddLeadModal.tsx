@@ -23,30 +23,66 @@ interface LeadFormData {
   country: string;
 }
 
+const LEAD_STAGES = [
+  { value: "NEW", label: "Lead Created" },
+  { value: "QUALIFIED", label: "Qualified" },
+  { value: "NEGOTIATION", label: "Negotiation" },
+  { value: "CLOSED_WON", label: "Closed Win" },
+  { value: "CLOSED_LOST", label: "Closed Lost" },
+];
+
 interface AddLeadModalProps {
   onClose: () => void;
   leadId?: string;
 }
 
 const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
-  const { register, handleSubmit, reset, setValue } = useForm<LeadFormData>({
-    defaultValues: { leadStage: "NEW" },
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<LeadFormData>({
+    defaultValues: {
+      leadStage: "NEW",
+      leadType: "SMALL",
+      firstName: "",
+      lastName: "",
+      linkedIn: "",
+      phone: "",
+      leadSource: "",
+      campaignName: "",
+      initialContactDate: "",
+      organizationName: "",
+      email: "",
+      country: "",
+    },
   });
+
   const [loading, setLoading] = useState(false);
   const { token } = useSelector((state: RootState) => state.auth);
 
-  const { lead, loading: fetchLoading, error: fetchError } = leadId
-    ? useOverallLeadsData(1, 10, undefined, undefined, undefined, undefined, leadId)
-    : { lead: null, loading: false, error: null };
+  const { lead, loading: fetchLoading, error: fetchError, refetch } = useOverallLeadsData(
+    1,
+    10,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    leadId
+  );
 
-  const { updateLead, loading: updateLoading, error: updateError } = useUpdateLead();
-  const { addLead, loading: addLoading, error: addError } = useAddLead();
+  const { updateLead, loading: updateLoading } = useUpdateLead();
+  const { addLead, loading: addLoading } = useAddLead();
 
   useEffect(() => {
-    console.log("fetchLoading:", fetchLoading);
-    console.log("fetchError:", fetchError);
-    console.log("lead:", lead);
-    if (!fetchLoading && !fetchError && lead) {
+    if (leadId && !fetchLoading && !fetchError && lead) {
+      const formattedDate = lead.initialContactDate
+        ? new Date(lead.initialContactDate).toISOString().split("T")[0]
+        : "";
       setValue("firstName", lead.firstName || "");
       setValue("lastName", lead.lastName || "");
       setValue("linkedIn", lead.linkedIn || "");
@@ -55,24 +91,25 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
       setValue("leadStage", lead.leadStage || "NEW");
       setValue("leadType", lead.leadType || "SMALL");
       setValue("campaignName", lead.campaign?.campaignName || "");
-      setValue("initialContactDate", lead.initialContactDate || "");
+      setValue("initialContactDate", formattedDate);
       setValue("organizationName", lead.organization?.organizationName || "");
       setValue("email", lead.email || "");
       setValue("country", lead.country || "");
       console.log("Pre-filled lead data:", lead);
     }
-  }, [lead, fetchLoading, fetchError, setValue]);
+  }, [lead, fetchLoading, fetchError, setValue, leadId]);
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedDate = event.target.value;
-    setValue("initialContactDate", selectedDate);
+    setValue("initialContactDate", selectedDate, { shouldValidate: true });
   };
 
   const onSubmit: SubmitHandler<LeadFormData> = async (data) => {
     setLoading(true);
     try {
       if (leadId) {
-        await updateLead(leadId, {
+        console.log("Updating lead with data:", data);
+        const updatedLead = await updateLead(leadId, {
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
@@ -84,6 +121,8 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
           leadType: data.leadType,
           initialContactDate: data.initialContactDate,
         });
+        console.log("Updated lead data:", updatedLead);
+        // await refetch(); // Optional with cache update
         message.success("Lead updated successfully!");
       } else {
         await addLead({
@@ -144,26 +183,46 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">First Name</label>
                     <input
-                      {...register("firstName", { required: true })}
+                      {...register("firstName", {
+                        required: "First name is required",
+                        minLength: { value: 2, message: "Minimum 2 characters required" },
+                      })}
                       placeholder="Enter First name"
                       className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
                     />
+                    {errors.firstName && (
+                      <span className="text-red-500 text-sm">{errors.firstName.message}</span>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">Last Name</label>
                     <input
-                      {...register("lastName", { required: true })}
+                      {...register("lastName", {
+                        required: "Last name is required",
+                        minLength: { value: 2, message: "Minimum 2 characters required" },
+                      })}
                       placeholder="Enter Last Name"
                       className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
                     />
+                    {errors.lastName && (
+                      <span className="text-red-500 text-sm">{errors.lastName.message}</span>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">LinkedIn Profile URL</label>
                     <input
-                      {...register("linkedIn")}
+                      {...register("linkedIn", {
+                        pattern: {
+                          value: /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/,
+                          message: "Enter a valid LinkedIn URL",
+                        },
+                      })}
                       placeholder="Link"
                       className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
                     />
+                    {errors.linkedIn && (
+                      <span className="text-red-500 text-sm">{errors.linkedIn.message}</span>
+                    )}
                   </div>
                 </div>
 
@@ -173,22 +232,31 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
                     <label className="block text-sm text-bg-blue-12 mb-2">Phone</label>
                     <div className="flex">
                       <select
-                        className="w-24 mr-2 px-2 py-2 border border-bg-blue-12 rounded-lg text-gray-400"
+                        className="w-12 mr-2 py-2 border border-bg-blue-12 rounded-lg text-gray-400 text-sm focus:outline-none"
                       >
                         <option value="+91">+91</option>
                         <option value="+92">+92</option>
                       </select>
                       <input
-                        {...register("phone")}
+                        {...register("phone", {
+                          required: "Phone number is required",
+                          pattern: {
+                            value: /^[0-9]{10}$/,
+                            message: "Enter a valid 10-digit phone number",
+                          },
+                        })}
                         placeholder="9563251478"
                         className="flex-1 px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
                       />
                     </div>
+                    {errors.phone && (
+                      <span className="text-red-500 text-sm">{errors.phone.message}</span>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">Source</label>
                     <select
-                      {...register("leadSource")}
+                      {...register("leadSource", { required: "Lead source is required" })}
                       className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
                     >
                       <option value="" disabled>
@@ -197,35 +265,43 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
                       <option value="Linkedin">LinkedIn</option>
                       <option value="Upwork">Upwork</option>
                     </select>
+                    {errors.leadSource && (
+                      <span className="text-red-500 text-sm">{errors.leadSource.message}</span>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">Lead Type</label>
                     <select
-                      {...register("leadType")}
+                      {...register("leadType", { required: "Lead type is required" })}
                       className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
                     >
-                    <option value="SMALL">small</option>
+                      <option value="SMALL">small</option>
                       <option value="MEDIUM">medium</option>
                       <option value="ENTERPRISE">enterprise</option>
                     </select>
+                    {errors.leadType && (
+                      <span className="text-red-500 text-sm">{errors.leadType.message}</span>
+                    )}
                   </div>
                 </div>
 
-                {/* Lead Type and Campaign */}
+                {/* Lead Stage and Campaign */}
                 <div className="grid grid-cols-3 gap-4">
-                  
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">Lead Stage</label>
                     <select
-                      {...register("leadStage")}
+                      {...register("leadStage", { required: "Lead stage is required" })}
                       className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
                     >
-                        <option value="NEW">Lead Created</option>
-                        <option value="FOLLOW_UP">Qualified</option>
-                        <option value="IN_PROGRESS">Negotiation</option>
-                        <option value="CLOSED_WON">Closed Win</option>
-                        <option value="CLOSED_LOST">Closed Lost</option>
+                      {LEAD_STAGES.map((stage) => (
+                        <option key={stage.value} value={stage.value}>
+                          {stage.label}
+                        </option>
+                      ))}
                     </select>
+                    {errors.leadStage && (
+                      <span className="text-red-500 text-sm">{errors.leadStage.message}</span>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">Name of Campaign</label>
@@ -242,10 +318,13 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
                     <label className="block text-sm text-bg-blue-12 mb-2">Lead Date</label>
                     <input
                       type="date"
-                      {...register("initialContactDate")}
+                      {...register("initialContactDate", { required: "Lead date is required" })}
                       onChange={handleDateChange}
                       className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
                     />
+                    {errors.initialContactDate && (
+                      <span className="text-red-500 text-sm">{errors.initialContactDate.message}</span>
+                    )}
                   </div>
                 </div>
 
@@ -255,18 +334,32 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">Organization Name</label>
                     <input
-                      {...register("organizationName")}
+                      {...register("organizationName", {
+                        required: "Organization name is required",
+                      })}
                       placeholder="Enter name"
                       className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
                     />
+                    {errors.organizationName && (
+                      <span className="text-red-500 text-sm">{errors.organizationName.message}</span>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">Email</label>
                     <input
-                      {...register("email", { required: true })}
+                      {...register("email", {
+                        required: "Email is required",
+                        pattern: {
+                          value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                          message: "Enter a valid email address",
+                        },
+                      })}
                       placeholder="email"
                       className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
                     />
+                    {errors.email && (
+                      <span className="text-red-500 text-sm">{errors.email.message}</span>
+                    )}
                   </div>
                 </div>
 
@@ -275,12 +368,18 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">Country</label>
                     <select
-                      {...register("country")}
+                      {...register("country", { required: "Country is required" })}
                       className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
                     >
+                      <option value="" disabled>
+                        Select a country
+                      </option>
                       <option value="India">India</option>
                       <option value="USA">USA</option>
                     </select>
+                    {errors.country && (
+                      <span className="text-red-500 text-sm">{errors.country.message}</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -304,7 +403,3 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
 };
 
 export default AddLeadModal;
-
-
-
-
