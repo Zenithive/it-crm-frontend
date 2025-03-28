@@ -32,6 +32,7 @@ export const GET_TODOS = `
       items {
         taskID
         title
+        description
         status
         priority
         dueDate
