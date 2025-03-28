@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Search from "../microComponents/Search";
 import HeaderButtons from "../microComponents/HeaderButtons";
 import { headerbutton, search } from "./Path/TaskData";
@@ -9,6 +9,7 @@ import Title from "../microComponents/Title";
 import { Resourcetitle } from "./Path/TitlePaths";
 import FilterHandler from "./Filter/FilterHandler";
 import _ from "lodash";
+import { useResourceList } from "../api/apiService/resourcelistApiService";
 
 interface FilterPayload {
   filter: {
@@ -32,6 +33,19 @@ const ResourceList = () => {
   const [vendorNameFilter, setVendorNameFilter] = useState<string | undefined>(undefined);
   const [experienceYearFilter, setExperienceYearFilter] = useState<string | undefined>(undefined);
   const [skillsFilter, setSkillsFilter] = useState<string | undefined>(undefined);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(9);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
+
+  const { data, loading, error, totalItems,refetch } = useResourceList({
+      page: currentPage,
+      pageSize: itemsPerPage,
+      search: searchQuery || null,
+      vendorName: vendorNameFilter || null,
+      totalExperience: experienceYearFilter || null,
+      skills: skillsFilter || null,
+      
+    });
 
   const debouncedSearch = useCallback(
     _.debounce((query: string) => {
@@ -86,10 +100,18 @@ const ResourceList = () => {
       ],
     },
   ];
+    const handleRefetch = () => {
+    setRefetchTrigger(prev => prev + 1);
+  };
 
+  useEffect(() => {
+    if (refetchTrigger > 0) {
+      refetch();
+    }
+  }, [refetchTrigger, refetch]);
   return (
     <div className="min-h-screen w-full">
-      {showForm && <ResourceForm onClose={handleCloseForm} />}
+      {showForm && <ResourceForm onClose={handleCloseForm}      onSubmitSuccess={handleRefetch}/>}
 
       <div className="w-full px-4 sm:px-6 lg:px-[70px] mt-6">
         <div className="flex justify-between items-center w-full">

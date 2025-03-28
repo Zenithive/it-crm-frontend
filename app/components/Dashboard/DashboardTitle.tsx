@@ -11,7 +11,7 @@ const Dashboard_Title: React.FC<DashboardTitleProps> = ({ Dashboardtitle }) => {
   const router = useRouter();
 
   const handleLeadClick = () => {
-    router.push('/contact') 
+    router.push('/leads') 
   };
 
   return (

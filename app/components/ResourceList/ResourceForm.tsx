@@ -70,13 +70,15 @@ interface ResourceFormProps {
   resourceProfileId?: string;
   isEditMode?: boolean;
   onUpdateSuccess?: () => void;
+  onSubmitSuccess?: () => void;
 }
 
 export const ResourceForm: React.FC<ResourceFormProps> = ({
   onClose,
   resourceProfileId,
   isEditMode = false,
-  onUpdateSuccess,
+  onUpdateSuccess ,
+  onSubmitSuccess 
 }) => {
   const {
     register,
@@ -209,6 +211,10 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
           variables: { input: createData },
         });
         alert("Resource added successfully!");
+
+        if (onSubmitSuccess) {
+          onSubmitSuccess();
+        }
       }
       onClose();
     } catch (err) {
