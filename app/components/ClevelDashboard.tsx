@@ -22,7 +22,7 @@ const ClevelDashboard: React.FC = () => {
   const [startDate, setStartDate] = useState<string | undefined>(undefined);
   const [endDate, setEndDate] = useState<string | undefined>(undefined);
   const [activeFilter, setActiveFilter] = useState<string>("none");
-  const { newLeads, inProgressLeads, followUpLeads, closedWonLeads, totalItems, loading } = leadsApiService(1, 500,true,startDate, endDate);
+  const { newLeads, inProgressLeads, followUpLeads, closedWonLeads, totalItems, loading } = leadsApiService(1, 500,true);
   const activeLeads = newLeads + inProgressLeads + followUpLeads;
      const [dateFilter, setDateFilter] = useState<{
        dealStartDateMin?: string;
