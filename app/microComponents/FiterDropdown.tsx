@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -213,7 +204,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
       </div>
 
       {showStartCalendar && (
-  <div className="absolute z-10 mt-2 p-4 bg-white rounded-xl shadow-lg ">
+  <div className="absolute z-10 mt-2  bg-white rounded-xl shadow-lg ">
     <Calendar
       onChange={(value) => handleSelectStartDate(value)}
       value={startDate ? new Date(startDate) : new Date()}
@@ -223,7 +214,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
 )}
 
 {showEndCalendar && (
-  <div className="absolute z-10 mt-2 p-4 bg-white rounded-xl shadow-lg">
+  <div className="absolute z-10 mt-2 bg-white rounded-xl shadow-lg">
     <Calendar
       onChange={(value) => handleSelectEndDate(value)}
       value={endDate ? new Date(endDate) : new Date()}
