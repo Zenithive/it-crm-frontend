@@ -25,6 +25,8 @@ export const useCreateVendor = () => {
       gstOrVatDetails: values.gstOrVatDetails || "",
       notes: values.notes || "New vendor added",
       skillIDs: values.skillIDs || [],
+      // performanceRatings: values.performanceRatings || [],
+      
       country: values.country || "India", 
     };
 
@@ -32,10 +34,10 @@ export const useCreateVendor = () => {
       const { data } = await createVendorMutation({
         variables: { input },
       });
-      message.success("Vendor created successfully!");
+
       return data;
     } catch (err) {
-      message.error("Failed to create vendor");
+    
       console.error("GraphQL Error:", err);
       throw err;
     }

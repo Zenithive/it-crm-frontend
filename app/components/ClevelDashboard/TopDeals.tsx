@@ -100,7 +100,7 @@ const TopDeals = () => {
        <div className="flex justify-between items-center mb-4 relative" ref={filterRef}>
          <h3 className="text-2xl font-semibold text-bg-blue-12">
            Top Deals 
-           {activeFilter !== 'none' && ` (${activeFilter})`}
+     
          </h3>
          <img 
            src="filter.svg" 

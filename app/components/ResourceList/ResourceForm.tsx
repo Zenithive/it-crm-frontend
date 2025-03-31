@@ -6,6 +6,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_RESOURCE_PROFILE } from "../../../graphQl/mutation/addResource.mutation";
 import { UPDATE_RESOURCE_PROFILE } from "../../../graphQl/mutation/updateResource.mutation";
 import { GET_RESOURCE_PROFILE } from "../../../graphQl/queries/getresourcebyid.queries";
+import PubSub from "../../pubsub/Pubsub";
 
 // Define type and status constants
 const RESOURCE_TYPES = ["CONSULTANT", "FREELANCER", "CONTRACTOR", "EMPLOYEE"];
@@ -187,8 +188,26 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
             input: updateData,
           },
         });
-        alert("Resource updated successfully!");
-        if (onUpdateSuccess) onUpdateSuccess();
+      
+        if (onUpdateSuccess) {  try{onUpdateSuccess();
+
+           
+        PubSub.publish("RESOURCE_UPDATE_SUCCESS", { 
+          
+          resourceName: `${data.firstName} ${data.lastName}`,
+          
+        
+        });}catch(error){
+          PubSub.publish("RESOURCE_UPDATE_ERROR", { 
+          
+            resourceName: `${data.firstName} ${data.lastName}`,
+            
+          
+          })
+
+        }
+        }
+
       } else {
         const createData = {
           type: data.type,
@@ -210,10 +229,26 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
         await createResourceProfile({
           variables: { input: createData },
         });
-        alert("Resource added successfully!");
+       
 
         if (onSubmitSuccess) {
+
+          try{
           onSubmitSuccess();
+          PubSub.publish("RESOURCE_ADD_SUCCESS", { 
+          
+            resourceName: `${data.firstName} ${data.lastName}`,
+            
+          
+          });}catch(error){
+            PubSub.publish("RESOURCE_ADD_ERROR", { 
+          
+              resourceName: `${data.firstName} ${data.lastName}`,
+              
+            
+            })
+
+          }
         }
       }
       onClose();

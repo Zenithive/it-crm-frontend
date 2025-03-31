@@ -104,10 +104,12 @@ const ViaCampaign = () => {
 };
    return (
      <div>
-       <div className="flex justify-between items-center mb-4 relative" ref={filterRef}>
+       <div className="flex justify-between items-center mb-4 relative">
          <h3 className="text-2xl font-semibold text-bg-blue-12">
            Opportunities via Campaigns
          </h3>
+         <div>
+
          <img 
            src="filter.svg" 
            alt="Filter" 
@@ -115,13 +117,19 @@ const ViaCampaign = () => {
            onClick={handleFilterClick} 
          />
          {showFilter && (
+
+          <div  ref={filterRef}>
            <FilterDropdown
              showFilter={showFilter}
              toggleFilter={() => setShowFilter(false)}
              applyFilter={applyFilter}
              activeFilter={activeFilter}
            />
+
+           </div>
          )}
+         </div>
+         
        </div>
 
        {/* Opportunities Container */}

@@ -15,9 +15,9 @@ export const CREATE_VENDOR_MUTATION = gql`
         name
         description
       }
-      performanceRatings {
+           performanceRatings {
           performanceRatingsID
-          rating
+          rating 
           review
           pastProjectsCount
         }

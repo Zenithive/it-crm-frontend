@@ -6,6 +6,7 @@ import { jsonServiceRightSideDoc } from "../../api/jsonService/individualJsonSer
 import { LeftSideProps } from "./LeftSide";
 import DocumentUploadForm from "../Uploadfile";
 import { gql, useQuery, useMutation } from "@apollo/client";
+import PubSub from "../../pubsub/Pubsub";
 
 interface Document {
   id: any;
@@ -77,10 +78,15 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
       // Refetch notes after successful creation
       refetchNotes();
       setNoteContent(""); // Clear note input
+      PubSub.publish("LEAD_NOTE_ADD", {           
+      });
     },
     onError: (error) => {
       console.error("Error adding note:", error);
       alert("Failed to add note. Please try again.");
+
+        PubSub.publish("LEAD_NOTE_ADD_ERROR", {           
+              });
     }
   });
 
@@ -102,6 +108,8 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
         if (leadId) {
           docResponse = await individualcasestudyDocApi(leadId);
           console.log(`docResponse`, docResponse);
+
+         
         } else {
           docResponse = [];
         }
@@ -120,6 +128,7 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
     } catch (err) {
       console.error("Error fetching documents:", err);
       setError("Failed to load documents");
+     
     } finally {
       setIsLoading(false);
     }

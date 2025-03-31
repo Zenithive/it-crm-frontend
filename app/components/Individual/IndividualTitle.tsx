@@ -37,6 +37,7 @@ const IndividualTitle = ({ leadId }: { leadId: string }) => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
+      
           <div className="text-2xl font-bold text-bg-blue-12">
             {loading
               ? "Loading..."
