@@ -4,8 +4,9 @@ import PipelineStages from "./PipelineStages";
 import { individualcasestudyDocApi } from "../../api/apiService/individualcasestudyApiServices";
 import { jsonServiceRightSideDoc } from "../../api/jsonService/individualJsonService";
 import { LeftSideProps } from "./LeftSide";
-import DocumentUploadForm from "../uploadfile";
+import DocumentUploadForm from "../Uploadfile";
 import { gql, useQuery, useMutation } from "@apollo/client";
+import PubSub from "../../pubsub/Pubsub";
 
 interface Document {
   id: any;
@@ -77,10 +78,15 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
       // Refetch notes after successful creation
       refetchNotes();
       setNoteContent(""); // Clear note input
+      PubSub.publish("LEAD_NOTE_ADD", {           
+      });
     },
     onError: (error) => {
       console.error("Error adding note:", error);
       alert("Failed to add note. Please try again.");
+
+        PubSub.publish("LEAD_NOTE_ADD_ERROR", {           
+              });
     }
   });
 
@@ -102,6 +108,8 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
         if (leadId) {
           docResponse = await individualcasestudyDocApi(leadId);
           console.log(`docResponse`, docResponse);
+
+         
         } else {
           docResponse = [];
         }
@@ -120,6 +128,7 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
     } catch (err) {
       console.error("Error fetching documents:", err);
       setError("Failed to load documents");
+     
     } finally {
       setIsLoading(false);
     }
@@ -211,8 +220,8 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-custom p-1 h-full flex flex-col">
-      <div className="flex-1 overflow-y-auto">
+    <div className="bg-white rounded-lg shadow-custom p-1  flex flex-col h-screen">
+      <div className="flex-1 overflow-y-auto scrollbar-custom">
         {/* Documents Section with Scrollable Content */}
         <div className="h-[250px] flex flex-col bg-white mb-4">
           {/* Fixed Header */}
@@ -278,7 +287,7 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
         <div className="border border-content-border mt-5 ml-5 mr-5"></div>
 
         {/* Pipeline Stage Section */}
-        <div className="max-h-[250px] overflow-y-auto">
+        <div className="max-h-[250px]">
           <h2 className="text-xl font-semibold text-bg-blue-12 ml-4 sticky top-0 bg-white z-10 pb-2">
             Pipeline Stages
           </h2>
@@ -312,7 +321,7 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
         </div>
 
         {/* Notes List - Scrollable */}
-        <div className="max-h-[300px] overflow-y-auto p-4">
+        <div className="max-h-[300px] overflow-y-auto  scrollbar-custom p-4 mr-2">
           {notesLoading ? (
             <p className="text-center text-gray-500">Loading notes...</p>
           ) : notesError ? (

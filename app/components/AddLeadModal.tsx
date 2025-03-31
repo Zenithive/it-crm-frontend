@@ -110,7 +110,8 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
     try {
       if (leadId) {
         console.log("Updating lead with data:", data);
-        const updatedLead = await updateLead(leadId, {
+
+        try{  const updatedLead = await updateLead(leadId, {
           firstName: data.firstName,
           lastName: data.lastName,
           email: data.email,
@@ -127,9 +128,20 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
           leadName: `${data.firstName} ${data.lastName}`,
           component: "addlead",
         
-        });
+        });}
+        catch(error){
+          PubSub.publish("LEAD_UPDATE_ERROR", { 
+          
+            leadName: `${data.firstName} ${data.lastName}`,
+          
+          });
+
+        }
+      
         
       } else {
+
+        try{
         await addLead({
           firstName: data.firstName,
           lastName: data.lastName,
@@ -145,7 +157,13 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
           
           leadName: `${data.firstName} ${data.lastName}`,
         
-        });
+        });}catch(error){
+          PubSub.publish("LEAD_ADD_ERROR", { 
+          
+            leadName: `${data.firstName} ${data.lastName}`,
+          
+          });
+        }
       }
       reset();
       onClose();
@@ -153,11 +171,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
      
       console.error("Submission error:", error);
 
-      PubSub.publish("LEAD_ADD_ERROR", { 
-          
-        leadName: `${data.firstName} ${data.lastName}`,
       
-      });
     } finally {
       setLoading(false);
     }

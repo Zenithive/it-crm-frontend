@@ -47,7 +47,38 @@ const FilterHandler: React.FC<FilterHandlerProps> = ({
   const [selectdata, setSelecteData] = useState('');
   
 
-
+  const createFilterPayload = (
+    filterConfig: {
+      dateRange?: boolean;
+      sectionMappings: Record<string, string>;
+    }
+  ) => {
+    
+    const filter: Record<string, any> = filterConfig.dateRange 
+      ? { startDate, endDate } 
+      : {};
+    
+    const mappedFilters = Object.entries(filterConfig.sectionMappings).reduce((acc, [sectionId, filterKey]) => {
+      const selectedValues = selectedOptions.filter(opt => 
+        filterSections.some(section => 
+          section.id === sectionId && 
+          section.options.some(o => o.id === opt)
+        )
+      );
+      
+      if (selectedValues.length > 0) {
+        acc[filterKey] = selectedValues.join(',');
+      }
+      
+      return acc;
+    }, {} as Record<string, string>);
+    
+    return {
+      filter: { ...filter, ...mappedFilters },
+      pagination: { page: 1, pageSize: 10 },
+      sort: { field: 'createdAt', order: 'desc' }
+    };
+  };
   const isContactPage = pageType === "contact";
   const renderFilterRightPanel = (activeSection: string, selectedOptions: string[], searchTerm: string) => {
     const currentSection = filterSections.find(section => section.id === activeSection);
@@ -108,188 +139,62 @@ const FilterHandler: React.FC<FilterHandlerProps> = ({
 
  
 
-  const handleFilterApplyTodo = async () => {
-    const payload: FilterPayload = {
-      filter: {
-        startDate,
-        endDate,
-        // Include other filters based on selected options
-        status: selectedOptions.filter(opt => 
-          filterSections.some(section => 
-            section.id === 'status' && 
-            section.options.some(o => o.id === opt)
-          )
-        ).join(','),
-        priority: selectedOptions.filter(opt => 
-          filterSections.some(section => 
-            section.id === 'priority' && 
-            section.options.some(o => o.id === opt)
-          )
-        ).join(',')
-      },
-      pagination: {
-        page: 1,
-        pageSize: 10
-      },
-      sort: {
-        field: 'createdAt',
-        order: 'desc'
-      }
-    };
-
-    await onFilterApply(payload);
-    setShowFilter(false);
-  };
-
-  const handleFilterApply = async () => {
-    const payload: FilterPayload = {
-      filter: {
-        startDate,
-        endDate,
-        // Include other filters based on selected options
-        stage: selectedOptions.filter(opt => 
-          filterSections.some(section => 
-            section.id === 'stage' && 
-            section.options.some(o => o.id === opt)
-          )
-        ).join(','),
-        type: selectedOptions.filter(opt => 
-          filterSections.some(section => 
-            section.id === 'type' && 
-            section.options.some(o => o.id === opt)
-          )
-        ).join(','),
-        campaign: selectedOptions.filter(opt => 
-          filterSections.some(section => 
-            section.id === 'campaign' && 
-            section.options.some(o => o.id === opt)
-          )
-        ).join(',')
-      },
-      pagination: {
-        page: 1,
-        pageSize: 10
-      },
-      sort: {
-        field: 'createdAt',
-        order: 'desc'
-      }
-    };
-
-    await onFilterApply(payload);
-    setShowFilter(false);
-  };
 
 
 
-  const handleFilterApplyResource = async () => {
-    const payload: FilterPayload = {
-      filter: {
-        
-        // Include other filters based on selected options
-        skills: selectedOptions.filter(opt => 
-          filterSections.some(section => 
-            section.id === 'skills' && 
-            section.options.some(o => o.id === opt)
-          )
-        ).join(','),
-        experienceYear: selectedOptions.filter(opt => 
-          filterSections.some(section => 
-            section.id === 'experienceYear' && 
-            section.options.some(o => o.id === opt)
-          )
-        ).join(','),
-      
-      },
-      pagination: {
-        page: 1,
-        pageSize: 10
-      },
-      sort: {
-        field: 'createdAt',
-        order: 'desc'
-      }
-    };
-
-    await onFilterApply(payload);
-    setShowFilter(false);
-  };
 
 
-
-  const handleFilterApplyVendor = async () => {
-    const payload: FilterPayload = {
-      filter: {
-        
-        // Include other filters based on selected options
-        location: selectedOptions.filter(opt => 
-          filterSections.some(section => 
-            section.id === 'location' && 
-            section.options.some(o => o.id === opt)
-          )
-        ).join(','),
-        status: selectedOptions.filter(opt => 
-          filterSections.some(section => 
-            section.id === 'status' && 
-            section.options.some(o => o.id === opt)
-          )
-        ).join(','),
-        rating: selectedOptions.filter(opt => 
-          filterSections.some(section => 
-            section.id === 'rating' && 
-            section.options.some(o => o.id === opt)
-          )
-        ).join(','),
-      
-      },
-      pagination: {
-        page: 1,
-        pageSize: 10
-      },
-      sort: {
-        field: 'createdAt',
-        order: 'desc'
-      }
-    };
-
-    await onFilterApply(payload);
-    setShowFilter(false);
-  };
+const createFilterHandler = (config: {
+  dateRange: boolean;
+  sectionMappings: Record<string, string>;
+}) => async () => {
+  const payload = createFilterPayload(config);
+  await onFilterApply(payload);
+  setShowFilter(false);
+};
 
 
-  const handleFilterApplyCaseStudy = async () => {
-    const payload: FilterPayload = {
-      filter: {
-        
-        // Include other filters based on selected options
-        industry: selectedOptions.filter(opt => 
-          filterSections.some(section => 
-            section.id === 'industry' && 
-            section.options.some(o => o.id === opt)
-          )
-        ).join(','),
-        technology: selectedOptions.filter(opt => 
-          filterSections.some(section => 
-            section.id === 'technology' && 
-            section.options.some(o => o.id === opt)
-          )
-        ).join(','),
-       
-      
-      },
-      pagination: {
-        page: 1,
-        pageSize: 10
-      },
-      sort: {
-        field: 'createdAt',
-        order: 'desc'
-      }
-    };
+const handleFilterApplyTodo = createFilterHandler({
+  dateRange: true,
+  sectionMappings: {
+    'status': 'status',
+    'priority': 'priority'
+  }
+});
 
-    await onFilterApply(payload);
-    setShowFilter(false);
-  };
+const handleFilterApply = createFilterHandler({
+  dateRange: true,
+  sectionMappings: {
+    'stage': 'stage',
+    'type': 'type',
+    'campaign': 'campaign'
+  }
+});
+
+const handleFilterApplyResource = createFilterHandler({
+  dateRange: false,
+  sectionMappings: {
+    'skills': 'skills',
+    'experienceYear': 'experienceYear'
+  }
+});
+
+const handleFilterApplyVendor = createFilterHandler({
+  dateRange: false,
+  sectionMappings: {
+    'location': 'location',
+    'status': 'status',
+    'rating': 'rating'
+  }
+});
+
+const handleFilterApplyCaseStudy = createFilterHandler({
+  dateRange: false,
+  sectionMappings: {
+    'industry': 'industry',
+    'technology': 'technology'
+  }
+});
   return (
     <Filter
       onClose={() => setShowFilter(false)}

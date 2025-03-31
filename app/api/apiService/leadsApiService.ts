@@ -13,7 +13,7 @@ interface LeadAssignedTo {
   email: string;
 }
 
-interface Lead {
+export interface Lead {
   leadID: string;
   leadStage: string;
   campaign?: {
@@ -21,7 +21,6 @@ interface Lead {
   };
   leadSource: string;
   initialContactDate: string;
-  
   leadAssignedTo?: LeadAssignedTo; 
   country: string;
   firstName: string;
@@ -106,11 +105,8 @@ interface LeadPerformanceMetrics {
 const leadsApiService = (  currentPage: number, 
   itemsPerPage: number, 
   fetchAll: boolean = false,
-  startDate?: string,
-  endDate?: string,
   leadSort?: { field: LeadSortField; order: SortOrder },
   dealSort?: { field: DealSortFields; order: SortOrders },
- 
   initialTimeFilter?: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
 
   const [newLeads, setNewLeads] = useState(0);
@@ -135,20 +131,6 @@ const leadsApiService = (  currentPage: number,
   const user = useSelector((state: RootState) => state.auth);
   const { googleAccessToken } = user || {};
 
-  const filter: any = {};
-
-  // Date filtering logic
-  if (startDate && endDate) {
-    // If both start and end dates are provided
-    filter.fromDate = startDate;
-    filter.toDate = endDate;
-  } else if (startDate) {
-    // If only start date is provided
-    filter.fromDate = startDate;
-  } else if (endDate) {
-    // If only end date is provided
-    filter.toDate = endDate;
-  }
 
 
   const getDateRangeForFilter = (filter: string): { fromDate: string; toDate: string } => {
@@ -231,7 +213,6 @@ const leadsApiService = (  currentPage: number,
     sort: leadSort || { field: LeadSortField.CREATED_AT, order: SortOrder.DESC }
   };
 
-  // Updated query variables for deals
   const dealsQueryVariables = {
     filter: selectedTimeFilter 
       ? { 
@@ -272,10 +253,7 @@ const leadsApiService = (  currentPage: number,
     error: leadsError,
     refetch: refetchLeads
   } = useQuery(GET_LEADS, {
-    variables: {
-      filter: filter,
-      sort: { field: "EMAIL", order: "ASC" },
-    },
+    variables: leadsQueryVariables,
     context: {
       headers: {
         Authorization: `Bearer ${user.token}`,
@@ -305,7 +283,6 @@ const leadsApiService = (  currentPage: number,
   console.log("dealsData",dealsData);
 
 
-  
 
   // Existing helper functions (formatCurrency, fetchGoogleCalendarEvents, etc.)
   const formatCurrency = (amount: number): string => {

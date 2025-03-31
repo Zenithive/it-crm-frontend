@@ -19,7 +19,7 @@ const UnreadMessages = () => {
   const { googleAccessToken } = auth || {};
 
   // Determine whether to use dummy data based on environment
-  const useDummyData = String(process.env.NEXT_PUBLIC_USE_DUMMY_DATA || "false").trim().toLowerCase() === "true";
+  const useDummyData = String(process.env.NEXT_PUBLIC_USE_DUMMY_DATA1 || "false").trim().toLowerCase() === "true";
 
   useEffect(() => {
     const fetchData = async () => {

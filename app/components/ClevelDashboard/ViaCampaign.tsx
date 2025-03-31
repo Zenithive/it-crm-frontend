@@ -13,7 +13,7 @@ const ViaCampaign = () => {
    const [endDate, setEndDate] = useState<string | undefined>(undefined);
 
    // Use leadsApiService with date filters
-   const { campaignCountryCounts } = leadsApiService(1, 10, true, startDate, endDate);
+   const { campaignCountryCounts } = leadsApiService(1, 10, true);
 
    useEffect(() => {
      const handleClickOutside = (event: MouseEvent) => {

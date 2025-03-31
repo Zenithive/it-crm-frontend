@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, ReactNode } from "react";
 import { individualcasestudyDocApi } from "../../api/apiService/individualcasestudyApiServices";
-import DocumentUploadForm from "../uploadfile";
+import DocumentUploadForm from "../Uploadfile";
 
 interface DocumentData {
   id: string;
@@ -81,8 +81,10 @@ const VendorDoc = ({ vendorId }: { vendorId: string }) => {
         Array.isArray(rawDocsData) ? rawDocsData : []
       );
       setDocuments(transformedDocs);
+   
     } catch (err) {
       console.error("Error fetching vendor documents:", err);
+  
       setError("Failed to load documents");
     } finally {
       setIsLoading(false);
@@ -136,7 +138,10 @@ const VendorDoc = ({ vendorId }: { vendorId: string }) => {
   };
 
   const handleDocumentAdded = () => {
-    fetchData(); // Refresh after upload
+    fetchData();           
+   
+   
+    // Refresh after upload
   };
 
   return (

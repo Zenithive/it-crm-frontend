@@ -8,7 +8,8 @@ import {
   individualcasestudyDocJson,
 } from "../../api/jsonService/individualcasestudyJsonServices";
 import { CaseStudy } from "../../api/apiService/overallcasestudyApiService";
-import DocumentUploadForm from "../uploadfile";
+import DocumentUploadForm from "../Uploadfile";
+
 
 interface Outcome {
   outcomes: string;
@@ -91,9 +92,11 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
         }))
       );
       setDocError(null);
+    
     } catch (err) {
       console.error("Error fetching documents:", err);
       setDocError("Failed to load documents");
+       
     } finally {
       setDocLoading(false);
     }
@@ -172,6 +175,7 @@ const RightCaseStudy = ({ caseStudy }: { caseStudy: CaseStudy }) => {
   const handleDocumentAdded = () => {
     // Refresh document list after successful upload
     fetchDocumentData();
+   
   };
 
   // Download function implementation

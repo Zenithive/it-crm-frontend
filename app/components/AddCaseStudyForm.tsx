@@ -99,12 +99,26 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
     setLoading(true);
     try {
       await addCaseStudy(data);
-      if (refetchCaseStudies) refetchCaseStudies();
+      if (refetchCaseStudies){ refetchCaseStudies();
+
+      PubSub.publish("CASESTUDY_ADD_SUCCESS", { 
+          
+        component:"casestudy"
+  
+        
+        });}
       // No need to show success message here as it's already shown in the hook
       onClose(); // Close the form after successful submission
     } catch (error) {
       // Error is already logged and displayed in the hook
       console.error("Form submission failed:", error);
+
+      PubSub.publish("CASESTUDY_ERROR", { 
+          
+        component:"casestudyAdd"
+  
+        
+        });
       // No need for another error message
     } finally {
       setLoading(false);
@@ -127,7 +141,12 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
       
       });
     } catch (error) {
-      console.error("Failed to submit lead close:", error);
+      PubSub.publish("CASESTUDY_ERROR", { 
+          
+        component:"casestudyAdd"
+  
+        
+        });
     } finally {
       setLoading(false);
     }

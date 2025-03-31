@@ -59,7 +59,39 @@ const LeadNotifications: React.FC<NotificationProps> = ({ duration = 5000 }) => 
       });
     });
 
+    const leadNoteAdd = PubSub.subscribe("LEAD_NOTE_ADD", (data) => {
+      const { leadName} = data;
+      addNotification({
+        type: "success",
+        message: `successfully added notes!`,
+      });
+    });
 
+    const leadNoteAddError = PubSub.subscribe("LEAD_NOTE_ADD_ERROR", (data) => {
+      const { leadName} = data;
+      addNotification({
+        type: "error",
+        message: `Failed to add notes!`,
+      });
+    });
+
+
+
+    const DocumentAdd = PubSub.subscribe("DOC_ADD", (data) => {
+      const { leadName} = data;
+      addNotification({
+        type: "success",
+        message: `successfully added Documents!`,
+      });
+    });
+
+    const DocAddError = PubSub.subscribe("DOC_ADD_ERROR", (data) => {
+      const { leadName} = data;
+      addNotification({
+        type: "error",
+        message: `Failed to add Documents!`,
+      });
+    });
     const resourceAdd = PubSub.subscribe("RESOURCE_ADD_SUCCESS", (data) => {
       const { resourceName } = data;
       addNotification({
@@ -68,7 +100,7 @@ const LeadNotifications: React.FC<NotificationProps> = ({ duration = 5000 }) => 
       });
     });
 
-    const resourceUpdate = PubSub.subscribe("RESOURCE_ADD_SUCCESS", (data) => {
+    const resourceUpdate = PubSub.subscribe("RESOURCE_UPDATE_SUCCESS", (data) => {
       const { resourceName } = data;
       addNotification({
         type: "success",
@@ -83,7 +115,13 @@ const LeadNotifications: React.FC<NotificationProps> = ({ duration = 5000 }) => 
       });
     });
 
-
+    const resourceUpdateError = PubSub.subscribe("RESOURCE_UPDTAE_ERROR", (data) => {
+      const { resourceName} = data;
+      addNotification({
+        type: "error",
+        message: `Failed to update ${resourceName}!`,
+      });
+    });
 
 
     
@@ -132,11 +170,55 @@ const LeadNotifications: React.FC<NotificationProps> = ({ duration = 5000 }) => 
       });
     });
 
-    const overallCasestudyUpdate = PubSub.subscribe("CASESTUDY_UPDATE_SUCCESS", (data) => {
-      const { casestudyName } = data;
+  
+
+
+    const overallCasestudyError = PubSub.subscribe("CASESTUDY_ERROR", (data) => {
+      const { casestudyName,component } = data;
+
+      let message="";
+
+      if(component==="casestudyUpdate"){
+        message = `"caseStudy failed to update !`; 
+      }
+      else{
+        message="caseStudy failed to add!"
+      }
       addNotification({
         type: "success",
-        message: `"${casestudyName}" updated successfully!`,
+        message,
+      });
+    });
+
+
+
+    const ToDolist = PubSub.subscribe("TODO", (data) => {
+      const { title,component } = data;
+
+      let message="";
+
+      if(component==="todoadd"){
+        message = `${title} successfully added !`; 
+      }
+
+      if(component==="todoupdate"){
+        message = `${title}  successfully updated !`; 
+      }
+      
+      addNotification({
+        type: "success",
+        message,
+      });
+    });
+
+
+    const ToDolistError = PubSub.subscribe("TODO_ERROR", (data) => {
+
+
+      
+      addNotification({
+        type: "error",
+        message:"there is some error!",
       });
     });
     // Cleanup subscriptions
@@ -147,13 +229,20 @@ const LeadNotifications: React.FC<NotificationProps> = ({ duration = 5000 }) => 
       leadAddError();
       resourceAdd();
       resourceUpdate();
+      resourceUpdateError();
       overallCasestudyAdd();
-      overallCasestudyUpdate();
+      overallCasestudyError();
       resourceAddError();
       vendorAdd();
       vendorUpdate();
       vendorAddError();
       vendorUpdateError();
+      ToDolist();
+      ToDolistError();
+      leadNoteAdd();
+      leadNoteAddError();
+      DocumentAdd();
+      DocAddError();
      
     };
   }, []);

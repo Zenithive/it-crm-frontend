@@ -1,12 +1,11 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import KeyMetricsCard from "../components/ManagerDashboard/KeyMetricsCard";
 import PipelineMap from "../components/ManagerDashboard/PipelineMap";
 import LeadSourceChart from "../components/ManagerDashboard/LeadSource";
 import TeamPerformanceTable from "../components/ManagerDashboard/TeamPerformanceTable";
 import leadsApiService from "../api/apiService/leadsApiService";
 
-// Utility function to format currency
 const formatCurrency = (value: number): string => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -16,7 +15,6 @@ const formatCurrency = (value: number): string => {
   }).format(value);
 };
 
-// Utility function to calculate percentage change
 const calculatePercentageChange = (current: number, previous: number): { change: string, isPositive: boolean } => {
   if (previous === 0) return { change: 'N/A', isPositive: true };
   
@@ -28,9 +26,21 @@ const calculatePercentageChange = (current: number, previous: number): { change:
 };
 
 const SalesDashboard: React.FC = () => {
-  const [timeFilter, setTimeFilter] = useState<'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('yearly');
+  // State for tracking previous metrics
+  const [previousMetrics, setPreviousMetrics] = useState({
+    totalSales: 800000,
+    winRate: 12,
+    pipelineValue: 800000,
+    avgDaysToClose: 55
+  });
+  
+  // State for tracking selected time filter for main dashboard
+  const [timeFilter, setTimeFilter] = useState<'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('monthly');
+  
+  // State for pipeline map filter - separate from main filter
+  const [pipelineMapFilter, setPipelineMapFilter] = useState<'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('monthly');
 
-  // Use leadsApiService to fetch data
+  // Only use the main dashboard filter for API calls
   const {
     countryLeadStats,
     loading,
@@ -38,22 +48,47 @@ const SalesDashboard: React.FC = () => {
     leadPerformanceMetrics,
     teamPerformance,
     leadSourceCounts,
-    setTimeFilter: updateApiTimeFilter
-  } = leadsApiService(1, 10, true, undefined, undefined,undefined,undefined, timeFilter);
+    setTimeFilter: apiSetTimeFilter,
+    currentTimeFilter,
+  } = leadsApiService(1, 10, true, undefined, undefined, timeFilter);
 
-  // Hardcoded previous metrics for comparison (consider fetching these dynamically)
-  const previousMetrics = useMemo(() => ({
-    totalSales: 800000, 
-    winRate: 12,
-    pipelineValue: 800000,
-    avgDaysToClose: 55
-  }), []);
-
-  const handleFilterChange = (filter: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+  // Handle time filter changes for main dashboard
+  const handleTimeFilterChange = (filter: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
     setTimeFilter(filter);
-    updateApiTimeFilter(filter);
+    if (apiSetTimeFilter) {
+      apiSetTimeFilter(filter);
+    }
   };
 
+  // Handle time filter changes specifically for the pipeline map
+  // This only updates the local state without triggering API calls
+  const handlePipelineMapFilterChange = (filter: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+    setPipelineMapFilter(filter);
+  };
+  
+  // Filter country lead stats based on pipelineMapFilter if needed
+  const filteredCountryLeadStats = useMemo(() => {
+    // If filters match, no need to filter
+    if (pipelineMapFilter === timeFilter) {
+      return countryLeadStats;
+    }
+    return countryLeadStats;
+    
+  }, [countryLeadStats, pipelineMapFilter, timeFilter]);
+  
+  useEffect(() => {
+    // Save current metrics as previous before they update
+    if (!loading && leadPerformanceMetrics) {
+      setPreviousMetrics({
+        totalSales: leadPerformanceMetrics.totalSales,
+        winRate: leadPerformanceMetrics.winRate,
+        pipelineValue: leadPerformanceMetrics.totalSales, 
+        avgDaysToClose: leadPerformanceMetrics.avgDaysToClose
+      });
+    }
+  }, [timeFilter]);
+
+  // Create key metrics with percentage changes
   const keyMetrics = useMemo(() => [
     {
       title: "Total Sales",
@@ -76,17 +111,17 @@ const SalesDashboard: React.FC = () => {
       displayValue: formatCurrency(leadPerformanceMetrics.totalSales),
       ...calculatePercentageChange(
         leadPerformanceMetrics.totalSales, 
-        previousMetrics.totalSales
+        previousMetrics.pipelineValue
       )
     },
     {
       title: "Avg. Days to Close",
       displayValue: leadPerformanceMetrics.avgDaysToClose.toFixed(1),
       ...calculatePercentageChange(
-        leadPerformanceMetrics.avgDaysToClose, 
-        previousMetrics.avgDaysToClose
+        previousMetrics.avgDaysToClose,
+        leadPerformanceMetrics.avgDaysToClose
       ),
-      isPositive: false
+      isPositive: leadPerformanceMetrics.avgDaysToClose <= previousMetrics.avgDaysToClose
     }
   ], [leadPerformanceMetrics, previousMetrics]);
 
@@ -99,26 +134,31 @@ const SalesDashboard: React.FC = () => {
   }
 
   return (
-    <div >
+    <div>
       <div className="bg-blue-background">
-        <div className="flex flex-col w-full gap-4 p-4 ">
-          {/* Key Metrics Card */}
+        <div className="flex flex-col w-full gap-4 p-4">
+          {/* Key Metrics Card with filter capability */}
           <KeyMetricsCard 
-            keyMetrics={keyMetrics} 
-            onFilterChange={handleFilterChange} 
+            keyMetrics={keyMetrics}
+            onTimeFilterChange={handleTimeFilterChange}
+            currentTimeFilter={timeFilter}
           />
-
+          
           {/* Charts and Map Section */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 ">
-            {/* Pipeline Map */}
-            <PipelineMap countryLeadStats={countryLeadStats} />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {/* Pipeline Map with its own filter */}
+            <PipelineMap 
+              countryLeadStats={filteredCountryLeadStats} 
+              onTimeFilterChange={handlePipelineMapFilterChange}
+              currentTimeFilter={pipelineMapFilter}
+            />
             
             {/* Lead Source Chart */}
-            <LeadSourceChart />
+            <LeadSourceChart  />
           </div>
-
+          
           {/* Team Performance Table Component */}
-          <TeamPerformanceTable  />
+          <TeamPerformanceTable />
         </div>
       </div>
     </div>

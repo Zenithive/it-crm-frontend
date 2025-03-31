@@ -188,8 +188,26 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
             input: updateData,
           },
         });
-       
-        if (onUpdateSuccess) onUpdateSuccess();
+      
+        if (onUpdateSuccess) {  try{onUpdateSuccess();
+
+           
+        PubSub.publish("RESOURCE_UPDATE_SUCCESS", { 
+          
+          resourceName: `${data.firstName} ${data.lastName}`,
+          
+        
+        });}catch(error){
+          PubSub.publish("RESOURCE_UPDATE_ERROR", { 
+          
+            resourceName: `${data.firstName} ${data.lastName}`,
+            
+          
+          })
+
+        }
+        }
+
       } else {
         const createData = {
           type: data.type,
@@ -211,15 +229,26 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
         await createResourceProfile({
           variables: { input: createData },
         });
-        PubSub.publish("RESOURCE_ADD_SUCCESS", { 
-          
-          resourceName: `${data.firstName} ${data.lastName}`,
-          
-        
-        });
+       
 
         if (onSubmitSuccess) {
+
+          try{
           onSubmitSuccess();
+          PubSub.publish("RESOURCE_ADD_SUCCESS", { 
+          
+            resourceName: `${data.firstName} ${data.lastName}`,
+            
+          
+          });}catch(error){
+            PubSub.publish("RESOURCE_ADD_ERROR", { 
+          
+              resourceName: `${data.firstName} ${data.lastName}`,
+              
+            
+            })
+
+          }
         }
       }
       onClose();
