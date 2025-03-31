@@ -5,6 +5,7 @@ import { useAddCaseStudy } from "../api/apiService/addCaseStudyApiService";
 import { message } from "antd";
 
 import Notes from "../microComponents/Notes";
+import PubSub from "../pubsub/Pubsub";
 
 // Define the interface for form data
 interface CaseStudyFormData {
@@ -117,6 +118,14 @@ const AddCaseStudyForm: React.FC<CaseStudyPageProps> = ({
     try {
       await onSubmit(data, "leadClose");
       // Reset form or show success message
+
+
+      PubSub.publish("CASESTUDY_ADD_SUCCESS", { 
+          
+      component:"casestudy"
+
+      
+      });
     } catch (error) {
       console.error("Failed to submit lead close:", error);
     } finally {

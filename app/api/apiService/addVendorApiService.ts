@@ -32,10 +32,10 @@ export const useCreateVendor = () => {
       const { data } = await createVendorMutation({
         variables: { input },
       });
-      message.success("Vendor created successfully!");
+
       return data;
     } catch (err) {
-      message.error("Failed to create vendor");
+    
       console.error("GraphQL Error:", err);
       throw err;
     }

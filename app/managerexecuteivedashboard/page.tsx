@@ -39,7 +39,7 @@ const SalesDashboard: React.FC = () => {
     teamPerformance,
     leadSourceCounts,
     setTimeFilter: updateApiTimeFilter
-  } = leadsApiService(1, 10, true, undefined, undefined, timeFilter);
+  } = leadsApiService(1, 10, true, undefined, undefined,undefined,undefined, timeFilter);
 
   // Hardcoded previous metrics for comparison (consider fetching these dynamically)
   const previousMetrics = useMemo(() => ({

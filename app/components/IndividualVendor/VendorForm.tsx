@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { CountrySelection } from "./CountrySelection";
 import PerformanceFormModal from "./PerformanceModal";
+import PubSub from "../../pubsub/Pubsub";
 
 interface PerformanceRatingData {
   pastProjectsCount: number;
@@ -207,16 +208,28 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
       console.log("Mutation Input:", mutationInput);
       if (isEditMode) {
         await updateVendor({ vendorID: vendorId!, ...mutationInput });
-        message.success("Vendor updated successfully!");
+      
+
+        PubSub.publish("VENDOR_UPDATE_SUCCESS", { 
+          
+          vendorName: `${data.companyName}`,
+          
+        
+        });
       } else {
         await createVendor(mutationInput);
-        message.success("Vendor created successfully!");
+   
+        PubSub.publish("VENDOR_ADD_SUCCESS", { 
+          
+          vendorName: `${data.companyName}`,
+        
+        });
         if (refetchVendors) refetchVendors();
       }
       reset();
       onClose();
     } catch (error) {
-      message.error(`Failed to ${isEditMode ? "update" : "add"} vendor.`);
+      
       console.error("Submission error:", error);
     } finally {
       setLoading(false);

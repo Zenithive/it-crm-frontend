@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { message } from "antd";
+import PubSub from "../pubsub/Pubsub";
 import { useUpdateLead } from "../api/apiService/OverallLeadApiService";
 import { useAddLead } from "../api/apiService/addLeadModalApiService";
 import useOverallLeadsData from "../api/apiService/OverallLeadApiService";
@@ -105,7 +106,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
   };
 
   const onSubmit: SubmitHandler<LeadFormData> = async (data) => {
-    setLoading(true);
+    // setLoading(true);
     try {
       if (leadId) {
         console.log("Updating lead with data:", data);
@@ -121,9 +122,13 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
           leadType: data.leadType,
           initialContactDate: data.initialContactDate,
         });
-        console.log("Updated lead data:", updatedLead);
-        // await refetch(); // Optional with cache update
-        message.success("Lead updated successfully!");
+        PubSub.publish("LEAD_UPDATE_SUCCESS", { 
+          
+          leadName: `${data.firstName} ${data.lastName}`,
+          component: "addlead",
+        
+        });
+        
       } else {
         await addLead({
           firstName: data.firstName,
@@ -136,13 +141,23 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
           leadSource: data.leadSource,
           initialContactDate: data.initialContactDate,
         });
-        message.success("Lead added successfully!");
+        PubSub.publish("LEAD_ADD_SUCCESS", { 
+          
+          leadName: `${data.firstName} ${data.lastName}`,
+        
+        });
       }
       reset();
       onClose();
     } catch (error: any) {
-      message.error(`Failed to ${leadId ? "update" : "add"} lead: ${error.message || "Unknown error"}`);
+     
       console.error("Submission error:", error);
+
+      PubSub.publish("LEAD_ADD_ERROR", { 
+          
+        leadName: `${data.firstName} ${data.lastName}`,
+      
+      });
     } finally {
       setLoading(false);
     }
