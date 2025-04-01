@@ -11,7 +11,7 @@ import Title from "../microComponents/Title";
 import TablerLayout from "./OverallCaseStudy/TablerLayout";
 import useOverallCaseStudyData from "../api/apiService/overallcasestudyApiService";
 import AddCaseStudyForm from "./AddCaseStudyForm";
-import FilterHandler from "./Filter/FilterHandler"; // Updated import
+import FilterHandler1 from "./Filter/FilterHandler1";
 import { useRouter } from "next/navigation";
 
 interface Resource {
@@ -24,7 +24,7 @@ interface Resource {
 
 interface FilterPayload {
   filter: {
-    [key: string]: string | undefined;
+    [key: string]: string | string[] | undefined;
   };
   pagination: {
     page: number;
@@ -43,8 +43,10 @@ const ResourceContainer = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [isTableView, setIsTableView] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [industryFilter, setIndustryFilter] = useState<string | undefined>(undefined);
-  const [technologyFilter, setTechnologyFilter] = useState<string | undefined>(undefined);
+  
+  // Modified filter states to support multiple selections
+  const [industryFilters, setIndustryFilters] = useState<string[]>([]);
+  const [technologyFilters, setTechnologyFilters] = useState<string[]>([]);
   const router = useRouter();
 
   const debouncedSearch = useCallback(
@@ -60,14 +62,15 @@ const ResourceContainer = () => {
     debouncedSearch(value);
   };
 
+  // Modified to support comma-separated values for multiple filters
   const { caseStudies, totalItems, loading, error, refetch } = useOverallCaseStudyData(
     currentPage,
     itemsPerPage,
-    industryFilter,
+    industryFilters.length > 0 ? industryFilters.join(',') : undefined,
     "createdAt",
     "DESC",
     searchQuery,
-    technologyFilter
+    technologyFilters.length > 0 ? technologyFilters.join(',') : undefined
   );
 
   const resources = caseStudies.map((item: any) => ({
@@ -84,12 +87,29 @@ const ResourceContainer = () => {
 
   const handleCaseStudyAdded = async () => {
     setShowForm(false);
+    await refetch();
   };
 
+  // Modified to handle multiple filters
   const handleFilterApply = async (payload: FilterPayload) => {
     const { filter } = payload;
-    setIndustryFilter(filter.industry);
-    setTechnologyFilter(filter.technology);
+    
+    // Handle industry filter
+    if (filter.industryTarget) {
+      const industriesStr = filter.industryTarget as string;
+      setIndustryFilters(industriesStr.split(','));
+    } else {
+      setIndustryFilters([]);
+    }
+    
+    // Handle technology filter
+    if (filter.techStack) {
+      const technologiesStr = filter.techStack as string;
+      setTechnologyFilters(technologiesStr.split(','));
+    } else {
+      setTechnologyFilters([]);
+    }
+    
     setCurrentPage(1);
     await refetch();
   };
@@ -99,6 +119,7 @@ const ResourceContainer = () => {
       id: "industry",
       title: "Industry",
       options: [
+        { id: "Finance & Banking", label: "Finance & Banking", checked: false },
         { id: "healthcare", label: "Healthcare", checked: false },
         { id: "finance", label: "Finance", checked: false },
         { id: "technology", label: "Technology", checked: false },
@@ -110,6 +131,7 @@ const ResourceContainer = () => {
       id: "technology",
       title: "Technology",
       options: [
+        { id: "PostgreSQL", label: "PostgreSQL", checked: false },
         { id: "react", label: "React", checked: false },
         { id: "nodejs", label: "Node.js", checked: false },
         { id: "python", label: "Python", checked: false },
@@ -118,6 +140,42 @@ const ResourceContainer = () => {
       ],
     },
   ];
+
+  // Show active filters for better UX
+  const getActiveFiltersDisplay = () => {
+    const filters = [];
+    
+    if (industryFilters.length > 0) {
+      filters.push(`Industries: ${industryFilters.join(', ')}`);
+    }
+    
+    if (technologyFilters.length > 0) {
+      filters.push(`Technologies: ${technologyFilters.join(', ')}`);
+    }
+    
+    return filters.length > 0 ? (
+      <div className="flex items-center gap-2 mt-2 mb-4">
+        <span className="text-sm text-gray-500">Active filters:</span>
+        <div className="flex flex-wrap gap-2">
+          {filters.map((filter, index) => (
+            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
+              {filter}
+            </span>
+          ))}
+        </div>
+        <button 
+          className="text-sm text-red-500 hover:text-red-700 ml-2"
+          onClick={() => {
+            setIndustryFilters([]);
+            setTechnologyFilters([]);
+            refetch();
+          }}
+        >
+          Clear all
+        </button>
+      </div>
+    ) : null;
+  };
 
   return (
     <>
@@ -159,7 +217,11 @@ const ResourceContainer = () => {
           </div>
         </div>
       </div>
-      <div className="w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-[70px] mt-10">
+      
+      <div className="w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-[70px] mt-4">
+        {/* Display active filters */}
+        {getActiveFiltersDisplay()}
+        
         {loading ? (
           <p className="text-gray-500 text-center">Loading resources...</p>
         ) : error ? (
@@ -224,7 +286,7 @@ const ResourceContainer = () => {
       )}
       {showFilter && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <FilterHandler
+          <FilterHandler1
             filterSections={filterSections}
             onFilterApply={handleFilterApply}
             setShowFilter={setShowFilter}
