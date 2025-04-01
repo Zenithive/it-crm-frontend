@@ -10,6 +10,7 @@ import ResourceNote from "./ResourceNote";
 import { GET_RESOURCE_PROFILE } from "../../../graphQl/queries/getresourcebyid.queries";
 import { UPDATE_RESOURCE_PROFILE } from "../../../graphQl/mutation/updateResource.mutation"; // Import mutation
 import { ResourceForm } from "../ResourceList/ResourceForm";
+import PubSub from "../../pubsub/Pubsub";
 
 // Mapping between backend and frontend status
 const STATUS_MAP = {
@@ -142,8 +143,22 @@ const ResourceLayout: React.FC<ResourceLayoutProps> = ({ ResourceId }) => {
       });
       console.log("Update response:", response.data); // Debug
       await refetch(); // Refetch to update UI
+            
+      PubSub.publish("RESOURCE_UPDATE_SUCCESS", { 
+          
+        resourceName: `${resourceData.name}`,
+        
+      
+      });
     } catch (err) {
       console.error("Error updating status:", err);
+              
+      PubSub.publish("RESOURCE_UPDATE_ERROR", { 
+          
+        resourceName: `${resourceData.name}`,
+        
+      
+      });
     }
   };
 

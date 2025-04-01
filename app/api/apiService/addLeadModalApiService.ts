@@ -53,7 +53,7 @@ export const useAddLead = () => {
       const { data } = await addLeadMutation({
         variables: { input },
       });
-      message.success("Lead added successfully!");
+      // message.success("Lead added successfully!");
       return data;
     } catch (err) {
       message.error("Failed to add lead");

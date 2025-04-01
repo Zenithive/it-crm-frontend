@@ -5,6 +5,7 @@ import { DatePicker } from "antd";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { Task } from "./TaskTable";
+import PubSub from "../pubsub/Pubsub";
 
 dayjs.extend(utc);
 
@@ -75,8 +76,24 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     try {
       if (initialTaskData) {
         onUpdateTask(initialTaskData.taskID, data);
+
+        
+        PubSub.publish("TODO", { 
+          title: `${data.title}`,
+          component:"todoupdate"
+    
+          
+          });
       } else {
         await createTask(data);
+
+
+        PubSub.publish("TODO", { 
+          title: `${data.title}`,
+          component:"todoadd"
+    
+          
+          });
       }
       reset();
       onClose();
@@ -84,6 +101,9 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
       refetch();
     } catch (error) {
       console.error("Failed to process task:", error);
+      
+      PubSub.publish("TODO_ERROR", {     
+        });
     }
   };
 

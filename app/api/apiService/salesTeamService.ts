@@ -70,6 +70,7 @@ export const useSalesTeamData = (page: number, pageSize: number,dateFilter?: Dat
     data: dealsData,
     loading: dealsLoading,
     error: dealsError,
+    refetch: refetchDeals,
   } = useQuery<DealsResponse>(GET_DEALS, {
     variables: {
       filter: dateFilter ? {
@@ -144,6 +145,19 @@ export const useSalesTeamData = (page: number, pageSize: number,dateFilter?: Dat
       });
     });
   }
+
+  useEffect(() => {
+    if (dateFilter) {
+      refetchDeals({
+        filter: {
+          dealStartDateMin: dateFilter.dealStartDateMin,
+          dealStartDateMax: dateFilter.dealStartDateMax
+        },
+        pagination: { page, pageSize },
+        sort: { field: "dealAmount", order: "ASC" },
+      });
+    }
+  }, [dateFilter, refetchDeals, page, pageSize]);
 
   return {
     salesTeamData,

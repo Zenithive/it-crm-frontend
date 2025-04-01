@@ -203,7 +203,8 @@ const useDealsApiService = (dateFilter?: DateFilter) => {
   const {
     data: dealsData,
     loading: dealsLoading,
-    error: dealsError
+    error: dealsError,
+    refetch
   } = useQuery<DealsResponse>(GET_DEALS, {
     variables: {
       filter: dateFilter ? {
@@ -221,6 +222,17 @@ const useDealsApiService = (dateFilter?: DateFilter) => {
     onError: (err) => console.error("Error fetching deals:", err),
   });
 
+
+  useEffect(() => {
+    refetch({
+      filter: dateFilter ? {
+        dealStartDateMin: dateFilter.dealStartDateMin,
+        dealStartDateMax: dateFilter.dealStartDateMax
+      } : null,
+      pagination: { page: 1, pageSize: 1000 },
+      sort: { field: "dealAmount", order: "ASC" },
+    });
+  }, [dateFilter, refetch]);
   const {
     data: leadsData,
     loading: leadsLoading,

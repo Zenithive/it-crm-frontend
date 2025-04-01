@@ -19,10 +19,10 @@ export const useAddCaseStudy = () => {
   
       try {
         const response = await createCaseStudy({ variables: { input } });
-        message.success("Case Study added successfully!");
+       
         return response.data;
       } catch (error) {
-        message.error("Failed to add Case Study");
+     
         console.error("GraphQL Error:", error);
         throw error;
       }
