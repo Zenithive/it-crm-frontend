@@ -28,7 +28,7 @@ interface LeadSource {
 
 const LeadSourceChart: React.FC = () => {
   const [chartData, setChartData] = useState<LeadSource[]>([]);
-  const [timeFilter, setTimeFilter] = useState<'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('yearly');
+  const [timeFilter, setTimeFilter] = useState<'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('yearly');
   const [showFilter, setShowFilter] = useState(false);
 
   // Updated to match the leadsApiService signature
@@ -124,7 +124,7 @@ const LeadSourceChart: React.FC = () => {
     setShowFilter(!showFilter);
   };
 
-  const handleFilterChange = (filter: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+  const handleFilterChange = (filter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
     setTimeFilter(filter);
     setShowFilter(false);
   };

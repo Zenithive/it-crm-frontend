@@ -2,9 +2,12 @@ import React from 'react';
 
 interface FilterDropdownProps {
   showFilter: boolean;
-  activeFilter: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly';
+  activeFilter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly';
   toggleFilter: () => void;
-  applyFilter: (filter: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => void;
+  applyFilter: (filter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => void;
+  resetToGlobal?: () => void;
+  isUsingLocalFilter?: boolean;
+  globalFilter?: string;
 }
 
 const FilterDropdown: React.FC<FilterDropdownProps> = ({

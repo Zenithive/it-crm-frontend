@@ -30,9 +30,9 @@ const LEAD_BG_COLORS = {
 
 interface PipelineMapProps {
   countryLeadStats: { [key: string]: CountryLeadStats };
-  onTimeFilterChange?: (filter: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => void;
+  onTimeFilterChange?: (filter:'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => void;
   currentTimeFilter?: string | null;
-  defaultTimeFilter?: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly';
+  defaultTimeFilter?: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly';
 }
 
 const PipelineMap: React.FC<PipelineMapProps> = ({ 

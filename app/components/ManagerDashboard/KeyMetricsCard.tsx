@@ -11,9 +11,9 @@ interface MetricCardData {
 
 interface KeyMetricsCardProps {
   keyMetrics: MetricCardData[];
-  onTimeFilterChange?: (filter: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => void;
+  onTimeFilterChange?: (filter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => void;
   currentTimeFilter?: string | null;
-  defaultTimeFilter?: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly';
+  defaultTimeFilter?: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly';
 }
 
 const KeyMetricsCard: React.FC<KeyMetricsCardProps> = ({
