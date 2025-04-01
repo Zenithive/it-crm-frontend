@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import FilterDropdown from "../ManagerExecuteiveDashboard/ManagerExecuteiveDashboardFilter";
-import { Lead } from "../../api/apiService/leadsApiService";
+import { Lead } from "../../api/apiService/leadApiInterface";
 
 interface MonthlyLeadData {
   month: string;

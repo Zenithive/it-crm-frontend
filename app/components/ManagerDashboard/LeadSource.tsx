@@ -16,7 +16,7 @@ import {
   Legend
 } from "recharts";
 import leadsApiService from "../../api/apiService/leadsApiService";
-import { Lead } from "../../api/apiService/leadsApiService";
+import { Lead } from "../../api/apiService/leadApiInterface";
 
 interface LeadSource {
   month: string;

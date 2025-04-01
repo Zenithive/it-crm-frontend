@@ -21,7 +21,7 @@ const leadsApiService = (  currentPage: number,
   const [followUpLeads, setFollowUpLeads] = useState(0);
   const [closedWonLeads, setClosedWonLeads] = useState(0);
   const [leadConversion, setLeadConversion] = useState(0);
-  const [dealLead, setDealLead] = useState(0);
+  const [dealLead1, setDealLead] = useState(0);
   const [campaignCountryCounts, setCampaignCountryCounts] = useState<{ [key: string]: number }>({});
   const [leadSourceCounts, setLeadSourceCounts] = useState<{ [key: string]: number }>({});
   const [teamPerformance, setTeamPerformance] = useState<TeamMember[]>([]);
@@ -509,7 +509,7 @@ const leadsApiService = (  currentPage: number,
   };
   
 
-  // console.log(`dealLead11111111111111111`, dealLead);
+  console.log(`dealLead11111111111111111`, dealLead1);
   // Return object with all processed data and methods
   return {
     leads: leadsData?.getLeads?.items || [],
@@ -523,7 +523,7 @@ const leadsApiService = (  currentPage: number,
     inProgressLeads,
     followUpLeads,
     closedWonLeads,
-    dealLead,
+    dealLead1,
     leadConversion,
     campaignCountryCounts,
     leadSourceCounts,

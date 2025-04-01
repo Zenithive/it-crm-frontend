@@ -9,7 +9,7 @@ import { CountryLeadStats, Deal, DealsResponse, IntegratedMeeting, isDealsArray,
 
 
 
-const leadsApiService = (  currentPage: number, 
+const leadsApiServiceForVaiCampaigns = (  currentPage: number, 
   itemsPerPage: number, 
   fetchAll: boolean = false,
   leadSort?: { field: LeadSortField; order: SortOrder },
@@ -22,7 +22,7 @@ const leadsApiService = (  currentPage: number,
   const [closedWonLeads, setClosedWonLeads] = useState(0);
   const [leadConversion, setLeadConversion] = useState(0);
   const [dealLead, setDealLead] = useState(0);
-  const [campaignCountryCounts, setCampaignCountryCounts] = useState<{ [key: string]: number }>({});
+  const [campaignCountryCountsForVaiCampaign, setCampaignCountryCounts] = useState<{ [key: string]: number }>({});
   const [leadSourceCounts, setLeadSourceCounts] = useState<{ [key: string]: number }>({});
   const [teamPerformance, setTeamPerformance] = useState<TeamMember[]>([]);
   const [countryLeadStats, setCountryLeadStats] = useState<{ [key: string]: CountryLeadStats }>({});
@@ -159,7 +159,7 @@ const leadsApiService = (  currentPage: number,
 
 
 
-  const setTimeFilter = (filter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+  const setTimeFilterViaCampaign = (filter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
     setSelectedTimeFilter(filter);
   };
 
@@ -508,8 +508,6 @@ const leadsApiService = (  currentPage: number,
     return otherCount;
   };
   
-
-  // console.log(`dealLead11111111111111111`, dealLead);
   // Return object with all processed data and methods
   return {
     leads: leadsData?.getLeads?.items || [],
@@ -525,15 +523,15 @@ const leadsApiService = (  currentPage: number,
     closedWonLeads,
     dealLead,
     leadConversion,
-    campaignCountryCounts,
+    campaignCountryCountsForVaiCampaign,
     leadSourceCounts,
     teamPerformance,
     countryLeadStats,
     leadPerformanceMetrics,
 
 
-    setTimeFilter,
-    currentTimeFilter: selectedTimeFilter,
+    setTimeFilterViaCampaign,
+    currentTimeFilterViaCampaign: selectedTimeFilter,
     
     getTargetedLeadSources: () => {
       const linkedin = leadSourceCounts["linkedin"] || 0;
@@ -553,4 +551,4 @@ const leadsApiService = (  currentPage: number,
   };
 };
 
-export default leadsApiService;
+export default leadsApiServiceForVaiCampaigns;

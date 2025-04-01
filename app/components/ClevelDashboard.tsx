@@ -10,6 +10,8 @@ import RevenueTrendChart from "./ClevelDashboard/RevenueTrendChart";
 import SalesTeamPerformance from "./ClevelDashboard/SalesTeamPerformance";
 import TopDeals from "./ClevelDashboard/TopDeals";
 import leadsApiService from "../api/apiService/leadsApiService";
+import leadsApiServiceForVaiCampaigns from "../api/apiService/leadsApiServiceForViaCampaign";
+import leadsApiServiceForCircularProgress from "../api/apiService/leadsApiServiceForCircularProgress";
 import { LeadSortField, SortOrder } from "../../graphQl/queries/leads.queries";
 import { DealSortFields, SortOrders } from "../../graphQl/queries/deals.queries";
 
@@ -34,8 +36,49 @@ const ClevelDashboard: React.FC = () => {
     getTargetedLeadSources,
     setTimeFilter,
     currentTimeFilter,
-    error
+    error,
+    // global
   } = leadsApiService(
+    1,                                           
+    500,                                          
+    true,                                     
+    { field: LeadSortField.CREATED_AT, order: SortOrder.DESC },  // leadSort
+    { field: DealSortFields.DEAL_AMOUNT, order: SortOrders.DESC }, // dealSort
+    "yearly"                                      // initialTimeFilter
+  );
+
+
+
+
+  const { 
+    dealLead1,
+    // global
+  } = leadsApiServiceForCircularProgress(
+    1,                                           
+    500,                                          
+    true,                                     
+    { field: LeadSortField.CREATED_AT, order: SortOrder.DESC },  // leadSort
+    { field: DealSortFields.DEAL_AMOUNT, order: SortOrders.DESC }, // dealSort
+    "yearly"                                      // initialTimeFilter
+  );
+
+
+
+
+
+
+
+
+
+
+
+  // console.log(`global2222`, global);
+
+  const { 
+    campaignCountryCountsForVaiCampaign,
+    setTimeFilterViaCampaign,
+    currentTimeFilterViaCampaign,
+  } = leadsApiServiceForVaiCampaigns(
     1,                                           
     500,                                          
     true,                                     
@@ -84,7 +127,7 @@ const ClevelDashboard: React.FC = () => {
                     activeFilter={activeFilter} 
                   />
                   <CircularProgress 
-                    value={dealLead} 
+                    value={dealLead1} 
                     title="Deal Leads" 
                     img="/dealClose_icon.svg"
                     onFilterChange={applyTimeFilter}
@@ -119,12 +162,14 @@ const ClevelDashboard: React.FC = () => {
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <Map activeFilter={activeFilter} setActiveFilter={applyTimeFilter}/>
             <ViaCampaign 
-              campaignCountryCounts={campaignCountryCounts || {}}
-              setTimeFilter={setTimeFilter}
-              currentTimeFilter={currentTimeFilter || activeFilter}
+              campaignCountryCounts={campaignCountryCountsForVaiCampaign || {}}
+              setTimeFilter={setTimeFilterViaCampaign}
+              currentTimeFilter={currentTimeFilterViaCampaign || activeFilter}
             />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
+
+
             <TopDeals   activeFilter={activeFilter} setActiveFilter={applyTimeFilter} />
             <SalesTeamPerformance  activeFilter={activeFilter} setActiveFilter={applyTimeFilter} />
           </div>
@@ -135,3 +180,13 @@ const ClevelDashboard: React.FC = () => {
 };
 
 export default ClevelDashboard;
+
+
+
+{/* <RevenueTrendChart 
+leads={leadsRevenueTrendChart || []} 
+loading={loadingRevenueTrendChart}
+setTimeFilter={applyTimeFilter}
+currentTimeFilter={currentTimeFilterRevenueTrendChart || activeFilter}
+error={errorRevenueTrendChart}  
+/> */}
