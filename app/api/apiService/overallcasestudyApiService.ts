@@ -30,14 +30,30 @@ const useOverallCaseStudyData = (
 
   const filter: any = {};
   
-  // Add industry filter if specified
+  // Parse industry filter to handle multiple selections
   if (industry) {
-    filter.industryTarget = industry;
+    const industries = industry.split(',');
+    if (industries.length === 1) {
+      filter.industryTarget = industry;
+    } else if (industries.length > 1) {
+      // For multiple industries, use an array or another format depending on your API
+      filter.industryTarget = industries; // API might expect { $in: [...] } format
+      // If your API expects a specific format for multiple values, modify accordingly:
+      // filter.industryTarget = { $in: industries };
+    }
   }
   
-  // Add technology filter if specified
+  // Parse technology filter to handle multiple selections
   if (technology) {
-    filter.techStack = technology;
+    const technologies = technology.split(',');
+    if (technologies.length === 1) {
+      filter.techStack = technology;
+    } else if (technologies.length > 1) {
+      // For multiple technologies, use an array or another format depending on your API
+      filter.techStack = technologies;
+      // If your API expects a specific format for multiple values, modify accordingly:
+      // filter.techStack = { $in: technologies };
+    }
   }
   
   // Add search filter if there's a query
