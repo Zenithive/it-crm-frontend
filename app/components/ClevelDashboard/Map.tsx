@@ -1,96 +1,77 @@
-
-
-
 import React, { useEffect, useRef, useState } from 'react';
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
 import useDealsApiService from '../../api/apiService/dealsApiService';
 import worldTopo from "../../../public/world-topo.json";
-import FilterDropdown from '../CleveldashboardFilter/cleveldashboard.filter';
+import FilterDropdown from '../ManagerExecuteiveDashboard/ManagerExecuteiveDashboardFilter';
 import { 
   subYears, 
   subMonths, 
   format, 
   startOfToday, 
-  endOfToday 
+  endOfToday, 
+  subDays
 } from 'date-fns';
 
-const Map = () => {
-  // Ensure consistent hook order
+interface MapProps {
+  activeFilter: string;
+  setActiveFilter: (filter: string) => void;
+}
+
+const Map:React.FC<MapProps> = ({ activeFilter, setActiveFilter })=> {
+
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [showFilter, setShowFilter] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("none");
+  // const [activeFilter, setActiveFilter] = useState("yearly");
   const filterRef = useRef<HTMLDivElement>(null);
   const [dateFilter, setDateFilter] = useState<{
-       dealStartDateMin?: string;
-       dealStartDateMax?: string;
-     }>({});
+    dealStartDateMin?: string;
+    dealStartDateMax?: string;
+  }>({});
   
- 
   const { dealsByCountry, loading, error } = useDealsApiService(dateFilter);
-  const getDateRange = (period: string) => {
+  
+   const getDateRange = (period: string) => {
     const now = new Date();
-  
-    switch(period) {
-      case 'yearly':
-        return {
-          dealStartDateMin: format(subYears(now, 1), 'yyyy-MM-dd'),
-          dealStartDateMax: format(now, 'yyyy-MM-dd')
-        };
-  
-      case 'half-yearly':
-        return {
-          dealStartDateMin: format(subMonths(now, 6), 'yyyy-MM-dd'),
-          dealStartDateMax: format(now, 'yyyy-MM-dd')
-        };
-  
-      case 'quarterly':
-        return {
-          dealStartDateMin: format(subMonths(now, 3), 'yyyy-MM-dd'),
-          dealStartDateMax: format(now, 'yyyy-MM-dd')
-        };
-  
+    switch (period) {
+      case 'today':
+        return { dealStartDateMin: format(now, 'yyyy-MM-dd'), dealStartDateMax: format(now, 'yyyy-MM-dd') };
+      case 'weekly':
+        return { dealStartDateMin: format(subDays(now, 7), 'yyyy-MM-dd'), dealStartDateMax: format(now, 'yyyy-MM-dd') };
       case 'monthly':
-        return {
-          dealStartDateMin: format(subMonths(now, 1), 'yyyy-MM-dd'),
-          dealStartDateMax: format(now, 'yyyy-MM-dd')
-        };
-  
-      case 'none':
+        return { dealStartDateMin: format(subMonths(now, 1), 'yyyy-MM-dd'), dealStartDateMax: format(now, 'yyyy-MM-dd') };
+      case 'quarterly':
+        return { dealStartDateMin: format(subMonths(now, 3), 'yyyy-MM-dd'), dealStartDateMax: format(now, 'yyyy-MM-dd') };
+      case 'half-yearly':
+        return { dealStartDateMin: format(subMonths(now, 6), 'yyyy-MM-dd'), dealStartDateMax: format(now, 'yyyy-MM-dd') };
+      case 'yearly':
+        return { dealStartDateMin: format(subYears(now, 1), 'yyyy-MM-dd'), dealStartDateMax: format(now, 'yyyy-MM-dd') };
       default:
         return {};
     }
   };
-  // Consistent filter-related side effects
+  
+ useEffect(() => {
+    setDateFilter(getDateRange(activeFilter));
+  }, [activeFilter]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        filterRef.current &&
-        !filterRef.current.contains(event.target as Node)
-      ) {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
         setShowFilter(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []); // Empty dependency array to run only once
-  
-  // Handlers outside render method
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleFilterClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setShowFilter(prevState => !prevState);
+    setShowFilter((prevState) => !prevState);
   };
-  
-  const applyFilter = (filterType: string) => {
-    console.log('Applying filter:', filterType);
-    setActiveFilter(filterType);
-    setShowFilter(false);
 
-    // Get date range based on filter type
-    const newDateFilter = getDateRange(filterType);
-    setDateFilter(newDateFilter);
+  const applyFilter = (filterType: string) => {
+    setActiveFilter(filterType); // Update filter in parent
+    setShowFilter(false);
   };
 
   // Compute derived values outside render
@@ -112,35 +93,25 @@ const Map = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4 relative"ref={filterRef}>
-        <h3 className="text-2xl font-semibold text-bg-blue-12">
-          Territory Wise Opportunity Count
-           {/* {activeFilter !== 'none' && ` (${activeFilter})`} */}
-        </h3>
-        <div>
-        <img 
-          src="filter.svg" 
-          alt="Filter" 
-          className="cursor-pointer" 
-          onClick={handleFilterClick} 
-        />
-        {showFilter && (
-          <div 
-         
-           
-          >
-              
-            <FilterDropdown
-              showFilter={showFilter}
-              toggleFilter={() => setShowFilter(false)}
-              applyFilter={applyFilter}
-              activeFilter={activeFilter}
-              
+      <div className="flex justify-between items-center mb-4 relative">
+        <div className="flex justify-center items-center" ref={filterRef}>
+          <h3 className="text-2xl font-semibold text-bg-blue-12">
+            Territory Wise Opportunity Count
+          </h3>
+        </div>
+        <div ref={filterRef} className="relative">
+      
+            <img 
+              src="filterC.svg" 
+              alt="filter" 
+              className="w-7 h-7 text-gray-500" 
+              onClick={handleFilterClick}
             />
-          </div>
+     
+     {showFilter && (
+          <FilterDropdown showFilter={showFilter} toggleFilter={() => setShowFilter(false)} applyFilter={applyFilter} activeFilter={activeFilter as  'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly'} />
         )}
-
-</div>
+        </div>
       </div>
 
       {/* Map Container */}

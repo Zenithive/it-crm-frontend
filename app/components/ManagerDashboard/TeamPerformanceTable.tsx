@@ -24,7 +24,7 @@ const TeamPerformanceTable: React.FC = () => {
   const [selectData, setSelectData] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
-  const [timeFilter, setTimeFilter] = useState<'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('monthly');
+  const [timeFilter, setTimeFilter] = useState<'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('monthly');
   const [isFilterActive, setIsFilterActive] = useState(false);
   const filterIconRef = useRef<HTMLImageElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);

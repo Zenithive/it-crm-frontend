@@ -7,148 +7,126 @@ import CircularProgress from "../components/ClevelDashboard/CircularProgress";
 import Map from "./ClevelDashboard/Map";
 import ViaCampaign from "./ClevelDashboard/ViaCampaign";
 import RevenueTrendChart from "./ClevelDashboard/RevenueTrendChart";
-import { ComposableMap, Geographies, Geography } from "react-simple-maps";
-
-import worldTopo from "../../public/world-topo.json";
-import leadsApiService from "../api/apiService/leadsApiService";
-import dealsApiService from "../api/apiService/dealsApiService";
 import SalesTeamPerformance from "./ClevelDashboard/SalesTeamPerformance";
 import TopDeals from "./ClevelDashboard/TopDeals";
-import { addMonths, startOfDay, endOfDay, subYears,format, subMonths } from 'date-fns';
-// Types for data
+import leadsApiService from "../api/apiService/leadsApiService";
+import { LeadSortField, SortOrder } from "../../graphQl/queries/leads.queries";
+import { DealSortFields, SortOrders } from "../../graphQl/queries/deals.queries";
 
 const ClevelDashboard: React.FC = () => {
-  // Sample data (you would replace this with actual data from your backend)
-  const [startDate, setStartDate] = useState<string | undefined>(undefined);
-  const [endDate, setEndDate] = useState<string | undefined>(undefined);
-  const [activeFilter, setActiveFilter] = useState<string>("none");
-  const { newLeads, inProgressLeads, followUpLeads, closedWonLeads, totalItems, loading } = leadsApiService(1, 500,true);
+  const [activeFilter, setActiveFilter] = useState<string>("yearly");
+  
+  const { 
+    leads,
+    newLeads, 
+    inProgressLeads, 
+    followUpLeads, 
+    closedWonLeads, 
+    dealLead,
+    leadConversion,
+    totalItems, 
+    loading, 
+    teamPerformance,
+    campaignCountryCounts,
+    leadSourceCounts,
+    countryLeadStats,
+    leadPerformanceMetrics,
+    getTargetedLeadSources,
+    setTimeFilter,
+    currentTimeFilter,
+    error
+  } = leadsApiService(
+    1,                                           
+    500,                                          
+    true,                                     
+    { field: LeadSortField.CREATED_AT, order: SortOrder.DESC },  // leadSort
+    { field: DealSortFields.DEAL_AMOUNT, order: SortOrders.DESC }, // dealSort
+    "yearly"                                      // initialTimeFilter
+  );
+  
+  // Calculate active leads
   const activeLeads = newLeads + inProgressLeads + followUpLeads;
-     const [dateFilter, setDateFilter] = useState<{
-       dealStartDateMin?: string;
-       dealStartDateMax?: string;
-     }>({});
-  const {totalDealAmount} = dealsApiService(dateFilter);
-
-    
-
   
-   const getDateRange = (period: string) => {
-      const now = new Date();
-    
-      switch(period) {
-        case 'yearly':
-          return {
-            dealStartDateMin: format(subYears(now, 1), 'yyyy-MM-dd'),
-            dealStartDateMax: format(now, 'yyyy-MM-dd')
-          };
-    
-        case 'half-yearly':
-          return {
-            dealStartDateMin: format(subMonths(now, 6), 'yyyy-MM-dd'),
-            dealStartDateMax: format(now, 'yyyy-MM-dd')
-          };
-    
-        case 'quarterly':
-          return {
-            dealStartDateMin: format(subMonths(now, 3), 'yyyy-MM-dd'),
-            dealStartDateMax: format(now, 'yyyy-MM-dd')
-          };
-    
-        case 'monthly':
-          return {
-            dealStartDateMin: format(subMonths(now, 1), 'yyyy-MM-dd'),
-            dealStartDateMax: format(now, 'yyyy-MM-dd')
-          };
-    
-        case 'none':
-        default:
-          return {};
-      }
-    };
+  // Manage revenue growth from lead performance metrics
+  const revenueGrowth = leadPerformanceMetrics?.totalSales || 0;
+
+  // Apply time filter for all metrics
   const applyTimeFilter = (filterType: string) => {
+    console.log('Applying time filter:', filterType);
     setActiveFilter(filterType);
-  
-    const now = new Date();
-
-
     
-    switch(filterType) {
-      case "monthly":
-        setStartDate(startOfDay(addMonths(now, -1)).toISOString());
-        setEndDate(endOfDay(now).toISOString());
-        break;
-      
-      case "quarterly":
-        setStartDate(startOfDay(addMonths(now, -3)).toISOString());
-        setEndDate(endOfDay(now).toISOString());
-        break;
-      
-      case "half-yearly":
-        setStartDate(startOfDay(addMonths(now, -6)).toISOString());
-        setEndDate(endOfDay(now).toISOString());
-        break;
-      
-      case "yearly":
-        setStartDate(startOfDay(subYears(now, 1)).toISOString());
-        setEndDate(endOfDay(now).toISOString());
-        break;
-      
-      case "none":
-        setStartDate(undefined);
-        setEndDate(undefined);
-        break;
-      
-      default:
-        console.warn(`Unhandled filter type: ${filterType}`);
-        break;
+    // Use the setTimeFilter from the service to apply filters
+    if (filterType == 'today'||filterType == 'weekly'|| filterType === 'monthly' || filterType === 'quarterly' || 
+        filterType === 'yearly' || filterType === 'half-yearly') {
+      setTimeFilter(filterType);
     }
-  };
-
-
-
-  const applyFilterForRevenuew = (filterType: string) => {
-    console.log('Applying filter:', filterType);
-    setActiveFilter(filterType);
-   
-
-    // Get date range based on filter type
-    const newDateFilter = getDateRange(filterType);
-    setDateFilter(newDateFilter);
   };
 
   return (
     <>
       <div className="mt-4 ml-9 flex justify-between">
         <Title title={Dashboardtitle[0].titleName} />
-        <TimeDropDown />
+        <TimeDropDown onChange={applyTimeFilter} currentFilter={activeFilter} />
       </div>
       <div className="min-h-screen p-4 lg:p-8">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="grid grid-cols-2 md:grid-cols-2 gap-6">
               {loading ? (
-                <p>Loading...</p>
+                <p>Loading metrics...</p>
               ) : (
                 <>
-                  <CircularProgress value={activeLeads} title="Active Leads" img="/activeLead_icon.svg" onFilterChange={applyTimeFilter}
-                    activeFilter={activeFilter} />
-                  <CircularProgress value={80} title="Deal Closed" img="/dealClose_icon.svg"/>
-                  <CircularProgress value={Math.round((closedWonLeads / totalItems) * 100)} title="Lead Conversion" img="/conversation_icon.svg" onFilterChange={applyTimeFilter}
-                    activeFilter={activeFilter}/>
-                  <CircularProgress value={totalDealAmount} title="Revenue Growth" isCurrency={true} img="/totalRevenue_icon.svg" onFilterChange={applyFilterForRevenuew}/>
+                  <CircularProgress 
+                    value={activeLeads} 
+                    title="Active Leads" 
+                    img="/activeLead_icon.svg" 
+                    onFilterChange={applyTimeFilter}
+                    activeFilter={activeFilter} 
+                  />
+                  <CircularProgress 
+                    value={dealLead} 
+                    title="Deal Leads" 
+                    img="/dealClose_icon.svg"
+                    onFilterChange={applyTimeFilter}
+                    activeFilter={activeFilter}
+                  />
+                  <CircularProgress 
+                    value={leadConversion ? Math.round(leadConversion) : 0} 
+                    title="Lead Conversion" 
+                    img="/conversation_icon.svg" 
+                    onFilterChange={applyTimeFilter}
+                    activeFilter={activeFilter}
+                  />
+                  <CircularProgress 
+                    value={revenueGrowth} 
+                    title="Revenue Growth" 
+                    isCurrency={true} 
+                    img="/totalRevenue_icon.svg" 
+                    onFilterChange={applyTimeFilter}
+                    activeFilter={activeFilter}
+                  />
                 </>
               )}
             </div>
-            <RevenueTrendChart />
+            <RevenueTrendChart 
+              leads={leads || []} 
+              loading={loading}
+              setTimeFilter={applyTimeFilter}
+              currentTimeFilter={currentTimeFilter || activeFilter}
+              error={error}  
+            />
           </div>
           <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <Map />
-            <ViaCampaign />
+            <Map activeFilter={activeFilter} setActiveFilter={applyTimeFilter}/>
+            <ViaCampaign 
+              campaignCountryCounts={campaignCountryCounts || {}}
+              setTimeFilter={setTimeFilter}
+              currentTimeFilter={currentTimeFilter || activeFilter}
+            />
           </div>
           <div className="grid md:grid-cols-2 gap-6">
-            <TopDeals />
-            <SalesTeamPerformance />
+            <TopDeals   activeFilter={activeFilter} setActiveFilter={applyTimeFilter} />
+            <SalesTeamPerformance  activeFilter={activeFilter} setActiveFilter={applyTimeFilter} />
           </div>
         </div>
       </div>
@@ -157,4 +135,3 @@ const ClevelDashboard: React.FC = () => {
 };
 
 export default ClevelDashboard;
-

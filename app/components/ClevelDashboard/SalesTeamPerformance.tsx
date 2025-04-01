@@ -1,15 +1,21 @@
-
-
-
-
+"use client"
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useSalesTeamData } from '../../api/apiService/salesTeamService';
 import FilterDropdown from '../CleveldashboardFilter/cleveldashboard.filter';
+import { subYears, subMonths, format, subWeeks, subDays } from 'date-fns';
 
-const SalesTeamPerformance = () => {
+interface SaleTeamProps {
+  activeFilter: string;
+  setActiveFilter: (filter: string) => void;
+}
+
+
+const SalesTeamPerformance:React.FC<SaleTeamProps> = ({ activeFilter, setActiveFilter }) => {
   const pageSize = 1000;
   const page = 1;
   
+  const [showFilter, setShowFilter] = useState(false);
+  const filterRef = useRef<HTMLDivElement>(null);
   const [dateFilter, setDateFilter] = useState<{
        dealStartDateMin?: string;
        dealStartDateMax?: string;
@@ -18,45 +24,49 @@ const SalesTeamPerformance = () => {
 
      const getDateRange = (period: string) => {
       const now = new Date();
-      let startDate: Date;
-      if (period === 'none') return {};
-    
-      switch(period) {
-        case 'yearly':
-          startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
-          return {
-            dealStartDateMin: startDate.toISOString().split('T')[0],
-            dealStartDateMax: now.toISOString().split('T')[0]
-          };
-        case 'half-yearly':
-          startDate = new Date(now.getFullYear(), now.getMonth() - 6, now.getDate());
-          return {
-            dealStartDateMin: startDate.toISOString().split('T')[0],
-            dealStartDateMax: now.toISOString().split('T')[0]
-          };
+  
+      switch (period) {
+        case 'today':
+          return { dealStartDateMin: format(now, 'yyyy-MM-dd'), dealStartDateMax: format(now, 'yyyy-MM-dd') };
+        case 'weekly':
+          return { dealStartDateMin: format(subDays(now, 7), 'yyyy-MM-dd'), dealStartDateMax: format(now, 'yyyy-MM-dd') };
+        case 'monthly':
+          return { dealStartDateMin: format(subMonths(now, 1), 'yyyy-MM-dd'), dealStartDateMax: format(now, 'yyyy-MM-dd') };
         case 'quarterly':
-          startDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
-          return {
-            dealStartDateMin: startDate.toISOString().split('T')[0],
-            dealStartDateMax: now.toISOString().split('T')[0]
-          };
+          return { dealStartDateMin: format(subMonths(now, 3), 'yyyy-MM-dd'), dealStartDateMax: format(now, 'yyyy-MM-dd') };
+        case 'half-yearly':
+          return { dealStartDateMin: format(subMonths(now, 6), 'yyyy-MM-dd'), dealStartDateMax: format(now, 'yyyy-MM-dd') };
+        case 'yearly':
+          return { dealStartDateMin: format(subYears(now, 1), 'yyyy-MM-dd'), dealStartDateMax: format(now, 'yyyy-MM-dd') };
         default:
           return {};
       }
     };
 
-  const [showFilter, setShowFilter] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("none");
-  const filterRef = useRef<HTMLDivElement>(null);
-  const applyFilter = (filterType: string) => {
-    console.log('Applying filter:', filterType);
-    setActiveFilter(filterType);
-    setShowFilter(false);
 
-    // Get date range based on filter type
-    const newDateFilter = getDateRange(filterType);
-    setDateFilter(newDateFilter);
-  };
+  useEffect(() => {
+     setDateFilter(getDateRange(activeFilter));
+   }, [activeFilter]);
+ 
+   useEffect(() => {
+     const handleClickOutside = (event: MouseEvent) => {
+       if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+         setShowFilter(false);
+       }
+     };
+     document.addEventListener('mousedown', handleClickOutside);
+     return () => document.removeEventListener('mousedown', handleClickOutside);
+   }, []);
+ 
+   const handleFilterClick = (e: React.MouseEvent) => {
+     e.stopPropagation();
+     setShowFilter((prevState) => !prevState);
+   };
+ 
+   const applyFilter = (filterType: string) => {
+     setActiveFilter(filterType); // Update filter in parent
+     setShowFilter(false);
+   };
 
   // Memoize the calculateProgress function
   const calculateProgress = useCallback((amount: string) => {
@@ -66,29 +76,6 @@ const SalesTeamPerformance = () => {
     return Math.min(Math.round((numericValue / (maxAmount || 1)) * 100), 100);
   }, [salesTeamData]);
 
-  // Memoize click outside handler
-  const handleClickOutside = useCallback((event: MouseEvent) => {
-    if (
-      filterRef.current &&
-      !filterRef.current.contains(event.target as Node)
-    ) {
-      setShowFilter(false);
-    }
-  }, []);
-
-  // Use useEffect for event listener
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [handleClickOutside]);
-
-  // Memoize filter click handler
-  const handleFilterClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShowFilter(prevState => !prevState);
-  }, []);
 
  
   // Render loading or error states
@@ -101,19 +88,17 @@ const SalesTeamPerformance = () => {
         <h3 className="text-2xl font-semibold text-bg-blue-12">Sales Team Performance</h3>
 
         <img 
-          src="filter.svg" 
+          src="filterC.svg" 
           alt="Filter" 
           className="cursor-pointer" 
           onClick={handleFilterClick} 
         />
         {showFilter && (
-          
-           
             <FilterDropdown
               showFilter={showFilter}
               toggleFilter={() => setShowFilter(false)}
               applyFilter={applyFilter}
-              activeFilter={activeFilter}
+              activeFilter={activeFilter as  'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly'} 
             />
        
         )}

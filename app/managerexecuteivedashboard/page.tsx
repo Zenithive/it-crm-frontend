@@ -35,10 +35,10 @@ const SalesDashboard: React.FC = () => {
   });
   
   // State for tracking selected time filter for main dashboard
-  const [timeFilter, setTimeFilter] = useState<'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('monthly');
+  const [timeFilter, setTimeFilter] = useState<'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('monthly');
   
   // State for pipeline map filter - separate from main filter
-  const [pipelineMapFilter, setPipelineMapFilter] = useState<'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('monthly');
+  const [pipelineMapFilter, setPipelineMapFilter] = useState<'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('monthly');
 
   // Only use the main dashboard filter for API calls
   const {
@@ -53,7 +53,7 @@ const SalesDashboard: React.FC = () => {
   } = leadsApiService(1, 10, true, undefined, undefined, timeFilter);
 
   // Handle time filter changes for main dashboard
-  const handleTimeFilterChange = (filter: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+  const handleTimeFilterChange = (filter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
     setTimeFilter(filter);
     if (apiSetTimeFilter) {
       apiSetTimeFilter(filter);
@@ -62,7 +62,7 @@ const SalesDashboard: React.FC = () => {
 
   // Handle time filter changes specifically for the pipeline map
   // This only updates the local state without triggering API calls
-  const handlePipelineMapFilterChange = (filter: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+  const handlePipelineMapFilterChange = (filter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
     setPipelineMapFilter(filter);
   };
   

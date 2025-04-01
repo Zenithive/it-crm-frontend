@@ -107,7 +107,7 @@ const leadsApiService = (  currentPage: number,
   fetchAll: boolean = false,
   leadSort?: { field: LeadSortField; order: SortOrder },
   dealSort?: { field: DealSortFields; order: SortOrders },
-  initialTimeFilter?: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+  initialTimeFilter?: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
 
   const [newLeads, setNewLeads] = useState(0);
   const [inProgressLeads, setInProgressLeads] = useState(0);
@@ -141,6 +141,25 @@ const leadsApiService = (  currentPage: number,
     console.log('Selected Time Filter:', filter);
   
     switch (filter) {
+
+      case 'today':
+        startDate = new Date(now);
+        console.log('Today\'s Date:', startDate);
+        break;
+
+      case 'weekly':
+        // Start from the Monday of the current week
+        startDate = new Date(now);
+        const dayOfWeek = now.getDay(); 
+        const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1; 
+        startDate.setDate(now.getDate() - diff);
+        console.log('Weekly Start Date:', startDate);
+        console.log('Week Details:', {
+          currentWeekday: now.getDay(),
+          firstDayOfWeek: startDate
+        });
+        break;
+
       case 'monthly':
         // For monthly, start from the first day of the current month
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -233,7 +252,7 @@ const leadsApiService = (  currentPage: number,
 
 
 
-  const setTimeFilter = (filter: 'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+  const setTimeFilter = (filter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
     setSelectedTimeFilter(filter);
   };
 
