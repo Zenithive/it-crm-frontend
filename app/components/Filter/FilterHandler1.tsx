@@ -152,8 +152,32 @@ const FilterHandler1: React.FC<FilterHandlerProps> = ({
   // Keeping other handlers but will only implement case study handler for now
   const handleFilterApply = async () => {
     // Your existing code for contacts
+
+const dateSelections=selectedOptionsByCategory['date']||[];
+    const typeSelections = selectedOptionsByCategory['type'] || [];
+    const stageSelections = selectedOptionsByCategory['stage'] || [];
+    const campaignSelections = selectedOptionsByCategory['campaign'] || [];
+    
+    // Create filter object
+    const filterObj: any = {};
+    
+    // Only add filters if options are selected
+    if (typeSelections.length > 0) {
+      filterObj.type = typeSelections.join(',');
+    }
+    
+    if (dateSelections.length > 0) {
+      filterObj.date = dateSelections.join(',');
+    }
+    
+    if (stageSelections.length > 0) {
+      filterObj.stage= stageSelections.join(',');
+    }
+    if (campaignSelections.length > 0) {
+      filterObj.campaign= campaignSelections.join(',');
+    }
     const payload: FilterPayload = {
-      filter: {},
+      filter:filterObj,
       pagination: {
         page: 1,
         pageSize: 10
@@ -170,8 +194,25 @@ const FilterHandler1: React.FC<FilterHandlerProps> = ({
 
   const handleFilterApplyResource = async () => {
     // Your existing code for resources
+
+    
+    const filterObj: any = {};
+    const skillsSelections = selectedOptionsByCategory['skills'] || [];
+    const experienceYearSelections = selectedOptionsByCategory['experienceYear'] || [];
+    
+    
+    // Only add filters if options are selected
+    if (skillsSelections.length > 0) {
+      filterObj.skills = skillsSelections.join(',');
+    }
+    
+    if (experienceYearSelections.length > 0) {
+      filterObj.experienceYear = experienceYearSelections.join(',');
+    }
+
+
     await onFilterApply({
-      filter: {},
+      filter:filterObj,
       pagination: { page: 1, pageSize: 10 },
       sort: { field: 'createdAt', order: 'DESC' }
     });
@@ -180,8 +221,30 @@ const FilterHandler1: React.FC<FilterHandlerProps> = ({
 
   const handleFilterApplyVendor = async () => {
     // Your existing code for vendors
+
+    
+    const statusSelections = selectedOptionsByCategory['status'] || [];
+    const locationSelections = selectedOptionsByCategory['location'] || [];
+    const ratingSelections = selectedOptionsByCategory['rating'] || [];
+    
+    // Create filter object
+    const filterObj: any = {};
+    
+    // Only add filters if options are selected
+    if (statusSelections.length > 0) {
+      filterObj.status = statusSelections.join(',');
+    }
+    
+    if (locationSelections.length > 0) {
+      filterObj.country = locationSelections.join(',');
+    }
+
+
+    // if (ratingSelections.length > 0) {
+    //   filterObj.rating = locationSelections.join(',');
+    // }
     await onFilterApply({
-      filter: {},
+      filter: filterObj,
       pagination: { page: 1, pageSize: 10 },
       sort: { field: 'createdAt', order: 'DESC' }
     });
@@ -190,8 +253,20 @@ const FilterHandler1: React.FC<FilterHandlerProps> = ({
 
   const handleFilterApplyTodo = async () => {
     // Your existing code for todos
+    const filterObj: any = {};
+    const statusSelections = selectedOptionsByCategory['status'] || [];
+    const prioritySelections = selectedOptionsByCategory['priority'] || [];
+
+
+    if (statusSelections.length > 0) {
+      filterObj.status = statusSelections.join(',');
+    }
+    
+    if (prioritySelections.length > 0) {
+      filterObj.priority = prioritySelections.join(',');
+    }
     await onFilterApply({
-      filter: {},
+      filter: filterObj,
       pagination: { page: 1, pageSize: 10 },
       sort: { field: 'createdAt', order: 'DESC' }
     });

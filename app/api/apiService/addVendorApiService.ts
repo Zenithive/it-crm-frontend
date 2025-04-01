@@ -20,12 +20,13 @@ export const useCreateVendor = () => {
     const input = {
       companyName: values.companyName,
       status: values.status || VendorStatus.ACTIVE,
+      
       paymentTerms: values.paymentTerms || PaymentTerms.NET_30,
       address: values.address || "",
       gstOrVatDetails: values.gstOrVatDetails || "",
       notes: values.notes || "New vendor added",
       skillIDs: values.skillIDs || [],
-      // performanceRatings: values.performanceRatings || [],
+      performanceRatings: values.performanceRatings || [],
       
       country: values.country || "India", 
     };

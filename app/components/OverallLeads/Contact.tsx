@@ -12,12 +12,14 @@ import { RootState } from "../../redux/store/store";
 import _ from "lodash";
 import AddLeadModal from "../AddLeadModal";
 import useOverallLeadsData from "../../api/apiService/OverallLeadApiService";
+import Pagination from "../../microComponents/Pagination";
 
 type ViewType = "list" | "kanban";
 
 interface FilterPayload {
   filter: {
-    [key: string]: string | undefined; // Dynamic filter keys
+    [key: string]: string | string[] | undefined;
+    // [key: string]: string | undefined; // Dynamic filter keys
   };
   pagination: {
     page: number;
@@ -33,16 +35,20 @@ const Contact = () => {
   const [showAddLeadModal, setShowAddLeadModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
+   
+    const [itemsPerPage, setItemsPerPage] = useState(9);
   const [pageSize, setPageSize] = useState<number>(5);
   const [inputValue, setInputValue] = useState<string>("");
 
    const [startDate, setStartDate] = useState<string | undefined>(undefined);
    const [endDate, setEndDate] = useState<string | undefined>(undefined);
-  const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
-  const [campaignFilter, setCampaignFilter] = useState<string | undefined>(undefined);
-  const [stageFilter, setStageFilter] = useState<string | undefined>(undefined);
+  // const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
+  // const [campaignFilter, setCampaignFilter] = useState<string | undefined>(undefined);
+  // const [stageFilter, setStageFilter] = useState<string | undefined>(undefined);
 // const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignFilter);
-
+const [typeFilters, setTypeFilters] = useState<string[]>([]);
+const [campaignFilters, setCampaignFilters] = useState<string[]>([]);
+const [stageFilters, setStageFilters] = useState<string[]>([]);
   const user = useSelector((state: RootState) => state.auth);
 
   // Debounced search handling
@@ -74,12 +80,35 @@ const Contact = () => {
     const { filter } = payload;
     
     // Just update the state - the hook will handle the refetch
-    setStageFilter(filter.stage);
-    setTypeFilter(filter.type);
-    setCampaignFilter(filter.campaign);
-    setStartDate(filter.startDate);
-    setEndDate(filter.endDate);
+    // setStageFilter(filter.stage);
+    // setTypeFilter(filter.type);
+    // setCampaignFilter(filter.campaign);
+    // setCurrentPage(1);
+
+    if (filter.stage) {
+      const stageStr = filter.stage as string;
+      setStageFilters(stageStr.split(','));
+    } else {
+      setStageFilters([]);
+    }
+    
+    // Handle technology filter
+    if (filter.type) {
+      const typeStr = filter.type as string;
+      setTypeFilters(typeStr.split(','));
+    } else {
+      setTypeFilters([]);
+    }
+    if (filter.campaign) {
+      const campaignStr = filter.campaign as string;
+      setCampaignFilters(campaignStr.split(','));
+    } else {
+      setCampaignFilters([]);
+    }
+    setStartDate(Array.isArray(filter.startDate) ? undefined : filter.startDate);
+    setEndDate(Array.isArray(filter.endDate) ? undefined : filter.endDate);
     setCurrentPage(1);
+    await refetch();
     
     // Remove this separate refetch call - it's causing confusion
     // The hook will automatically refetch when the state changes
@@ -101,15 +130,54 @@ const Contact = () => {
     currentPage,
     pageSize,
     searchQuery,
-    stageFilter,
-    typeFilter,
-    campaignFilter,
+    stageFilters.length>0 ?stageFilters.join(','):undefined,
+    typeFilters.length>0 ?typeFilters.join(','):undefined,
+    campaignFilters.length>0 ?campaignFilters.join(','):undefined,
     startDate,
     endDate
 
   );
   
-  
+  const getActiveFiltersDisplay = () => {
+    const filters = [];
+    
+    if (typeFilters.length > 0) {
+      filters.push(`Types: ${typeFilters.join(', ')}`);
+    }
+    
+    if (stageFilters.length > 0) {
+      filters.push(`stages: ${stageFilters.join(', ')}`);
+    }
+
+    if (campaignFilters.length > 0) {
+      filters.push(`campaigns: ${campaignFilters.join(', ')}`);
+    }
+   
+    
+    return filters.length > 0 ? (
+      <div className="flex items-center gap-2 mt-2 mb-4">
+        <span className="text-sm text-gray-500">Active filters:</span>
+        <div className="flex flex-wrap gap-2">
+          {filters.map((filter, index) => (
+            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
+              {filter}
+            </span>
+          ))}
+        </div>
+        <button 
+          className="text-sm text-red-500 hover:text-red-700 ml-2"
+          onClick={() => {
+            setTypeFilters([]);
+            setCampaignFilters([]);
+            setStageFilters([]);
+            refetch();
+          }}
+        >
+          Clear all
+        </button>
+      </div>
+    ) : null;
+  };
   return (
     <>
       <HeaderComp
@@ -128,6 +196,8 @@ const Contact = () => {
       />
 
       <div className="pt-[40px]">
+
+      {getActiveFiltersDisplay()}
         {loading ? (
           <div className="text-center p-6">Loading data...</div>
         ) : activeView === "list" ? (
@@ -140,6 +210,8 @@ const Contact = () => {
               onPageChange={setCurrentPage}
               onPageSizeChange={setPageSize}
             />
+
+
           </>
         ) : (
           <DndProvider backend={HTML5Backend}>

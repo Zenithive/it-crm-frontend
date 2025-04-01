@@ -8,7 +8,8 @@ import client from "../../../lib/appoloClient";
 interface UseVendorsParams {
   page?: number;
   pageSize?: number;
-  address?: string;
+  // address?: string;
+  country?:string
   status?: string;
   rating?: string;
   search?: string;
@@ -38,9 +39,9 @@ interface UpdateVendorInput {
 }
 
 export const useVendors = ({
-  page = 1,
-  pageSize = 10,
-  address,
+  page=1,
+  pageSize=10 ,
+  country,
   status,
   rating,
   search,
@@ -51,13 +52,59 @@ export const useVendors = ({
   const { token } = useSelector((state: RootState) => state.auth);
 
   // Query setup
+
+
+  const filter: any = {};
+  
+  // Parse industry filter to handle multiple selections
+  if (status) {
+    const statuses = status.split(',');
+    if (statuses.length === 1) {
+      filter.status = status;
+    } else if (statuses.length > 1) {
+      // For multiple industries, use an array or another format depending on your API
+      filter.status = statuses; // API might expect { $in: [...] } format
+      // If your API expects a specific format for multiple values, modify accordingly:
+      // filter.industryTarget = { $in: industries };
+    }
+  }
+  
+  // Parse technology filter to handle multiple selections
+  if (country) {
+    const countries = country.split(',');
+    if (countries.length === 1) {
+      filter.country = country;
+    } else if (countries.length > 1) {
+      // For multiple technologies, use an array or another format depending on your API
+      filter.country = countries;
+      // If your API expects a specific format for multiple values, modify accordingly:
+      // filter.techStack = { $in: technologies };
+    }
+  }
+  // if (rating) {
+  //   const ratings = rating.split(',');
+  //   if (ratings.length === 1) {
+  //     filter.reviewFromPerformanceRating = rating;
+  //   } else if (ratings.length > 1) {
+  //     // For multiple technologies, use an array or another format depending on your API
+  //     filter.reviewFromPerformanceRating = ratings;
+  //     // If your API expects a specific format for multiple values, modify accordingly:
+  //     // filter.techStack = { $in: technologies };
+  //   }
+  // }
+  if (search && search.trim() !== "") {
+    filter.search = search.trim();
+  }
   const variables = vendorId
     ? { vendorID: vendorId } // For GET_VENDOR_BY_ID
     : {
         page,
         pageSize,
-        search: search?.trim() || undefined,
-        status: status ? status.toUpperCase() : undefined,
+        // search: search?.trim() || undefined,
+        // status: status ? status.toUpperCase() : undefined,
+        // country:country
+
+        filter:filter
       };
 
   const { data, loading: queryLoading, error: queryError, refetch } = useQuery(
@@ -83,20 +130,20 @@ export const useVendors = ({
       ? [data.getVendor]
       : []
     : (data?.getVendors?.items || [])
-        .filter((vendor: any) => {
-          if (rating) {
-            const ratingValue = parseInt(rating.replace("star", ""), 10);
-            // Filter by actual rating value instead of length
-            return vendor.performanceRatings?.some((pr: any) => pr.rating === ratingValue);
-          }
-          return true;
-        })
-        .filter((vendor: any) => {
-          if (address) {
-            return vendor.address?.toLowerCase().includes(address.toLowerCase());
-          }
-          return true;
-        });
+        // .filter((vendor: any) => {
+        //   if (rating) {
+        //     const ratingValue = parseInt(rating.replace("star", ""), 10);
+        //     // Filter by actual rating value instead of length
+        //     return vendor.performanceRatings?.some((pr: any) => pr.rating === ratingValue);
+        //   }
+        //   return true;
+        // })
+        // .filter((vendor: any) => {
+        //   if (address) {
+        //     return vendor.address?.toLowerCase().includes(address.toLowerCase());
+        //   }
+        //   return true;
+        // });
 
   // Update vendor function
   const updateVendor = async (input: UpdateVendorInput) => {

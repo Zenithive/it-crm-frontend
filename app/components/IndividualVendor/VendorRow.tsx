@@ -129,6 +129,7 @@ const VendorRow: React.FC<VendorRowProps> = ({ vendor, onVendorDeleted,refetchVe
     gstOrVatDetails: vendor.gstOrVatDetails,
     notes: vendor.notes,
     country: vendor.country,
+    
     primaryContact: {
       email: "",
       phone: "",
@@ -138,6 +139,18 @@ const VendorRow: React.FC<VendorRowProps> = ({ vendor, onVendorDeleted,refetchVe
 
   console.log("vendorData passed to VendorForm (original):", vendorData);
   const dataToPass = fullVendorData || vendorData;
+
+
+  
+const getDisplayRating = () => {
+  if (fetchedVendor?.performanceRatings?.length > 0) {
+    
+    return fetchedVendor.performanceRatings[0].rating;
+    
+   
+  }
+  return vendor.rating; 
+};
 
   return (
     <>
@@ -152,7 +165,8 @@ const VendorRow: React.FC<VendorRowProps> = ({ vendor, onVendorDeleted,refetchVe
           </span>
         </td>
         <td className="px-6 py-6 flex">
-          {vendor.rating}
+        {fetchedVendor ? getDisplayRating() : vendor.rating}
+
           <img src="/Star_icon.svg" alt="Rate" className="ml-2" />
         </td>
         <td className="px-6 py-6">
