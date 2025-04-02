@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
 import Pagination from "../microComponents/Pagination";
@@ -32,7 +32,7 @@ interface Vendor {
 interface FilterPayload {
   filter: {
     // [key: string]: string | undefined;
-    [key: string]: string | string[] | undefined;
+    [key: string]: string | string[]  | undefined;
   };
   pagination: {
     page: number;
@@ -105,40 +105,71 @@ const OverallVendorProfile: React.FC = () => {
     setCurrentPage(1);
   };
 
-  const handleFilterApply = async (payload: FilterPayload) => {
-    const { filter } = payload;
-    // setLocationFilter(filter.location);
-    // setStatusFilter(filter.status);
-    // setRatingFilter(filter.rating);
-    // setCurrentPage(1);
 
+
+useEffect(() => {
+ 
+  const params = {
+    page: currentPage,
+    pageSize: itemsPerPage,
+    search: searchQuery,
+    country: locationFilters.length > 0 ? locationFilters.join(',') : undefined,
+    status: statusFilters.length > 0 ? statusFilters.join(',') : undefined,
+   
+    reviewFromPerformanceRating: ratingFilters.length > 0 
+      ? ratingFilters.map(r => parseInt(r, 10)) 
+      : undefined,
+  };
+  
+  const fetchData = async () => {
+    try {
+      await refetch(params);
+    } catch (error) {
+      console.error("Error refetching data:", error);
+    }
+  };
+  
+  fetchData();
+  
+}, [currentPage, itemsPerPage, locationFilters, statusFilters, ratingFilters, searchQuery]);
+  const handleFilterApply = (payload: FilterPayload) => {
+    const { filter } = payload;
+    
+  
+    setCurrentPage(1);
+    
     if (filter.status) {
-      const statusStr = filter.status as string;
-      setStatusFilters(statusStr.split(','));
+      setStatusFilters(typeof filter.status === 'string' 
+        ? filter.status.split(',') 
+        : filter.status);
     } else {
       setStatusFilters([]);
     }
     
-    
     if (filter.country) {
-      const countryStr = filter.country as string;
-      setLocationFilters(countryStr.split(','));
+      setLocationFilters(typeof filter.country === 'string' 
+        ? filter.country.split(',') 
+        : filter.country);
     } else {
       setLocationFilters([]);
     }
 
 
-    // if (filter.rating) {
-    //   const ratingStr = filter.rating as string;
-    //   setRatingFilters(ratingStr.split(','));
-    // } else {
-    //   setRatingFilters([]);
-    // }
-    
-    setCurrentPage(1);
-    await refetch();
-  };
+    if (filter.reviewFromPerformanceRating) {
+      // setRatingFilters(typeof filter. reviewFromPerformanceRating === 'string' 
+      //   ? filter. reviewFromPerformanceRating.split(',') 
+      //   : filter. reviewFromPerformanceRating);
 
+      const ratingArray = Array.isArray(filter.reviewFromPerformanceRating)
+      ? filter.reviewFromPerformanceRating.map(r => r.toString())
+      : [filter.reviewFromPerformanceRating.toString()];
+    
+    setRatingFilters(ratingArray);
+    } else {
+      setRatingFilters([]);
+    }
+    
+  };
   const filterSections = [
     {
       id: "location",
@@ -186,9 +217,9 @@ const OverallVendorProfile: React.FC = () => {
       filters.push(`Countries: ${locationFilters.join(', ')}`);
     }
 
-    // if (ratingFilters.length > 0) {
-    //   filters.push(`Ratings: ${ratingFilters.join(', ')}`);
-    // }
+    if (ratingFilters.length > 0) {
+      filters.push(`Ratings: ${ratingFilters.join(', ')}`);
+    }
     
     return filters.length > 0 ? (
       <div className="flex items-center gap-2 mt-2 mb-4">
@@ -205,7 +236,7 @@ const OverallVendorProfile: React.FC = () => {
           onClick={() => {
             setStatusFilters([]);
             setLocationFilters([]);
-            // setRatingFilters([]);
+            setRatingFilters([]);
             refetch();
           }}
         >

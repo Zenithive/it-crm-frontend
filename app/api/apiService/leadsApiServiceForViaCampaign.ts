@@ -1,28 +1,28 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import { GET_LEADS, LeadSortField, SortOrder } from "../../../graphQl/queries/leads.queries";
-import { DealSortFields, GET_DEALS, SortOrders } from "../../../graphQl/queries/deals.queries";
-import { useGoogleCalendarService } from "./googlecalendar.service";
-import { CountryLeadStats, Deal, DealsResponse, IntegratedMeeting, isDealsArray, Lead, LeadPerformanceMetrics, TeamMember } from "./leadApiInterface";
+import { GET_LEADS,LeadSortField,SortOrder } from "../../../graphQl/queries/leads.queries";
+import { DealSortFields, GET_DEALS, SortOrders} from "../../../graphQl/queries/deals.queries";
+import { CalendarAttendee, Meeting, useGoogleCalendarService } from "./googlecalendar.service";
+import { CountryLeadStats, Deal, DealsResponse, IntegratedMeeting, isDealsArray, Lead, LeadAssignedTo, LeadPerformanceMetrics, TeamMember } from "./leadApiInterface";
 
-// Define a custom hook that contains all the functionality
-const useLeadsApiService = (
-  currentPage: number,
-  itemsPerPage: number,
+
+
+const leadsApiServiceForVaiCampaigns = (  currentPage: number, 
+  itemsPerPage: number, 
   fetchAll: boolean = false,
   leadSort?: { field: LeadSortField; order: SortOrder },
   dealSort?: { field: DealSortFields; order: SortOrders },
-  initialTimeFilter?: 'today' | 'weekly' | 'monthly' | 'quarterly' | 'yearly' | 'half-yearly'
-) => {
+  initialTimeFilter?: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+
   const [newLeads, setNewLeads] = useState(0);
   const [inProgressLeads, setInProgressLeads] = useState(0);
   const [followUpLeads, setFollowUpLeads] = useState(0);
   const [closedWonLeads, setClosedWonLeads] = useState(0);
   const [leadConversion, setLeadConversion] = useState(0);
   const [dealLead, setDealLead] = useState(0);
-  const [campaignCountryCounts, setCampaignCountryCounts] = useState<{ [key: string]: number }>({});
+  const [campaignCountryCountsForVaiCampaign, setCampaignCountryCounts] = useState<{ [key: string]: number }>({});
   const [leadSourceCounts, setLeadSourceCounts] = useState<{ [key: string]: number }>({});
   const [teamPerformance, setTeamPerformance] = useState<TeamMember[]>([]);
   const [countryLeadStats, setCountryLeadStats] = useState<{ [key: string]: CountryLeadStats }>({});
@@ -32,14 +32,15 @@ const useLeadsApiService = (
     winRate: 0,
     avgDaysToClose: 0
   });
-  const [selectedTimeFilter, setSelectedTimeFilter] = useState<'today' | 'weekly' | 'monthly' | 'quarterly' | 'yearly' | 'half-yearly' | null>(initialTimeFilter || null);
-
+  const [selectedTimeFilter, setSelectedTimeFilter] = useState<string | null>(initialTimeFilter || null);
+  
+ 
   const user = useSelector((state: RootState) => state.auth);
   const { googleAccessToken } = user || {};
 
-  const getDateRangeForFilter = (filter?: string): { fromDate: string; toDate: string } | null => {
-    if (!filter) return null;
-    
+
+
+  const getDateRangeForFilter = (filter: string): { fromDate: string; toDate: string } => {
     const now = new Date();
     let startDate: Date;
   
@@ -47,42 +48,70 @@ const useLeadsApiService = (
     console.log('Selected Time Filter:', filter);
   
     switch (filter) {
+
       case 'today':
         startDate = new Date(now);
         console.log('Today\'s Date:', startDate);
         break;
 
       case 'weekly':
+        // Start from the Monday of the current week
         startDate = new Date(now);
         const dayOfWeek = now.getDay(); 
         const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1; 
         startDate.setDate(now.getDate() - diff);
         console.log('Weekly Start Date:', startDate);
+        console.log('Week Details:', {
+          currentWeekday: now.getDay(),
+          firstDayOfWeek: startDate
+        });
         break;
 
       case 'monthly':
+        // For monthly, start from the first day of the current month
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
         console.log('Monthly Start Date:', startDate);
+        console.log('Month Details:', {
+          currentMonth: now.getMonth(),
+          firstDayOfMonth: startDate
+        });
         break;
   
       case 'quarterly':
+        // Determine the start of the current quarter
         const currentQuarter = Math.floor(now.getMonth() / 3);
         startDate = new Date(now.getFullYear(), currentQuarter * 3, 1);
         console.log('Quarterly Start Date:', startDate);
+        console.log('Quarter Details:', {
+          currentQuarter: currentQuarter,
+          quarterStartMonth: currentQuarter * 3,
+          firstDayOfQuarter: startDate
+        });
         break;
   
       case 'half-yearly':
+        // Start from either January 1st or July 1st based on current month
         startDate = new Date(now.getFullYear(), now.getMonth() >= 6 ? 6 : 0, 1);
         console.log('Half-Yearly Start Date:', startDate);
+        console.log('Half-Year Details:', {
+          startingMonth: now.getMonth() >= 6 ? 'July' : 'January',
+          firstDayOfHalfYear: startDate
+        });
         break;
   
       case 'yearly':
       default:
+        // For yearly, always start from January 1st of the current year
         startDate = new Date(now.getFullYear(), 0, 1);
         console.log('Yearly Start Date:', startDate);
+        console.log('Year Details:', {
+          currentYear: now.getFullYear(),
+          firstDayOfYear: startDate
+        });
         break;
     }
   
+    // Format dates to ISO string and extract just the date part
     const formatDate = (date: Date) => date.toISOString().split('T')[0];
   
     const fromDate = formatDate(startDate);
@@ -92,15 +121,15 @@ const useLeadsApiService = (
   
     return { fromDate, toDate };
   };
-
-  // Prepare query variables based on time filter
-  const dateRange = getDateRangeForFilter(selectedTimeFilter || undefined);
   
+
+
+  // Updated query variables for leads
   const leadsQueryVariables = {
-    filter: dateRange 
+    filter: selectedTimeFilter 
       ? { 
-          fromDate: dateRange.fromDate,
-          toDate: dateRange.toDate,
+          fromDate: getDateRangeForFilter(selectedTimeFilter).fromDate,
+          toDate: getDateRangeForFilter(selectedTimeFilter).toDate,
         } 
       : {},
     pagination: {
@@ -111,10 +140,10 @@ const useLeadsApiService = (
   };
 
   const dealsQueryVariables = {
-    filter: dateRange 
+    filter: selectedTimeFilter 
       ? { 
-          dealStartDateMin: dateRange.fromDate,
-          dealStartDateMax: dateRange.toDate,
+          dealStartDateMin: getDateRangeForFilter(selectedTimeFilter).fromDate,
+          dealStartDateMax: getDateRangeForFilter(selectedTimeFilter).toDate,
         } 
       : {},
     pagination: {
@@ -124,15 +153,18 @@ const useLeadsApiService = (
     sort: dealSort || { field: DealSortFields.DEAL_AMOUNT, order: SortOrders.ASC }
   };
 
-  console.log(`Loading data for filter: ${selectedTimeFilter}`);
   console.log("Leads Query Variables", leadsQueryVariables);
   console.log("Deals Query Variables", dealsQueryVariables);
 
-  const setTimeFilter = (filter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+
+
+
+  const setTimeFilterViaCampaign = (filter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
     setSelectedTimeFilter(filter);
   };
 
-  // Use the GoogleCalendarService hook
+
+
   const { 
     fetchGoogleCalendarEvents, 
     integrateLeadsAndMeetings,
@@ -174,17 +206,11 @@ const useLeadsApiService = (
     onError: (err) => console.error("Error fetching deals:", err),
   });
 
-  console.log("dealsData", dealsData);
-  
-  // Effect to refetch data when time filter changes
-  useEffect(() => {
-    if (selectedTimeFilter) {
-      refetchLeads();
-      refetchDeals();
-    }
-  }, [selectedTimeFilter, refetchLeads, refetchDeals]);
+  console.log("dealsData",dealsData);
 
-  // Existing helper functions
+
+
+  // Existing helper functions (formatCurrency, fetchGoogleCalendarEvents, etc.)
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -193,6 +219,9 @@ const useLeadsApiService = (
       maximumFractionDigits: 0
     }).format(amount);
   };
+
+ 
+
   
   useEffect(() => {
     const fetchIntegratedMeetings = async () => {
@@ -210,7 +239,9 @@ const useLeadsApiService = (
     };
 
     fetchIntegratedMeetings();
-  }, [googleAccessToken, leadsData, fetchGoogleCalendarEvents, integrateLeadsAndMeetings]);
+  }, [googleAccessToken, leadsData]);
+
+
 
   const calculateDaysBetween = (startDate: string, endDate: string): number => {
     const start = new Date(startDate);
@@ -235,54 +266,54 @@ const useLeadsApiService = (
       return;
     }
   
-    // Determine deals data with multiple fallback strategies
-    let fetchedDeals: Deal[] = [];
- 
-    if (dealsData) {
-      if (isDealsArray(dealsData)) {
-        // Direct array of deals
-        fetchedDeals = dealsData;
-      } else if (dealsData.getDeals && Array.isArray(dealsData.getDeals.items)) {
-        // GraphQL response with nested items
-        fetchedDeals = dealsData.getDeals.items;
-      } else if (dealsData.getDeals && Array.isArray(dealsData.getDeals)) {
-        // Alternative GraphQL response structure
-        fetchedDeals = dealsData.getDeals;
-      } else if (dealsData.deals && Array.isArray(dealsData.deals)) {
-        // Another possible response structure
-        fetchedDeals = dealsData.deals;
-      }
-    }
-
-    // Ensure leads data exists
-    const safeLeadsData = leadsData?.getLeads || leadsData;
-
-    // Early return if no leads data
-    if (!safeLeadsData) {
-      console.warn('No leads data available');
-      console.groupEnd();
-      return;
-    }
-
-    // Flexible data extraction with fallbacks
-    const fetchedLeads = safeLeadsData.items || safeLeadsData;
-
-    // Total leads calculation with multiple fallbacks
-    const totalLeads = safeLeadsData.totalCount 
-      || (Array.isArray(fetchedLeads) ? fetchedLeads.length : 0);
+       // Determine deals data with multiple fallback strategies
+       let fetchedDeals: Deal[] = [];
+    
+       if (dealsData) {
+         if (isDealsArray(dealsData)) {
+           // Direct array of deals
+           fetchedDeals = dealsData;
+         } else if (dealsData.getDeals && Array.isArray(dealsData.getDeals.items)) {
+           // GraphQL response with nested items
+           fetchedDeals = dealsData.getDeals.items;
+         } else if (dealsData.getDeals && Array.isArray(dealsData.getDeals)) {
+           // Alternative GraphQL response structure
+           fetchedDeals = dealsData.getDeals;
+         } else if (dealsData.deals && Array.isArray(dealsData.deals)) {
+           // Another possible response structure
+           fetchedDeals = dealsData.deals;
+         }
+       }
+   
+       // Ensure leads data exists
+       const safeLeadsData = leadsData?.getLeads || leadsData;
+   
+       // Early return if no leads data
+       if (!safeLeadsData) {
+         console.warn('No leads data available');
+         console.groupEnd();
+         return;
+       }
+   
+       // Flexible data extraction with fallbacks
+       const fetchedLeads = safeLeadsData.items || safeLeadsData;
+   
+       // Total leads calculation with multiple fallbacks
+       const totalLeads = safeLeadsData.totalCount 
+         || (Array.isArray(fetchedLeads) ? fetchedLeads.length : 0);
   
     // Lead stage counts
     const newCount = fetchedLeads.filter((lead: Lead) => lead.leadStage === "NEW").length;
     const inProgressCount = fetchedLeads.filter((lead: Lead) => lead.leadStage === "QUALIFIED").length;
     const followUpCount = fetchedLeads.filter((lead: Lead) => lead.leadStage === "NEGOTIATION").length;
     const closedWonCount = fetchedLeads.filter((lead: Lead) => lead.leadStage === "CLOSED_WON").length;
-    const DealCount = fetchedLeads.filter((lead: Lead) => lead.leadStage === "DEAL").length;
-    
+    const DealCount = fetchedLeads.filter((lead: Lead) =>lead.leadStage === "DEAL").length;
     // Tracking maps
     const campaignCountryMap: { [key: string]: number } = {};
     const leadSourceMap: { [key: string]: number } = {};
     const countryStats: { [key: string]: CountryLeadStats } = {};
     const leadToDealsMap: { [leadID: string]: Deal[] } = {};
+
 
     let totalSales = 0;
     let wonDeals = 0;
@@ -290,6 +321,7 @@ const useLeadsApiService = (
     let totalDaysToClose = 0;
     let closedWonDealsWithDates = 0;
 
+  
     // Process deals mapping
     fetchedDeals.forEach((deal: Deal) => {
       if (deal && deal.leadID) {
@@ -322,17 +354,18 @@ const useLeadsApiService = (
           }
         }
 
+
         totalDeals++;
       }
     });
 
     const winRate = totalDeals > 0 
-      ? (wonDeals / totalDeals) * 100 
-      : 0;
+    ? (wonDeals / totalDeals) * 100 
+    : 0;
 
-    const avgDaysToClose = closedWonDealsWithDates > 0
-      ? totalDaysToClose / closedWonDealsWithDates
-      : 0;
+  const avgDaysToClose = closedWonDealsWithDates > 0
+    ? totalDaysToClose / closedWonDealsWithDates
+    : 0;
   
     // Team performance tracking
     const teamMap: { [key: string]: TeamMember & { revenueAmount: number } } = {};
@@ -373,7 +406,7 @@ const useLeadsApiService = (
             followUp: 0,
             closedWon: 0,
             closedLost: 0,
-            dealLeads: 0,
+            dealLeads:0,
           };
         }
   
@@ -393,9 +426,11 @@ const useLeadsApiService = (
           case "CLOSED_LOST":
             countryStats[lead.country].closedLost++;
             break;
+
           case "DEAL":
             countryStats[lead.country].dealLeads++;
             break;
+          
         }
       }
   
@@ -462,7 +497,7 @@ const useLeadsApiService = (
     console.groupEnd();
   }, [leadsData, dealsData, leadsLoading, dealsLoading]);
   
-  // Helper method for other lead sources
+  // Existing helper methods
   const getOtherLeadSources = () => {
     let otherCount = 0;
     Object.keys(leadSourceCounts).forEach(source => {
@@ -472,7 +507,8 @@ const useLeadsApiService = (
     });
     return otherCount;
   };
-
+  
+  // Return object with all processed data and methods
   return {
     leads: leadsData?.getLeads?.items || [],
     loading: leadsLoading || dealsLoading,
@@ -487,13 +523,15 @@ const useLeadsApiService = (
     closedWonLeads,
     dealLead,
     leadConversion,
-    campaignCountryCounts,
+    campaignCountryCountsForVaiCampaign,
     leadSourceCounts,
     teamPerformance,
     countryLeadStats,
     leadPerformanceMetrics,
-    setTimeFilter,
-    currentTimeFilter: selectedTimeFilter,
+
+
+    setTimeFilterViaCampaign,
+    currentTimeFilterViaCampaign: selectedTimeFilter,
     
     getTargetedLeadSources: () => {
       const linkedin = leadSourceCounts["linkedin"] || 0;
@@ -507,21 +545,10 @@ const useLeadsApiService = (
         website,
         other
       };
-    }  
+    }
+
+    
   };
 };
 
-// Create a factory function that returns the hook result
-const leadsApiService = (
-  currentPage: number,
-  itemsPerPage: number,
-  fetchAll: boolean = false,
-  leadSort?: { field: LeadSortField; order: SortOrder },
-  dealSort?: { field: DealSortFields; order: SortOrders },
-  initialTimeFilter?: 'today' | 'weekly' | 'monthly' | 'quarterly' | 'yearly' | 'half-yearly'
-) => {
-  // This is the key fix - we need to return a memoized value that doesn't call hooks directly
-  return useLeadsApiService(currentPage, itemsPerPage, fetchAll, leadSort, dealSort, initialTimeFilter);
-};
-
-export default leadsApiService;
+export default leadsApiServiceForVaiCampaigns;

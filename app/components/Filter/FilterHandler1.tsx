@@ -160,7 +160,12 @@ const dateSelections=selectedOptionsByCategory['date']||[];
     
     // Create filter object
     const filterObj: any = {};
-    
+    if (startDate) {
+      filterObj.startDate = startDate;
+    }
+    if (endDate) {
+      filterObj.endDate = endDate;
+    }
     // Only add filters if options are selected
     if (typeSelections.length > 0) {
       filterObj.type = typeSelections.join(',');
@@ -219,44 +224,55 @@ const dateSelections=selectedOptionsByCategory['date']||[];
     setShowFilter(false);
   };
 
-  const handleFilterApplyVendor = async () => {
-    // Your existing code for vendors
-
-    
+  
+  const handleFilterApplyVendor = () => {
+    // Get the selected options by category
     const statusSelections = selectedOptionsByCategory['status'] || [];
     const locationSelections = selectedOptionsByCategory['location'] || [];
     const ratingSelections = selectedOptionsByCategory['rating'] || [];
     
-    // Create filter object
-    const filterObj: any = {};
+    // Create filter object - only include populated filters
+    const filterObj: { status?: string; country?: string;  reviewFromPerformanceRating?:string } = {};
     
-    // Only add filters if options are selected
     if (statusSelections.length > 0) {
-      filterObj.status = statusSelections.join(',');
+      // Make sure to transform values to match API expectations
+      // For example, if backend expects "ACTIVE" instead of "active"
+      const formattedStatuses = statusSelections.map(status => 
+        status.toUpperCase()
+      );
+      filterObj.status = formattedStatuses.join(',');
     }
     
     if (locationSelections.length > 0) {
+      // Make sure these match country values in your backend exactly
       filterObj.country = locationSelections.join(',');
     }
-
-
-    // if (ratingSelections.length > 0) {
-    //   filterObj.rating = locationSelections.join(',');
-    // }
-    await onFilterApply({
+    if (ratingSelections.length > 0) {
+      // Make sure these match country values in your backend exactly
+      filterObj. reviewFromPerformanceRating = ratingSelections.join(',');
+    }
+    // Apply filters once, with a single call
+    onFilterApply({
       filter: filterObj,
       pagination: { page: 1, pageSize: 10 },
       sort: { field: 'createdAt', order: 'DESC' }
     });
+    
+    // Close filter modal
     setShowFilter(false);
   };
-
   const handleFilterApplyTodo = async () => {
     // Your existing code for todos
     const filterObj: any = {};
     const statusSelections = selectedOptionsByCategory['status'] || [];
     const prioritySelections = selectedOptionsByCategory['priority'] || [];
-
+    const dateSelections=selectedOptionsByCategory['date']||[];
+    if (startDate) {
+      filterObj.startDate = startDate;
+    }
+    if (endDate) {
+      filterObj.endDate = endDate;
+    }
 
     if (statusSelections.length > 0) {
       filterObj.status = statusSelections.join(',');
@@ -264,6 +280,10 @@ const dateSelections=selectedOptionsByCategory['date']||[];
     
     if (prioritySelections.length > 0) {
       filterObj.priority = prioritySelections.join(',');
+    }
+
+    if (dateSelections.length > 0 && !startDate && !endDate) {
+      filterObj.date = dateSelections.join(',');
     }
     await onFilterApply({
       filter: filterObj,
@@ -275,6 +295,8 @@ const dateSelections=selectedOptionsByCategory['date']||[];
 
   const clearFilters = () => {
     setSelectedOptionsByCategory({});
+    setStartDate('');
+    setEndDate('');
   };
 
   return (

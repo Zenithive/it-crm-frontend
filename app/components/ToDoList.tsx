@@ -162,6 +162,12 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
     } else {
       setStatusFilters([]);
     }
+
+    setStartDate(Array.isArray(filter.startDate) ? undefined : filter.startDate);
+    setEndDate(Array.isArray(filter.endDate) ? undefined : filter.endDate);
+    // setCurrentPage(1);
+    // await refetch();
+
    
   };
 
@@ -175,7 +181,13 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
     if (priorityFilters.length > 0) {
       filters.push(`priority: ${priorityFilters.join(', ')}`);
     }
-    
+    if (startDate && endDate) {
+      filters.push(`Date range: ${startDate} to ${endDate}`);
+    } else if (startDate) {
+      filters.push(`From date: ${startDate}`);
+    } else if (endDate) {
+      filters.push(`To date: ${endDate}`);
+    }
     return filters.length > 0 ? (
       <div className="flex items-center gap-2 mt-2 mb-4">
         <span className="text-sm text-gray-500">Active filters:</span>
@@ -191,6 +203,8 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
           onClick={() => {
             setStatusFilters([]);
             setPriorityFilters([]);
+            setStartDate("");
+            setEndDate("");
             refetch();
           }}
         >

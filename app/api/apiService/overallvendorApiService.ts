@@ -11,7 +11,7 @@ interface UseVendorsParams {
   // address?: string;
   country?:string
   status?: string;
-  rating?: string;
+  rating?: string | number | (string | number)[];
   search?: string;
   sortField?: string;
   sortOrder?: "ASC" | "DESC";
@@ -51,34 +51,29 @@ export const useVendors = ({
 }: UseVendorsParams = {}) => {
   const { token } = useSelector((state: RootState) => state.auth);
 
-  // Query setup
 
 
   const filter: any = {};
   
-  // Parse industry filter to handle multiple selections
   if (status) {
     const statuses = status.split(',');
     if (statuses.length === 1) {
       filter.status = status;
     } else if (statuses.length > 1) {
-      // For multiple industries, use an array or another format depending on your API
-      filter.status = statuses; // API might expect { $in: [...] } format
-      // If your API expects a specific format for multiple values, modify accordingly:
-      // filter.industryTarget = { $in: industries };
+     
+      filter.status = statuses; 
     }
   }
   
-  // Parse technology filter to handle multiple selections
+  
   if (country) {
     const countries = country.split(',');
     if (countries.length === 1) {
       filter.country = country;
     } else if (countries.length > 1) {
-      // For multiple technologies, use an array or another format depending on your API
+
       filter.country = countries;
-      // If your API expects a specific format for multiple values, modify accordingly:
-      // filter.techStack = { $in: technologies };
+     
     }
   }
   // if (rating) {
@@ -86,27 +81,44 @@ export const useVendors = ({
   //   if (ratings.length === 1) {
   //     filter.reviewFromPerformanceRating = rating;
   //   } else if (ratings.length > 1) {
-  //     // For multiple technologies, use an array or another format depending on your API
+     
   //     filter.reviewFromPerformanceRating = ratings;
-  //     // If your API expects a specific format for multiple values, modify accordingly:
-  //     // filter.techStack = { $in: technologies };
+
   //   }
   // }
+
+  // In your useVendors hook
+  if (rating !== undefined && rating !== null) {
+    // Handle rating differently - it needs to be a number or array of numbers
+    if (typeof rating === 'string') {
+      // If it's a comma-separated string, split and convert to integers
+      const ratings = rating.split(',').map(r => parseInt(r.trim(), 10));
+      filter.reviewFromPerformanceRating = ratings;
+    } else if (Array.isArray(rating)) {
+      // If it's already an array, ensure all elements are numbers
+      filter.reviewFromPerformanceRating = rating.map(r => 
+        typeof r === 'string' ? parseInt(r, 10) : r
+      );
+    } else if (typeof rating === 'number') {
+      // If it's a single number, wrap it in an array
+      filter.reviewFromPerformanceRating = [rating];
+    } else {
+      // If none of the above, default to an empty array
+      filter.reviewFromPerformanceRating = [];
+    }
+  }
+  
   if (search && search.trim() !== "") {
     filter.search = search.trim();
   }
+
   const variables = vendorId
-    ? { vendorID: vendorId } // For GET_VENDOR_BY_ID
-    : {
-        page,
-        pageSize,
-        // search: search?.trim() || undefined,
-        // status: status ? status.toUpperCase() : undefined,
-        // country:country
-
-        filter:filter
-      };
-
+  ? { vendorID: vendorId }
+  : {
+      page,
+      pageSize,
+      filter: filter
+    };
   const { data, loading: queryLoading, error: queryError, refetch } = useQuery(
     vendorId ? GET_VENDOR_BY_ID : GET_VENDORS,
     {

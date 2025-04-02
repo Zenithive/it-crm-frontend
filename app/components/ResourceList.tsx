@@ -181,7 +181,7 @@ const ResourceList = () => {
       <div className="w-full px-4 sm:px-6 lg:px-[70px] mt-6">
         <div className="flex justify-between items-center w-full">
           <div className="flex">
-          {getActiveFiltersDisplay()}
+        
             <Title title={Resourcetitle[0].titleName} />
             <div className="ml-5">
               <Search
@@ -204,7 +204,7 @@ const ResourceList = () => {
           </div>
         </div>
       </div>
-
+   
       <ResourceContainer
         searchQuery={searchQuery}
         vendorNameFilter={vendorNameFilter}
@@ -213,6 +213,7 @@ const ResourceList = () => {
 
         experienceYearFilter={experienceYearFilters.join(',')}
         skillsFilter={skillsFilters.join(',')}
+        display={getActiveFiltersDisplay}
       />
 
       {showFilter && (
@@ -229,7 +230,7 @@ const ResourceList = () => {
             filterSections={filterSections}
             onFilterApply={handleFilterApply}
             setShowFilter={setShowFilter}
-            pageType="casestudy"
+            pageType="resource"
           />
         </div>
       )}

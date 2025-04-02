@@ -144,6 +144,14 @@ const [stageFilters, setStageFilters] = useState<string[]>([]);
     if (typeFilters.length > 0) {
       filters.push(`Types: ${typeFilters.join(', ')}`);
     }
+
+    if (startDate && endDate) {
+      filters.push(`Date range: ${startDate} to ${endDate}`);
+    } else if (startDate) {
+      filters.push(`From date: ${startDate}`);
+    } else if (endDate) {
+      filters.push(`To date: ${endDate}`);
+    }
     
     if (stageFilters.length > 0) {
       filters.push(`stages: ${stageFilters.join(', ')}`);
@@ -170,6 +178,8 @@ const [stageFilters, setStageFilters] = useState<string[]>([]);
             setTypeFilters([]);
             setCampaignFilters([]);
             setStageFilters([]);
+            setStartDate("");
+            setEndDate("");
             refetch();
           }}
         >

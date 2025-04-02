@@ -7,13 +7,13 @@ export const GET_VENDORS = gql`
     $companyName: String
     $status: [VendorStatus]
     $country:[String]
-   
+   $ reviewFromPerformanceRating:[Int]
     $skillIDs: [ID!]
     $search: String
   ) {
     getVendors(
       pagination: { page: $page, pageSize: $pageSize }
-      filter: { companyName: $companyName, status: $status,country:$country, skillIDs: $skillIDs, search: $search, }
+      filter: { companyName: $companyName, status: $status,country:$country, reviewFromPerformanceRating:$ reviewFromPerformanceRating, skillIDs: $skillIDs, search: $search, }
       sort: { field: createdAt, order: DESC }
     ) {
       items {
