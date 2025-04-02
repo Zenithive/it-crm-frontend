@@ -104,7 +104,7 @@ const Map:React.FC<MapProps> = ({ activeFilter, setActiveFilter })=> {
             <img 
               src="filterC.svg" 
               alt="filter" 
-              className="w-7 h-7 text-gray-500" 
+              className="w-7 h-7 text-gray-500 cursor-pointer" 
               onClick={handleFilterClick}
             />
      
