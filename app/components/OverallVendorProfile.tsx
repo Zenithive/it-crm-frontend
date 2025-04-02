@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
 import Pagination from "../microComponents/Pagination";
@@ -13,6 +13,7 @@ import { useVendors } from "../api/apiService/overallvendorApiService";
 import VendorForm from "./IndividualVendor/VendorForm";
 import FilterHandler from "./Filter/FilterHandler";
 import _ from "lodash";
+import FilterHandler1 from "./Filter/FilterHandler1";
 
 interface Vendor {
   vendorID: string;
@@ -30,7 +31,8 @@ interface Vendor {
 
 interface FilterPayload {
   filter: {
-    [key: string]: string | undefined;
+    // [key: string]: string | undefined;
+    [key: string]: string | string[]  | undefined;
   };
   pagination: {
     page: number;
@@ -49,10 +51,12 @@ const OverallVendorProfile: React.FC = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [inputValue, setInputValue] = useState<string>("");
-  const [locationFilter, setLocationFilter] = useState<string | undefined>(undefined);
-  const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
-  const [ratingFilter, setRatingFilter] = useState<string | undefined>(undefined);
+  // const [locationFilter, setLocationFilter] = useState<string | undefined>(undefined);
+  // const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
+  const [ratingFilters, setRatingFilters] = useState<string[]>([]);
   const user = useSelector((state: RootState) => state.auth);
+  const [statusFilters, setStatusFilters] = useState<string[]>([]);
+    const [locationFilters, setLocationFilters] = useState<string[]>([]);
 
   const debouncedSearch = useCallback(
     _.debounce((query: string) => {
@@ -73,15 +77,17 @@ const OverallVendorProfile: React.FC = () => {
     page: currentPage,
     pageSize: itemsPerPage,
     search: searchQuery,
-    address: locationFilter,
-    status: statusFilter,
-    rating: ratingFilter,
+    // country: locationFilter,
+    // status: statusFilter,
+  country: locationFilters.length > 0 ? locationFilters.join(',') : undefined,
+    status: statusFilters.length > 0 ? statusFilters.join(',') : undefined,
+    rating: ratingFilters.length> 0 ? ratingFilters.join(',') : undefined,
   });
 
   const mappedVendors: Vendor[] = vendors.map((vendor: any) => ({
     vendorID: vendor.vendorID || "",
     vendor: vendor.companyName || "N/A",
-    location: vendor.address || "N/A",
+    location: `${vendor.address} ,${vendor.country} `|| "N/A",
     resources: vendor.resources?.length.toString() || "N/A", // Ensure string type
     rating: vendor.performanceRatings?.length || 0,
     status: vendor.status || "N/A",
@@ -99,14 +105,71 @@ const OverallVendorProfile: React.FC = () => {
     setCurrentPage(1);
   };
 
-  const handleFilterApply = async (payload: FilterPayload) => {
-    const { filter } = payload;
-    setLocationFilter(filter.location);
-    setStatusFilter(filter.status);
-    setRatingFilter(filter.rating);
-    setCurrentPage(1);
-  };
 
+
+useEffect(() => {
+ 
+  const params = {
+    page: currentPage,
+    pageSize: itemsPerPage,
+    search: searchQuery,
+    country: locationFilters.length > 0 ? locationFilters.join(',') : undefined,
+    status: statusFilters.length > 0 ? statusFilters.join(',') : undefined,
+   
+    reviewFromPerformanceRating: ratingFilters.length > 0 
+      ? ratingFilters.map(r => parseInt(r, 10)) 
+      : undefined,
+  };
+  
+  const fetchData = async () => {
+    try {
+      await refetch(params);
+    } catch (error) {
+      console.error("Error refetching data:", error);
+    }
+  };
+  
+  fetchData();
+  
+}, [currentPage, itemsPerPage, locationFilters, statusFilters, ratingFilters, searchQuery]);
+  const handleFilterApply = (payload: FilterPayload) => {
+    const { filter } = payload;
+    
+  
+    setCurrentPage(1);
+    
+    if (filter.status) {
+      setStatusFilters(typeof filter.status === 'string' 
+        ? filter.status.split(',') 
+        : filter.status);
+    } else {
+      setStatusFilters([]);
+    }
+    
+    if (filter.country) {
+      setLocationFilters(typeof filter.country === 'string' 
+        ? filter.country.split(',') 
+        : filter.country);
+    } else {
+      setLocationFilters([]);
+    }
+
+
+    if (filter.reviewFromPerformanceRating) {
+      // setRatingFilters(typeof filter. reviewFromPerformanceRating === 'string' 
+      //   ? filter. reviewFromPerformanceRating.split(',') 
+      //   : filter. reviewFromPerformanceRating);
+
+      const ratingArray = Array.isArray(filter.reviewFromPerformanceRating)
+      ? filter.reviewFromPerformanceRating.map(r => r.toString())
+      : [filter.reviewFromPerformanceRating.toString()];
+    
+    setRatingFilters(ratingArray);
+    } else {
+      setRatingFilters([]);
+    }
+    
+  };
   const filterSections = [
     {
       id: "location",
@@ -131,7 +194,7 @@ const OverallVendorProfile: React.FC = () => {
       id: "rating",
       title: "Rating",
       options: [
-        { id: "8star", label: "8", checked: false },
+      
         { id: "5star", label: "5", checked: false },
         { id: "4star", label: "4", checked: false },
         { id: "3star", label: "3", checked: false },
@@ -142,6 +205,46 @@ const OverallVendorProfile: React.FC = () => {
     },
   ];
 
+
+  const getActiveFiltersDisplay = () => {
+    const filters = [];
+    
+    if (statusFilters.length > 0) {
+      filters.push(`Status: ${statusFilters.join(', ')}`);
+    }
+    
+    if (locationFilters.length > 0) {
+      filters.push(`Countries: ${locationFilters.join(', ')}`);
+    }
+
+    if (ratingFilters.length > 0) {
+      filters.push(`Ratings: ${ratingFilters.join(', ')}`);
+    }
+    
+    return filters.length > 0 ? (
+      <div className="flex items-center gap-2 mt-2 mb-4">
+        <span className="text-sm text-gray-500">Active filters:</span>
+        <div className="flex flex-wrap gap-2">
+          {filters.map((filter, index) => (
+            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
+              {filter}
+            </span>
+          ))}
+        </div>
+        <button 
+          className="text-sm text-red-500 hover:text-red-700 ml-2"
+          onClick={() => {
+            setStatusFilters([]);
+            setLocationFilters([]);
+            setRatingFilters([]);
+            refetch();
+          }}
+        >
+          Clear all
+        </button>
+      </div>
+    ) : null;
+  };
   return (
     <div className="p-4 max-w-[1350px] mx-auto">
       <div className="flex flex-col sm:flex-row items-center mb-6 justify-between">
@@ -165,7 +268,7 @@ const OverallVendorProfile: React.FC = () => {
           onClick2={() => setShowForm(true)}
         />
       </div>
-
+      {getActiveFiltersDisplay()}
       {loading ? (
         <p className="text-center">Loading vendors...</p>
       ) : error ? (
@@ -192,12 +295,19 @@ const OverallVendorProfile: React.FC = () => {
 
       {showFilter && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <FilterHandler
+          {/* <FilterHandler
             filterSections={filterSections}
             onFilterApply={handleFilterApply}
             setShowFilter={setShowFilter}
             pageType="vendor"
-          />
+          /> */}
+
+            <FilterHandler1
+                      filterSections={filterSections}
+                      onFilterApply={handleFilterApply}
+                      setShowFilter={setShowFilter}
+                      pageType="vendor"
+                    />
         </div>
       )}
     </div>

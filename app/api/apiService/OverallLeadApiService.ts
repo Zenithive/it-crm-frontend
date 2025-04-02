@@ -1,221 +1,3 @@
-// // hooks/useOverallLeadsData.ts
-
-// import { useQuery, useMutation } from "@apollo/client";
-// import { useSelector } from "react-redux";
-// import { RootState } from "../../redux/store/store";
-// import { GET_LEADS_QUERY } from "../../../graphQl/queries/getLeads.query";
-// import { UPDATE_LEAD_MUTATION } from "../../../graphQl/mutation/updateLead.mutation";
-// import { useEffect } from "react";
-// import client from "../../../lib/appoloClient";
-
-// const getDateRange = () => {
-//   const today = new Date();
-//   const fromDate = new Date();
-//   fromDate.setDate(today.getDate() - 30);
-
-//   const formatDate = (date: Date) => date.toISOString().split("T")[0];
-
-//   console.log("formatDate(fromDate)", formatDate(fromDate));
-//   console.log(" formatDate(today)", formatDate(today));
-//   return {
-//     fromDate: formatDate(fromDate),
-//     toDate: formatDate(today),
-//   };
-// };
-
-// export interface Lead {
-//   leadID: string;
-//   firstName: string;
-//   lastName: string;
-//   email: string;
-//   phone: string;
-//   country: string;
-//   leadSource: string;
-//   leadStage: string;
-//   leadPriority: string;
-//   linkedIn?: string;
-//   initialContactDate?: string;
-//   leadCreatedBy: {
-//     userID: string;
-//     name: string;
-//     email: string;
-//   };
-//   leadAssignedTo: {
-//     userID: string;
-//     name: string;
-//     email: string;
-//   };
-//   organization: {
-//     organizationID: string;
-//     organizationName: string;
-//   };
-//   campaign: {
-//     campaignID: string;
-//     campaignName: string;
-//     campaignCountry: string;
-//     campaignRegion: string;
-//     industryTargeted: string;
-//   };
-// }
-
-// const useOverallLeadsData = (
-//   page: number,
-//   pageSize: number,
-//   searchQuery?: string,
-//   stage?: string,
-//   type?: string,
-//   campaign?: string,
-//   leadId?: string // Optional leadId parameter for single lead fetch
-// ) => {
-//   const { token } = useSelector((state: RootState) => state.auth);
-
-//   const filter: any = {};
-
-//   if (leadId) {
-//     filter.leadID = leadId; // Filter by leadId if provided
-//   }
-//   if (stage) {
-//     filter.leadStage = stage;
-//   }
-//   if (type) {
-//     filter.leadType = type;
-//   }
-//   if (campaign) {
-//     filter.campaign = campaign;
-//   }
-
-//   const queryVariables: any = {
-//     // filter: { fromDate, toDate },
-//     // pagination: { page, pageSize },
-//     pagination: {
-//       page,
-//       pageSize: leadId ? 1 : pageSize, // Use pageSize=1 if leadId is provided, otherwise use the provided pageSize
-//     },
-//     sort: { field: "EMAIL", order: "ASC" },
-//     filter,
-//   };
-
-//   if (searchQuery) {
-//     queryVariables.filter.search = searchQuery;
-//   }
-
-//   const { data, loading, error, refetch } = useQuery(GET_LEADS_QUERY, {
-//     variables: queryVariables,
-//     context: {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     },
-//   });
-
-//   console.log("queryVariables", queryVariables);
-//   console.log("data", data);
-
-//   console.log("Full data:", data);
-//   console.log("Items array:", data?.getLeads?.items);
-//   console.log("First item:", data?.getLeads?.items?.[0]);
-//   console.log("leadAssignedTo:", data?.getLeads?.items?.[0]?.leadAssignedTo);
-//   console.log("userID:", data?.getLeads?.items?.[0]?.leadAssignedTo?.userID);
-
-//   return {
-//     leads: data?.getLeads?.items || [], // Return the list of leads
-//     // console.log("leads",leads);
-//     lead: leadId ? data?.getLeads?.items?.[0] || null : null, // Return a single lead if leadId is provided
-//     totalCount: data?.getLeads?.totalCount || 0,
-//     loading,
-//     error: error ? error.message : null,
-//     refetch,
-//   };
-// };
-
-// export const useUpdateLead = () => {
-//   const { token, id: userID } = useSelector((state: RootState) => state.auth);
-
-//   const [updateLeadMutation, { data, loading, error }] = useMutation(
-//     UPDATE_LEAD_MUTATION,
-//     {
-//       context: {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       },
-//     }
-//   );
-
-//   // Add a query to fetch lead data when needed
-//   const { data: leadData } = useQuery(GET_LEADS_QUERY, {
-//     variables: { pagination: { page: 1, pageSize: 1 }, filter: {} },
-//     skip: true, // Don't run initially
-//     context: { headers: { Authorization: `Bearer ${token}` } },
-//   });
-
-//   const updateLead = async (leadID: string, input: Record<string, any>) => {
-//     // console.log('currentLeadData111',currentLeadData);
-//     try {
-//       console.log("Input from form:", input);
-//       console.log("Current userID:", userID);
-
-//       const { data: currentLeadData } = await client.query({
-//         query: GET_LEADS_QUERY,
-//         variables: { pagination: { page: 1, pageSize: 1 }, filter: { leadID } },
-//         context: { headers: { Authorization: `Bearer ${token}` } },
-//       });
-
-//       const leadAssignedToUserID =
-//         currentLeadData?.getLeads?.items?.[0]?.leadAssignedTo?.userID || "";
-//       console.log("leadAssignedToUserID", leadAssignedToUserID);
-//       const leadOrganizationID =
-//         currentLeadData?.getLeads?.items?.[0]?.organization?.organizationID || "";
-//       console.log("leadOrganizationID", leadAssignedToUserID);
-//       const leadcampaignID =
-//         currentLeadData?.getLeads?.items?.[0]?.campaign?.campaignID || "";
-//       console.log("leadAssignedToUserID", leadAssignedToUserID);
-//       const leadleadNotes =
-//         currentLeadData?.getLeads?.items?.[0]?.leadNotes || "";
-//       console.log("leadAssignedToUserID", leadAssignedToUserID);
-//       const leadType =
-//         currentLeadData?.getLeads?.items?.[0]?.leadNotes || "";
-//       console.log("leadAssignedToUserID", leadAssignedToUserID);
-
-
-//       const updatedInput = {
-//         firstName: input.firstName || "",
-//         lastName: input.lastName || "",
-//         email: input.email || "",
-//         linkedIn: input.linkedIn || "",
-//         country: input.country || "",
-//         phone: input.phone || "",
-//         leadSource: input.leadSource || "",
-//         leadStage: input.leadStage || "NEW",
-//         initialContactDate: input.initialContactDate || "",
-//         leadPriority: input.leadPriority || "MEDIUM",
-//         organizationID: leadOrganizationID,
-//         campaignID: leadcampaignID,
-//         // leadType: leadType,
-//         leadType: "MEDIUM",
-        
-//         leadAssignedTo: leadAssignedToUserID,
-//         leadNotes: leadleadNotes,
-//       };
-//       console.log("updatedInput", updatedInput);
-
-//       const response = await updateLeadMutation({
-//         variables: { leadID, input: updatedInput },
-//       });
-//       return response?.data?.updateLead;
-//     } catch (err) {
-//       console.error("Failed to update lead:", err);
-//       throw err;
-//     }
-//   };
-
-//   return {
-//     updateLead,
-//     updatedLead: data?.updateLead || null,
-//     loading,
-//     error: error ? error.message : null,
-//   };
-// };
 
 import { useQuery, useMutation } from "@apollo/client";
 import { useSelector } from "react-redux";
@@ -259,24 +41,86 @@ const useOverallLeadsData = (
   const filter: any = {};
 
   // Date filtering logic
-  if (startDate && endDate) {
-    // If both start and end dates are provided
-    filter.fromDate = startDate;
-    filter.toDate = endDate;
-  } else if (startDate) {
-    // If only start date is provided
-    filter.fromDate = startDate;
-  } else if (endDate) {
-    // If only end date is provided
-    filter.toDate = endDate;
-  }
+  // if (startDate && endDate) {
+  //   // If both start and end dates are provided
+  //   filter.fromDate = startDate;
+  //   filter.toDate = endDate;
+  // } else if (startDate) {
+  //   // If only start date is provided
+  //   filter.fromDate = startDate;
+  // } else if (endDate) {
+  //   // If only end date is provided
+  //   filter.toDate = endDate;
+  // }
  
 
 
-  if (stage) filter.leadStage = stage.toUpperCase();
-  if (type) filter.leadType = type;
-  if (campaign) filter.campaignName = campaign;
-  if (searchQuery) filter.search = searchQuery;
+  // if (stage) filter.leadStage = stage.toUpperCase();
+  // if (type) filter.leadType = type;
+  // if (campaign) filter.campaignName = campaign;
+  // if (searchQuery) filter.search = searchQuery;
+
+
+  if (startDate || endDate) {
+    const startDates = startDate ? startDate.split(',') : [];
+    const endDates = endDate ? endDate.split(',') : [];
+    
+    if (startDates.length === 1 && endDates.length === 1) {
+      // If single values for both start and end dates
+      filter.fromDate = startDate;
+      filter.toDate = endDate;
+    } else {
+      // For multiple date ranges
+      if (startDates.length > 1) {
+        filter.fromDate = startDates;
+        // If your API expects a specific format: filter.fromDate = { $in: startDates };
+      } else if (startDate) {
+        filter.fromDate = startDate;
+      }
+      
+      if (endDates.length > 1) {
+        filter.toDate = endDates;
+        
+      } else if (endDate) {
+        filter.toDate = endDate;
+      }
+    }
+  }
+  
+  // Parse remaining filters with the same multiple selection logic
+  if (stage) {
+    const stages = stage.split(',');
+    if (stages.length === 1) {
+      filter.leadStage = stage.toUpperCase();
+    } else if (stages.length > 1) {
+      filter.leadStage = stages.map(s => s.toUpperCase());
+      // If your API expects a specific format: filter.leadStage = { $in: stages.map(s => s.toUpperCase()) };
+    }
+  }
+  
+  if (type) {
+    const types = type.split(',');
+    if (types.length === 1) {
+      filter.leadType = type;
+    } else if (types.length > 1) {
+      filter.leadType = types;
+      
+    }
+  }
+  
+  if (campaign) {
+    const campaigns = campaign.split(',');
+    if (campaigns.length === 1) {
+      filter.campaignName = campaign;
+    } else if (campaigns.length > 1) {
+      filter.campaignName = campaigns;
+      
+    }
+  }
+  
+  if (searchQuery && searchQuery.trim() !== "") {
+    filter.search = searchQuery.trim();
+  }
 
   const queryVariables = leadId
     ? { leadID: leadId } // For GET_LEAD_BY_ID
@@ -304,6 +148,7 @@ const useOverallLeadsData = (
     leads: leadId ? (data?.getLead ? [data.getLead] : []) : data?.getLeads?.items || [],
     lead: leadId ? data?.getLead || null : null,
     totalCount: leadId ? (data?.getLead ? 1 : 0) : data?.getLeads?.totalCount || 0,
+    totalItems: data?.getLead?.totalCount || 0,
     loading,
     error: error ? error.message : null,
     refetch,

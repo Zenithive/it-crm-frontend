@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, JSX } from "react";
 import { useRouter } from "next/navigation";
 import Pagination from "../../microComponents/Pagination";
 import { useResourceList } from "../../api/apiService/resourcelistApiService";
@@ -17,6 +17,7 @@ interface ResourceContainerProps {
   vendorNameFilter?: string;
   experienceYearFilter?: string;
   skillsFilter?: string;
+  display?: () => JSX.Element |null
 }
 
 const ResourceContainer: React.FC<ResourceContainerProps> = ({
@@ -24,6 +25,7 @@ const ResourceContainer: React.FC<ResourceContainerProps> = ({
   vendorNameFilter,
   experienceYearFilter,
   skillsFilter,
+  display
 }) => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,8 +72,12 @@ const ResourceContainer: React.FC<ResourceContainerProps> = ({
   return (
     <div className="w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-[70px]">
       <div className="flex-grow mt-6">
+      {display && display()}
         <div className="bg-white shadow-custom rounded-xl">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 sm:p-6 lg:p-8">
+
+
+          
             {loading ? (
               <p>Loading...</p>
             ) : error ? (

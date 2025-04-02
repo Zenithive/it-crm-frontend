@@ -7,6 +7,7 @@ import AddLeadModal from "../AddLeadModal";
 
 import FilterHandler from "../Filter/FilterHandler";
 import useOverallLeadsData from "../../api/apiService/OverallLeadApiService";
+import FilterHandler1 from "../Filter/FilterHandler1";
 
 
 
@@ -172,14 +173,23 @@ const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignF
 {pageType === 'contact' && isLeadModalVisible && <AddLeadModal onClose={hideLeadModal} />}
 {showFilter && (
   <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <FilterHandler
+    {/* <FilterHandler
       filterSections={pageType === 'deals' 
         ? filterSections.filter(section => section.id !== 'stage')
         : filterSections}
       onFilterApply={onFilter || (() => {})}
       setShowFilter={setShowFilter}
       pageType="contact"
-    />
+    /> */}
+   <FilterHandler1
+             filterSections={pageType === 'deals' 
+              ? filterSections.filter(section => section.id !== 'stage')
+              : filterSections}
+              onFilterApply={onFilter as any}
+            setShowFilter={setShowFilter}
+            pageType="contact"
+          />
+
   </div>
 )}
 </>

@@ -152,8 +152,37 @@ const FilterHandler1: React.FC<FilterHandlerProps> = ({
   // Keeping other handlers but will only implement case study handler for now
   const handleFilterApply = async () => {
     // Your existing code for contacts
+
+const dateSelections=selectedOptionsByCategory['date']||[];
+    const typeSelections = selectedOptionsByCategory['type'] || [];
+    const stageSelections = selectedOptionsByCategory['stage'] || [];
+    const campaignSelections = selectedOptionsByCategory['campaign'] || [];
+    
+    // Create filter object
+    const filterObj: any = {};
+    if (startDate) {
+      filterObj.startDate = startDate;
+    }
+    if (endDate) {
+      filterObj.endDate = endDate;
+    }
+    // Only add filters if options are selected
+    if (typeSelections.length > 0) {
+      filterObj.type = typeSelections.join(',');
+    }
+    
+    if (dateSelections.length > 0) {
+      filterObj.date = dateSelections.join(',');
+    }
+    
+    if (stageSelections.length > 0) {
+      filterObj.stage= stageSelections.join(',');
+    }
+    if (campaignSelections.length > 0) {
+      filterObj.campaign= campaignSelections.join(',');
+    }
     const payload: FilterPayload = {
-      filter: {},
+      filter:filterObj,
       pagination: {
         page: 1,
         pageSize: 10
@@ -170,28 +199,94 @@ const FilterHandler1: React.FC<FilterHandlerProps> = ({
 
   const handleFilterApplyResource = async () => {
     // Your existing code for resources
+
+    
+    const filterObj: any = {};
+    const skillsSelections = selectedOptionsByCategory['skills'] || [];
+    const experienceYearSelections = selectedOptionsByCategory['experienceYear'] || [];
+    
+    
+    // Only add filters if options are selected
+    if (skillsSelections.length > 0) {
+      filterObj.skills = skillsSelections.join(',');
+    }
+    
+    if (experienceYearSelections.length > 0) {
+      filterObj.experienceYear = experienceYearSelections.join(',');
+    }
+
+
     await onFilterApply({
-      filter: {},
+      filter:filterObj,
       pagination: { page: 1, pageSize: 10 },
       sort: { field: 'createdAt', order: 'DESC' }
     });
     setShowFilter(false);
   };
 
-  const handleFilterApplyVendor = async () => {
-    // Your existing code for vendors
-    await onFilterApply({
-      filter: {},
+  
+  const handleFilterApplyVendor = () => {
+    // Get the selected options by category
+    const statusSelections = selectedOptionsByCategory['status'] || [];
+    const locationSelections = selectedOptionsByCategory['location'] || [];
+    const ratingSelections = selectedOptionsByCategory['rating'] || [];
+    
+    // Create filter object - only include populated filters
+    const filterObj: { status?: string; country?: string;  reviewFromPerformanceRating?:string } = {};
+    
+    if (statusSelections.length > 0) {
+      // Make sure to transform values to match API expectations
+      // For example, if backend expects "ACTIVE" instead of "active"
+      const formattedStatuses = statusSelections.map(status => 
+        status.toUpperCase()
+      );
+      filterObj.status = formattedStatuses.join(',');
+    }
+    
+    if (locationSelections.length > 0) {
+      // Make sure these match country values in your backend exactly
+      filterObj.country = locationSelections.join(',');
+    }
+    if (ratingSelections.length > 0) {
+      // Make sure these match country values in your backend exactly
+      filterObj. reviewFromPerformanceRating = ratingSelections.join(',');
+    }
+    // Apply filters once, with a single call
+    onFilterApply({
+      filter: filterObj,
       pagination: { page: 1, pageSize: 10 },
       sort: { field: 'createdAt', order: 'DESC' }
     });
+    
+    // Close filter modal
     setShowFilter(false);
   };
-
   const handleFilterApplyTodo = async () => {
     // Your existing code for todos
+    const filterObj: any = {};
+    const statusSelections = selectedOptionsByCategory['status'] || [];
+    const prioritySelections = selectedOptionsByCategory['priority'] || [];
+    const dateSelections=selectedOptionsByCategory['date']||[];
+    if (startDate) {
+      filterObj.startDate = startDate;
+    }
+    if (endDate) {
+      filterObj.endDate = endDate;
+    }
+
+    if (statusSelections.length > 0) {
+      filterObj.status = statusSelections.join(',');
+    }
+    
+    if (prioritySelections.length > 0) {
+      filterObj.priority = prioritySelections.join(',');
+    }
+
+    if (dateSelections.length > 0 && !startDate && !endDate) {
+      filterObj.date = dateSelections.join(',');
+    }
     await onFilterApply({
-      filter: {},
+      filter: filterObj,
       pagination: { page: 1, pageSize: 10 },
       sort: { field: 'createdAt', order: 'DESC' }
     });
@@ -200,6 +295,8 @@ const FilterHandler1: React.FC<FilterHandlerProps> = ({
 
   const clearFilters = () => {
     setSelectedOptionsByCategory({});
+    setStartDate('');
+    setEndDate('');
   };
 
   return (

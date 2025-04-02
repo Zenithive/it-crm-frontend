@@ -40,25 +40,80 @@ const todoListApiService = (
     const filter: any = {};          
 
     // Handle date filtering with both start and end dates
-    if (startDate && endDate) {
-      filter.fromDate = startDate;
-      filter.toDate = endDate;
-    } else if (startDate) {
-      filter.fromDate = startDate;
-    } else if (endDate) {
-      filter.toDate = endDate;
-    }
+    // if (startDate && endDate) {
+    //   filter.fromDate = startDate;
+    //   filter.toDate = endDate;
+    // } else if (startDate) {
+    //   filter.fromDate = startDate;
+    // } else if (endDate) {
+    //   filter.toDate = endDate;
+    // }
      
-    if (priority) {       
-      filter.priority = priority.toUpperCase();     
-    }          
+    // if (priority) {       
+    //   filter.priority = priority.toUpperCase();     
+    // }          
 
-    if (status) {       
-      filter.status = status.toUpperCase();     
-    }      
+    // if (status) {       
+    //   filter.status = status.toUpperCase();     
+    // }      
+    // if (searchQuery && searchQuery.trim() !== "") {
+    //   filter.search = searchQuery.trim();
+    // }
+
+
+    if (startDate || endDate) {
+      const startDates = startDate ? startDate.split(',') : [];
+      const endDates = endDate ? endDate.split(',') : [];
+      
+      if (startDates.length === 1 && endDates.length === 1) {
+        // If single values for both start and end dates
+        filter.fromDate = startDate;
+        filter.toDate = endDate;
+      } else {
+        // For multiple date ranges
+        if (startDates.length > 1) {
+          filter.fromDate = startDates;
+          // If your API expects a specific format: filter.fromDate = { $in: startDates };
+        } else if (startDate) {
+          filter.fromDate = startDate;
+        }
+        
+        if (endDates.length > 1) {
+          filter.toDate = endDates;
+          
+        } else if (endDate) {
+          filter.toDate = endDate;
+        }
+      }
+    }
+    
+    // Parse remaining filters with the same multiple selection logic
+    if (status) {
+      const statuses = status.split(',');
+      if (statuses.length === 1) {
+        filter.status = status.toUpperCase();
+      } else if (statuses.length > 1) {
+        filter.status = statuses.map(s => s.toUpperCase());
+        // If your API expects a specific format: filter.leadStage = { $in: stages.map(s => s.toUpperCase()) };
+      }
+    }
+    
+    if (priority) {
+      const priorities = priority.split(',');
+      if (priorities.length === 1) {
+        filter.priority = priority.toUpperCase();
+      } else if (priorities.length > 1) {
+        filter.priority = priorities.map(s=>s.toUpperCase());
+        
+      }
+    }
+    
+   
+    
     if (searchQuery && searchQuery.trim() !== "") {
       filter.search = searchQuery.trim();
     }
+
   
     try {       
       if (!apiUrl) {         

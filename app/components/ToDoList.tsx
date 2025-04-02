@@ -16,12 +16,14 @@ import Filter from "./Filter/Filter";
 import FilterDropdown from "../microComponents/FiterDropdown";
 import FilterHandler from "./Filter/FilterHandler";
 import _ from "lodash";
+import FilterHandler1 from "./Filter/FilterHandler1";
 
 
 
 interface FilterPayload {
   filter: {
-    [key: string]: string | undefined; // Dynamic filter keys
+    [key: string]: string | string[] | undefined;
+    // [key: string]: string | undefined; // Dynamic filter keys
   };
   pagination: {
     page: number;
@@ -43,9 +45,12 @@ const [startDate, setStartDate] = useState<string | undefined>(undefined);
 const [endDate, setEndDate] = useState<string | undefined>(undefined);
     
   const [dateFilter, setDateFilter] = useState<string | undefined>(undefined);
-  const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
- const [priorityFilter, setPriorityFilter] = useState<string | undefined>(undefined);
+//   const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
+//  const [priorityFilter, setPriorityFilter] = useState<string | undefined>(undefined);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [statusFilters, setStatusFilters] = useState<string[]>([]);
+  const [priorityFilters, setPriorityFilters] = useState<string[]>([]);
   const debouncedSearch = useCallback(
     _.debounce((query: string) => {
       setSearchQuery(query);
@@ -63,9 +68,11 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
     itemsPerPage,
     startDate,     // Pass startDate
     endDate, 
-    priorityFilter,
+    // priorityFilter,
+    priorityFilters.length > 0 ? priorityFilters.join(',') : undefined,
     searchQuery,
-    statusFilter
+    // statusFilter
+    statusFilters.length > 0 ? statusFilters.join(',') : undefined
   );
 
   
@@ -136,14 +143,78 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
  
   const handleFilterApply = async (payload: FilterPayload) => {
     const { filter } = payload;
-    setStartDate(filter.startDate);
-    setEndDate(filter.endDate);
-    setStatusFilter(filter.status);
-    setPriorityFilter(filter.priority);
-    setCurrentPage(1);
+    // setStartDate(filter.startDate);
+    // setEndDate(filter.endDate);
+    // setStatusFilter(filter.status);
+    // setPriorityFilter(filter.priority);
+    // setCurrentPage(1);
+    if (filter.priority) {
+      const prioritiesStr = filter.priority as string;
+      setPriorityFilters(prioritiesStr.split(','));
+    } else {
+      setPriorityFilters([]);
+    }
     
+    // Handle technology filter
+    if (filter.status) {
+      const statusesStr = filter.status as string;
+      setStatusFilters(statusesStr.split(','));
+    } else {
+      setStatusFilters([]);
+    }
+
+    setStartDate(Array.isArray(filter.startDate) ? undefined : filter.startDate);
+    setEndDate(Array.isArray(filter.endDate) ? undefined : filter.endDate);
+    // setCurrentPage(1);
+    // await refetch();
+
    
   };
+
+  const getActiveFiltersDisplay = () => {
+    const filters = [];
+    
+    if (statusFilters.length > 0) {
+      filters.push(`status: ${statusFilters.join(', ')}`);
+    }
+    
+    if (priorityFilters.length > 0) {
+      filters.push(`priority: ${priorityFilters.join(', ')}`);
+    }
+    if (startDate && endDate) {
+      filters.push(`Date range: ${startDate} to ${endDate}`);
+    } else if (startDate) {
+      filters.push(`From date: ${startDate}`);
+    } else if (endDate) {
+      filters.push(`To date: ${endDate}`);
+    }
+    return filters.length > 0 ? (
+      <div className="flex items-center gap-2 mt-2 mb-4">
+        <span className="text-sm text-gray-500">Active filters:</span>
+        <div className="flex flex-wrap gap-2">
+          {filters.map((filter, index) => (
+            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
+              {filter}
+            </span>
+          ))}
+        </div>
+        <button 
+          className="text-sm text-red-500 hover:text-red-700 ml-2"
+          onClick={() => {
+            setStatusFilters([]);
+            setPriorityFilters([]);
+            setStartDate("");
+            setEndDate("");
+            refetch();
+          }}
+        >
+          Clear all
+        </button>
+      </div>
+    ) : null;
+  };
+
+
   return (
     <div className="p-4 max-w-[1350px] mx-auto">
       <div className="flex flex-col sm:flex-row items-center mb-6 justify-between">
@@ -171,7 +242,7 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
           refetch={refetch}
         />
       </div>
-
+      {getActiveFiltersDisplay()}
       {loading ? (
         <p className="text-center">Loading tasks...</p>
       ) : error ? (
@@ -199,11 +270,18 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
         
 
           
-<FilterHandler
+{/* <FilterHandler
             filterSections={filterSections}
             onFilterApply={handleFilterApply}
             setShowFilter={setShowFilter}
              pageType="todo"
+          /> */}
+
+<FilterHandler1
+            filterSections={filterSections}
+            onFilterApply={handleFilterApply}
+            setShowFilter={setShowFilter}
+            pageType="todo"
           />
         </div>
       )}

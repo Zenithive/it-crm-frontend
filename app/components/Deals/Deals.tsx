@@ -42,9 +42,10 @@ const Deals = () => {
 
    const [startDate, setStartDate] = useState<string | undefined>(undefined);
    const [endDate, setEndDate] = useState<string | undefined>(undefined);
-  const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
-  const [campaignFilter, setCampaignFilter] = useState<string | undefined>(undefined);
- 
+  // const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
+  // const [campaignFilter, setCampaignFilter] = useState<string | undefined>(undefined);
+  const [typeFilters, setTypeFilters] = useState<string[]>([]);
+  const [campaignFilters, setCampaignFilters] = useState<string[]>([]);
 // const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignFilter);
 
   const user = useSelector((state: RootState) => state.auth);
@@ -79,13 +80,28 @@ const Deals = () => {
     
     // Just update the state - the hook will handle the refetch
 
-    setTypeFilter(filter.type);
-    setCampaignFilter(filter.campaign);
-    setStartDate(filter.startDate);
-    setEndDate(filter.endDate);
-    setCurrentPage(1);
+    // setTypeFilter(filter.type);
+    // setCampaignFilter(filter.campaign);
+    // setStartDate(filter.startDate);
+    // setEndDate(filter.endDate);
+    // setCurrentPage(1);
     
- 
+    if (filter.type) {
+      const typeStr = filter.type as string;
+      setTypeFilters(typeStr.split(','));
+    } else {
+      setTypeFilters([]);
+    }
+    if (filter.campaign) {
+      const campaignStr = filter.campaign as string;
+      setCampaignFilters(campaignStr.split(','));
+    } else {
+      setCampaignFilters([]);
+    }
+    setStartDate(Array.isArray(filter.startDate) ? undefined : filter.startDate);
+    setEndDate(Array.isArray(filter.endDate) ? undefined : filter.endDate);
+    setCurrentPage(1);
+    await refetch();
   };
   
  
@@ -95,13 +111,62 @@ const Deals = () => {
     pageSize,
     searchQuery,
     "deal",
-    typeFilter,
-    campaignFilter,
+    // typeFilter,
+    // campaignFilter,
+    typeFilters.length>0 ?typeFilters.join(','):undefined,
+    campaignFilters.length>0 ?campaignFilters.join(','):undefined,
     startDate,
     endDate
 
   );
-  
+  const getActiveFiltersDisplay = () => {
+    const filters = [];
+    
+    if (typeFilters.length > 0) {
+      filters.push(`Types: ${typeFilters.join(', ')}`);
+    }
+
+    if (startDate && endDate) {
+      filters.push(`Date range: ${startDate} to ${endDate}`);
+    } else if (startDate) {
+      filters.push(`From date: ${startDate}`);
+    } else if (endDate) {
+      filters.push(`To date: ${endDate}`);
+    }
+    
+    
+
+    if (campaignFilters.length > 0) {
+      filters.push(`campaigns: ${campaignFilters.join(', ')}`);
+    }
+   
+    
+    return filters.length > 0 ? (
+      <div className="flex items-center gap-2 mt-2 mb-4">
+        <span className="text-sm text-gray-500">Active filters:</span>
+        <div className="flex flex-wrap gap-2">
+          {filters.map((filter, index) => (
+            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
+              {filter}
+            </span>
+          ))}
+        </div>
+        <button 
+          className="text-sm text-red-500 hover:text-red-700 ml-2"
+          onClick={() => {
+            setTypeFilters([]);
+            setCampaignFilters([]);
+         
+            setStartDate("");
+            setEndDate("");
+            refetch();
+          }}
+        >
+          Clear all
+        </button>
+      </div>
+    ) : null;
+  };
   
   return (
     <>
@@ -117,6 +182,7 @@ const Deals = () => {
       />     
 
       <div className="pt-[40px]">
+      {getActiveFiltersDisplay()}
         {loading ? (
           <div className="text-center p-6">Loading data...</div>
         ) :  (
