@@ -26,6 +26,11 @@ const Form = () => {
         role: response.user.role,
         token: response.token,
       };
+  
+      // Store in cookie
+      document.cookie = `token=${response.token}; path=/; max-age=86400; Secure; SameSite=Strict`;
+      document.cookie = `userData=${JSON.stringify(userData)}; path=/; max-age=86400; Secure; SameSite=Strict`;
+  
       dispatch(loginSuccess(userData));
       router.push("/dashboard");
     }
