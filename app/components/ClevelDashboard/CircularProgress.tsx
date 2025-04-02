@@ -26,6 +26,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null); 
   const displayValue = isCurrency ? `$${value.toLocaleString()}` : `${safeValue}%`; 
  
+  console.log(`value`, value);
   const data = [
     { name: "Completed", value: safeValue },
     { name: "Remaining", value: isCurrency ? 0 : 100 - safeValue },

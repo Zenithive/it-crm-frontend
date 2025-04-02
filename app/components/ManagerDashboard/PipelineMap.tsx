@@ -5,7 +5,7 @@ import { Card } from '../../microComponents/CardForIndividualDashboard';
 import { CardContent } from '../../microComponents/CardContent';
 import { CardHeader } from '../../microComponents/CardHeader';
 import { CardTitle } from '../../microComponents/CardTitle';
-import { CountryLeadStats } from '../../api/apiService/leadsApiService';
+import { CountryLeadStats } from '../../api/apiService/leadApiInterface';
 import ReactDOM from 'react-dom';
 import FilterDropdown from '../../microComponents/FiterDropdown';
 

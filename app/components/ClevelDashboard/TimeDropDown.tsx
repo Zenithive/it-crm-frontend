@@ -1,14 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
 
-interface TimeDropdownProps {
-  onChange: (filter: string) => void;
-  currentFilter: string;
+type TimeFilterType = 'today' | 'weekly' | 'monthly' | 'quarterly' | 'yearly' | 'half-yearly';
+
+interface TimeDropDownProps {
+  onChange: (filter: TimeFilterType) => void;
+  currentFilter: TimeFilterType;
 }
 
 
-
-const TimeDropdown: React.FC<TimeDropdownProps>  = ({ onChange, currentFilter }) => {
+const TimeDropdown: React.FC<TimeDropDownProps>  = ({ onChange, currentFilter }) => {
   const [isOpen, setIsOpen] = useState(false);
   
   // Map display names to filter values used by the API
@@ -39,7 +40,7 @@ const TimeDropdown: React.FC<TimeDropdownProps>  = ({ onChange, currentFilter })
               key={option.value}
               className="p-2 hover:bg-gray-200 cursor-pointer text-gray-text-color"
               onClick={() => {
-                onChange(option.value);
+                onChange(option.value as TimeFilterType);
                 setIsOpen(false);
               }}
             >
