@@ -3,6 +3,7 @@ import { useMutation } from "@apollo/client";
 import { DELETE_TASK_MUTATION } from "../../graphQl/mutation/deleteTask.mutation";
 import { RootState } from "../redux/store/store";
 import { useSelector } from "react-redux";
+import PubSub from "../pubsub/Pubsub";
 
 export const useDeleteTask = (refetch: () => void) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -17,6 +18,11 @@ export const useDeleteTask = (refetch: () => void) => {
     },
     onCompleted: () => {
       refetch();
+
+      PubSub.publish("DELETE_SUCCESS", {
+      
+        component: "todo"
+      });
       handleCloseDeleteModal();
     },
     onError: (error) => {

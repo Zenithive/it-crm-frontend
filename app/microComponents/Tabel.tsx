@@ -106,8 +106,9 @@ const MicroTable: React.FC<MicroTablePropsForListView> = ({
         case "type":
           return (
             <span className="inline-block px-4 py-1 text-blue-700 bg-blue-100 font-semibold text-opacity-70 rounded-md">
-              Small
+            {record.leadType || "N/A"}
             </span>
+           
           );
 
         case "campaign":

@@ -35,8 +35,8 @@ const IndividualTitle = ({ leadId }: { leadId: string }) => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-4">
+      <div className="flex justify-between items-center mb-6  ">
+        <div className="flex items-center gap-4 ">
       
           <div className="text-2xl font-bold text-bg-blue-12">
             {loading
@@ -49,13 +49,14 @@ const IndividualTitle = ({ leadId }: { leadId: string }) => {
             {loading ? "Loading..." : lead ? `${lead.leadStage}` : "No Data Available"}
           </span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 z-50 relative">
           <IconButton
             icon="/edit_logo.svg"
             text="Edit Contact"
             onClick={handleEditContact} // Trigger modal open
           />
-          <HeaderFlag />
+          <div className="relative">  <HeaderFlag  /></div>
+        
         </div>
       </div>
 

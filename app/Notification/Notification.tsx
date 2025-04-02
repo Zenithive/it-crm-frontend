@@ -221,7 +221,28 @@ const LeadNotifications: React.FC<NotificationProps> = ({ duration = 5000 }) => 
         message:"there is some error!",
       });
     });
-    // Cleanup subscriptions
+    
+
+
+    const deleteSuccess = PubSub.subscribe("DELETE_SUCCESS", (data) => {
+      const { vendorName,title,component} = data;
+
+      let message="";
+if(component==="vendor"){
+  message = `${vendorName}  successfully deleted !`; 
+
+}
+
+if(component==="todo"){
+  message = `task successfully deleted !`; 
+
+}
+
+      addNotification({
+        type: "info",
+        message,
+      });
+    });
     return () => {
       successSub();
       errorSub();
@@ -241,6 +262,7 @@ const LeadNotifications: React.FC<NotificationProps> = ({ duration = 5000 }) => 
       ToDolistError();
       leadNoteAdd();
       leadNoteAddError();
+      deleteSuccess();
       DocumentAdd();
       DocAddError();
      

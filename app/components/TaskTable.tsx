@@ -79,7 +79,11 @@ const TaskTable: React.FC<TaskTableProps> = ({ todos, onDelete , onEdit, refetch
                     src="/delete.svg"
                     alt="Delete"
                     className="cursor-pointer px-4"
-                    onClick={() => onDelete(todo.taskID)}
+                    onClick={() => onDelete(todo.taskID  
+
+
+                      
+                    )}
                   />
                 </td>
               </tr>

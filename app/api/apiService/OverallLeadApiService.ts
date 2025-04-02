@@ -200,7 +200,8 @@ export const useUpdateLead = () => {
         leadPriority: leadPriority,
         organizationID: leadOrganizationID,
         campaignID: leadCampaignID,
-        leadType: leadType,
+        // leadType: leadType,
+        leadType: input.leadType,
         leadAssignedTo: leadAssignedToUserID,
         leadNotes: leadNotes,
       };

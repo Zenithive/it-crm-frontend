@@ -219,6 +219,14 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
     });
   };
 
+
+
+  const sortedNotes = notesData?.getNotesByReference
+    ? [...notesData.getNotesByReference].sort((a, b) => {
+        if (!a.createdAt || !b.createdAt) return 0;
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      })
+    : [];
   return (
     <div className="bg-white rounded-lg shadow-custom p-1  flex flex-col h-screen">
       <div className="flex-1 overflow-y-auto scrollbar-custom">
@@ -304,7 +312,7 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
             disabled={noteCreationLoading}
             className="flex items-center gap-2 text-white bg-bg-blue-12 p-2 text-[14px] rounded-md mr-5"
           >
-            <img src="/plus.svg" alt="Plus" className="mr-1"></img>
+            {/* <img src="/plus.svg" alt="Plus" className="mr-1"></img> */}
             {noteCreationLoading ? "Adding..." : "Add Note"}
           </button>
         </div>
@@ -320,17 +328,18 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
           />
         </div>
 
-        {/* Notes List - Scrollable */}
-        <div className="max-h-[300px] overflow-y-auto  scrollbar-custom p-4 mr-2">
+      
+
+<div className="max-h-[300px] overflow-y-auto scrollbar-custom p-4 mr-2">
           {notesLoading ? (
             <p className="text-center text-gray-500">Loading notes...</p>
           ) : notesError ? (
             <p className="text-center text-red-500">Error loading notes: {notesError.message}</p>
-          ) : notesData?.getNotesByReference?.length === 0 ? (
+          ) : sortedNotes.length === 0 ? (
             <p className="text-center text-gray-500">No notes found</p>
           ) : (
             <div className="space-y-4">
-              {notesData?.getNotesByReference?.map((note: Note) => (
+              {sortedNotes.map((note: Note) => (
                 <div 
                   key={note.noteID} 
                   className="border rounded-lg p-3 bg-gray-50"
@@ -342,9 +351,7 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
                   </div>
                 </div>
               ))}
-            </div>
-          )}
-        </div>
+            </div>)}</div>
       </div>
       {isUploadFormOpen && (
         <DocumentUploadForm

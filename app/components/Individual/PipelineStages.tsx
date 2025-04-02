@@ -14,8 +14,8 @@ type Stage = {
 function PipelineStages({ leadId }: { leadId: string }) {
   const defaultStages: { [key: string]: { title: string; order: number } } = {
     NEW: { title: "Lead Created", order: 0 },
-    FOLLOW_UP: { title: "Qualified", order: 1 },
-    IN_PROGRESS: { title: "Negotiation", order: 2 },
+    QUALIFIED: { title: "Qualified", order: 1 },
+    NEGOTIATION: { title: "Negotiation", order: 2 },
     CLOSED_WON: { title: "Closed Win", order: 3 },
     CLOSED_LOST: { title: "Closed Lost", order: 4 },
   };
@@ -24,7 +24,8 @@ function PipelineStages({ leadId }: { leadId: string }) {
   const [current, setCurrent] = useState(0);
   const user = useSelector((state: RootState) => state.auth);
 
-  const { lead, loading, error, refetch } = useOverallLeadsData(1, 100, "", "", "", "",leadId);
+  // const { lead, loading, error, refetch } = useOverallLeadsData(1, 100, "", "", "", "",leadId);
+  const { lead, loading, error, refetch } = useOverallLeadsData(1, 100, "", "", "", "", "", "", leadId);
 
   const [updateLead, { loading: updateLoading, error: updateError }] = useMutation(
     UPDATE_LEAD_MUTATION,

@@ -17,6 +17,8 @@ export const useUpdateTask = (refetch: () => void) => {
       : undefined, // Prevents issues if token is missing
     onCompleted: () => {
       refetch();
+
+      
     },
     onError: (error) => {
       console.error("Failed to update task:", error);

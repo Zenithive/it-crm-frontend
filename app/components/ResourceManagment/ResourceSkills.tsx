@@ -85,13 +85,21 @@ const ResourceSkills: React.FC<ResourceSkillsProps> = ({ resourceData }) => {
   })) || [];
 
   // Helper function to determine experience duration based on skill matching with project name
+  // function getExperienceDuration(projectName: string, skills?: Array<any>): string {
+  //   const matchingSkill = skills?.find(s => 
+  //     projectName.toLowerCase().includes(s.skill.name.toLowerCase())
+  //   );
+  //   return matchingSkill ? `${matchingSkill.experienceYears} years` : "N/A";
+  // }
   function getExperienceDuration(projectName: string, skills?: Array<any>): string {
-    const matchingSkill = skills?.find(s => 
-      projectName.toLowerCase().includes(s.skill.name.toLowerCase())
+    // Check if the project name is associated with any skill
+    const matchingSkill = skills?.find((s) => 
+      s.skill.name.toLowerCase() === projectName.toLowerCase()
     );
+  
     return matchingSkill ? `${matchingSkill.experienceYears} years` : "N/A";
   }
-
+  
   return (
     <div className="">
       <div className="flex justify-between items-center">

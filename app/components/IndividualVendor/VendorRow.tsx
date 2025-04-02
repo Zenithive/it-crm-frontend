@@ -8,6 +8,7 @@ import DeleteConfirmation from "../DeleteConfirmation";
 import { useDeleteVendor } from "../../api/apiService/deleteVendorApiService";
 import { useVendors } from "../../api/apiService/overallvendorApiService";
 import { createPortal } from "react-dom";
+import PubSub from "../../pubsub/Pubsub";
 
 interface Vendor {
   vendorID: string;
@@ -106,6 +107,12 @@ const VendorRow: React.FC<VendorRowProps> = ({ vendor, onVendorDeleted,refetchVe
         console.log("Vendor deleted successfully:", result.companyName);
         if (onVendorDeleted) onVendorDeleted(vendor.vendorID);
         if (refetchVendors) refetchVendors();
+
+
+        PubSub.publish("DELETE_SUCCESS", {
+      vendorName:result.companyName,
+          component: "vendor"
+        });
       } else {
         console.error("Delete failed: No result returned");
       }
