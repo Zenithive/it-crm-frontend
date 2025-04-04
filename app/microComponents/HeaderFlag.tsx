@@ -198,7 +198,7 @@ const HeaderFlag = () => {
         {isOpen && (
           <div
             ref={dropdownRef}
-            className="absolute top-[50px] left-0 bg-white rounded-lg shadow-lg py-2 px-2 w-44 z-10"
+            className="absolute top-[50px] left-0 bg-white rounded-lg shadow-lg py-2 px-2 w-44 z-[1000]"
           >
             <div
               className="max-h-[200px] overflow-y-auto scroll scrollbar-custom"
@@ -223,7 +223,7 @@ const HeaderFlag = () => {
         {isZoneOpen && hoveredCountry && (
           <div
             ref={zoneRef}
-            className="absolute top-[50px] left-44 bg-white rounded-lg shadow-lg py-2 px-2 w-44 z-10"
+            className="absolute top-[50px] left-44 bg-white rounded-lg shadow-lg py-2 px-2 w-44 z-[1000]"
             onMouseEnter={handleZoneHover}
             onMouseLeave={handleMouseLeave}
           >

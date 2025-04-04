@@ -200,7 +200,7 @@ const Deals = () => {
         )}
       </div>
 
-      {showAddLeadModal && <AddLeadModal onClose={() => setShowAddLeadModal(false)} />}
+      {showAddLeadModal && <AddLeadModal onClose={() => setShowAddLeadModal(false)} pageType="deals" />}
     </>
   );
 };

@@ -32,17 +32,20 @@ const LEAD_STAGES = [
   { value: "CLOSED_LOST", label: "Closed Lost" },
 ];
 
+
 interface AddLeadModalProps {
   onClose: () => void;
   leadId?: string;
+  pageType?:string;
 }
 
-const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
+const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType }) => {
   const {
     register,
     handleSubmit,
     reset,
     setValue,
+   
     formState: { errors },
   } = useForm<LeadFormData>({
     defaultValues: {
@@ -64,6 +67,9 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
   const [loading, setLoading] = useState(false);
   const { token } = useSelector((state: RootState) => state.auth);
 
+
+  
+
   const { lead, loading: fetchLoading, error: fetchError, refetch } = useOverallLeadsData(
     1,
     10,
@@ -78,6 +84,8 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
 
   const { updateLead, loading: updateLoading } = useUpdateLead();
   const { addLead, loading: addLoading } = useAddLead();
+
+  
 
   useEffect(() => {
     if (leadId && !fetchLoading && !fetchError && lead) {
@@ -96,6 +104,9 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
       setValue("organizationName", lead.organization?.organizationName || "");
       setValue("email", lead.email || "");
       setValue("country", lead.country || "");
+
+  
+      
       console.log("Pre-filled lead data:", lead);
     }
   }, [lead, fetchLoading, fetchError, setValue, leadId]);
@@ -121,6 +132,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
           leadSource: data.leadSource,
           leadStage: data.leadStage,
           leadType: data.leadType,
+          
           initialContactDate: data.initialContactDate,
         });
         PubSub.publish("LEAD_UPDATE_SUCCESS", { 
@@ -176,6 +188,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
       setLoading(false);
     }
   };
+
 
   return (
     <div
@@ -261,7 +274,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
                     <label className="block text-sm text-bg-blue-12 mb-2">Phone</label>
                     <div className="flex">
                       <select
-                        className="w-12 mr-2 py-2 border border-bg-blue-12 rounded-lg text-gray-400 text-sm focus:outline-none"
+                        className="w-12 mr-2 py-2 border border-bg-blue-12 rounded-lg text-black text-sm focus:outline-none"
                       >
                         <option value="+91">+91</option>
                         <option value="+92">+92</option>
@@ -286,14 +299,16 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
                     <label className="block text-sm text-bg-blue-12 mb-2">Source</label>
                     <select
                       {...register("leadSource", { required: "Lead source is required" })}
-                      className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
+                      className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-non"
+                      
                     >
-                      <option value="" disabled>
+                      <option value="" disabled className=" text-gray-400">
                         Select a source
                       </option>
-                      <option value="Linkedin">LinkedIn</option>
-                      <option value="Upwork">Upwork</option>
+                      <option value="Linkedin" className="text-black">LinkedIn</option>
+                      <option value="Upwork" className="text-black">Upwork</option>
                     </select>
+
                     {errors.leadSource && (
                       <span className="text-red-500 text-sm">{errors.leadSource.message}</span>
                     )}
@@ -316,27 +331,32 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
 
                 {/* Lead Stage and Campaign */}
                 <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm text-bg-blue-12 mb-2">Lead Stage</label>
-                    <select
-                      {...register("leadStage", { required: "Lead stage is required" })}
-                      className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
-                    >
-                      {LEAD_STAGES.map((stage) => (
-                        <option key={stage.value} value={stage.value}>
-                          {stage.label}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.leadStage && (
-                      <span className="text-red-500 text-sm">{errors.leadStage.message}</span>
-                    )}
-                  </div>
+                  
+               
+
+{pageType === "lead" && (
+    <div>
+      <label className="block text-sm text-bg-blue-12 mb-2">Lead Stage</label>
+      <select
+        {...register("leadStage", { required: "Lead stage is required" })}
+        className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-black"
+      >
+        {LEAD_STAGES.map((stage) => (
+          <option key={stage.value} value={stage.value}>
+            {stage.label}
+          </option>
+        ))}
+      </select>
+      {errors.leadStage && (
+        <span className="text-red-500 text-sm">{errors.leadStage.message}</span>
+      )}
+    </div>
+  )}
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">Name of Campaign</label>
                     <select
                       {...register("campaignName")}
-                      className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
+                      className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-black"
                     >
                       <option value="Campaign">Campaign</option>
                       <option value="Campaign1">Campaign1</option>
@@ -349,7 +369,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
                       type="date"
                       {...register("initialContactDate", { required: "Lead date is required" })}
                       onChange={handleDateChange}
-                      className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
+                      className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-black"
                     />
                     {errors.initialContactDate && (
                       <span className="text-red-500 text-sm">{errors.initialContactDate.message}</span>

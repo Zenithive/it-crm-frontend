@@ -1,4 +1,4 @@
-import React from "react";
+ import React from "react";
 import Individual_Title from "./Individual/IndividualTitle";
 import LeftSide from "./Individual/LeftSide";
 import TimeLine from "./Individual/TimeLine";
@@ -10,7 +10,7 @@ const Individual = ({ leadId }: { leadId: string }) => {
   
   return (
     <div>
-      <div className="min-h-screen bg-gray-50 p-4">
+      <div className="min-h-screen bg-gray-50 p-4 ">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <Individual_Title leadId={leadId} />
