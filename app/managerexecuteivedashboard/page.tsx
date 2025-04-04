@@ -35,12 +35,12 @@ const SalesDashboard: React.FC = () => {
   });
   
   // State for tracking selected time filter for main dashboard
-  const [timeFilter, setTimeFilter] = useState<'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('monthly');
+  const [timeFilter, setTimeFilter] = useState<'today'|'last7days'|'last15days'|'last30days'|'weekly'|'monthly'|'quarterly'|'yearly'|'half-yearly'|'custom'>('monthly');
   
   // State for pipeline map filter - separate from main filter
-  const [pipelineMapFilter, setPipelineMapFilter] = useState<'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('monthly');
+  const [pipelineMapFilter, setPipelineMapFilter] = useState<'today'|'last7days'|'last15days'|'last30days'|'weekly'|'monthly'|'quarterly'|'yearly'|'half-yearly'|'custom'>('monthly');
 
-  // Only use the main dashboard filter for API calls
+  // Main dashboard API service
   const {
     countryLeadStats,
     loading,
@@ -52,29 +52,60 @@ const SalesDashboard: React.FC = () => {
     currentTimeFilter,
   } = leadsApiService(1, 10, true, undefined, undefined, timeFilter);
 
-  // Handle time filter changes for main dashboard
-  const handleTimeFilterChange = (filter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+  // Separate API service for pipeline map
+  const {
+    countryLeadStats: pipelineCountryLeadStats,
+    loading: pipelineLoading,
+    error: pipelineError,
+    setTimeFilter: pipelineApiSetTimeFilter,
+  } = leadsApiService(1, 10, true, undefined, undefined, pipelineMapFilter);
+
+  const handleTimeFilterChange = (
+    filter: 'today'|'last7days'|'last15days'|'last30days'|'weekly'|'monthly'|'quarterly'|'yearly'|'half-yearly'|'custom',
+    customStartDate?: string,
+    customEndDate?: string
+  ) => {
+    console.log("Main dashboard filter changed to:", filter);
+    
     setTimeFilter(filter);
     if (apiSetTimeFilter) {
-      apiSetTimeFilter(filter);
+      if (filter === 'custom' && customStartDate && customEndDate) {
+        apiSetTimeFilter(filter, customStartDate, customEndDate);
+        console.log(`Custom date range API filter: ${customStartDate} to ${customEndDate}`);
+      } else {
+        apiSetTimeFilter(filter);
+        console.log("Standard API time filter updated");
+      }
+    }
+  };
+  
+  const handlePipelineMapFilterChange = (
+    filter: 'today'|'last7days'|'last15days'|'last30days'|'weekly'|'monthly'|'quarterly'|'yearly'|'half-yearly'|'custom',
+    customStartDate?: string,
+    customEndDate?: string
+  ) => {
+    console.log("Pipeline map filter changed to:", filter);
+    setPipelineMapFilter(filter);
+    
+    if (pipelineApiSetTimeFilter) {
+      if (filter === 'custom' && customStartDate && customEndDate) {
+        pipelineApiSetTimeFilter(filter, customStartDate, customEndDate);
+      } else {
+        pipelineApiSetTimeFilter(filter);
+      }
+      console.log("Pipeline API time filter updated");
     }
   };
 
-  // Handle time filter changes specifically for the pipeline map
-  // This only updates the local state without triggering API calls
-  const handlePipelineMapFilterChange = (filter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
-    setPipelineMapFilter(filter);
-  };
-  
-  // Filter country lead stats based on pipelineMapFilter if needed
-  const filteredCountryLeadStats = useMemo(() => {
-    // If filters match, no need to filter
-    if (pipelineMapFilter === timeFilter) {
-      return countryLeadStats;
+  useEffect(() => {
+    if (!loading) {
+      console.log("API returned data for filter:", currentTimeFilter);
+      console.log("Lead performance metrics:", leadPerformanceMetrics);
+      console.log("Country lead stats:", countryLeadStats);
+      console.log("Team performance:", teamPerformance);
+      console.log("Lead source counts:", leadSourceCounts);
     }
-    return countryLeadStats;
-    
-  }, [countryLeadStats, pipelineMapFilter, timeFilter]);
+  }, [loading, leadPerformanceMetrics, countryLeadStats, teamPerformance, leadSourceCounts, currentTimeFilter]);
   
   useEffect(() => {
     // Save current metrics as previous before they update
@@ -146,15 +177,15 @@ const SalesDashboard: React.FC = () => {
           
           {/* Charts and Map Section */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {/* Pipeline Map with its own filter */}
+            {/* Pipeline Map with its own filter and data source */}
             <PipelineMap 
-              countryLeadStats={filteredCountryLeadStats} 
+              countryLeadStats={pipelineCountryLeadStats} 
               onTimeFilterChange={handlePipelineMapFilterChange}
               currentTimeFilter={pipelineMapFilter}
             />
             
             {/* Lead Source Chart */}
-            <LeadSourceChart  />
+            <LeadSourceChart />
           </div>
           
           {/* Team Performance Table Component */}

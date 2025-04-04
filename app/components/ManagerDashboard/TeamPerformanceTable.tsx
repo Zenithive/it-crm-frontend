@@ -1,11 +1,10 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "../../microComponents/CardForIndividualDashboard";
 import { CardContent } from "../../microComponents/CardContent";
 import { CardHeader } from "../../microComponents/CardHeader";
 import { CardTitle } from "../../microComponents/CardTitle";
-import FilterDropdown from "../../microComponents/FiterDropdown";
-import ReactDOM from "react-dom";
+import DateFilter, { TimeFilterValue } from '../../microComponents/DateFilter';
 import leadsApiService from "../../api/apiService/leadsApiService";
 
 interface TeamMember {
@@ -20,15 +19,9 @@ interface TeamMember {
 const TeamPerformanceTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(100);
-  const [showFilter, setShowFilter] = useState(false);
-  const [selectData, setSelectData] = useState<string>("");
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>("");
-  const [timeFilter, setTimeFilter] = useState<'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly'>('monthly');
-  const [isFilterActive, setIsFilterActive] = useState(false);
-  const filterIconRef = useRef<HTMLImageElement>(null);
-  const filterRef = useRef<HTMLDivElement>(null);
-  const [filterPosition, setFilterPosition] = useState({ top: 0, right: 0 });
+  const [timeFilter, setTimeFilter] = useState<TimeFilterValue>('monthly');
+  const [customStartDate, setCustomStartDate] = useState<string>("");
+  const [customEndDate, setCustomEndDate] = useState<string>("");
 
   const { 
     teamPerformance, 
@@ -37,71 +30,29 @@ const TeamPerformanceTable: React.FC = () => {
     setTimeFilter: apiSetTimeFilter 
   } = leadsApiService(currentPage, itemsPerPage, true, undefined, undefined, timeFilter);
   
-  const handleFilterChange = (value: string) => {
-    setSelectData(value);
+  // Handle filter changes from DateFilter component
+  const handleTimeFilterChange = (
+    filter: TimeFilterValue, 
+    startDate?: string, 
+    endDate?: string
+  ) => {
+    setTimeFilter(filter);
+    if (startDate) setCustomStartDate(startDate);
+    if (endDate) setCustomEndDate(endDate);
     
-    // Map the UI filter values to the API service filter values
-    if (value === "Today" || value === "Last 7 Days") {
-      setTimeFilter("monthly");
-    } else if (value === "Last 15 Days") {
-      setTimeFilter("quarterly");
-    } else if (value === "Last 30 Days") {
-      setTimeFilter("yearly");
-    } else if (value === "Custom Range") {
- 
+    // Call API with new filter
+    if (apiSetTimeFilter) {
+      apiSetTimeFilter(filter);
     }
   };
 
-  // Update filter position when filter icon is clicked
+  // Initial API call
   useEffect(() => {
-    if (showFilter && filterIconRef.current) {
-      const rect = filterIconRef.current.getBoundingClientRect();
-      setFilterPosition({
-        top: rect.bottom + window.scrollY,
-        right: window.innerWidth - rect.right - window.scrollX
-      });
-    }
-  }, [showFilter]);
-
-  // Close filter dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        filterRef.current && 
-        !filterRef.current.contains(event.target as Node) &&
-        filterIconRef.current && 
-        !filterIconRef.current.contains(event.target as Node)
-      ) {
-        setShowFilter(false);
-      }
-    };
-    
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const handleApplyFilter = () => {
     if (apiSetTimeFilter) {
       apiSetTimeFilter(timeFilter);
     }
-    setIsFilterActive(true);
-    setShowFilter(false);
-  };
+  }, []);
 
-  const handleClearFilter = () => {
-    setTimeFilter('monthly');
-    if (apiSetTimeFilter) {
-      apiSetTimeFilter('monthly');
-    }
-    setSelectData("");
-    setStartDate("");
-    setEndDate("");
-    setIsFilterActive(false);
-    setShowFilter(false);
-  };
-  
   if (loading) {
     return (
       <Card>
@@ -133,106 +84,55 @@ const TeamPerformanceTable: React.FC = () => {
       <CardHeader className="flex flex-row items-center justify-between ml-6 mb-2 mt-6">
         <CardTitle className="text-bg-blue-12">Team Performance</CardTitle>
         <div className="flex items-center">
-          {isFilterActive && (
-            <button
-              onClick={handleClearFilter}
-              className="text-sm text-blue-600 mr-2 hover:text-blue-800"
-            >
-              Clear Filter
-            </button>
-          )}
-          <img
-            ref={filterIconRef}
-            src={isFilterActive ? "filterC.svg" : "filterC.svg"}
-            alt="filter"
-            className="w-7 h-7 cursor-pointer mr-4"
-            onClick={() => setShowFilter(!showFilter)}
+          <DateFilter
+            onTimeFilterChange={handleTimeFilterChange}
+            currentTimeFilter={timeFilter}
+            defaultTimeFilter="monthly"
+            className="pr-6"
           />
         </div>
       </CardHeader>
 
-      {showFilter && ReactDOM.createPortal(
-        <div
-          ref={filterRef}
-          className="absolute z-50 bg-white shadow-lg rounded-lg p-4"
-          style={{ 
-            top: `${filterPosition.top}px`, 
-            right: `${filterPosition.right}px`,
-            width: '20rem' 
-          }}
-        >
-          <div className="flex flex-col space-y-4">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-semibold">Date Filter</h3>
-              <button 
-                onClick={() => setShowFilter(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                ✕
-              </button>
-            </div>
-            
-            <FilterDropdown
-              selectData={selectData}
-              setSelectData={handleFilterChange}
-              startDate={startDate}
-              setStartDate={setStartDate}
-              endDate={endDate}
-              setEndDate={setEndDate}
-              className="w-full"
-            />
-       
-            <div className="flex justify-between pt-2 border-t">
-              <button
-                onClick={handleClearFilter}
-                className="px-4 py-2 text-blue-600 rounded hover:text-blue-800"
-              >
-                Clear
-              </button>
-              <button
-                onClick={handleApplyFilter}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
-                Apply
-              </button>
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
-
-      <CardContent className="p-4">
-        <div className="overflow-x-auto">
-          <table className="w-full rounded-xl overflow-hidden shadow-2xl">
-            <thead>
-              <tr className="bg-bg-blue-12 text-white">
-                <th className="p-4 text-left font-medium">Employee Name</th>
-                <th className="p-4 text-left font-medium">Total Lead</th>
-                <th className="p-4 text-left font-medium">Total Won</th>
-                <th className="p-4 text-left font-medium">Total Lost</th>
-                <th className="p-4 text-left font-medium">
-                  Average Close Rate
-                </th>
-                <th className="p-2 text-left font-medium">Total Revenue</th>
-              </tr>
-            </thead>
-            <tbody className="border-spacing-y-5 border-separate">
-              {teamPerformance.map((member, index) => (
-                <tr key={index} className="bg-white">
-                  <td className="p-4 border-t rounded-l-lg">{member.name}</td>
-                  <td className="p-4 border-t">{member.totalLead}</td>
-                  <td className="p-4 border-t">{member.totalWon}</td>
-                  <td className="p-4 border-t">{member.totalLost}</td>
-                  <td className="p-4 border-t">{member.averageCloseRate}</td>
-                  <td className="p-4 border-t rounded-r-lg">
-                    {member.totalRevenue}
-                  </td>
+      {loading ? (
+        <p className="text-center text-gray-500">Loading...</p>
+      ) : error ? (
+        <p className="text-center text-red-500">Error: {error}</p>
+      ) : teamPerformance.length === 0 ? (
+        <p className="text-center text-gray-500">No team performance data found for the selected period</p>
+      ) : (
+        <CardContent className="p-4">
+          <div className="overflow-x-auto">
+            <table className="w-full rounded-xl overflow-hidden shadow-2xl">
+              <thead>
+                <tr className="bg-bg-blue-12 text-white">
+                  <th className="p-4 text-left font-medium">Employee Name</th>
+                  <th className="p-4 text-left font-medium">Total Lead</th>
+                  <th className="p-4 text-left font-medium">Total Won</th>
+                  <th className="p-4 text-left font-medium">Total Lost</th>
+                  <th className="p-4 text-left font-medium">
+                    Average Close Rate
+                  </th>
+                  <th className="p-2 text-left font-medium">Total Revenue</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </CardContent>
+              </thead>
+              <tbody className="border-spacing-y-5 border-separate">
+                {teamPerformance.map((member, index) => (
+                  <tr key={index} className="bg-white">
+                    <td className="p-4 border-t rounded-l-lg">{member.name}</td>
+                    <td className="p-4 border-t">{member.totalLead}</td>
+                    <td className="p-4 border-t">{member.totalWon}</td>
+                    <td className="p-4 border-t">{member.totalLost}</td>
+                    <td className="p-4 border-t">{member.averageCloseRate}</td>
+                    <td className="p-4 border-t rounded-r-lg">
+                      {member.totalRevenue}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      )}
     </Card>
   );
 };

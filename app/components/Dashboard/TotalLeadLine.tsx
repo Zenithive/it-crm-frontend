@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import leadsApiService from "../../api/apiService/leadsApiService";
-
+import DateFilter, { TimeFilterValue } from "../../microComponents/DateFilter";
 
 interface ChartDataPoint {
   name: string;
@@ -10,11 +10,49 @@ interface ChartDataPoint {
   website: number;
 }
 
-const TotalLeadLine = () => {
+interface TotalLeadLineProps {
+  onTimeFilterChange?: (filter: TimeFilterValue, customStartDate?: string, customEndDate?: string) => void;
+  currentTimeFilter?: string | null;
+  defaultTimeFilter?: TimeFilterValue;
+}
+
+const TotalLeadLine: React.FC<TotalLeadLineProps> = ({
+  onTimeFilterChange,
+  currentTimeFilter,
+  defaultTimeFilter = 'yearly'
+}) => {
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [timeFilter, setTimeFilter] = useState<TimeFilterValue>(defaultTimeFilter);
   
-  const { leadSourceCounts, getTargetedLeadSources, loading } = leadsApiService(1, 1000, true);
+  const { 
+    leadSourceCounts, 
+    getTargetedLeadSources, 
+    loading,
+    setTimeFilter: apiSetTimeFilter 
+  } = leadsApiService(1, 1000, true, undefined, undefined, timeFilter);
+  
+  // Handle local filter changes
+  const handleFilterChange = (filter: TimeFilterValue, customStartDate?: string, customEndDate?: string) => {
+    console.log("TotalLeadLine filter changed to:", filter);
+    setTimeFilter(filter);
+    
+    // Update API filter
+    if (apiSetTimeFilter) {
+      if (filter === 'custom' && customStartDate && customEndDate) {
+        apiSetTimeFilter(filter, customStartDate, customEndDate);
+        console.log(`Custom date range API filter: ${customStartDate} to ${customEndDate}`);
+      } else {
+        apiSetTimeFilter(filter);
+        console.log("TotalLeadLine API time filter updated");
+      }
+    }
+    
+    // Propagate filter change to parent if callback provided
+    if (onTimeFilterChange) {
+      onTimeFilterChange(filter, customStartDate, customEndDate);
+    }
+  };
   
   useEffect(() => {
     setMounted(true);
@@ -23,7 +61,6 @@ const TotalLeadLine = () => {
       console.log("leadSourceCounts", leadSourceCounts);
       const { linkedin, socialMedia, website } = getTargetedLeadSources();
       console.log("Targeted lead sources:", { linkedin, socialMedia, website });
-      
       
       const formattedData: ChartDataPoint[] = [
         {
@@ -104,9 +141,14 @@ const TotalLeadLine = () => {
           <h3 className="font-semibold text-bg-blue-12 text-lg md:text-xl">
             Total Lead Sources
           </h3>
-          <button>
-            <img src="details_logo.svg" alt="details" />
-          </button>
+          <div className="flex items-center">
+            {/* Add DateFilter component */}
+            <DateFilter
+              onTimeFilterChange={handleFilterChange}
+              currentTimeFilter={currentTimeFilter || timeFilter}
+              defaultTimeFilter={defaultTimeFilter}
+            />
+          </div>
         </div>
         <div className="h-40 md:h-56">
           {mounted && !loading && chartData.length > 0 && <DynamicChart data={chartData} />}

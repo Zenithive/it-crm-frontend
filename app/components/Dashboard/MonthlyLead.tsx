@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import useOverallLeadsData from "../../api/apiService/OverallLeadApiService";
 import { dashboardTotalLeadJson } from "../../api/jsonService/dashboardJsonService"; // Keep JSON Service for fallback
+import DateFilter, { TimeFilterValue } from "../../microComponents/DateFilter";
 
 const STAGE_SEQUENCE = [
   "NEW",
@@ -11,7 +12,7 @@ const STAGE_SEQUENCE = [
   "NEGOTIATION",
   "DEAL",
   "CLOSED_WON",
-  "CLOSED_LOST"
+  "CLOSED_LOST",
 ];
 
 const COLORS = {
@@ -40,9 +41,8 @@ const renderCustomizedLabel = ({
   percent: number;
 }) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.6;
- const x = cx + radius * Math.cos(-midAngle * RADIAN);
-const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
   return (
     <text
@@ -64,17 +64,108 @@ interface LeadData {
   color: string;
 }
 
-const MonthlyLead = () => {
+interface MonthlyLeadProps {
+  onTimeFilterChange?: (filter: TimeFilterValue, customStartDate?: string, customEndDate?: string) => void;
+  currentTimeFilter?: string | null;
+  defaultTimeFilter?: TimeFilterValue;
+}
+
+const MonthlyLead: React.FC<MonthlyLeadProps> = ({
+  onTimeFilterChange,
+  currentTimeFilter,
+  defaultTimeFilter = 'monthly'
+}) => {
   const [data, setData] = useState<LeadData[]>([]);
   const [page] = useState(1);
   const [pageSize] = useState(100); // Fetch enough leads to generate meaningful chart
   const [searchQuery] = useState("");
+  const [timeFilter, setTimeFilter] = useState<TimeFilterValue>(defaultTimeFilter);
+  
+  // Prepare date ranges based on timeFilter
+  const [startDate, setStartDate] = useState<string | undefined>(undefined);
+  const [endDate, setEndDate] = useState<string | undefined>(undefined);
+  
+  useEffect(() => {
+    // Set date range based on timeFilter
+    const now = new Date();
+    let start: Date | undefined;
+    let end: Date | undefined = now;
+    
+    switch(timeFilter) {
+      case 'today':
+        start = new Date(now);
+        break;
+      case 'last7days':
+        start = new Date(now);
+        start.setDate(start.getDate() - 7);
+        break;
+      case 'last15days':
+        start = new Date(now);
+        start.setDate(start.getDate() - 15);
+        break;
+      case 'last30days':
+        start = new Date(now);
+        start.setDate(start.getDate() - 30);
+        break;
+      case 'weekly':
+        start = new Date(now);
+        start.setDate(start.getDate() - 7);
+        break;
+      case 'monthly':
+        start = new Date(now);
+        start.setMonth(start.getMonth() - 1);
+        break;
+      case 'quarterly':
+        start = new Date(now);
+        start.setMonth(start.getMonth() - 3);
+        break;
+      case 'half-yearly':
+        start = new Date(now);
+        start.setMonth(start.getMonth() - 6);
+        break;
+      case 'yearly':
+        start = new Date(now);
+        start.setFullYear(start.getFullYear() - 1);
+        break;
+      // For custom, the dates should be set by the DateFilter component
+    }
+    
+    if (start) {
+      setStartDate(start.toISOString().split('T')[0]);
+      setEndDate(end.toISOString().split('T')[0]);
+    }
+  }, [timeFilter]);
   
   const useDummyData =
     process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
 
-  // Use the new hook to fetch lead data
-  const { leads, loading, error } = useOverallLeadsData(page, pageSize, searchQuery);
+  // Use the hook to fetch lead data with date filtering
+  const { leads, loading, error } = useOverallLeadsData(
+    page, 
+    pageSize, 
+    searchQuery, 
+    undefined, // stage
+    undefined, // type
+    undefined, // campaign
+    startDate,
+    endDate
+  );
+
+  // Handle filter changes
+  const handleFilterChange = (filter: TimeFilterValue, customStartDate?: string, customEndDate?: string) => {
+    console.log("MonthlyLead filter changed to:", filter);
+    setTimeFilter(filter);
+    
+    if (filter === 'custom' && customStartDate && customEndDate) {
+      setStartDate(customStartDate);
+      setEndDate(customEndDate);
+    }
+    
+    // Propagate filter change to parent if callback provided
+    if (onTimeFilterChange) {
+      onTimeFilterChange(filter, customStartDate, customEndDate);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -112,7 +203,7 @@ const MonthlyLead = () => {
     };
 
     fetchData();
-  }, [leads, useDummyData]);
+  }, [leads, useDummyData, startDate, endDate]);
 
   // Show loading state
   if (loading && !useDummyData) {
@@ -136,9 +227,13 @@ const MonthlyLead = () => {
     <div className="bg-white rounded-[20px] p-6 shadow-custom w-full flex flex-col min-h-[330px]">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-bg-blue-12 text-xl font-semibold">Total Leads</h3>
-        <button className="text-gray-600">
-          <img src="details_logo.svg" alt="details" />
-        </button>
+        <div className="flex items-center">
+          <DateFilter
+            onTimeFilterChange={handleFilterChange}
+            currentTimeFilter={currentTimeFilter || timeFilter}
+            defaultTimeFilter={defaultTimeFilter}
+          />
+        </div>
       </div>
 
       <div className="flex-grow flex justify-center">
@@ -171,35 +266,35 @@ const MonthlyLead = () => {
       </div>
 
       <div className="flex gap-6 mt-4 ml-6">
-  <div className="flex flex-col gap-3">
-    {data.slice(0, 3).map((item, index) => (
-      <div
-        key={index}
-        className="flex space-x-2"
-      >
-        <span
-          className="w-4 h-4 rounded-sm"
-          style={{ background: item.color }}
-        ></span>
-        <span className="text-sm text-gray-600">{item.name}</span>
+        <div className="flex flex-col gap-3">
+          {data.slice(0, 3).map((item, index) => (
+            <div
+              key={index}
+              className="flex space-x-2"
+            >
+              <span
+                className="w-4 h-4 rounded-sm"
+                style={{ background: item.color }}
+              ></span>
+              <span className="text-sm text-gray-600">{item.name}</span>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col gap-3">
+          {data.slice(3, 6).map((item, index) => (
+            <div
+              key={index}
+              className="flex space-x-2"
+            >
+              <span
+                className="w-4 h-4 rounded-sm"
+                style={{ background: item.color }}
+              ></span>
+              <span className="text-sm text-gray-600">{item.name}</span>
+            </div>
+          ))}
+        </div>
       </div>
-    ))}
-  </div>
-  <div className="flex flex-col gap-3">
-    {data.slice(3, 6).map((item, index) => (
-      <div
-        key={index}
-        className="flex space-x-2"
-      >
-        <span
-          className="w-4 h-4 rounded-sm"
-          style={{ background: item.color }}
-        ></span>
-        <span className="text-sm text-gray-600">{item.name}</span>
-      </div>
-    ))}
-  </div>
-</div>
     </div>
   );
 };

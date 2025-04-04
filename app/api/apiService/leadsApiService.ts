@@ -5,7 +5,7 @@ import { RootState } from "../../redux/store/store";
 import { GET_LEADS,LeadSortField,SortOrder } from "../../../graphQl/queries/leads.queries";
 import { DealSortFields, GET_DEALS, SortOrders} from "../../../graphQl/queries/deals.queries";
 import { CalendarAttendee, Meeting, useGoogleCalendarService } from "./googlecalendar.service";
-import { CountryLeadStats, Deal, DealsResponse, IntegratedMeeting, isDealsArray, Lead, LeadAssignedTo, LeadPerformanceMetrics, TeamMember } from "./leadApiInterface";
+import { CountryLeadStats, Deal, DealsResponse, IntegratedMeeting, isDealsArray, Lead, LeadAssignedTo, LeadPerformanceMetrics, TeamMember ,CustomDateFilter} from "./leadApiInterface";
 
 
 
@@ -14,7 +14,8 @@ const leadsApiService = (  currentPage: number,
   fetchAll: boolean = false,
   leadSort?: { field: LeadSortField; order: SortOrder },
   dealSort?: { field: DealSortFields; order: SortOrders },
-  initialTimeFilter?: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
+  initialTimeFilter?: 'today'|'last7days'|'last15days'|'last30days'|'weekly'|'monthly'|'quarterly'|'yearly'|'half-yearly'|'custom'
+) => {
 
   const [newLeads, setNewLeads] = useState(0);
   const [inProgressLeads, setInProgressLeads] = useState(0);
@@ -33,6 +34,7 @@ const leadsApiService = (  currentPage: number,
     avgDaysToClose: 0
   });
   const [selectedTimeFilter, setSelectedTimeFilter] = useState<string | null>(initialTimeFilter || null);
+  const [customDateRange, setCustomDateRange] = useState<CustomDateFilter | null>(null);
   
  
   const user = useSelector((state: RootState) => state.auth);
@@ -44,70 +46,69 @@ const leadsApiService = (  currentPage: number,
     const now = new Date();
     let startDate: Date;
   
-    console.log('Current Date:', now);
-    console.log('Selected Time Filter:', filter);
+    // console.log('Current Date:', now);
+    // console.log('Selected Time Filter:', filter);
   
     switch (filter) {
-
       case 'today':
         startDate = new Date(now);
-        console.log('Today\'s Date:', startDate);
+        // console.log('Today\'s Date:', startDate);
         break;
-
+  
+      case 'last7days':
+        // Last 7 days
+        startDate = new Date(now);
+        startDate.setDate(now.getDate() - 7);
+        // console.log('Last 7 Days Start Date:', startDate);
+        break;
+  
+      case 'last15days':
+        // Last 15 days
+        startDate = new Date(now);
+        startDate.setDate(now.getDate() - 15);
+        // console.log('Last 15 Days Start Date:', startDate);
+        break;
+  
+      case 'last30days':
+        // Last 30 days
+        startDate = new Date(now);
+        startDate.setDate(now.getDate() - 30);
+        // console.log('Last 30 Days Start Date:', startDate);
+        break;
+  
       case 'weekly':
         // Start from the Monday of the current week
         startDate = new Date(now);
         const dayOfWeek = now.getDay(); 
         const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1; 
         startDate.setDate(now.getDate() - diff);
-        console.log('Weekly Start Date:', startDate);
-        console.log('Week Details:', {
-          currentWeekday: now.getDay(),
-          firstDayOfWeek: startDate
-        });
+        // console.log('Weekly Start Date:', startDate);
         break;
-
+  
       case 'monthly':
         // For monthly, start from the first day of the current month
         startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-        console.log('Monthly Start Date:', startDate);
-        console.log('Month Details:', {
-          currentMonth: now.getMonth(),
-          firstDayOfMonth: startDate
-        });
+        // console.log('Monthly Start Date:', startDate);
         break;
   
       case 'quarterly':
         // Determine the start of the current quarter
         const currentQuarter = Math.floor(now.getMonth() / 3);
         startDate = new Date(now.getFullYear(), currentQuarter * 3, 1);
-        console.log('Quarterly Start Date:', startDate);
-        console.log('Quarter Details:', {
-          currentQuarter: currentQuarter,
-          quarterStartMonth: currentQuarter * 3,
-          firstDayOfQuarter: startDate
-        });
+        // console.log('Quarterly Start Date:', startDate);
         break;
   
       case 'half-yearly':
         // Start from either January 1st or July 1st based on current month
         startDate = new Date(now.getFullYear(), now.getMonth() >= 6 ? 6 : 0, 1);
-        console.log('Half-Yearly Start Date:', startDate);
-        console.log('Half-Year Details:', {
-          startingMonth: now.getMonth() >= 6 ? 'July' : 'January',
-          firstDayOfHalfYear: startDate
-        });
+        // console.log('Half-Yearly Start Date:', startDate);
         break;
   
       case 'yearly':
       default:
         // For yearly, always start from January 1st of the current year
         startDate = new Date(now.getFullYear(), 0, 1);
-        console.log('Yearly Start Date:', startDate);
-        console.log('Year Details:', {
-          currentYear: now.getFullYear(),
-          firstDayOfYear: startDate
-        });
+        // console.log('Yearly Start Date:', startDate);
         break;
     }
   
@@ -117,7 +118,7 @@ const leadsApiService = (  currentPage: number,
     const fromDate = formatDate(startDate);
     const toDate = formatDate(now);
   
-    console.log('Final Date Range:', { fromDate, toDate });
+    // console.log('Final Date Range:', { fromDate, toDate });
   
     return { fromDate, toDate };
   };
@@ -127,10 +128,15 @@ const leadsApiService = (  currentPage: number,
   // Updated query variables for leads
   const leadsQueryVariables = {
     filter: selectedTimeFilter 
-      ? { 
-          fromDate: getDateRangeForFilter(selectedTimeFilter).fromDate,
-          toDate: getDateRangeForFilter(selectedTimeFilter).toDate,
-        } 
+      ? selectedTimeFilter === 'custom' && customDateRange
+        ? { 
+            fromDate: customDateRange.fromDate,
+            toDate: customDateRange.toDate,
+          }
+        : { 
+            fromDate: getDateRangeForFilter(selectedTimeFilter).fromDate,
+            toDate: getDateRangeForFilter(selectedTimeFilter).toDate,
+          } 
       : {},
     pagination: {
       page: currentPage,
@@ -138,13 +144,19 @@ const leadsApiService = (  currentPage: number,
     },
     sort: leadSort || { field: LeadSortField.CREATED_AT, order: SortOrder.DESC }
   };
-
+  
+  // Similarly update the dealsQueryVariables
   const dealsQueryVariables = {
     filter: selectedTimeFilter 
-      ? { 
-          dealStartDateMin: getDateRangeForFilter(selectedTimeFilter).fromDate,
-          dealStartDateMax: getDateRangeForFilter(selectedTimeFilter).toDate,
-        } 
+      ? selectedTimeFilter === 'custom' && customDateRange
+        ? { 
+            dealStartDateMin: customDateRange.fromDate,
+            dealStartDateMax: customDateRange.toDate, 
+          }
+        : { 
+            dealStartDateMin: getDateRangeForFilter(selectedTimeFilter).fromDate,
+            dealStartDateMax: getDateRangeForFilter(selectedTimeFilter).toDate,
+          } 
       : {},
     pagination: {
       page: currentPage,
@@ -152,15 +164,30 @@ const leadsApiService = (  currentPage: number,
     },
     sort: dealSort || { field: DealSortFields.DEAL_AMOUNT, order: SortOrders.ASC }
   };
-
   console.log("Leads Query Variables", leadsQueryVariables);
   console.log("Deals Query Variables", dealsQueryVariables);
 
 
 
 
-  const setTimeFilter = (filter: 'today'|'weekly'|'monthly' | 'quarterly' | 'yearly' | 'half-yearly') => {
-    setSelectedTimeFilter(filter);
+  const setTimeFilter = (
+    filter: 'today'|'last7days'|'last15days'|'last30days'|'weekly'|'monthly'|'quarterly'|'yearly'|'half-yearly'|'custom', 
+    customStartDate?: string, 
+    customEndDate?: string
+  ) => {
+    console.log("API service: Setting time filter to", filter);
+    
+    if (filter === 'custom' && customStartDate && customEndDate) {
+      setSelectedTimeFilter('custom');
+      setCustomDateRange({
+        fromDate: customStartDate,
+        toDate: customEndDate
+      });
+      console.log(`Custom date range set: ${customStartDate} to ${customEndDate}`);
+    } else {
+      setSelectedTimeFilter(filter);
+      setCustomDateRange(null);
+    }
   };
 
 
