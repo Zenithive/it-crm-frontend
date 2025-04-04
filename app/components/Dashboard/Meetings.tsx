@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
-  dashboardMeetingsJson,
   dashboardRecentJson,
 } from "../../api/jsonService/dashboardJsonService";
-import {
-  dashboardMeetingsApi,
-  dashboardRecentApi,
-} from "../../api/apiService/dashboardApiService";
 
 const Meetings = () => {
   interface Meeting {
@@ -22,41 +17,25 @@ const Meetings = () => {
     message: string;
   }
 
-  // Define types for API data structure
-  interface ApiMeeting {
-    title: string;
-    time: string;
-    meetingLink?: string;
-  }
-
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [recent, setRecent] = useState<Recent[]>([]);
   const [recentView, setRecentView] = useState("today");
   const [isLoading, setIsLoading] = useState(true);
+  const [needsGoogleLogin, setNeedsGoogleLogin] = useState(false);
 
   // Get auth tokens from Redux store
   const auth = useSelector((state: any) => state.auth);
-  const { googleAccessToken } = auth || {};
-
-  const useDummyData =
-    process.env.NEXT_PUBLIC_USE_DUMMY_DATA?.trim().toLowerCase() === "true";
+  const { googleAccessToken, isLoggedIn } = auth || {};
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
         
-        // Fetch dummy data if flag is set
-        if (useDummyData) {
-          const [meetingsData, recentData] = await Promise.all([
-            dashboardMeetingsApi(),
-            dashboardRecentApi(),
-          ]);
-          
-          // Convert API meetings to our Meeting type with date
-          const convertedMeetings = convertApiMeetingsToMeetings(meetingsData?.meetings ?? []);
-          setMeetings(convertedMeetings);
-          setRecent(recentData?.recent ?? []);
+        // Check if user is logged in but no Google token is available
+        if (isLoggedIn && !googleAccessToken) {
+          // Set flag to show Google login message
+          setNeedsGoogleLogin(true);
           setIsLoading(false);
           return;
         }
@@ -95,18 +74,15 @@ const Meetings = () => {
             }
           } catch (calendarError) {
             console.error("Error fetching Google Calendar events:", calendarError);
-            // Fall back to dummy data if Google Calendar fetch fails
+            // If Google Calendar fetch fails, show empty state
+            setMeetings([]);
+            setIsLoading(false);
+            return;
           }
+        } else {
+          // No Google token available, set needsGoogleLogin flag
+          setNeedsGoogleLogin(true);
         }
-        
-        // Fallback to local JSON data
-        const meetingsData = dashboardMeetingsJson();
-        const recentData = dashboardRecentJson();
-        
-        // Convert the JSON meetings to our Meeting type with date
-        const convertedMeetings = convertApiMeetingsToMeetings(meetingsData ?? []);
-        setMeetings(convertedMeetings);
-        setRecent(recentData ?? []);
         
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -119,37 +95,7 @@ const Meetings = () => {
     };
 
     fetchData();
-  }, [useDummyData, googleAccessToken]);
-
-  // Helper function to convert API meetings to our Meeting type
-  const convertApiMeetingsToMeetings = (apiMeetings: ApiMeeting[]): Meeting[] => {
-    return apiMeetings.map(meeting => {
-      // Parse time string to extract date information if possible
-      // Assuming format like "March 20, 10:00 AM - 11:00 AM" or just "10:00 AM - 11:00 AM"
-      let meetingDate = new Date();
-      
-      // Try to parse the date from the time string
-      if (meeting.time && meeting.time.includes(",")) {
-        const datePart = meeting.time.split(",")[0];
-        try {
-          meetingDate = new Date(`${datePart}, ${new Date().getFullYear()}`);
-        } catch (e) {
-          console.error("Failed to parse date from time string:", e);
-        }
-      }
-      
-      // If time contains "Tomorrow", set date to tomorrow
-      if (meeting.time && meeting.time.toLowerCase().includes("tomorrow")) {
-        meetingDate = new Date();
-        meetingDate.setDate(meetingDate.getDate() + 1);
-      }
-      
-      return {
-        ...meeting,
-        date: meetingDate
-      };
-    });
-  };
+  }, [googleAccessToken, isLoggedIn]);
 
   // Helper function to fetch Google Calendar events
   const fetchGoogleCalendarEvents = async (
@@ -168,14 +114,12 @@ const Meetings = () => {
           },
         }
       );
-      console.log("response", response);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch calendar events: ${response.status}`);
       }
 
       const data = await response.json();
-      console.log("data", data);
       
       // Format and filter events to get only meetings
       const formattedMeetings = data.items
@@ -196,7 +140,6 @@ const Meetings = () => {
           date: new Date(event.start?.dateTime || event.start?.date), 
         }));
 
-      console.log("formattedMeetings", formattedMeetings);
       return formattedMeetings;
     } catch (error) {
       console.error("Error in fetchGoogleCalendarEvents:", error);
@@ -300,8 +243,6 @@ const Meetings = () => {
     return meetings
       .filter(meeting => {
         const meetingDate = new Date(meeting.date);
-        console.log("meetingDate",meetingDate);
-        console.log("meetingDate < now && meetingDate >= sevenDaysAgo",meetingDate < now && meetingDate >= sevenDaysAgo);
         return meetingDate < now && meetingDate >= sevenDaysAgo;
       })
       .sort((a, b) => b.date.getTime() - a.date.getTime()); 
@@ -309,6 +250,12 @@ const Meetings = () => {
 
   // Get the appropriate meetings based on the selected view
   const displayMeetings = recentView === "today" ? getTodayMeetings() : getRecentMeetings();
+
+  // Function to handle Google login
+  const handleGoogleLogin = () => {
+    // Redirect to Google authentication endpoint
+    window.location.href = `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/google`;
+  };
 
   return (
     <div className="w-full h-40 md:h-56">
@@ -340,6 +287,20 @@ const Meetings = () => {
         {isLoading ? (
           <div className="flex justify-center items-center h-32">
             <p>Loading...</p>
+          </div>
+        ) : needsGoogleLogin ? (
+          <div className="flex flex-col justify-center items-center h-48 p-6 text-center">
+            <p className="text-gray-700 mb-4">Please login with your Google email to sync your meetings from Google Calendar.</p>
+            <button
+              onClick={handleGoogleLogin}
+              type="button"
+              className="flex items-center justify-center gap-3 p-2 px-4 border border-bg-blue-12 rounded-xl hover:bg-gray-50 transition-colors"
+            >
+              <img src="/google.svg" className="w-5 h-5" alt="Google" />
+              <span className="text-bg-blue-12 font-medium">
+                Login with Google
+              </span>
+            </button>
           </div>
         ) : (
           <div className="scrollbar-custom overflow-y-auto max-h-[300px] pl-6 pr-6 pb-6">

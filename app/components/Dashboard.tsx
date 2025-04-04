@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import MonthlyLead from "./Dashboard/MonthlyLead";
 import Dashboard_Title from "./Dashboard/DashboardTitle";
 import Task from "./Dashboard/Task";
@@ -10,11 +10,43 @@ import { RootState } from "../redux/store/store";
 import { nav } from "../components/Path/TaskData";
 import { Dashboardtitle } from "../components/Path/TitlePaths";
 import { useSelector } from "react-redux";
-
+import { TimeFilterValue } from "../microComponents/DateFilter";
 
 const CRMDashboard = () => {
   const user = useSelector((state: RootState) => state.auth);
   console.log(`user`, user);
+  
+  // Add state for time filters
+  const [leadLineTimeFilter, setLeadLineTimeFilter] = useState<TimeFilterValue>('monthly');
+  const [monthlyLeadTimeFilter, setMonthlyLeadTimeFilter] = useState<TimeFilterValue>('monthly');
+
+  // Handler for TotalLeadLine filter changes
+  const handleLeadLineFilterChange = (
+    filter: TimeFilterValue, 
+    customStartDate?: string, 
+    customEndDate?: string
+  ) => {
+    console.log("TotalLeadLine filter changed to:", filter);
+    setLeadLineTimeFilter(filter);
+    
+    if (filter === 'custom' && customStartDate && customEndDate) {
+      console.log(`Custom date range: ${customStartDate} to ${customEndDate}`);
+    }
+  };
+
+  // Handler for MonthlyLead filter changes
+  const handleMonthlyLeadFilterChange = (
+    filter: TimeFilterValue, 
+    customStartDate?: string, 
+    customEndDate?: string
+  ) => {
+    console.log("MonthlyLead filter changed to:", filter);
+    setMonthlyLeadTimeFilter(filter);
+    
+    if (filter === 'custom' && customStartDate && customEndDate) {
+      console.log(`Custom date range: ${customStartDate} to ${customEndDate}`);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -37,14 +69,24 @@ const CRMDashboard = () => {
           <div className="lg:col-span-6 space-y-4 md:space-y-6">
             <div className="flex flex-col sm:flex-row gap-4 md:gap-6">
               <div className="w-full sm:w-1/2 md:mt-0 mt-[205px]" >
-                <MonthlyLead />
+                {/* Updated MonthlyLead with time filter props */}
+                <MonthlyLead 
+                  onTimeFilterChange={handleMonthlyLeadFilterChange}
+                  currentTimeFilter={monthlyLeadTimeFilter}
+                  defaultTimeFilter="monthly"
+                />
               </div>
               <div className="w-full sm:w-1/2">
                 <UnreadMessages />
               </div>
             </div>
 
-            <TotalLeadLine />
+            {/* TotalLeadLine with time filter props */}
+            <TotalLeadLine 
+              onTimeFilterChange={handleLeadLineFilterChange}
+              currentTimeFilter={leadLineTimeFilter}
+              defaultTimeFilter="monthly"
+            />
           </div>
         </div>
       </main>

@@ -99,3 +99,9 @@ export interface Deal {
   export function isDealsArray(data: any): data is Deal[] {
     return Array.isArray(data);
   }
+
+  export interface CustomDateFilter {
+    fromDate: string;
+    toDate: string;
+  }
+  

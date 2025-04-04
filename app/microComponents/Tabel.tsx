@@ -30,7 +30,7 @@ const MicroTable: React.FC<MicroTablePropsForListView> = ({
   const handleResourceClick = (resource: any) => {
     const leadID = encodeURIComponent(resource.leadID);
     console.log("Resource id", leadID);
-    window.open(`/individual/${leadID}`, "_blank"); 
+    window.open(`/individual/${leadID}`); 
   };
   
   const columns = columnDefs.map((col) => ({
@@ -48,7 +48,6 @@ const MicroTable: React.FC<MicroTablePropsForListView> = ({
           return (
             <a
               href={`/individual/${encodeURIComponent(record.leadID)}`}
-              target="_blank"
               rel="noopener noreferrer"
               className="cursor-pointer hover:text-bg-blue-12 font-medium"
             >
