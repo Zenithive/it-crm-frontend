@@ -3,7 +3,7 @@ import React, { useState, useEffect, ReactNode } from "react";
 import { individualcasestudyDocApi } from "../../api/apiService/individualcasestudyApiServices";
 import { resourcemanagment } from "../../api/jsonService/resourcemanagmentJsonService";
 import { ResourceSkillsProps } from "./ResourceSkills";
-import DocumentUploadForm from "../uploadfile";
+import DocumentUploadForm from "../Uploadfile";
 
 // Define the document structure from your JSON
 interface DocumentData {

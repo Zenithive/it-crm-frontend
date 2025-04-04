@@ -8,7 +8,7 @@ import {
   individualcasestudyDocJson,
 } from "../../api/jsonService/individualcasestudyJsonServices";
 import { CaseStudy } from "../../api/apiService/overallcasestudyApiService";
-import DocumentUploadForm from "../uploadfile";
+import DocumentUploadForm from "../Uploadfile";
 
 
 interface Outcome {

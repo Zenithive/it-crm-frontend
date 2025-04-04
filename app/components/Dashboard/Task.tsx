@@ -240,11 +240,11 @@ const Task = () => {
                       : ""
                   }`}
                 >
-                  <img
+                  {/* <img
                     src={msg.profileImage || '/default-profile.png'}
                     alt={msg.name}
                     className="w-8 h-8 md:w-10 md:h-10 mt-4 flex-shrink-0 rounded-full"
-                  />
+                  /> */}
                   <div className="flex-1 min-w-0 mx-3">
                     <h4 className="font-medium text-gray-800 text-sm md:text-base truncate mt-4">
                       {msg.name}
