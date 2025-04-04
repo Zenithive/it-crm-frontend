@@ -13,6 +13,7 @@ import useOverallCaseStudyData from "../api/apiService/overallcasestudyApiServic
 import AddCaseStudyForm from "./AddCaseStudyForm";
 import FilterHandler1 from "./Filter/FilterHandler1";
 import { useRouter } from "next/navigation";
+import { ResourceGridSkeleton, ResourceTableSkeleton } from "./Skeleton/CaseStudySkeleton";
 
 interface Resource {
   title: string;
@@ -223,7 +224,8 @@ const ResourceContainer = () => {
         {getActiveFiltersDisplay()}
         
         {loading ? (
-          <p className="text-gray-500 text-center">Loading resources...</p>
+          // Replace the loading text with skeleton components
+          isTableView ? <ResourceTableSkeleton /> : <ResourceGridSkeleton />
         ) : error ? (
           <p className="text-red-500 text-center">Error loading data: {error}</p>
         ) : isTableView ? (

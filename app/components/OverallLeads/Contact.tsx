@@ -13,6 +13,7 @@ import _ from "lodash";
 import AddLeadModal from "../AddLeadModal";
 import useOverallLeadsData from "../../api/apiService/OverallLeadApiService";
 import Pagination from "../../microComponents/Pagination";
+import TodoListSkeleton from "../Skeleton/ToDoListSkeleton";
 
 type ViewType = "list" | "kanban";
 
@@ -209,7 +210,8 @@ const [stageFilters, setStageFilters] = useState<string[]>([]);
 
       {getActiveFiltersDisplay()}
         {loading ? (
-          <div className="text-center p-6">Loading data...</div>
+          // <div className="text-center p-6">Loading data...</div>
+          <TodoListSkeleton />
         ) : activeView === "list" ? (
           <>
             <MicroTable rowData={leads} columnDefs={columnDefs} />
