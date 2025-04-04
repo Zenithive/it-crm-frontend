@@ -14,6 +14,7 @@ import VendorForm from "./IndividualVendor/VendorForm";
 import FilterHandler from "./Filter/FilterHandler";
 import _ from "lodash";
 import FilterHandler1 from "./Filter/FilterHandler1";
+import TodoListSkeleton from "./Skeleton/ToDoListSkeleton";
 
 interface Vendor {
   vendorID: string;
@@ -270,7 +271,8 @@ useEffect(() => {
       </div>
       {getActiveFiltersDisplay()}
       {loading ? (
-        <p className="text-center">Loading vendors...</p>
+        // <p className="text-center">Loading vendors...</p>
+        <TodoListSkeleton />
       ) : error ? (
         <p className="text-center text-red-500">{error}</p>
       ) : mappedVendors.length === 0 ? (

@@ -9,7 +9,7 @@ import { headerbutton, search } from "./Path/TaskData";
 import CreateTaskModal from "./CreateTaskModal";
 import TaskTable, { Task } from "./TaskTable";
 import DeleteConfirmation from "./DeleteConfirmation";
-import useTodoListApiService from "../api/apiService/todoListApiService"; // Assuming this is a hook
+import useTodoListApiService from "../api/apiService/todoListApiService";
 import { useDeleteTask } from "../hooks/useDeleteTask";
 import { useUpdateTask } from "../hooks/useUpdateTask";
 import Filter from "./Filter/Filter";
@@ -17,8 +17,7 @@ import FilterDropdown from "../microComponents/FiterDropdown";
 import FilterHandler from "./Filter/FilterHandler";
 import _ from "lodash";
 import FilterHandler1 from "./Filter/FilterHandler1";
-
-
+import TodoListSkeleton from "./Skeleton/ToDoListSkeleton";
 
 interface FilterPayload {
   filter: {
@@ -99,41 +98,35 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
     handleCloseDeleteModal,
     handleConfirmDelete,
   } = useDeleteTask(refetch);
-  
- 
-    const filterSections = [
-      {
-        id: "date",
-        title: "Date",
-        options: [
-          
-          { id: "start_date", label: "Start Date", checked: false },
-          { id: "end_date", label: "End Date", checked: false },
-      
-        ]
-      },
-      {
-        id: "priority",
-        title: "Priority",
-        options: [
-          { id: "high", label: "High", checked: false },
-          { id: "low", label: "Low", checked: false },
-          { id: "medium", label: "Medium", checked: false },
-         
-        ]
-      },
-      {
-        id: "status",
-        title: "Status",
-        options: [
-          { id: "in_Progress", label: "In Progress", checked: false },
-          { id: "todo", label: "Schedule", checked: false },
-          { id: "completed", label: "Complete", checked: false },
-        ]
-      },
-    
-  
-    ];
+
+  const filterSections = [
+    {
+      id: "date",
+      title: "Date",
+      options: [
+        { id: "start_date", label: "Start Date", checked: false },
+        { id: "end_date", label: "End Date", checked: false },
+      ],
+    },
+    {
+      id: "priority",
+      title: "Priority",
+      options: [
+        { id: "high", label: "High", checked: false },
+        { id: "low", label: "Low", checked: false },
+        { id: "medium", label: "Medium", checked: false },
+      ],
+    },
+    {
+      id: "status",
+      title: "Status",
+      options: [
+        { id: "in_Progress", label: "In Progress", checked: false },
+        { id: "todo", label: "Schedule", checked: false },
+        { id: "completed", label: "Complete", checked: false },
+      ],
+    },
+  ];
 
   
   const { handleConfirmUpdate } = useUpdateTask(refetch); // Use the update hook
@@ -238,13 +231,13 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
           setVisible={setVisible}
           onClose={handleCloseModal}
           initialTaskData={selectedTask}
-          onUpdateTask={handleConfirmUpdate} 
+          onUpdateTask={handleConfirmUpdate}
           refetch={refetch}
         />
       </div>
       {getActiveFiltersDisplay()}
       {loading ? (
-        <p className="text-center">Loading tasks...</p>
+        <TodoListSkeleton />
       ) : error ? (
         <p className="text-center text-red-500">{error}</p>
       ) : (

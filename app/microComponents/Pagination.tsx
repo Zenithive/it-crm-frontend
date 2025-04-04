@@ -8,10 +8,16 @@ const Pagination = ({
   itemsPerPage,
   onItemsPerPageChange,
   multiplicationFactor = 10, // Default is 10, but can be 9
+
+
 }: PaginationProps & { 
   onItemsPerPageChange: (value: number) => void;
   multiplicationFactor?: number; 
 }) => {
+  console.log(`totalItems`, totalItems);
+  console.log(`onPageChange`, onPageChange);
+  console.log(`itemsPerPage`, itemsPerPage);
+  console.log(`onItemsPerPageChange`, onItemsPerPageChange);
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startItem = (currentPage - 1) * itemsPerPage + 1;

@@ -3,6 +3,7 @@ import React, { useState, useEffect, JSX } from "react";
 import { useRouter } from "next/navigation";
 import Pagination from "../../microComponents/Pagination";
 import { useResourceList } from "../../api/apiService/resourcelistApiService";
+import { ResourceListSkeleton } from "../Skeleton/ResourceSkeleton"; // Import the skeleton component
 
 interface Resource {
   id: string;
@@ -17,7 +18,7 @@ interface ResourceContainerProps {
   vendorNameFilter?: string;
   experienceYearFilter?: string;
   skillsFilter?: string;
-  display?: () => JSX.Element |null
+  display?: () => JSX.Element | null;
 }
 
 const ResourceContainer: React.FC<ResourceContainerProps> = ({
@@ -36,7 +37,7 @@ const ResourceContainer: React.FC<ResourceContainerProps> = ({
     setCurrentPage(1);
   }, [searchQuery, vendorNameFilter, experienceYearFilter, skillsFilter]);
 
-  const { data, loading, error, totalItems,refetch } = useResourceList({
+  const { data, loading, error, totalItems, refetch } = useResourceList({
     page: currentPage,
     pageSize: itemsPerPage,
     search: searchQuery || null,
@@ -72,20 +73,18 @@ const ResourceContainer: React.FC<ResourceContainerProps> = ({
   return (
     <div className="w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-[70px]">
       <div className="flex-grow mt-6">
-      {display && display()}
+        {display && display()}
         <div className="bg-white shadow-custom rounded-xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 sm:p-6 lg:p-8">
-
-
-          
-            {loading ? (
-              <p>Loading...</p>
-            ) : error ? (
-              <p className="text-red-500">{error.message}</p>
-            ) : resources.length === 0 ? (
-              <p className="col-span-3 text-center py-8">No resources found</p>
-            ) : (
-              resources.map((resource, index) => (
+          {loading ? (
+            // Replace loading text with skeleton component
+            <ResourceListSkeleton />
+          ) : error ? (
+            <p className="text-red-500 p-4 sm:p-6 lg:p-8">{error.message}</p>
+          ) : resources.length === 0 ? (
+            <p className="text-center py-8">No resources found</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 sm:p-6 lg:p-8">
+              {resources.map((resource, index) => (
                 <div
                   key={index}
                   className="bg-blue_shadow p-4 sm:p-6 rounded-xl shadow-custom transition-all duration-300 flex flex-col min-h-[170px] h-full cursor-pointer"
@@ -130,9 +129,9 @@ const ResourceContainer: React.FC<ResourceContainerProps> = ({
                     </div>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <div className="mt-6">
