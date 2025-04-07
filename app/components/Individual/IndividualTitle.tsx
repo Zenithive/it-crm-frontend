@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Title from "../../microComponents/Title";
 import { Individualtitle } from "../Path/TitlePaths";
 import IconButton from "../../microComponents/IconButton";
@@ -9,7 +9,7 @@ import { useQuery } from "@apollo/client";
 import { GET_LEAD } from "../../../graphQl/queries/getIndividualLead.queries";
 import AddLeadModal from "../AddLeadModal"; // Import AddLeadModal
 
-const IndividualTitle = ({ leadId }: { leadId: string }) => {
+const IndividualTitle = ({ leadId,onLeadUpdated}: { leadId: string,onLeadUpdated?: () => void   }) => {
   const user = useSelector((state: RootState) => state.auth);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
 
@@ -29,9 +29,17 @@ const IndividualTitle = ({ leadId }: { leadId: string }) => {
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false); // Close the modal
-    refetch();
+    setIsModalOpen(false);
+    refetch().then(() => {
+ 
+      if (onLeadUpdated) {
+        onLeadUpdated();
+      }
+    });
   };
+
+
+
 
   return (
     <div>
