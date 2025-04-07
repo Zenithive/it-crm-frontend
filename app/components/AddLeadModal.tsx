@@ -36,11 +36,11 @@ const LEAD_STAGES = [
 interface AddLeadModalProps {
   onClose: () => void;
   leadId?: string;
-  pageType?:string;
+ 
 }
 
-const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType}) => {
-  console.log("pageType",pageType)
+const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, }) => {
+  
   
   const {
     register,
@@ -96,7 +96,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType})
   
 
   useEffect(() => {
-    if (leadId && !fetchLoading && !fetchError && lead) {
+    if (leadId && !fetchLoading && !fetchError && lead) { 
       const formattedDate = lead.initialContactDate
         ? new Date(lead.initialContactDate).toISOString().split("T")[0]
         : "";
@@ -119,6 +119,9 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType})
     }
   }, [lead, fetchLoading, fetchError, setValue, leadId]);
 
+
+
+ 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedDate = event.target.value;
     setValue("initialContactDate", selectedDate, { shouldValidate: true });
@@ -200,11 +203,16 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType})
   const getSelectTextColorClass = (value: string | undefined) => {
     return value ? "text-black" : "text-gray-400";
   };
+
+  const showLeadStageField = leadStageValue !== "DEAL";
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
       onClick={onClose}
+
+      
     >
+      
       <div className="p-6 relative" onClick={(e) => e.stopPropagation()}>
         <div className="bg-bg-blue-12 rounded-t-xl p-2 flex justify-between">
           <div className="p-2">
@@ -341,11 +349,10 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType})
                   </div>
                 </div>
 
-                {/* Lead Stage and Campaign */}
-                <div className="grid grid-cols-3 gap-4">
-                  
-               
-                {/* {((pageType === "lead" || pageType === "leads") ) && (
+              
+
+                  <div className="grid grid-cols-3 gap-4">
+      {showLeadStageField &&(       
   <div>
     <label className="block text-sm text-bg-blue-12 mb-2">Lead Stage</label>
     <select
@@ -363,34 +370,27 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType})
       <span className="text-red-500 text-sm">{errors.leadStage.message}</span>
     )}
   </div>
-)} */}
+      )}
 
 
 
-  <div>
-    <label className="block text-sm text-bg-blue-12 mb-2">Lead Stage</label>
-    <select
-      {...register("leadStage", { required: "Lead stage is required"  })}
-      
-      className={`w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none ${getSelectTextColorClass(leadStageValue)}`}
-    >
-      {LEAD_STAGES.map((stage) => (
-        <option key={stage.value} value={stage.value}>
-          {stage.label}
-        </option>
-      ))}
-    </select>
-    {errors.leadStage && (
-      <span className="text-red-500 text-sm">{errors.leadStage.message}</span>
-    )}
-  </div>
+ 
 
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">Name of Campaign</label>
                     <select
-                      {...register("campaignName")}
+                      {...register("campaignName") }
+                      // disabled={!!campaignNameValue}
+                      
                       className={`w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none  ${getSelectTextColorClass(campaignNameValue)}`}
                     >
+                      <option value="" disabled  hidden>
+    Select a Campaign
+  </option>
+  {!["Campaign", "Campaign1", "Campaign2"].includes(campaignNameValue) && campaignNameValue && (
+  <option value={campaignNameValue}>{campaignNameValue}</option>
+)}
+
                       <option value="Campaign">Campaign</option>
                       <option value="Campaign1">Campaign1</option>
                       <option value="Campaign2">Campaign2</option>

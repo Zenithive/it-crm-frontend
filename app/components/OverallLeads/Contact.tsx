@@ -251,7 +251,7 @@ const [stageFilters, setStageFilters] = useState<string[]>([]);
         )}
       </div>
 
-      {showAddLeadModal && <AddLeadModal onClose={() => setShowAddLeadModal(false)}  pageType="lead" />}
+      {showAddLeadModal && <AddLeadModal onClose={() => setShowAddLeadModal(false)}/>}
     </>
   );
 };

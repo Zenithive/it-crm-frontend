@@ -154,7 +154,6 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
               />
             </div>
-
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-base font-medium text-bg-blue-12 mb-1">
