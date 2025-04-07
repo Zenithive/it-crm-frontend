@@ -39,13 +39,15 @@ interface AddLeadModalProps {
   pageType?:string;
 }
 
-const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType }) => {
+const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType}) => {
+  console.log("pageType",pageType)
+  
   const {
     register,
     handleSubmit,
     reset,
     setValue,
-   
+   watch,
     formState: { errors },
   } = useForm<LeadFormData>({
     defaultValues: {
@@ -66,7 +68,8 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType }
 
   const [loading, setLoading] = useState(false);
   const { token } = useSelector((state: RootState) => state.auth);
-
+  const [sourceSelected, setSourceSelected] = useState(false);
+  
 
   
 
@@ -84,7 +87,12 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType }
 
   const { updateLead, loading: updateLoading } = useUpdateLead();
   const { addLead, loading: addLoading } = useAddLead();
-
+  const leadSourceValue = watch("leadSource");
+  const leadTypeValue = watch("leadType");
+  const leadStageValue = watch("leadStage");
+  const campaignNameValue = watch("campaignName");
+  const countryValue = watch("country");
+  const dateValue = watch("initialContactDate");
   
 
   useEffect(() => {
@@ -189,7 +197,9 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType }
     }
   };
 
-
+  const getSelectTextColorClass = (value: string | undefined) => {
+    return value ? "text-black" : "text-gray-400";
+  };
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
@@ -274,7 +284,9 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType }
                     <label className="block text-sm text-bg-blue-12 mb-2">Phone</label>
                     <div className="flex">
                       <select
-                        className="w-12 mr-2 py-2 border border-bg-blue-12 rounded-lg text-black text-sm focus:outline-none"
+                        className={`w-12 mr-2 py-2 border border-bg-blue-12 rounded-lg text-black text-sm focus:outline-none 
+    
+  `}
                       >
                         <option value="+91">+91</option>
                         <option value="+92">+92</option>
@@ -297,18 +309,18 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType }
                   </div>
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">Source</label>
-                    <select
-                      {...register("leadSource", { required: "Lead source is required" })}
-                      className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-non"
-                      
-                    >
-                      <option value="" disabled className=" text-gray-400">
-                        Select a source
-                      </option>
-                      <option value="Linkedin" className="text-black">LinkedIn</option>
-                      <option value="Upwork" className="text-black">Upwork</option>
-                    </select>
-
+                   
+<select
+  {...register("leadSource", { 
+    required: "Lead source is required",
+ 
+  })}
+  className={`w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none ${getSelectTextColorClass(leadSourceValue)}`}
+>
+  <option value="" disabled>Select a source</option>
+  <option value="Linkedin">LinkedIn</option>
+  <option value="Upwork">Upwork</option>
+</select>
                     {errors.leadSource && (
                       <span className="text-red-500 text-sm">{errors.leadSource.message}</span>
                     )}
@@ -316,8 +328,8 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType }
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">Lead Type</label>
                     <select
-                      {...register("leadType", { required: "Lead type is required" })}
-                      className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
+                      {...register("leadType", { required: "Lead type is required"})}
+                      className={`w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none ${getSelectTextColorClass(leadTypeValue)} `}
                     >
                       <option value="SMALL">small</option>
                       <option value="MEDIUM">medium</option>
@@ -333,30 +345,51 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType }
                 <div className="grid grid-cols-3 gap-4">
                   
                
+                {/* {((pageType === "lead" || pageType === "leads") ) && (
+  <div>
+    <label className="block text-sm text-bg-blue-12 mb-2">Lead Stage</label>
+    <select
+      {...register("leadStage", { required: "Lead stage is required"  })}
+      
+      className={`w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none ${getSelectTextColorClass(leadStageValue)}`}
+    >
+      {LEAD_STAGES.map((stage) => (
+        <option key={stage.value} value={stage.value}>
+          {stage.label}
+        </option>
+      ))}
+    </select>
+    {errors.leadStage && (
+      <span className="text-red-500 text-sm">{errors.leadStage.message}</span>
+    )}
+  </div>
+)} */}
 
-{pageType === "lead" && (
-    <div>
-      <label className="block text-sm text-bg-blue-12 mb-2">Lead Stage</label>
-      <select
-        {...register("leadStage", { required: "Lead stage is required" })}
-        className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-black"
-      >
-        {LEAD_STAGES.map((stage) => (
-          <option key={stage.value} value={stage.value}>
-            {stage.label}
-          </option>
-        ))}
-      </select>
-      {errors.leadStage && (
-        <span className="text-red-500 text-sm">{errors.leadStage.message}</span>
-      )}
-    </div>
-  )}
+
+
+  <div>
+    <label className="block text-sm text-bg-blue-12 mb-2">Lead Stage</label>
+    <select
+      {...register("leadStage", { required: "Lead stage is required"  })}
+      
+      className={`w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none ${getSelectTextColorClass(leadStageValue)}`}
+    >
+      {LEAD_STAGES.map((stage) => (
+        <option key={stage.value} value={stage.value}>
+          {stage.label}
+        </option>
+      ))}
+    </select>
+    {errors.leadStage && (
+      <span className="text-red-500 text-sm">{errors.leadStage.message}</span>
+    )}
+  </div>
+
                   <div>
                     <label className="block text-sm text-bg-blue-12 mb-2">Name of Campaign</label>
                     <select
                       {...register("campaignName")}
-                      className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-black"
+                      className={`w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none  ${getSelectTextColorClass(campaignNameValue)}`}
                     >
                       <option value="Campaign">Campaign</option>
                       <option value="Campaign1">Campaign1</option>
@@ -369,7 +402,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType }
                       type="date"
                       {...register("initialContactDate", { required: "Lead date is required" })}
                       onChange={handleDateChange}
-                      className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-black"
+                      className={`w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-black ${getSelectTextColorClass(dateValue)}`}
                     />
                     {errors.initialContactDate && (
                       <span className="text-red-500 text-sm">{errors.initialContactDate.message}</span>
@@ -418,7 +451,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId, pageType }
                     <label className="block text-sm text-bg-blue-12 mb-2">Country</label>
                     <select
                       {...register("country", { required: "Country is required" })}
-                      className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none text-gray-400"
+                      className={`w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none  ${getSelectTextColorClass(countryValue)}`}
                     >
                       <option value="" disabled>
                         Select a country

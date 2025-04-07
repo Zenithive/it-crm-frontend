@@ -394,6 +394,7 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
               </label>
               <input
                 type="number"
+                min="0"
                 {...register("totalExperience", {
                   required: "Total experience is required",
                   min: { value: 0, message: "Experience must be 0 or greater" },
@@ -442,6 +443,7 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
 
                 <input
                   type="number"
+                  min="0"
                   {...register(`skillInputs.${index}.experienceYears`, {
                     required: "Experience years are required",
                     min: { value: 0, message: "Experience must be 0 or greater" },

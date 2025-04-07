@@ -72,6 +72,13 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
     setValue("dueDate", value ? value.toISOString() : "");
   };
   
+
+  const statusValue = watch("status");
+  
+  const priorityValue = watch("priority");
+  const getSelectTextColorClass = (value: string | undefined) => {
+    return value ? "text-black" : "text-gray-400";
+  };
   const onSubmit = async (data: TaskFormData) => {
     try {
       if (initialTaskData) {
@@ -155,7 +162,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 </label>
                 <select
                   {...register("status")}
-                  className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
+                  className={`w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none  ${getSelectTextColorClass( statusValue)}`}
                 >
                   <option value="">Select Status</option>
                   <option value="TODO">To Do</option>
@@ -169,7 +176,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 </label>
                 <select
                   {...register("priority")}
-                  className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
+                  className={`w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none  ${getSelectTextColorClass( priorityValue)}`}
                 >
                   <option value="">Select Priority</option>
                   <option value="LOW">Low</option>

@@ -117,6 +117,13 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
   const { updateVendor, loading: updateLoading } = useVendors();
   const isEditMode = !!vendorData && !!vendorId;
 
+
+
+
+  const skillsValue = watch("vendorSkills");
+  const getSelectTextColorClass = (value: string | undefined) => {
+    return value ? "text-black" : "text-gray-400";
+  };
   useEffect(() => {
     if (isEditMode && vendorData) {
       const skillName = vendorData.skills && vendorData.skills.length > 0 
@@ -234,6 +241,8 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
     } finally {
       setLoading(false);
     }
+
+    
   };
 
   return (
@@ -318,7 +327,7 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
                   <label className="block text-sm font-medium text-bg-blue-12 mb-1">Vendor Skills</label>
                   <select
                     {...register("vendorSkills", { required: "Vendor skills are required" })}
-                    className="w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none"
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 outline-none  ${getSelectTextColorClass(typeof skillsValue === "string" ? skillsValue : "")}`}
                   >
                     <option value="" disabled>Select Skills</option>
                     <option value="GOLANG">Golang</option>
@@ -474,6 +483,8 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
         <PerformanceFormModal
           onClose={() => setShowPerformanceModal(false)}
           onAddPerformance={addPerformance}
+         
+          
         />
       )}
     </div>
