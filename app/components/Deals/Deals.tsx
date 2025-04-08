@@ -16,6 +16,8 @@ import AddLeadModal from "../AddLeadModal";
 import useOverallLeadsData from "../../api/apiService/OverallLeadApiService";
 import HeaderComp from "../OverallLeads/HeaderComp";
 import { columnDefs } from "../OverallLeads/OverallLeadsData";
+import Pagination from "../../microComponents/Pagination";
+
 
 
 
@@ -40,6 +42,8 @@ const Deals = () => {
   const [pageSize, setPageSize] = useState<number>(5);
   const [inputValue, setInputValue] = useState<string>("");
 
+   
+  const [itemsPerPage, setItemsPerPage] = useState(9);
    const [startDate, setStartDate] = useState<string | undefined>(undefined);
    const [endDate, setEndDate] = useState<string | undefined>(undefined);
   // const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
@@ -104,11 +108,19 @@ const Deals = () => {
     await refetch();
   };
   
- 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 0);
+  };
+
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
 
   const { leads, totalCount, loading, refetch } = useOverallLeadsData(
     currentPage,
-    pageSize,
+    itemsPerPage,
     searchQuery,
     "deal",
     // typeFilter,
@@ -188,19 +200,27 @@ const Deals = () => {
         ) :  (
           <>
             <MicroTable rowData={leads} columnDefs={columnDefs} />
-            <Pagination2
-              currentPage={currentPage}
+            {/* <Pagination2
+              current={currentPage}
               pageSize={pageSize}
               totalCount={totalCount}
               onPageChange={setCurrentPage}
               onPageSizeChange={setPageSize}
-            />
+            /> */}
+
+<Pagination
+        currentPage={currentPage}
+        totalItems={totalCount}
+        itemsPerPage={itemsPerPage}
+        onPageChange={handlePageChange}
+        onItemsPerPageChange={handleItemsPerPageChange}
+      />
           </>
         
         )}
       </div>
 
-      {showAddLeadModal && <AddLeadModal onClose={() => setShowAddLeadModal(false)} pageType="deals" />}
+      {showAddLeadModal && <AddLeadModal onClose={() => setShowAddLeadModal(false)} />}
     </>
   );
 };

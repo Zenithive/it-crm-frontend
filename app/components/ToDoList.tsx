@@ -44,8 +44,7 @@ const [startDate, setStartDate] = useState<string | undefined>(undefined);
 const [endDate, setEndDate] = useState<string | undefined>(undefined);
     
   const [dateFilter, setDateFilter] = useState<string | undefined>(undefined);
-//   const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
-//  const [priorityFilter, setPriorityFilter] = useState<string | undefined>(undefined);
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const [statusFilters, setStatusFilters] = useState<string[]>([]);

@@ -53,6 +53,12 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
   const { updateVendor, loading: updateLoading } = useVendors();
   const isEditMode = !!vendorData && !!vendorId;
 
+
+
+
+  const getSelectTextColorClass = (value: string | undefined) => {
+    return value ? "text-black" : "text-gray-400";
+  };
   useEffect(() => {
     if (isEditMode && vendorData) {
       const skillName = vendorData.skills && vendorData.skills.length > 0 
@@ -136,6 +142,8 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
     } finally {
       setLoading(false);
     }
+
+    
   };
 
   return (
@@ -214,6 +222,8 @@ const VendorForm: React.FC<AddVendorFormProps> = ({ onClose, vendorData, vendorI
         <PerformanceFormModal
           onClose={() => setShowPerformanceModal(false)}
           onAddPerformance={addPerformance}
+         
+          
         />
       )}
     </div>

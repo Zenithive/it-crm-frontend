@@ -8,9 +8,14 @@ interface FormFieldsProps {
   errors: FieldErrors<VendorFormData>;
   control: Control<VendorFormData>;
   setValue: UseFormSetValue<VendorFormData>;
+  
 }
 
 const FormFields: React.FC<FormFieldsProps> = ({ register, errors, control, setValue }) => {
+
+  const getSelectTextColorClass = (value: string | undefined) => {
+    return value ? "text-black" : "text-gray-400";
+  };
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
