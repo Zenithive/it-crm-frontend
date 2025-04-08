@@ -191,7 +191,7 @@ const HeaderFlag: React.FC<HeaderFlagProps> = ({ pageType }) => {
       <div className="bg-white flex p-4 rounded-xl h-12 space-x-4 shadow-custom relative z-100">
         <button className="flex items-center" onClick={toggleDropdown}>
           {SelectedFlagComponent && <SelectedFlagComponent className="mr-1 h-10 w-10" />}
-          <img src="/vector(1).svg" alt="dropdown" className="h-4 w-4 text-gray-500 ml-3" />
+          <img src="/Vector(1).svg" alt="dropdown" className="h-4 w-4 text-gray-500 ml-3" />
           <div className="h-6 w-px bg-bg-blue-11 ml-3"></div>
         </button>
 
