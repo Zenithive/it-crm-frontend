@@ -20,6 +20,7 @@ export function middleware(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/overallvendorprofile") ||
     request.nextUrl.pathname.startsWith("/overallcasrstudy") ||
     request.nextUrl.pathname.startsWith("/todolist") ||
+    request.nextUrl.pathname.startsWith("/individual") ||
     request.nextUrl.pathname.startsWith("/individualmeetingscreen");
 
   // Define auth routes (login, callback, etc.)

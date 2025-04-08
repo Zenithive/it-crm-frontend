@@ -174,7 +174,7 @@ const getDisplayRating = () => {
         <td className="px-6 py-6 flex">
         {fetchedVendor ? getDisplayRating() : vendor.rating}
 
-          <img src="/Star_icon.svg" alt="Rate" className="ml-2" />
+          <img src="/star_icon.svg" alt="Rate" className="ml-2" />
         </td>
         <td className="px-6 py-6">
           <span
