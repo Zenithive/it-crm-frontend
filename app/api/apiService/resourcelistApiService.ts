@@ -4,6 +4,10 @@
 
 import { useQuery } from "@apollo/client";
 import { GET_RESOURCE_PROFILES_QUERY } from "../../../graphQl/queries/getAllResources.queries";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { GET_SKILLS } from "../../../graphQl/queries/getSkills.queries";
+import { RootState } from "../../redux/store/store";
 
 export interface Vendor {
   vendorID: string;
@@ -22,6 +26,12 @@ interface ResourceSkill {
   experienceYears: number;
 }
 
+interface SkillsResponse {
+  getSkills: {
+    totalCount: number;
+    items: Skill[];
+  };
+}
 interface PastProject {
   pastProjectID: string;
   createdAt: string;
@@ -180,3 +190,54 @@ export const useResourceList = (variables: ResourceListApiVariables) => {
     refetch,
   };
 };
+
+
+
+const useSkillsApiService = () => {
+  const [skillsByType, setSkillsByType] = useState<{ [type: string]: Skill[] }>({});
+  const user = useSelector((state: RootState) => state.auth);
+
+  const {
+    data: skillsData,
+    loading,
+    error,
+    refetch
+  } = useQuery<SkillsResponse>(GET_SKILLS, {
+    variables: {
+      filter: {}, // You can add dynamic filtering logic later
+      pagination: { page: 1, pageSize: 1000 },
+    },
+    context: {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    },
+    onError: (err) => console.error("Error fetching skills:", err),
+  });
+
+  useEffect(() => {
+    if (skillsData?.getSkills?.items) {
+      const map: { [type: string]: Skill[] } = {};
+
+      skillsData.getSkills.items.forEach(skill => {
+        if (!map[skill.skilltype]) {
+          map[skill.skilltype] = [];
+        }
+        map[skill.skilltype].push(skill);
+      });
+
+      setSkillsByType(map);
+    }
+  }, [skillsData]);
+
+  return {
+    skills: skillsData?.getSkills.items || [],
+    skillsByType,
+    loading,
+    error: error?.message,
+    totalSkills: skillsData?.getSkills.totalCount || 0,
+    refetch,
+  };
+};
+
+export default useSkillsApiService;

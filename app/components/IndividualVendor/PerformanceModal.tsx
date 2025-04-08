@@ -46,11 +46,16 @@ const PerformanceFormModal: React.FC<PerformanceFormModalProps> = ({ onClose, on
           <div>
             <label className="block text-sm font-medium text-bg-blue-12 mb-1">Past Projects Count</label>
             <input
-              {...register("pastProjectsCount", { required: true, valueAsNumber: true, min: 0 })}
+              {...register("pastProjectsCount", { required: true, valueAsNumber: true, min: 0, })}
               type="number"
               className="w-full px-3 py-2 border rounded-lg focus:outline-none"
               placeholder="Enter number"
-              min="0"  onChange={(e) => {
+              min="0"  
+              onKeyDown={(e) => {
+                if (e.key === '-' || e.key === 'e') {
+                  e.preventDefault();
+                }
+              }}onChange={(e) => {
                 const value = parseInt(e.target.value, 10);
                 register("pastProjectsCount").onChange({ target: { value: isNaN(value) ? 0 : value } });
               }}
@@ -66,6 +71,18 @@ const PerformanceFormModal: React.FC<PerformanceFormModalProps> = ({ onClose, on
               placeholder="Enter rating"
               min="0"
               max="5"
+
+              onInput={(e) => {
+                const input = e.target as HTMLInputElement;
+                if (+input.value > 5) input.value = '5';
+              }}
+              onKeyDown={(e) => {
+                if (e.key === '-' || e.key === 'e') {
+                  e.preventDefault();
+                }
+
+                
+              }}
             />
             {errors.rating && <p className="text-red-500 text-xs mt-1">Required, 0-5</p>}
           </div>

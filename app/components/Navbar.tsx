@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/slice/authSlice";
+
+
 
 interface NavbarProps {
   nav: {
@@ -15,6 +19,24 @@ const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar }) => {
   const router = useRouter();
   const handleRedirect = () => {
     router.push("/dashboard");
+  };
+
+  const dispatch = useDispatch();
+
+
+  const handleLogout = () => {
+    
+    localStorage.removeItem("token");
+    
+  
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; SameSite=Strict";
+    document.cookie = "userData=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; SameSite=Strict";
+    
+  
+    dispatch(logout());
+    
+ 
+    router.push("/login");
   };
   const { name, designation } = nav || {};
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -72,12 +94,12 @@ const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar }) => {
                 <p className="text-sm font-semibold text-gray-700">{name || "User"}</p>
                 <p className="text-xs text-gray-500">{designation || "Role"}</p>
               </div>
-              <div className="flex items-center ml-4">
+              <div className="flex items-center ml-4 ">
                 <button
                   onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
                   className="focus:outline-none"
                 >
-                  <img src="/dropdown.svg" alt="Profile" className="h-4 w-4" />
+                  <img src="/dropdown.svg" alt="Profile" className="h-4 w-4 " />
                 </button>
               </div>
             </div>
@@ -101,7 +123,7 @@ const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar }) => {
                       onClick={() => {
                         console.log("Logout clicked");
                         setIsProfileDropdownOpen(false);
-                        // Add logout logic here
+                        handleLogout();
                       }}
                     >
                       Logout
@@ -161,7 +183,7 @@ const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar }) => {
                       onClick={() => {
                         console.log("Logout clicked");
                         setIsProfileDropdownOpen(false);
-                        // Add logout logic here
+                        handleLogout();
                       }}
                     >
                       Logout
