@@ -26,8 +26,8 @@ export interface Lead {
 
 
 const useOverallLeadsData = (
-  page: number,
-  pageSize: number,
+  page=1,
+  pageSize=10,
   searchQuery?: string,
   stage?: string,
   type?: string,

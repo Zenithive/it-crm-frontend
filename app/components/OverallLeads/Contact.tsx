@@ -38,7 +38,7 @@ const Contact = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
    
     const [itemsPerPage, setItemsPerPage] = useState(9);
-  const [pageSize, setPageSize] = useState<number>(5);
+
   const [inputValue, setInputValue] = useState<string>("");
 
    const [startDate, setStartDate] = useState<string | undefined>(undefined);
@@ -129,7 +129,7 @@ const [stageFilters, setStageFilters] = useState<string[]>([]);
 
   const { leads, totalCount, loading, refetch } = useOverallLeadsData(
     currentPage,
-    pageSize,
+    itemsPerPage,
     searchQuery,
     stageFilters.length>0 ?stageFilters.join(','):undefined,
     typeFilters.length>0 ?typeFilters.join(','):undefined,
@@ -189,6 +189,17 @@ const [stageFilters, setStageFilters] = useState<string[]>([]);
       </div>
     ) : null;
   };
+
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    window.scrollTo(0, 0);
+  };
+  const handleItemsPerPageChange = (newItemsPerPage: number) => {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  };
+
   return (
     <>
       <HeaderComp
@@ -215,13 +226,21 @@ const [stageFilters, setStageFilters] = useState<string[]>([]);
         ) : activeView === "list" ? (
           <>
             <MicroTable rowData={leads} columnDefs={columnDefs} />
-            <Pagination2
+            {/* <Pagination2
               currentPage={currentPage}
               pageSize={pageSize}
               totalCount={totalCount}
               onPageChange={setCurrentPage}
               onPageSizeChange={setPageSize}
-            />
+            /> */}
+
+<Pagination
+        currentPage={currentPage}
+        totalItems={totalCount}
+        itemsPerPage={itemsPerPage}
+        onPageChange={handlePageChange}
+        onItemsPerPageChange={handleItemsPerPageChange}
+      />
 
 
           </>
@@ -232,7 +251,7 @@ const [stageFilters, setStageFilters] = useState<string[]>([]);
         )}
       </div>
 
-      {showAddLeadModal && <AddLeadModal onClose={() => setShowAddLeadModal(false)} />}
+      {showAddLeadModal && <AddLeadModal onClose={() => setShowAddLeadModal(false)}/>}
     </>
   );
 };

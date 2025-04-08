@@ -63,7 +63,7 @@ const IndividualTitle = ({ leadId,onLeadUpdated}: { leadId: string,onLeadUpdated
             text="Edit Contact"
             onClick={handleEditContact} // Trigger modal open
           />
-          <div className="relative">  <HeaderFlag  /></div>
+          <div className="relative">  <HeaderFlag  pageType="individual"/></div>
         
         </div>
       </div>

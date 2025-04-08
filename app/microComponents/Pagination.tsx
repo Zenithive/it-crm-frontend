@@ -4,6 +4,7 @@ import { PaginationProps } from "./InterfaceAndTypeData";
 
 const Pagination = ({
   totalItems,
+  currentPage,
   onPageChange,
   itemsPerPage,
   onItemsPerPageChange,
@@ -18,14 +19,14 @@ const Pagination = ({
   console.log(`onPageChange`, onPageChange);
   console.log(`itemsPerPage`, itemsPerPage);
   console.log(`onItemsPerPageChange`, onItemsPerPageChange);
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
+      // setCurrentPage(page);
       onPageChange?.(page);
     }
   };

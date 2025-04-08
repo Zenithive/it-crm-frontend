@@ -17,7 +17,11 @@ interface FlagOption {
   timeZones: TimeZone[];
 }
 
-const HeaderFlag = () => {
+interface HeaderFlagProps {
+  pageType?: string; // Replace 'string' with the appropriate type if needed
+}
+
+const HeaderFlag: React.FC<HeaderFlagProps> = ({ pageType }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isZoneOpen, setIsZoneOpen] = useState(false);
   const [selectedFlag, setSelectedFlag] = useState("in");
@@ -220,7 +224,7 @@ const HeaderFlag = () => {
           </div>
         )}
 
-        {isZoneOpen && hoveredCountry && (
+        {/* {isZoneOpen && hoveredCountry && (
           <div
             ref={zoneRef}
             className="absolute top-[50px] left-44 bg-white rounded-lg shadow-lg py-2 px-2 w-44 z-[1000]"
@@ -241,7 +245,38 @@ const HeaderFlag = () => {
                 ))}
             </div>
           </div>
-        )}
+        )} */}
+
+
+{isZoneOpen && hoveredCountry && (
+  <div
+    ref={zoneRef}
+    style={pageType === "individual" 
+      ? { position: "absolute", top: "50px", left: "calc(100% - 80px)", transform: "translateX(-50%)" }
+      : {}
+    }
+    className={pageType === "individual"
+      ? "bg-white  rounded-lg shadow-lg py-2 px-2 mx-6 w-32 z-[1000]"
+      : "absolute top-[50px] left-44 bg-white rounded-lg shadow-lg py-2 px-2 w-44 z-[1000]"
+    }
+    onMouseEnter={handleZoneHover}
+    onMouseLeave={handleMouseLeave}
+  >
+    <div className="max-h-[200px] overflow-y-auto scroll scrollbar-custom">
+      {flagOptions
+        .find((flag) => flag.code === hoveredCountry)
+        ?.timeZones.map((tz) => (
+          <div
+            key={tz.zone}
+            onClick={() => handleZoneSelect(tz.zone)}
+            className="flex items-center p-2 hover:bg-gray-100 cursor-pointer rounded"
+          >
+            <span className="text-sm text-gray-700">{tz.name}</span>
+          </div>
+        ))}
+    </div>
+  </div>
+)}
       </div>
     </div>
   );
