@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, ReactNode } from "react";
 import { individualcasestudyDocApi } from "../../api/apiService/individualcasestudyApiServices";
-import DocumentUploadForm from "../Uploadfile";
+import DocumentUploadForm from "../uploadfile";
 import PubSub from "../../pubsub/Pubsub";
 
 interface DocumentData {

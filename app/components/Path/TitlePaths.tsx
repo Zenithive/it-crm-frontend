@@ -2,7 +2,7 @@
 
 export const Dashboardtitle = [
     {
-        titleName: "CRM DashBoard",
+        titleName: "CRM Dashboard",
     }
 ]
 

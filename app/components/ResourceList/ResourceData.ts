@@ -28,6 +28,7 @@ export interface Skill {
 export interface ResourceSkill {
   skill: Skill;
   experienceYears: number;
+  
 }
 
 export interface ResourceProfile {
@@ -46,6 +47,7 @@ export interface ResourceProfile {
 export interface SkillInput {
   skillID: string;
   experienceYears: string;
+
   
 }
 

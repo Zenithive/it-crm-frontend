@@ -64,6 +64,8 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
     UPDATE_RESOURCE_PROFILE
   );
 
+
+ 
   useEffect(() => {
     if (isEditMode && resourceData?.getResourceProfile) {
       const profile = resourceData.getResourceProfile as ResourceProfile;
@@ -121,6 +123,7 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
               skillID: skill.skillID,
               experienceYears: parseFloat(skill.experienceYears) || 0,
             })),
+        
         };
 
         await updateResourceProfile({
@@ -395,9 +398,9 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
             <label className="block text-base font-medium text-bg-blue-12 mb-1">Skills</label>
             
 {fields.map((field, index) => (
-  <div key={field.id} className={`flex items-center gap-2 mb-6 w-full `}>
+  <div key={field.id} className={`flex items-center gap-2 p-2  w-full `}>
 
-    <div className="flex-1">
+    <div className="flex-1 ">
     <Controller
   name={`skillInputs.${index}.skillID`}
   control={control}

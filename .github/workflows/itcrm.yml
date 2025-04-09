@@ -3,7 +3,7 @@ name: CICD
 on:
   push:
     branches:
-      - arati
+      - arati  #here goes the branch name which you want to deploy
 
 jobs:
   build-and-deploy:
@@ -33,3 +33,19 @@ jobs:
           version_label: ${{ github.sha }}
           region: ap-south-1
           deployment_package: nodejs-app-build.zip
+
+
+
+      # - name: Deploy to DigitalOcean via SSH
+      #   uses: appleboy/ssh-action@v0.1.6
+      #   with:
+      #     host: ${{ secrets.DIGITALOCEAN_HOST }}    #droplet ip address
+      #     username: ${{ secrets.DIGITALOCEAN_USER }}   #usually root or ubantu
+      #     key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}      #private ssh key
+      #     port: 22
+      #     script: |
+      #       cd /var/www/your-app
+      #       git pull origin main
+      #       npm install
+      #       npm run build
+      #       pm2 restart your-app-name

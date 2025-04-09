@@ -132,7 +132,7 @@ const Task = () => {
               }`}
               onClick={() => setActiveView("today")}
             >
-              Today Task
+              Today's Task
             </button>
             <button
               className={`text-black text-base md:text-lg font-semibold whitespace-nowrap pb-2 mt-4 ${

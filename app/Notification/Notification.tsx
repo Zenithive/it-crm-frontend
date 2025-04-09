@@ -242,6 +242,21 @@ if(component==="todo"){
         type: "info",
         message,
       });
+
+
+
+      
+  
+    
+    });
+
+
+    const LoginError = PubSub.subscribe("LOG_ERROR", (data) => {
+const {message}=data
+      addNotification({
+        type: "error",
+        message:message,
+      });
     });
     return () => {
       successSub();
@@ -251,6 +266,7 @@ if(component==="todo"){
       resourceAdd();
       resourceUpdate();
       resourceUpdateError();
+      LoginError();
       overallCasestudyAdd();
       overallCasestudyError();
       resourceAddError();

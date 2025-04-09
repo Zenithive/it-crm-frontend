@@ -193,6 +193,8 @@ export const useResourceList = (variables: ResourceListApiVariables) => {
 
 
 
+
+
 const useSkillsApiService = () => {
   const [skillsByType, setSkillsByType] = useState<{ [type: string]: Skill[] }>({});
   const user = useSelector((state: RootState) => state.auth);
@@ -230,6 +232,10 @@ const useSkillsApiService = () => {
     }
   }, [skillsData]);
 
+
+
+
+  
   return {
     skills: skillsData?.getSkills.items || [],
     skillsByType,
