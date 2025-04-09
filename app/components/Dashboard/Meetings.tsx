@@ -22,6 +22,8 @@ const Meetings = () => {
   const [recentView, setRecentView] = useState("today");
   const [isLoading, setIsLoading] = useState(true);
   const [needsGoogleLogin, setNeedsGoogleLogin] = useState(false);
+  // Add state for toast notification
+  const [showToast, setShowToast] = useState(false);
 
   // Get auth tokens from Redux store
   const auth = useSelector((state: any) => state.auth);
@@ -213,10 +215,16 @@ const Meetings = () => {
     }
   };
 
-  // Handle copying meeting link
+  // Handle copying meeting link with toast notification
   const handleCopyLink = (meetingLink: string) => {
     if (meetingLink) {
       navigator.clipboard.writeText(meetingLink);
+      // Show toast notification
+      setShowToast(true);
+      // Hide toast after 3 seconds
+      setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
     }
   };
 
@@ -258,7 +266,17 @@ const Meetings = () => {
   };
 
   return (
-    <div className="w-full h-40 md:h-56">
+    <div className="w-full h-40 md:h-56 relative">
+      {/* Toast notification */}
+      {showToast && (
+        <div className="absolute top-2 right-2 z-50 bg-gray-800 text-white px-4 py-2 rounded-md shadow-lg flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+          </svg>
+          Link copied to clipboard!
+        </div>
+      )}
+      
       <div className="bg-white rounded-xl shadow-custom min-h-[370px]">
         <div className="border-b border-bg-blue-12 ">
           <div className="flex space-x-4 md:space-x-8 mb-4 overflow-x-auto ml-5">
@@ -328,8 +346,10 @@ const Meetings = () => {
                   <div className="flex mt-4">
                     {meeting.meetingLink && (
                       <button 
-                        className="border shadow-sm bg-white p-2 rounded-md mr-4"
+                        className="border shadow-sm bg-white p-2 rounded-md mr-4 hover:bg-gray-50 transition-colors"
                         onClick={() => handleCopyLink(meeting.meetingLink || "")}
+                        aria-label="Copy meeting link"
+                        title="Copy meeting link"
                       >
                         <img src="/link.svg" alt="Link" />
                       </button>
