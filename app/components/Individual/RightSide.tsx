@@ -277,9 +277,10 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
                       </a> */}
                       <button
                         onClick={() => downloadFile(doc.id, String(doc.title))}
-                        className="text-bg-blue-12 font-bold"
+                        className="text-bg-blue-12 p-2 hover:bg-gray-100 rounded-full"
+                        title="Download"
                       >
-                        Download
+                        <img src="/download_icon.svg" alt="Download" width="20" height="20" />
                       </button>
                     </div>
                   </div>

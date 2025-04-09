@@ -19,7 +19,7 @@ const Meetings = () => {
 
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [recent, setRecent] = useState<Recent[]>([]);
-  const [recentView, setRecentView] = useState("today");
+  const [recentView, setRecentView] = useState("upcoming");
   const [isLoading, setIsLoading] = useState(true);
   const [needsGoogleLogin, setNeedsGoogleLogin] = useState(false);
   // Add state for toast notification
@@ -228,8 +228,8 @@ const Meetings = () => {
     }
   };
 
-  // Filter meetings for today tab (today + upcoming 7 days)
-  const getTodayMeetings = () => {
+  // Filter meetings for upcoming tab (today + upcoming 7 days)
+  const getUpcomingMeetings = () => {
     const now = new Date();
     const sevenDaysLater = new Date();
     sevenDaysLater.setDate(now.getDate() + 7);
@@ -253,11 +253,11 @@ const Meetings = () => {
         const meetingDate = new Date(meeting.date);
         return meetingDate < now && meetingDate >= sevenDaysAgo;
       })
-      .sort((a, b) => b.date.getTime() - a.date.getTime()); 
+      .sort((a, b) => b.date.getTime() - a.date.getTime()); // Sort in descending order by date
   };
 
   // Get the appropriate meetings based on the selected view
-  const displayMeetings = recentView === "today" ? getTodayMeetings() : getRecentMeetings();
+  const displayMeetings = recentView === "upcoming" ? getUpcomingMeetings() : getRecentMeetings();
 
   // Function to handle Google login
   const handleGoogleLogin = () => {
@@ -285,11 +285,11 @@ const Meetings = () => {
             </button>
             <button
               className={`text-black text-base md:text-lg font-semibold pb-2 whitespace-nowrap mt-4 ${
-                recentView === "today" ? "border-b-2 border-bg-blue-12" : ""
+                recentView === "upcoming" ? "border-b-2 border-bg-blue-12" : ""
               }`}
-              onClick={() => setRecentView("today")}
+              onClick={() => setRecentView("upcoming")}
             >
-              Today
+              Upcoming
             </button>
             <button
               className={`text-black text-base md:text-lg font-semibold whitespace-nowrap pb-2 mt-4 ${
@@ -366,7 +366,7 @@ const Meetings = () => {
               ))
             ) : (
               <div className="flex justify-center items-center h-32 text-gray-500">
-                {recentView === "today" 
+                {recentView === "upcoming" 
                   ? "No upcoming meetings found for the next 7 days" 
                   : "No meetings found from the past 7 days"}
               </div>
