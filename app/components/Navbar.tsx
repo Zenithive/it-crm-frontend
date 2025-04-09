@@ -31,7 +31,12 @@ const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar }) => {
               className="h-7 cursor-pointer"
               onClick={toggleSidebar}
             />
-            <img src="/logo.svg" alt="logo" className="h-6" />
+            <img
+              src="/logo.svg"
+              alt="logo"
+              className="h-6 cursor-pointer"
+              onClick={handleRedirect}
+            />
           </div>
 
           <div className="relative hidden sm:block">
@@ -54,7 +59,10 @@ const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar }) => {
         </div>
 
         <div className="hidden sm:flex items-center space-x-2">
-          <button className="p-2 hover:bg-gray-100 rounded-lg" onClick={handleRedirect}>
+          <button
+            className="p-2 hover:bg-gray-100 rounded-lg"
+            onClick={handleRedirect}
+          >
             <img src="/nav_icon1.svg" alt="Navbar" className="w-5 h-5" />
           </button>
           <div className="h-8 w-px border-l border-gray-300"></div>
@@ -69,12 +77,16 @@ const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar }) => {
           <div className="relative flex items-center space-x-3">
             <div className="flex items-center">
               <div className="ml-2">
-                <p className="text-sm font-semibold text-gray-700">{name || "User"}</p>
+                <p className="text-sm font-semibold text-gray-700">
+                  {name || "User"}
+                </p>
                 <p className="text-xs text-gray-500">{designation || "Role"}</p>
               </div>
               <div className="flex items-center ml-4">
                 <button
-                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                  onClick={() =>
+                    setIsProfileDropdownOpen(!isProfileDropdownOpen)
+                  }
                   className="focus:outline-none"
                 >
                   <img src="/dropdown.svg" alt="Profile" className="h-4 w-4" />
@@ -129,12 +141,16 @@ const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar }) => {
           <div className="flex flex-col items-center mt-4">
             <div className="flex items-center">
               <div className="ml-2">
-                <p className="text-sm font-medium text-gray-700">{name || "User"}</p>
+                <p className="text-sm font-medium text-gray-700">
+                  {name || "User"}
+                </p>
                 <p className="text-xs text-gray-500">{designation || "Role"}</p>
               </div>
               <div className="flex items-center ml-4">
                 <button
-                  onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+                  onClick={() =>
+                    setIsProfileDropdownOpen(!isProfileDropdownOpen)
+                  }
                   className="focus:outline-none"
                 >
                   <img src="/dropdown.svg" alt="Profile" className="h-4 w-4" />

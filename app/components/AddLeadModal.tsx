@@ -21,6 +21,7 @@ import { formatDate } from "./Interface/LeadFormUtils";
 const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
   const {
     register,
+    trigger,
     handleSubmit,
     reset,
     setValue,
@@ -175,10 +176,11 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
           ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="p-6">
               <div className="space-y-2">
-                <PersonalInfoSection 
-                  register={register} 
-                  errors={errors} 
-                />
+              <PersonalInfoSection
+        register={register}
+        trigger={trigger} // pass trigger
+        errors={errors}
+      />
                 
                 <ContactInfoSection 
                   register={register} 

@@ -2,16 +2,18 @@
 "use client";
 
 import React from "react";
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { UseFormRegister, FieldErrors, UseFormTrigger } from "react-hook-form";
 import { LeadFormData } from "../Interface/AddLeadModalInterface";
 
 interface PersonalInfoSectionProps {
   register: UseFormRegister<LeadFormData>;
+  trigger: UseFormTrigger<LeadFormData>;
   errors: FieldErrors<LeadFormData>;
 }
 
 const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   register,
+  trigger,
   errors
 }) => {
   return (
@@ -69,9 +71,10 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
               message: "Enter a valid LinkedIn URL",
             },
           })}
+          onBlur={() => trigger("linkedIn")} // Validate on blur
           placeholder="Link"
           className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
-        />
+/>
         {errors.linkedIn && (
           <span className="text-red-500 text-sm">
             {errors.linkedIn.message}
