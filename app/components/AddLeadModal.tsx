@@ -27,6 +27,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
     setValue,
     watch,
     formState: { errors },
+  control,
   } = useForm<LeadFormData>({
     defaultValues: {
       leadStage: "NEW",
@@ -183,10 +184,11 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
       />
                 
                 <ContactInfoSection 
-                  register={register} 
-                  errors={errors} 
-                  watch={watch} 
-                />
+  register={register} 
+  errors={errors} 
+  watch={watch} 
+  control={control} 
+/>
                 
                 <LeadDetailsSection 
                   register={register} 
