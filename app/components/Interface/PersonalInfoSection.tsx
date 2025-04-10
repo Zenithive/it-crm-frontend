@@ -14,14 +14,12 @@ interface PersonalInfoSectionProps {
 const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   register,
   trigger,
-  errors
+  errors,
 }) => {
   return (
     <div className="grid grid-cols-3 gap-4">
       <div>
-        <label className="block text-sm text-bg-blue-12 mb-2">
-          First Name
-        </label>
+        <label className="block text-sm text-bg-blue-12 mb-2">First Name</label>
         <input
           {...register("firstName", {
             required: "First name is required",
@@ -40,9 +38,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
         )}
       </div>
       <div>
-        <label className="block text-sm text-bg-blue-12 mb-2">
-          Last Name
-        </label>
+        <label className="block text-sm text-bg-blue-12 mb-2">Last Name</label>
         <input
           {...register("lastName", {
             required: "Last name is required",
@@ -67,14 +63,16 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
         <input
           {...register("linkedIn", {
             pattern: {
-              value: /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/,
-              message: "Enter a valid LinkedIn URL",
+              value:
+                /^(https?:\/\/)?(www\.)?linkedin\.com\/(in|pub|company)\/[\w-]+\/?$/,
+              message:
+                "Enter a valid LinkedIn URL (e.g., https://www.linkedin.com/in/username)",
             },
           })}
-          onBlur={() => trigger("linkedIn")} // Validate on blur
+          onBlur={() => trigger("linkedIn")}
           placeholder="Link"
           className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
-/>
+        />
         {errors.linkedIn && (
           <span className="text-red-500 text-sm">
             {errors.linkedIn.message}
