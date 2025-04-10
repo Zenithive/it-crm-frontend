@@ -22,6 +22,7 @@ export interface Lead {
   leadAssignedTo: { userID: string; name: string; email: string };
   organization: { organizationID: string; organizationName: string };
   campaign: { campaignID: string; campaignName: string; campaignCountry: string; campaignRegion: string; industryTargeted: string };
+  createdAt?: string;
 }
 
 
@@ -126,7 +127,8 @@ const useOverallLeadsData = (
     ? { leadID: leadId } // For GET_LEAD_BY_ID
     : {
         pagination: { page, pageSize },
-        sort: { field: "EMAIL", order: "ASC" },
+        // sort: { field: "EMAIL", order: "ASC" },
+        sort: { field: "CREATED_AT", order: "DESC" }, 
         filter,
       };
 

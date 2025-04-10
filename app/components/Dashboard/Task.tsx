@@ -4,6 +4,8 @@ import "./Dashboard.css";
 import useTasksData from "../../hooks/useGetTaskForDashboard";
 import { GET_LEADS } from "../../../graphQl/queries/leads.queries";
 import { useUpdateTask } from "../../hooks/useUpdateTask";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
 
 export interface Lead {
   leadID: string;
@@ -63,6 +65,7 @@ const Task = () => {
   const { tasks, loading, error, refetch } = useTasksData();
   const [followup, setFollowup] = useState<Followup[]>([]);
   const [activeView, setActiveView] = useState("today");
+  const user = useSelector((state: RootState) => state.auth);
 
   // Use the useUpdateTask hook
   const { handleConfirmUpdate } = useUpdateTask(refetch);
@@ -73,7 +76,8 @@ const Task = () => {
     data: leadsData
   } = useQuery(GET_LEADS, {
     variables: {
-      filter: { email: "faizm@zenithive.com" }, 
+      // filter: { email: "faizm@zenithive.com" }, 
+      filter: { email: user.email }, 
       pagination: { page: 1, pageSize: 20 },
       sort: { field: "EMAIL", order: "ASC" }
     },

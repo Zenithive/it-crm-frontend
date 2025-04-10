@@ -15,6 +15,7 @@ interface Lead {
   organizationName?: string;
   organizationWebsite?: string;
   organizationLinkedIn?:string;
+  noOfEmployees?:string;
   assignedToName?: string;
   industryTargeted?: string;
   createdAt: string;
@@ -46,6 +47,7 @@ const leadApiService = (leadID: string) => {
         country: data.getLead.country || "Not Specified",
         initialContactDate: data.getLead.initialContactDate || "Not Specified",
         organizationName: data.getLead.organization?.organizationName || "Unknown",
+        noOfEmployees: data.getLead.organization?.noOfEmployees || "Unknown",
         organizationWebsite: data.getLead.organization?.organizationWebsite || "N/A",
         organizationLinkedIn:data.getLead.organization?.organizationLinkedIn || "",
         assignedToName: data.getLead.leadAssignedTo?.name || "Unassigned",

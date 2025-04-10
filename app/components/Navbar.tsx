@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/slice/authSlice";
+import PubSub from "../pubsub/Pubsub";
 
 
 
@@ -35,7 +36,9 @@ const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar }) => {
   
     dispatch(logout());
     
- 
+    PubSub.publish("LOGOUT", {
+      message: "Logout successful!",
+    });
     router.push("/login");
   };
   const { name, designation } = nav || {};

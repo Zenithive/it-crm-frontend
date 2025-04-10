@@ -133,6 +133,7 @@ export type HeaderProps = {
   onFilter?: (payload: FilterPayload) => void;
   onViewChange?: (view: ViewType) => void;
   pageType?:string
+  count?: number;
   
 };
 

@@ -139,7 +139,58 @@ const [stageFilters, setStageFilters] = useState<string[]>([]);
 
   );
   
-  const getActiveFiltersDisplay = () => {
+  // const getActiveFiltersDisplay = () => {
+  //   const filters = [];
+    
+  //   if (typeFilters.length > 0) {
+  //     filters.push(`Types: ${typeFilters.join(', ')}`);
+  //   }
+
+  //   if (startDate && endDate) {
+  //     filters.push(`Date range: ${startDate} to ${endDate}`);
+  //   } else if (startDate) {
+  //     filters.push(`From date: ${startDate}`);
+  //   } else if (endDate) {
+  //     filters.push(`To date: ${endDate}`);
+  //   }
+    
+  //   if (stageFilters.length > 0) {
+  //     filters.push(`stages: ${stageFilters.join(', ')}`);
+  //   }
+
+  //   if (campaignFilters.length > 0) {
+  //     filters.push(`campaigns: ${campaignFilters.join(', ')}`);
+  //   }
+   
+    
+  //   return filters.length > 0 ? (
+  //     <div className="flex items-center gap-2 mt-2 mb-4">
+  //       <span className="text-sm text-gray-500">Active filters:</span>
+  //       <div className="flex flex-wrap gap-2">
+  //         {filters.map((filter, index) => (
+  //           <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
+  //             {filter}
+  //           </span>
+  //         ))}
+  //       </div>
+  //       <button 
+  //         className="text-sm text-red-500 hover:text-red-700 ml-2"
+  //         onClick={() => {
+  //           setTypeFilters([]);
+  //           setCampaignFilters([]);
+  //           setStageFilters([]);
+  //           setStartDate("");
+  //           setEndDate("");
+  //           refetch();
+  //         }}
+  //       >
+  //         Clear all
+  //       </button>
+  //     </div>
+  //   ) : null;
+  // };
+
+  const getActiveFiltersCount = () => {
     const filters = [];
     
     if (typeFilters.length > 0) {
@@ -161,34 +212,14 @@ const [stageFilters, setStageFilters] = useState<string[]>([]);
     if (campaignFilters.length > 0) {
       filters.push(`campaigns: ${campaignFilters.join(', ')}`);
     }
-   
-    
-    return filters.length > 0 ? (
-      <div className="flex items-center gap-2 mt-2 mb-4">
-        <span className="text-sm text-gray-500">Active filters:</span>
-        <div className="flex flex-wrap gap-2">
-          {filters.map((filter, index) => (
-            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
-              {filter}
-            </span>
-          ))}
-        </div>
-        <button 
-          className="text-sm text-red-500 hover:text-red-700 ml-2"
-          onClick={() => {
-            setTypeFilters([]);
-            setCampaignFilters([]);
-            setStageFilters([]);
-            setStartDate("");
-            setEndDate("");
-            refetch();
-          }}
-        >
-          Clear all
-        </button>
-      </div>
-    ) : null;
-  };
+
+    // Return the number of active filters (just the count)
+    return filters.length;
+};
+
+
+
+
 
 
   const handlePageChange = (page: number) => {
@@ -213,13 +244,14 @@ const [stageFilters, setStageFilters] = useState<string[]>([]);
         onSearchChange={handleSearchChange}
         onAddLead={handleAddLead}
         onFilter={handleFilter}
+        count={getActiveFiltersCount()}
         onViewChange={handleViewChange}
         pageType="contact"
       />
 
       <div className="pt-[40px]">
 
-      {getActiveFiltersDisplay()}
+      {/* {getActiveFiltersDisplay()} */}
         {loading ? (
           // <div className="text-center p-6">Loading data...</div>
           <TodoListSkeleton />

@@ -136,7 +136,7 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
 
   // Download function implementation
   const downloadFile = (fileId: any, filename: string) => {
-    setDownloadMessage("Starting download...");
+    setDownloadMessage("Your file is downloading");
     
     const token = localStorage.getItem('token') || ''; // Get the token from localStorage
     
@@ -161,10 +161,19 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-        setDownloadMessage("Download started.");
+        
+        // Clear the download message after a few seconds
+        setTimeout(() => {
+          setDownloadMessage("");
+        }, 3000);
       })
       .catch((error) => {
         setDownloadMessage("Download failed: " + error.message);
+        
+        // Clear error message after a few seconds
+        setTimeout(() => {
+          setDownloadMessage("");
+        }, 3000);
       });
   };
 
@@ -277,9 +286,10 @@ const RightSide: React.FC<LeftSideProps> = ({ leadId }) => {
                       </a> */}
                       <button
                         onClick={() => downloadFile(doc.id, String(doc.title))}
-                        className="text-bg-blue-12 font-bold"
+                        className="text-bg-blue-12 p-2 hover:bg-gray-100 rounded-full"
+                        title="Download"
                       >
-                        Download
+                        <img src="/download_icon.svg" alt="Download" width="20" height="20" />
                       </button>
                     </div>
                   </div>

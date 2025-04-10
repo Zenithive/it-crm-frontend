@@ -63,8 +63,12 @@ const ContactInfoSection: React.FC<ContactInfoSectionProps> = ({
           )}`}
         >
           <option value="" disabled>Select a source</option>
-          <option value="Linkedin">LinkedIn</option>
-          <option value="Upwork">Upwork</option>
+          <option value="LINKEDIN">LinkedIn</option>
+          <option value="UPWORK">Upwork</option>
+          <option value="WEBSITE">Website Form</option>
+          <option value="CALL">Direct Call</option>
+          <option value="REFERRAL">Referral</option>
+          <option value="OTHER">Other</option>
         </select>
         {errors.leadSource && (
           <span className="text-red-500 text-sm">{errors.leadSource.message}</span>
