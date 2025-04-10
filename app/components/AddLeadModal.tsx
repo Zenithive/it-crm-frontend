@@ -16,6 +16,7 @@ import PersonalInfoSection from "./Interface/PersonalInfoSection";
 import ContactInfoSection from "./Interface/ContactInfoSection";
 import LeadDetailsSection from "./Interface/LeadDetailsSection";
 import OrganizationInfoSection from "./Interface/OrganizationInfoSection";
+import LeadSkeleton from "./Skeleton/LeadSkeleton";
 import { formatDate } from "./Interface/LeadFormUtils";
 
 const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
@@ -27,7 +28,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
     setValue,
     watch,
     formState: { errors },
-  control,
+    control,
   } = useForm<LeadFormData>({
     defaultValues: {
       leadStage: "NEW",
@@ -171,24 +172,26 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
 
         <div className="bg-white rounded-b-xl shadow-lg w-full max-w-4xl">
           {fetchLoading ? (
-            <div className="p-6">Loading lead data...</div>
+            <LeadSkeleton />
           ) : fetchError ? (
             <div className="p-6">Error loading lead data: {fetchError}</div>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)} className="p-6">
               <div className="space-y-2">
-              <PersonalInfoSection
-        register={register}
-        trigger={trigger} // pass trigger
-        errors={errors}
-      />
+                <PersonalInfoSection
+                  register={register}
+                  trigger={trigger}
+                  errors={errors}
+                />
+
+                {/* <LeadSkeleton/>  */}
                 
                 <ContactInfoSection 
-  register={register} 
-  errors={errors} 
-  watch={watch} 
-  control={control} 
-/>
+                  register={register} 
+                  errors={errors} 
+                  watch={watch} 
+                  control={control} 
+                />
                 
                 <LeadDetailsSection 
                   register={register} 
