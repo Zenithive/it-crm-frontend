@@ -20,13 +20,15 @@ const HeaderComp: React.FC<HeaderProps> = ({
   onAddLead,
   onFilter,
   onViewChange,
-  pageType
+  pageType,
+  count
   
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLeadModalVisible, setIsLeadModalVisible] = useState(false);
   const [activeView, setActiveView] = useState<ViewType>("list");
 const [showFilter, setShowFilter] = useState(false);
+const [totalCount, setTotalCount] = useState(0);
   
    const [typeFilter, setTypeFilter] = useState<string | undefined>(undefined);
   const [campaignFilter, setCampaignFilter] = useState<string | undefined>(undefined);
@@ -167,6 +169,7 @@ const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignF
             button2width: "w-[124px]",
             onClick2: showLeadModal
           } : {})}
+          count={count}
           onClick1={() => setShowFilter(true)}
         />
 </div>

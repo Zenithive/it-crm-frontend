@@ -242,7 +242,40 @@ if(component==="todo"){
         type: "info",
         message,
       });
+
+
+
+      
+  
+    
     });
+
+
+    const LoginError = PubSub.subscribe("LOG_ERROR", (data) => {
+const {message}=data
+      addNotification({
+        type: "error",
+        message:message,
+      });
+    });
+
+
+    const Logout = PubSub.subscribe("LOGOUT", (data) => {
+      const {message}=data
+            addNotification({
+              type: "info",
+              message:message,
+            });
+          });
+      
+
+    const LoginSucces = PubSub.subscribe("LOG_SUCCESS", (data) => {
+      const {message}=data
+            addNotification({
+              type: "success",
+              message:message,
+            });
+          });
     return () => {
       successSub();
       errorSub();
@@ -251,6 +284,9 @@ if(component==="todo"){
       resourceAdd();
       resourceUpdate();
       resourceUpdateError();
+      LoginError();
+      LoginSucces();
+      Logout();
       overallCasestudyAdd();
       overallCasestudyError();
       resourceAddError();

@@ -1,78 +1,16 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
+import { useForm, SubmitHandler, useFieldArray, Controller } from "react-hook-form";
 import { useMutation, useQuery } from "@apollo/client";
 import { CREATE_RESOURCE_PROFILE } from "../../../graphQl/mutation/addResource.mutation";
 import { UPDATE_RESOURCE_PROFILE } from "../../../graphQl/mutation/updateResource.mutation";
 import { GET_RESOURCE_PROFILE } from "../../../graphQl/queries/getresourcebyid.queries";
 import PubSub from "../../pubsub/Pubsub";
+import useSkillsApiService from "../../api/apiService/resourcelistApiService";
+import Select from "react-select";
 
-// Define type and status constants
-const RESOURCE_TYPES = ["CONSULTANT", "FREELANCER", "CONTRACTOR", "EMPLOYEE"];
-const STATUS_OPTIONS = ["Available", "Not Available"];
-
-const STATUS_MAP = {
-  frontendToBackend: {
-    "Available": "ACTIVE",
-    "Not Available": "INACTIVE",
-  },
-  backendToFrontend: {
-    "ACTIVE": "Available",
-    "INACTIVE": "Not Available",
-  },
-};
-
-// Define interfaces
-interface Skill {
-  skillID: string;
-  name: string;
-  description: string;
-}
-
-interface ResourceSkill {
-  skill: Skill;
-  experienceYears: number;
-}
-
-interface ResourceProfile {
-  resourceProfileID: string;
-  type: string;
-  status: string;
-  firstName: string;
-  lastName: string;
-  totalExperience: number;
-  contactInformation: string;
-  googleDriveLink: string;
-  vendorID: string;
-  resourceSkills?: ResourceSkill[];
-}
-
-interface SkillInput {
-  skillID: string;
-  experienceYears: string;
-}
-
-interface ResourceFormData {
-  type: string;
-  status: string;
-  firstName: string;
-  lastName: string;
-  totalExperience: string;
-  email: string;
-  phone: string;
-  googleDriveLink: string;
-  vendorID: string;
-  skillInputs: SkillInput[];
-}
-
-interface ResourceFormProps {
-  onClose: () => void;
-  resourceProfileId?: string;
-  isEditMode?: boolean;
-  onUpdateSuccess?: () => void;
-  onSubmitSuccess?: () => void;
-}
+import { RESOURCE_TYPES, ResourceFormData, ResourceFormProps, ResourceProfile, ResourceSkill, Skill, SkillOption, STATUS_MAP, STATUS_OPTIONS } from "./ResourceData";
 
 export const ResourceForm: React.FC<ResourceFormProps> = ({
   onClose,
@@ -81,11 +19,14 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
   onUpdateSuccess ,
   onSubmitSuccess 
 }) => {
+
+  const { skills, loading: skillsLoading } = useSkillsApiService();
   const {
     register,
     handleSubmit,
     setValue,
     control,
+    watch,
     formState: { errors },
   } = useForm<ResourceFormData>({
     defaultValues: {
@@ -123,6 +64,8 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
     UPDATE_RESOURCE_PROFILE
   );
 
+
+ 
   useEffect(() => {
     if (isEditMode && resourceData?.getResourceProfile) {
       const profile = resourceData.getResourceProfile as ResourceProfile;
@@ -180,6 +123,7 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
               skillID: skill.skillID,
               experienceYears: parseFloat(skill.experienceYears) || 0,
             })),
+        
         };
 
         await updateResourceProfile({
@@ -266,7 +210,32 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
       </div>
     );
   }
+    const skillsByType = skills.reduce((acc: Record<string, Skill[]>, skill: Skill) => {
+    if (!acc[skill.skilltype]) {
+      acc[skill.skilltype] = [];
+    }
+    acc[skill.skilltype].push(skill);
+    return acc;
+  }, {});
 
+  const skillsValue = watch("skillInputs");
+  const getSelectTextColorClass = (value: string | undefined) => {
+    return value ? "text-black" : "text-gray-400";
+  };
+ 
+  
+  const groupedSkillOptions: {
+    label: string;
+    options: SkillOption[];
+  }[] = Object.keys(skillsByType).map((type) => ({
+    label: type,
+    options: skillsByType[type].map((skill: Skill) => ({
+      value: skill.skillID,
+      label: skill.name,
+    })),
+  }));
+  
+  
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" onClick={onClose}>
       <div className="rounded-lg shadow-lg w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
@@ -425,51 +394,129 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
           </div>
 
           <div>
+          
             <label className="block text-base font-medium text-bg-blue-12 mb-1">Skills</label>
-            {fields.map((field, index) => (
-              <div key={field.id} className="flex items-center gap-2 mb-2">
-                <input
-                  {...register(`skillInputs.${index}.skillID`, {
-                    required: "Skill ID is required",
-                  })}
-                  placeholder="Skill ID"
-                  className="flex-1 px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
-                />
-                {errors.skillInputs?.[index]?.skillID && (
-                  <span className="text-red-500 text-sm">
-                    {errors.skillInputs[index].skillID.message}
-                  </span>
-                )}
+            
+{fields.map((field, index) => (
+  <div key={field.id} className={`flex items-center gap-2 p-2  w-full `}>
 
-                <input
-                  type="number"
-                  min="0"
-                  {...register(`skillInputs.${index}.experienceYears`, {
-                    required: "Experience years are required",
-                    min: { value: 0, message: "Experience must be 0 or greater" },
-                  })}
-                  placeholder="Experience (years)"
-                  className="flex-1 px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
-                />
-                {errors.skillInputs?.[index]?.experienceYears && (
-                  <span className="text-red-500 text-sm">
-                    {errors.skillInputs[index].experienceYears.message}
-                  </span>
-                )}
+    <div className="flex-1 ">
+    <Controller
+  name={`skillInputs.${index}.skillID`}
+  control={control}
+  rules={{ required: "Skill is required" }}
+  render={({ field: selectField }) => {
+    const selectedOption = groupedSkillOptions
+      .flatMap((group) => group.options)
+      .find((opt) => opt.value === selectField.value);
 
-                <button
-                  type="button"
-                  onClick={() => remove(index)}
-                  disabled={fields.length === 1}
-                  className="w-[20px] h-[20px] flex items-center justify-center bg-bg-blue-12 text-white rounded-md disabled:opacity-50"
-                >
-                  -
-                </button>
-              </div>
-            ))}
+    return (
+      <Select<SkillOption, false>
+      {...selectField}
+      value={selectedOption || null}
+      options={groupedSkillOptions}
+      placeholder="Select a skill"
+      isDisabled={skillsLoading}
+      onChange={(selected) => {
+        selectField.onChange(selected?.value || "");
+      }}
+      menuPlacement="bottom"
+      classNamePrefix="react-select"
+      classNames={{
+        control: () =>
+          "flex-1 px-3 py-2 border  rounded-lg focus:outline-none",
+        menu: () => "z-50",
+      }}
+      styles={{
+        control: (base) => ({
+          ...base,
+          borderRadius: '0.5rem', 
+         
+          padding: '0 0.25rem',
+        
+    border: '1px solid blue !important',
+    borderColor: 'blue !important',
+          minHeight: '42px',
+          boxShadow: 'none',
+        }),
+        placeholder: (base) => ({
+          ...base,
+        color: skillsValue ? '#6b7280 ' : ' black'
+        }),
+        menu: (base) => ({
+          ...base,
+          zIndex: 50,
+        }),
+
+        option: (base, state) => ({
+          ...base,
+          backgroundColor: state.isFocused ? '#808080' : 'white', 
+          color: '#1f2937', 
+          ':active': {
+            backgroundColor: '#e5e7eb', 
+          }
+        }),
+  
+        singleValue: (base) => ({
+          ...base,
+          color: 'black', 
+        }),
+      }}
+    />
+    
+    );
+  }}
+/>
+
+
+      {errors.skillInputs?.[index]?.skillID && (
+        <span className="text-red-500 text-sm">
+          {errors.skillInputs[index].skillID.message}
+        </span>
+      )}
+    </div>
+
+   
+    <input
+      type="number"
+      min="0"
+      {...register(`skillInputs.${index}.experienceYears`, {
+        required: "Experience years are required",
+        min: { value: 0, message: "Experience must be 0 or greater" },
+      })}
+      placeholder="Experience (years)"
+      className="flex-1 px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
+
+      onKeyDown={(e) => {
+        if (e.key === '-' || e.key === 'e') {
+          e.preventDefault();
+        }
+      }}
+    />
+    {errors.skillInputs?.[index]?.experienceYears && (
+      <span className="text-red-500 text-sm">
+        {errors.skillInputs[index].experienceYears.message}
+      </span>
+    )}
+
+    
+    <button
+      type="button"
+      onClick={() => remove(index)}
+      disabled={fields.length === 1}
+      className="w-[20px] h-[20px] flex items-center  justify-center bg-bg-blue-12 text-white rounded-md disabled:opacity-50"
+    >
+      -
+    </button>
+  </div>
+))}
+
+
+
+  
             <button
               type="button"
-              onClick={() => append({ skillID: "", experienceYears: "" })}
+              onClick={() => append({ skillID: "", experienceYears: "" ,})}
               className="text-base font-medium text-bg-blue-12 mt-2"
             >
               + Add Skill
@@ -488,3 +535,5 @@ export const ResourceForm: React.FC<ResourceFormProps> = ({
     </div>
   );
 };
+
+

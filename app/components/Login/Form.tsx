@@ -1,18 +1,25 @@
 import { ErrorMessage, Field, Formik } from "formik";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLoginUser } from "../../../graphQl/functions/login.function";
 import { useRouter } from "next/navigation";
 import { validationSchema } from "./ValidationSchema";
 import { loginSuccess } from "../../redux/slice/authSlice";
 import { useDispatch } from "react-redux";
+import PubSub from "../../pubsub/Pubsub";
 
 const Form = () => {
   const [formBg, setFormBg] = useState<string>("");
   const { loginUser, error: apiError, reset } = useLoginUser();
   const dispatch = useDispatch();
   const router = useRouter();
-
+  useEffect(() => {
+    if (apiError) {
+      PubSub.publish("LOG_ERROR", {
+        message: apiError.message,
+      });
+    }
+  }, [apiError]);
   // Handle regular email/password login
   const handleNextClick = async (values: { email: string; password: string }) => {
     const response = await loginUser(values.email, values.password);
@@ -32,6 +39,9 @@ const Form = () => {
       document.cookie = `userData=${JSON.stringify(userData)}; path=/; max-age=86400; Secure; SameSite=Strict`;
   
       dispatch(loginSuccess(userData));
+      PubSub.publish("LOG_SUCCESS", {
+        message: "Login successful!",
+      });
       router.push("/dashboard");
     }
   };
@@ -107,15 +117,18 @@ const Form = () => {
                           : "border-bg-blue-12"
                       }`}
                     />
-                    <ErrorMessage
+                    {/* <ErrorMessage
                       data-testid="errorPass"
                       name="password"
                       component="div"
                       className="text-red-500 text-xs"
-                    />
+                    /> */}
                   </div>
                   {apiError && (
-                    <p className="text-red-500">{apiError.message}</p>
+                    <>
+                      {/* <p className="text-red-500">{apiError.message}</p> */}
+                     
+                    </>
                   )}
                   <button
                     type="submit"

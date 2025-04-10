@@ -100,6 +100,7 @@ const FilterHandler1: React.FC<FilterHandlerProps> = ({
                 <input
                   type="checkbox"
                   id={option.id}
+                  
                   checked={isOptionSelected(activeSection, option.id)}
                   onChange={() => toggleOption(activeSection, option.id)}
                   className="w-5 h-5"

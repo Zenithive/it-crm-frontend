@@ -6,6 +6,7 @@ interface Data {
   button2width?: string;
   button1img?: string;
   button2img?: string;
+  count?: number;
   button1Text?: string;
   button2Text?: string;
   onClick1?: () => void;  
@@ -18,6 +19,7 @@ const HeaderButtons = ({
   button1Text,
   button2Text,
   button1img,
+  count,
   button2img,
   button1width,
   button2width,
@@ -27,7 +29,9 @@ const HeaderButtons = ({
   button2Action,
 }: Data) => {
   return (
-    <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
+    <div className="flex relative flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
+
+
       <button
         className={`${button1width} min-w-28 border shadow-sm bg-white text-bg-blue-12 font-normal h-10 rounded-xl flex items-center justify-center gap-2`}
         onClick={onClick1}
@@ -37,6 +41,12 @@ const HeaderButtons = ({
       </button>
 
       {/* Conditionally render button2 only if button2Text is provided */}
+
+      {count !== undefined && (
+          <div className="absolute -top-1  left-24 text-xs font-semibold text-red-500 rounded-full bg-white border border-red-500 px-2 py-1">
+            {count} {/* Render the count */}
+          </div>
+        )}
       {button2Text && (
         <button
           className={`${button2width} min-w-28 bg-bg-blue-12 text-white font-normal h-10 rounded-xl flex items-center justify-center gap-2`}
@@ -50,7 +60,8 @@ const HeaderButtons = ({
           <span className="text-sm whitespace-nowrap">{button2Text}</span>
         </button>
       )}
-    </div>
+      </div>
+  
   );
 };
 

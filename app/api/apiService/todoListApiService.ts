@@ -11,7 +11,8 @@ interface Task {
   id: string;   
   taskID: string;   
   title: string;   
-  status: string;   
+  status: string;
+  description?: string;   
   priority: string;   
   dueDate: string; 
 }  
@@ -143,7 +144,10 @@ const todoListApiService = (
       }        
 
       setTodos(response.data.data.getTasks.items);       
-      setTotalItems(response.data.data.getTasks.totalCount);     
+      setTotalItems(response.data.data.getTasks.totalCount);  
+      
+      
+      
     } catch (err) {       
       if (err instanceof Error) {         
         setError(err.message || "Failed to fetch tasks");       

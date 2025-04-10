@@ -47,6 +47,7 @@ const TaskTable: React.FC<TaskTableProps> = ({ todos, onDelete , onEdit, refetch
             {todos.map((todo) => (
               <tr key={todo.taskID} className="hover:bg-gray-50">
                 <td className="px-6 py-6">{todo.title}</td>
+               
                 <td className="px-6 py-6">
                   <span
                     className={`px-3 py-1 rounded-lg text-sm font-semibold ${getPriorityColor(
@@ -73,7 +74,13 @@ const TaskTable: React.FC<TaskTableProps> = ({ todos, onDelete , onEdit, refetch
                     src="/edit.svg"
                     alt="Edit"
                     className="cursor-pointer"
-                    onClick={() => onEdit(todo)}
+                    // onClick={() => onEdit(todo)}
+
+                    onClick={() => {
+                      console.log("Task being sent to edit:", todo);
+                      console.log("Description value:", todo.description);
+                      onEdit(todo);
+                    }}
                   />
                   <img
                     src="/delete.svg"
@@ -88,6 +95,9 @@ const TaskTable: React.FC<TaskTableProps> = ({ todos, onDelete , onEdit, refetch
                 </td>
               </tr>
             ))}
+
+
+
           </tbody>
         </table>
       </div>
