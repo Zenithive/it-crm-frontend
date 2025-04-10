@@ -16,6 +16,7 @@ export const GET_LEAD = gql`
         organizationName
         organizationWebsite
         organizationLinkedIn
+        noOfEmployees
       }
       leadAssignedTo {
         name

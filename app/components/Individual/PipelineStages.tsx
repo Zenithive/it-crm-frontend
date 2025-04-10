@@ -107,12 +107,12 @@ function PipelineStages({ leadId }: { leadId: string }) {
     dot: React.ReactNode,
     { status, index }: { status: string; index: number }
   ) => {
-    const isActive = index <= current;
+    const isActive = index === current; // Only highlight the current stage
     return (
       <div className="relative flex items-center justify-center">
         <div
           className={`w-1 h-3 rounded-full flex items-center justify-center p-2 ${
-            isActive ? "border-bg-blue-12 border-4" : "bg-gray-200 border-bg-blue-12"
+            isActive ? "border-bg-blue-12 border-4" : "border-gray-200 border"
           }`}
         >
           {isActive && (
@@ -139,7 +139,7 @@ function PipelineStages({ leadId }: { leadId: string }) {
           title: (
             <span
               className={`text-base leading-10 ${
-                index <= current ? "text-gray-900 font-medium" : "text-gray-400"
+                index === current ? "text-gray-900 font-medium" : "text-gray-400"
               }`}
             >
               {item.title}
@@ -151,15 +151,14 @@ function PipelineStages({ leadId }: { leadId: string }) {
         className="[&_.ant-steps-item-container]:flex [&_.ant-steps-item-container]:items-start [&_.ant-steps-item-container]:p-0 [&_.ant-steps-item-container]:relative
         [&_.ant-steps-item-tail]:absolute [&_.ant-steps-item-tail]:top-0 [&_.ant-steps-item-tail]:left-[2px] [&_.ant-steps-item-tail]:h-full [&_.ant-steps-item-tail]:p-0 [&_.ant-steps-item-tail]:m-0
         [&_.ant-steps-item-tail::after]:w-0.5 [&_.ant-steps-item-tail::after]:ml-0 [&_.ant-steps-item-tail::after]:h-full [&_.ant-steps-item-tail::after]:absolute
-        [&_.ant-steps-item-finish_.ant-steps-item-tail::after]:bg-bg-blue-12
-        [&_.ant-steps-item-process_.ant-steps-item-tail::after]:bg-bg-blue-12 [&_.ant-steps-item-wait_.ant-steps-item-tail::after]:bg-bg-blue-12
+        [&_.ant-steps-item-finish_.ant-steps-item-tail::after]:bg-gray-200
+        [&_.ant-steps-item-process_.ant-steps-item-tail::after]:bg-gray-200 [&_.ant-steps-item-wait_.ant-steps-item-tail::after]:bg-gray-200
         [&_.ant-steps-item]:pb-8 [&_.ant-steps-item]:last:pb-0 [&_.ant-steps-item]:min-h-[48px]
         [&_.ant-steps-item-content]:min-h-[3px] [&_.ant-steps-item-content]:ml-4
         [&_.ant-steps-item-title]:leading-5 [&_.ant-steps-item-title]:m-0
         [&_.ant-steps-icon-dot]:m-0 [&_.ant-steps-icon-dot]:left-0
         [&_.ant-steps-item-icon]:m-0 "
-
-/>
+      />
     </div>
   );
 }

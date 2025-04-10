@@ -46,7 +46,7 @@ const LeftSide: React.FC<LeftSideProps> = ({ leadId }) => {
     },
     {
       label: "Employee Count",
-      value: 35
+      value: `${lead?.noOfEmployees || "N/A"}`
     },
     {
       label: "LinkedIn",
