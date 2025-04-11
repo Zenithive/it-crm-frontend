@@ -1,3 +1,5 @@
+import { FieldErrors, UseFormRegister, UseFormWatch } from "react-hook-form";
+
 export interface LeadFormData {
     firstName: string;
     lastName: string;
@@ -11,6 +13,8 @@ export interface LeadFormData {
     organizationName: string;
     email: string;
     country: string;
+    organizationID: string;
+    createNewOrganization?: boolean; // Added this field
   }
 
 
@@ -26,4 +30,15 @@ export interface LeadFormData {
     onClose: () => void;
     leadId?: string;
    
+  }
+
+
+  export interface OrganizationInfoSectionProps {
+    register: UseFormRegister<LeadFormData>;
+    errors: FieldErrors<LeadFormData>;
+    watch: UseFormWatch<LeadFormData>;
+    selectedOrganization: { id: string, name: string } | null;
+    onOrganizationSelect: (id: string, name: string) => void;
+    onCreateNewOrganization: () => void;
+    createNewOrganization: boolean;
   }

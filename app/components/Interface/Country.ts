@@ -25,3 +25,13 @@
     "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", 
     "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
   ];
+
+
+
+
+
+  export const mockOrganizations = [
+    { id: "640a89c6-9a48-4946-855a-07ebe9319b39", name: "Acme Corp" },
+    { id: "1976b233-7f63-408d-a504-cfe2571b318a", name: "Doe Inc" },
+    { id: "9a87f340-b126-4358-9e3a-67c8e70f9a47", name: "TechSolutions" },
+  ];

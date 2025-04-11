@@ -20,10 +20,12 @@ export const ADD_LEAD_QUERY = gql`
         email
       }
       organization {
+        organizationID
         organizationName
         organizationWebsite
       }
       campaign {
+        campaignID
         campaignName
         campaignCountry
         campaignRegion
