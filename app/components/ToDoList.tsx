@@ -163,7 +163,7 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
    
   };
 
-  const getActiveFiltersDisplay = () => {
+  const getActiveFiltersCount = () => {
     const filters = [];
     
     if (statusFilters.length > 0) {
@@ -180,30 +180,7 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
     } else if (endDate) {
       filters.push(`To date: ${endDate}`);
     }
-    return filters.length > 0 ? (
-      <div className="flex items-center gap-2 mt-2 mb-4">
-        <span className="text-sm text-gray-500">Active filters:</span>
-        <div className="flex flex-wrap gap-2">
-          {filters.map((filter, index) => (
-            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
-              {filter}
-            </span>
-          ))}
-        </div>
-        <button 
-          className="text-sm text-red-500 hover:text-red-700 ml-2"
-          onClick={() => {
-            setStatusFilters([]);
-            setPriorityFilters([]);
-            setStartDate("");
-            setEndDate("");
-            refetch();
-          }}
-        >
-          Clear all
-        </button>
-      </div>
-    ) : null;
+    return filters.length 
   };
 
 
@@ -224,6 +201,7 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
           button2img={headerbutton[2].button2img}
           onClick2={showModal}
           onClick1={() => setShowFilter(true)}
+          count={getActiveFiltersCount()}
         />
         <CreateTaskModal
           visible={visible}
@@ -234,7 +212,7 @@ const [endDate, setEndDate] = useState<string | undefined>(undefined);
           refetch={refetch}
         />
       </div>
-      {getActiveFiltersDisplay()}
+      
       {loading ? (
         <TodoListSkeleton />
       ) : error ? (

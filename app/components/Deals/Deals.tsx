@@ -131,7 +131,7 @@ const Deals = () => {
     endDate
 
   );
-  const getActiveFiltersDisplay = () => {
+  const getActiveFiltersCount = () => {
     const filters = [];
     
     if (typeFilters.length > 0) {
@@ -153,31 +153,7 @@ const Deals = () => {
     }
    
     
-    return filters.length > 0 ? (
-      <div className="flex items-center gap-2 mt-2 mb-4">
-        <span className="text-sm text-gray-500">Active filters:</span>
-        <div className="flex flex-wrap gap-2">
-          {filters.map((filter, index) => (
-            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
-              {filter}
-            </span>
-          ))}
-        </div>
-        <button 
-          className="text-sm text-red-500 hover:text-red-700 ml-2"
-          onClick={() => {
-            setTypeFilters([]);
-            setCampaignFilters([]);
-         
-            setStartDate("");
-            setEndDate("");
-            refetch();
-          }}
-        >
-          Clear all
-        </button>
-      </div>
-    ) : null;
+    return filters.length;
   };
   
   return (
@@ -189,12 +165,13 @@ const Deals = () => {
         }}         
         searchQuery={inputValue}         
         onSearchChange={handleSearchChange}                  
-        onFilter={handleFilter}         
+        onFilter={handleFilter}
+        count={getActiveFiltersCount()}         
         pageType="deals"               
       />     
 
       <div className="pt-[40px]">
-      {getActiveFiltersDisplay()}
+      
         {loading ? (
           <div className="text-center p-6">Loading data...</div>
         ) :  (
@@ -220,7 +197,7 @@ const Deals = () => {
         )}
       </div>
 
-      {showAddLeadModal && <AddLeadModal onClose={() => setShowAddLeadModal(false)} />}
+      {showAddLeadModal && <AddLeadModal onClose={() => setShowAddLeadModal(false)}  />}
     </>
   );
 };

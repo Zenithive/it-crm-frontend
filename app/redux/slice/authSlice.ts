@@ -34,6 +34,12 @@ const authSlice = createSlice({
       state.googleAccessToken = "";
       state.authProvider = "";
       state.isAuthenticated = false;
+
+      localStorage.removeItem('selectedFilters');
+      localStorage.removeItem('filterStartDate');
+      localStorage.removeItem('filterEndDate');
+      localStorage.removeItem('filter-active-section');
+      localStorage.removeItem('selectdata');
     },
   },
 });

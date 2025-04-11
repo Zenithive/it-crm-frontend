@@ -25,7 +25,7 @@ const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar }) => {
   const dispatch = useDispatch();
 
 
-  const handleLogout = () => {
+  const handleLogout = async() => {
     
     localStorage.removeItem("token");
     
@@ -36,10 +36,12 @@ const Navbar: React.FC<NavbarProps> = ({ nav, toggleSidebar }) => {
   
     dispatch(logout());
     
+   
+   await  router.push("/login");
+
     PubSub.publish("LOGOUT", {
       message: "Logout successful!",
     });
-    router.push("/login");
   };
   const { name, designation } = nav || {};
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

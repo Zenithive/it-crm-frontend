@@ -18,7 +18,7 @@
   import OrganizationInfoSection from "./Interface/OrganizationInfoSection";
   import { formatDate } from "./Interface/LeadFormUtils";
 
-  const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
+  const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId ,refetchLeads}) => {
     const {
       register,
       trigger,
@@ -147,16 +147,24 @@ const { lead, loading: fetchLoading, error: fetchError, refetch } = overallLeadD
               leadSource: data.leadSource,
               initialContactDate: data.initialContactDate,
             });
-            PubSub.publish("LEAD_ADD_SUCCESS", {
-              leadName: `${data.firstName} ${data.lastName}`,
-            });
-          } catch (error) {
+      
+          
+          
+          PubSub.publish("LEAD_ADD_SUCCESS", {
+            leadName: `${data.firstName} ${data.lastName}`,
+          });}catch (error) {
             PubSub.publish("LEAD_ADD_ERROR", {
               leadName: `${data.firstName} ${data.lastName}`,
             });
           }
         }
+
+        if(refetchLeads) {
+        await refetchLeads(); // Call the refetch function passed as a prop
+           
+          } 
         reset();
+       
         onClose();
       } catch (error: any) {
         console.error("Submission error:", error);
@@ -164,6 +172,8 @@ const { lead, loading: fetchLoading, error: fetchError, refetch } = overallLeadD
         setLoading(false);
       }
     };
+
+    
 
     return (
       <div

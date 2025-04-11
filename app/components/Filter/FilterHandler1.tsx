@@ -1,74 +1,281 @@
-import React, { useState } from "react";
+
+
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import FilterDropdown from "../../microComponents/FiterDropdown";
 import Filter1 from "./Filter1";
+import { FilterHandlerProps, FilterPayload } from "./FilterData";
+import { 
+  handleFilterApplyContact,
+  handleFilterApplyCaseStudy, 
+  handleFilterApplyResource,
+  handleFilterApplyVendor,
+  handleFilterApplyTodo, 
+  handleFilterApplydeal
+} from "./FilterHandlerUtils";
 
-interface FilterSection {
-  id: string;
-  title: string;
-  options: { id: string; label: string; checked: boolean }[];
-}
-
-interface FilterPayload {
-  filter: {
-    [key: string]: string | string[] | undefined;
-  };
-  pagination: {
-    page: number;
-    pageSize: number;
-  };
-  sort: {
-    field: string;
-    order: string;
-  };
-}
-
-interface FilterHandlerProps {
-  filterSections: FilterSection[];
-  onFilterApply: (payload: FilterPayload) => void | Promise<void>;
-  setShowFilter: (show: boolean) => void;
-  pageType?: string;
-}
+import { selectFiltersByPageType, setDateRange, setSelectedOptions, clearReduxFilters } from "../../redux/slice/filterSlice";
+import { RootState } from "../../redux/store/store";
 
 const FilterHandler1: React.FC<FilterHandlerProps> = ({
   filterSections,
   onFilterApply,
   setShowFilter,
-  pageType
+  pageType,
+  reloadLeads,
 }) => {
-  // Change to store selected options by category
+  const dispatch = useDispatch();
+  
+  // Fix the selector by explicitly typing the state
+  const { selectedOptionsByCategory: reduxSelectedOptions, startDate: reduxStartDate, endDate: reduxEndDate } = 
+    useSelector((state: RootState) => selectFiltersByPageType(state, pageType || ''));
+  
+  const [selectdata, setSelecteData] = useState("");
   const [selectedOptionsByCategory, setSelectedOptionsByCategory] = useState<{
     [category: string]: string[];
-  }>({});
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [selectdata, setSelecteData] = useState('');
+  }>(reduxSelectedOptions);
+  
+  const [allSelectedOptions, setAllSelectedOptions] = useState<string[]>(
+    Object.values(reduxSelectedOptions).flat()
+  );
+  
+  const [startDate, setStartDate] = useState<string>(reduxStartDate);
+  const [endDate, setEndDate] = useState<string>(reduxEndDate);
+  
+  // Sync local state with Redux ONLY on mount or when pageType changes
+  // To break the infinite loop, we're going to sync with Redux only when pageType changes
+  useEffect(() => {
+    if (pageType) {
+      setSelectedOptionsByCategory(reduxSelectedOptions);
+      setAllSelectedOptions(Object.values(reduxSelectedOptions).flat());
+      setStartDate(reduxStartDate);
+      setEndDate(reduxEndDate);
+    }
+  }, [pageType]); // Only depend on pageType, not on reduxSelectedOptions or dates
+  
+  // Sync Redux when local state changes - but use a flag to prevent re-triggering
+  const [isSyncingToRedux, setIsSyncingToRedux] = useState(false);
 
-  const isContactPage = pageType === "contact";
+  useEffect(() => {
+    if (pageType && !isSyncingToRedux) {
+      setIsSyncingToRedux(true);
+      dispatch(setSelectedOptions({
+        pageType,
+        categoryOptions: selectedOptionsByCategory
+      }));
+      setIsSyncingToRedux(false);
+    }
+  }, [selectedOptionsByCategory, dispatch, pageType]);
+  
+  useEffect(() => {
+    if (pageType && !isSyncingToRedux) {
+      setIsSyncingToRedux(true);
+      dispatch(setDateRange({
+        pageType,
+        startDate: startDate || '',
+        endDate: endDate || ''
+      }));
+      setIsSyncingToRedux(false);
+    }
+  }, [startDate, endDate, dispatch, pageType]);
+  
+  // Add a useEffect to handle page changes/initialization
+  useEffect(() => {
+    if (!pageType || !filterSections) return;
+    
+    // Reset state if coming to this page and there are no valid filters for this page type
+    const validSectionsForCurrentPage = filterSections.map(section => section.id);
+    const hasInvalidFilters = Object.keys(selectedOptionsByCategory).some(
+      category => !validSectionsForCurrentPage.includes(category)
+    );
+    
+    if (hasInvalidFilters) {
+      // Clear filters that don't belong to the current page
+      const validFilters = Object.entries(selectedOptionsByCategory)
+        .filter(([category]) => validSectionsForCurrentPage.includes(category))
+        .reduce((acc, [category, options]) => {
+          acc[category] = options;
+          return acc;
+        }, {} as {[category: string]: string[]});
+        
+      setSelectedOptionsByCategory(validFilters);
+      setAllSelectedOptions(Object.values(validFilters).flat());
+    }
+  }, [pageType, filterSections, selectedOptionsByCategory]);
 
-  const isOptionSelected = (categoryId: string, optionId: string) => {
-    return selectedOptionsByCategory[categoryId]?.includes(optionId) || false;
+  // Add this useEffect to handle date-range filter selection when dates are set
+  useEffect(() => {
+    if (startDate || endDate) {
+      const dateFilterId = "date-range";
+
+      const isAlreadySelected =
+        selectedOptionsByCategory["date"]?.includes(dateFilterId);
+
+      if (!isAlreadySelected) {
+        setSelectedOptionsByCategory((prev) => ({
+          ...prev,
+          date: [...(prev["date"] || []), dateFilterId],
+        }));
+        setAllSelectedOptions((prev) => [...prev, dateFilterId]);
+      }
+    } else {
+      setSelectedOptionsByCategory((prev) => {
+        const result = { ...prev };
+        if (result["date"]) {
+          result["date"] = result["date"].filter((id) => id !== "date-range");
+
+          if (result["date"].length === 0) {
+            delete result["date"];
+          }
+        }
+        return result;
+      });
+
+      setAllSelectedOptions((prev) => prev.filter((id) => id !== "date-range"));
+    }
+  }, [startDate, endDate]);
+  
+  // Update clearFilters to use Redux
+  const clearFilters = () => {
+    if (!pageType) return;
+    
+    // Clear local state
+    setSelectedOptionsByCategory({});
+    setAllSelectedOptions([]);
+    setStartDate("");
+    setEndDate("");
+    setSelecteData("");
+    
+    // Clear Redux state
+    dispatch(clearReduxFilters({ pageType }));
+    
+    const emptyPayload = {
+      filter: {},
+      pagination: {
+        page: 1,
+        pageSize: 10,
+      },
+      sort: {
+        field: "createdAt",
+        order: "DESC",
+      },
+    };
+  
+    setShowFilter(false);
+  
+    setTimeout(() => {
+      onFilterApply(emptyPayload);
+    }, 0);
   };
+  
+  const isContactPage = pageType === "contact" || pageType === "deals";
 
+  const handleSetSelectedOptions: React.Dispatch<
+    React.SetStateAction<string[]>
+  > = (action) => {
+    if (typeof action === "function") {
+      const newOptions = action(allSelectedOptions);
+      setAllSelectedOptions(newOptions);
+
+      const newSelectedByCategory = { ...selectedOptionsByCategory };
+
+      const removedOptions = allSelectedOptions.filter(
+        (opt) => !newOptions.includes(opt)
+      );
+      if (removedOptions.length > 0) {
+        for (const categoryId in newSelectedByCategory) {
+          newSelectedByCategory[categoryId] = newSelectedByCategory[
+            categoryId
+          ].filter((opt) => !removedOptions.includes(opt));
+        }
+      }
+
+      const addedOptions = newOptions.filter(
+        (opt) => !allSelectedOptions.includes(opt)
+      );
+      if (addedOptions.length > 0) {
+        addedOptions.forEach((optionId) => {
+          for (const section of filterSections) {
+            if (section.options.some((opt) => opt.id === optionId)) {
+              if (!newSelectedByCategory[section.id]) {
+                newSelectedByCategory[section.id] = [];
+              }
+              if (!newSelectedByCategory[section.id].includes(optionId)) {
+                newSelectedByCategory[section.id] = [
+                  ...newSelectedByCategory[section.id],
+                  optionId,
+                ];
+              }
+              break;
+            }
+          }
+        });
+      }
+      setSelectedOptionsByCategory(newSelectedByCategory);
+    } else {
+      setAllSelectedOptions(action);
+
+      const newSelectedByCategory: { [key: string]: string[] } = {};
+      action.forEach((optionId) => {
+        for (const section of filterSections) {
+          if (section.options.some((opt) => opt.id === optionId)) {
+            if (!newSelectedByCategory[section.id]) {
+              newSelectedByCategory[section.id] = [];
+            }
+            if (!newSelectedByCategory[section.id].includes(optionId)) {
+              newSelectedByCategory[section.id] = [
+                ...newSelectedByCategory[section.id],
+                optionId,
+              ];
+            }
+            break;
+          }
+        }
+      });
+
+      setSelectedOptionsByCategory(newSelectedByCategory);
+    }
+  };
   const toggleOption = (categoryId: string, optionId: string) => {
-    setSelectedOptionsByCategory(prev => {
+    setSelectedOptionsByCategory((prev) => {
       const currentCategorySelections = prev[categoryId] || [];
-      
-      // If option is already selected, remove it; otherwise add it
-      const updatedSelections = currentCategorySelections.includes(optionId)
-        ? currentCategorySelections.filter(id => id !== optionId)
-        : [...currentCategorySelections, optionId];
-      
-      return {
-        ...prev,
-        [categoryId]: updatedSelections
-      };
+
+      let updatedSelections;
+      if (currentCategorySelections.includes(optionId)) {
+        updatedSelections = currentCategorySelections.filter(
+          (id) => id !== optionId
+        );
+
+        setAllSelectedOptions((prevAll) =>
+          prevAll.filter((id) => id !== optionId)
+        );
+      } else {
+        updatedSelections = [...currentCategorySelections, optionId];
+
+        setAllSelectedOptions((prevAll) => [...prevAll, optionId]);
+      }
+
+      const result = { ...prev };
+      if (updatedSelections.length === 0) {
+        delete result[categoryId];
+      } else {
+        result[categoryId] = updatedSelections;
+      }
+
+      return result;
     });
   };
-
-  const renderFilterRightPanel = (activeSection: string, _: any, searchTerm: string) => {
-    const currentSection = filterSections.find(section => section.id === activeSection);
+  const renderFilterRightPanel = (
+    activeSection: string,
+    _: string[],
+    searchTerm: string,
+    handleOptionClick: (sectionId: string, optionId: string) => void
+  ) => {
+    const currentSection = filterSections.find(
+      (section) => section.id === activeSection
+    );
     if (!currentSection) return null;
-    
+
     const filteredOptions = currentSection.options.filter((option) =>
       option.label.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -87,7 +294,6 @@ const FilterHandler1: React.FC<FilterHandlerProps> = ({
         />
       );
     }
-
     return (
       <div>
         <div className="space-y-8 max-h-[400px] overflow-y-auto">
@@ -100,9 +306,16 @@ const FilterHandler1: React.FC<FilterHandlerProps> = ({
                 <input
                   type="checkbox"
                   id={option.id}
-                  
-                  checked={isOptionSelected(activeSection, option.id)}
-                  onChange={() => toggleOption(activeSection, option.id)}
+                  checked={
+                    selectedOptionsByCategory[activeSection]?.includes(
+                      option.id
+                    ) || false
+                  }
+                  onChange={() => {
+                    toggleOption(activeSection, option.id);
+                    // Also call the handleOptionClick from Filter1 to sync both components
+                    handleOptionClick(activeSection, option.id);
+                  }}
                   className="w-5 h-5"
                 />
                 <label htmlFor={option.id} className="text-base">
@@ -117,209 +330,93 @@ const FilterHandler1: React.FC<FilterHandlerProps> = ({
       </div>
     );
   };
-
-  const handleFilterApplyCaseStudy = async () => {
-    const industrySelections = selectedOptionsByCategory['industry'] || [];
-    const technologySelections = selectedOptionsByCategory['technology'] || [];
-    
-    // Create filter object
-    const filterObj: any = {};
-    
-    // Only add filters if options are selected
-    if (industrySelections.length > 0) {
-      filterObj.industryTarget = industrySelections.join(',');
-    }
-    
-    if (technologySelections.length > 0) {
-      filterObj.techStack = technologySelections.join(',');
-    }
-
-    const payload: FilterPayload = {
-      filter: filterObj,
-      pagination: {
-        page: 1,
-        pageSize: 10
-      },
-      sort: {
-        field: 'createdAt',
-        order: 'DESC'
-      }
-    };
-
-    await onFilterApply(payload);
-    setShowFilter(false);
-  };
-
-  // Keeping other handlers but will only implement case study handler for now
-  const handleFilterApply = async () => {
-    // Your existing code for contacts
-
-const dateSelections=selectedOptionsByCategory['date']||[];
-    const typeSelections = selectedOptionsByCategory['type'] || [];
-    const stageSelections = selectedOptionsByCategory['stage'] || [];
-    const campaignSelections = selectedOptionsByCategory['campaign'] || [];
-    
-    // Create filter object
-    const filterObj: any = {};
-    if (startDate) {
-      filterObj.startDate = startDate;
-    }
-    if (endDate) {
-      filterObj.endDate = endDate;
-    }
-    // Only add filters if options are selected
-    if (typeSelections.length > 0) {
-      filterObj.type = typeSelections.join(',');
-    }
-    
-    if (dateSelections.length > 0) {
-      filterObj.date = dateSelections.join(',');
-    }
-    
-    if (stageSelections.length > 0) {
-      filterObj.stage= stageSelections.join(',');
-    }
-    if (campaignSelections.length > 0) {
-      filterObj.campaign= campaignSelections.join(',');
-    }
-    const payload: FilterPayload = {
-      filter:filterObj,
-      pagination: {
-        page: 1,
-        pageSize: 10
-      },
-      sort: {
-        field: 'createdAt',
-        order: 'DESC'
-      }
-    };
-
-    await onFilterApply(payload);
-    setShowFilter(false);
-  };
-
-  const handleFilterApplyResource = async () => {
-    // Your existing code for resources
-
-    
-    const filterObj: any = {};
-    const skillsSelections = selectedOptionsByCategory['skills'] || [];
-    const experienceYearSelections = selectedOptionsByCategory['experienceYear'] || [];
-    
-    
-    // Only add filters if options are selected
-    if (skillsSelections.length > 0) {
-      filterObj.skills = skillsSelections.join(',');
-    }
-    
-    if (experienceYearSelections.length > 0) {
-      filterObj.experienceYear = experienceYearSelections.join(',');
-    }
-
-
-    await onFilterApply({
-      filter:filterObj,
-      pagination: { page: 1, pageSize: 10 },
-      sort: { field: 'createdAt', order: 'DESC' }
-    });
-    setShowFilter(false);
-  };
-
   
-  const handleFilterApplyVendor = () => {
-    // Get the selected options by category
-    const statusSelections = selectedOptionsByCategory['status'] || [];
-    const locationSelections = selectedOptionsByCategory['location'] || [];
-    const ratingSelections = selectedOptionsByCategory['rating'] || [];
-    
-    // Create filter object - only include populated filters
-    const filterObj: { status?: string; country?: string;  reviewFromPerformanceRating?:string } = {};
-    
-    if (statusSelections.length > 0) {
-      // Make sure to transform values to match API expectations
-      // For example, if backend expects "ACTIVE" instead of "active"
-      const formattedStatuses = statusSelections.map(status => 
-        status.toUpperCase()
-      );
-      filterObj.status = formattedStatuses.join(',');
+  const safeOnFilterApply = async (payload: FilterPayload): Promise<void> => {
+    try {
+      await onFilterApply(payload);
+      return Promise.resolve();
+    } catch (error) {
+      console.error("Filter apply error:", error);
+      return Promise.reject(error);
     }
-    
-    if (locationSelections.length > 0) {
-      // Make sure these match country values in your backend exactly
-      filterObj.country = locationSelections.join(',');
-    }
-    if (ratingSelections.length > 0) {
-      // Make sure these match country values in your backend exactly
-      filterObj. reviewFromPerformanceRating = ratingSelections.join(',');
-    }
-    // Apply filters once, with a single call
-    onFilterApply({
-      filter: filterObj,
-      pagination: { page: 1, pageSize: 10 },
-      sort: { field: 'createdAt', order: 'DESC' }
-    });
-    
-    // Close filter modal
-    setShowFilter(false);
   };
-  const handleFilterApplyTodo = async () => {
-    // Your existing code for todos
-    const filterObj: any = {};
-    const statusSelections = selectedOptionsByCategory['status'] || [];
-    const prioritySelections = selectedOptionsByCategory['priority'] || [];
-    const dateSelections=selectedOptionsByCategory['date']||[];
-    if (startDate) {
-      filterObj.startDate = startDate;
-    }
-    if (endDate) {
-      filterObj.endDate = endDate;
-    }
-
-    if (statusSelections.length > 0) {
-      filterObj.status = statusSelections.join(',');
-    }
+  
+  const handleApplyFilters = async () => {
+    if (!pageType) return;
     
-    if (prioritySelections.length > 0) {
-      filterObj.priority = prioritySelections.join(',');
-    }
+    switch (pageType) {
+      case "contact":
+        await handleFilterApplyContact({
+          selectedOptionsByCategory,
+          startDate,
+          endDate,
+          onFilterApply: safeOnFilterApply,
+          setShowFilter
+        });
+        break;
 
-    if (dateSelections.length > 0 && !startDate && !endDate) {
-      filterObj.date = dateSelections.join(',');
+      case "deals":
+        await handleFilterApplydeal({
+          selectedOptionsByCategory,
+          startDate,
+          endDate,
+          onFilterApply: safeOnFilterApply,
+          setShowFilter
+        });
+        break;
+      case "casestudy":
+        await handleFilterApplyCaseStudy({
+          selectedOptionsByCategory,
+          onFilterApply: safeOnFilterApply,
+          setShowFilter
+        });
+        break;
+      case "resource":
+        await handleFilterApplyResource({
+          selectedOptionsByCategory,
+          onFilterApply: safeOnFilterApply,
+          setShowFilter
+        });
+        break;
+      case "vendor":
+        await handleFilterApplyVendor({
+          selectedOptionsByCategory,
+          onFilterApply: safeOnFilterApply,
+          setShowFilter
+        });
+        break;
+      default:
+        await handleFilterApplyTodo({
+          selectedOptionsByCategory,
+          startDate,
+          endDate,
+          onFilterApply: safeOnFilterApply,
+          setShowFilter
+        });
+        break;
     }
-    await onFilterApply({
-      filter: filterObj,
-      pagination: { page: 1, pageSize: 10 },
-      sort: { field: 'createdAt', order: 'DESC' }
-    });
-    setShowFilter(false);
   };
-
-  const clearFilters = () => {
-    setSelectedOptionsByCategory({});
-    setStartDate('');
-    setEndDate('');
-  };
+  const preparedSections = filterSections.map((section) => ({
+    ...section,
+    options: section.options.map((option) => ({
+      ...option,
+      checked:
+        selectedOptionsByCategory[section.id]?.includes(option.id) || false,
+    })),
+  }));
 
   return (
     <Filter1
-      onClose={() => setShowFilter(false)}
-      onApply={
-        pageType === 'contact' 
-          ? handleFilterApply 
-          : pageType === 'casestudy'
-          ? handleFilterApplyCaseStudy
-          : pageType === 'resource'
-          ? handleFilterApplyResource
-          : pageType === 'vendor'
-          ? handleFilterApplyVendor
-          : handleFilterApplyTodo
-      }
-      sections={filterSections}
+      onClose={() => {
+        setShowFilter(false);
+      }}
+      onApply={handleApplyFilters}
+      sections={preparedSections}
       renderRightPanel={renderFilterRightPanel}
-      selectedOptions={[]} // No longer used, kept for compatibility
-      setSelectedOptions={() => {}} // No longer used, kept for compatibility
-      clearFilters={clearFilters} // New prop for clearing filters
-      selectedOptionsByCategory={selectedOptionsByCategory} // New prop
+      selectedOptions={allSelectedOptions}
+      setSelectedOptions={handleSetSelectedOptions}
+      clearFilters={clearFilters}
+      selectedOptionsByCategory={selectedOptionsByCategory}
     />
   );
 };

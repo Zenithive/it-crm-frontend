@@ -25,5 +25,7 @@ export interface LeadFormData {
   export interface AddLeadModalProps {
     onClose: () => void;
     leadId?: string;
+    refetchLeads?: () => void;
+    
    
   }

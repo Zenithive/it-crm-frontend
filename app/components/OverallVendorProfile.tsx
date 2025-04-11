@@ -207,7 +207,7 @@ useEffect(() => {
   ];
 
 
-  const getActiveFiltersDisplay = () => {
+  const getActiveFiltersCount = () => {
     const filters = [];
     
     if (statusFilters.length > 0) {
@@ -221,30 +221,7 @@ useEffect(() => {
     if (ratingFilters.length > 0) {
       filters.push(`Ratings: ${ratingFilters.join(', ')}`);
     }
-    
-    return filters.length > 0 ? (
-      <div className="flex items-center gap-2 mt-2 mb-4">
-        <span className="text-sm text-gray-500">Active filters:</span>
-        <div className="flex flex-wrap gap-2">
-          {filters.map((filter, index) => (
-            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
-              {filter}
-            </span>
-          ))}
-        </div>
-        <button 
-          className="text-sm text-red-500 hover:text-red-700 ml-2"
-          onClick={() => {
-            setStatusFilters([]);
-            setLocationFilters([]);
-            setRatingFilters([]);
-            refetch();
-          }}
-        >
-          Clear all
-        </button>
-      </div>
-    ) : null;
+    return filters.length;
   };
   return (
     <div className="p-4 max-w-[1350px] mx-auto">
@@ -267,9 +244,10 @@ useEffect(() => {
           button2width="w-[140px]"
           onClick1={() => setShowFilter(true)}
           onClick2={() => setShowForm(true)}
+          count={getActiveFiltersCount()}
         />
       </div>
-      {getActiveFiltersDisplay()}
+    
       {loading ? (
         // <p className="text-center">Loading vendors...</p>
         <TodoListSkeleton />

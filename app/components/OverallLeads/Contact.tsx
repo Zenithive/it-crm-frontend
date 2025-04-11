@@ -283,7 +283,7 @@ const [stageFilters, setStageFilters] = useState<string[]>([]);
         )}
       </div>
 
-      {showAddLeadModal && <AddLeadModal onClose={() => setShowAddLeadModal(false)}/>}
+      {showAddLeadModal && <AddLeadModal onClose={() => setShowAddLeadModal(false)}  refetchLeads={refetch} />}
     </>
   );
 };

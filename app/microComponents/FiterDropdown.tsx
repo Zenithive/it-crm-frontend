@@ -97,6 +97,13 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
       calculateDateRange(selectData);
     }
   }, [selectData, pageType]);
+  const handleClearDates = () => {
+    setStartDate("");
+    setEndDate("");
+    if (setSelectData) {
+      setSelectData("");
+    }
+  };
 
   // Handle clicking outside of calendars to close them
   useEffect(() => {
@@ -163,7 +170,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
     const date = dayjs(dateString);
     return date.isValid() ? date.format('MMM DD, YYYY') : '';
   };
-  
+  const hasDates = Boolean(startDate || endDate);
   return (
     <div className={`flex flex-col gap-4 max-w-lg mx-auto ${className || ''}`}>
       {showRangeDropdown && selectData !== undefined && setSelectData && (
@@ -250,6 +257,23 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
           </div>
         </div>
       </div>
+
+      {hasDates && (
+          <div className="flex justify-end">
+            <div className="flex gap-2 items-center text-blue-600 hover:text-blue-800 text-sm font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors">
+
+            <button
+              onClick={handleClearDates}
+              className=""
+              type="button"
+            >
+              Clear Dates
+            </button>
+            <img src="cross_icon.svg" alt="cancel" className="w-3 h-3 " />
+            </div>
+          
+          </div>
+        )}
 
       {showStartCalendar && (
         <div 

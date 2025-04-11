@@ -39,10 +39,11 @@ const Form = () => {
       document.cookie = `userData=${JSON.stringify(userData)}; path=/; max-age=86400; Secure; SameSite=Strict`;
   
       dispatch(loginSuccess(userData));
+    
+     await router.push("/dashboard");
       PubSub.publish("LOG_SUCCESS", {
         message: "Login successful!",
       });
-      router.push("/dashboard");
     }
   };
 

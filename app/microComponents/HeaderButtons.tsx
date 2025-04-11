@@ -42,11 +42,11 @@ const HeaderButtons = ({
 
       {/* Conditionally render button2 only if button2Text is provided */}
 
-      {count !== undefined && (
-          <div className="absolute -top-1  left-24 text-xs font-semibold text-red-500 rounded-full bg-white border border-red-500 px-2 py-1">
-            {count} {/* Render the count */}
-          </div>
-        )}
+      {count !== undefined && count >= 1 && (
+  <div className="absolute -top-1 left-24 text-xs font-semibold text-white rounded-full bg-bg-blue-12 border border-bg-blue-11 px-2 py-1">
+    {count} {/* Render the count */}
+  </div>
+)}
       {button2Text && (
         <button
           className={`${button2width} min-w-28 bg-bg-blue-12 text-white font-normal h-10 rounded-xl flex items-center justify-center gap-2`}

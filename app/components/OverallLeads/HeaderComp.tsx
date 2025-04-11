@@ -190,7 +190,8 @@ const {  refetch } =  useOverallLeadsData(1,100,stageFilter,typeFilter,campaignF
               : filterSections}
               onFilterApply={onFilter as any}
             setShowFilter={setShowFilter}
-            pageType="contact"
+            pageType={pageType}
+          reloadLeads={refetch}
           />
 
   </div>

@@ -143,7 +143,7 @@ const ResourceContainer = () => {
   ];
 
   // Show active filters for better UX
-  const getActiveFiltersDisplay = () => {
+  const getActiveFiltersCount = () => {
     const filters = [];
     
     if (industryFilters.length > 0) {
@@ -154,28 +154,7 @@ const ResourceContainer = () => {
       filters.push(`Technologies: ${technologyFilters.join(', ')}`);
     }
     
-    return filters.length > 0 ? (
-      <div className="flex items-center gap-2 mt-2 mb-4">
-        <span className="text-sm text-gray-500">Active filters:</span>
-        <div className="flex flex-wrap gap-2">
-          {filters.map((filter, index) => (
-            <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-sm">
-              {filter}
-            </span>
-          ))}
-        </div>
-        <button 
-          className="text-sm text-red-500 hover:text-red-700 ml-2"
-          onClick={() => {
-            setIndustryFilters([]);
-            setTechnologyFilters([]);
-            refetch();
-          }}
-        >
-          Clear all
-        </button>
-      </div>
-    ) : null;
+    return filters.length 
   };
 
   return (
@@ -214,6 +193,7 @@ const ResourceContainer = () => {
               button2width="w-[160px]"
               onClick1={() => setShowFilter(true)}
               onClick2={() => setShowForm(true)}
+              count={getActiveFiltersCount()}
             />
           </div>
         </div>
@@ -221,7 +201,7 @@ const ResourceContainer = () => {
       
       <div className="w-full min-h-screen flex flex-col px-4 sm:px-6 lg:px-[70px] mt-4">
         {/* Display active filters */}
-        {getActiveFiltersDisplay()}
+      
         
         {loading ? (
           // Replace the loading text with skeleton components
