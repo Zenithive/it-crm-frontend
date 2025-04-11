@@ -180,31 +180,9 @@ const OrganizationInfoSection: React.FC<OrganizationInfoSectionProps> = ({
             )}
           </div>
         )}
-        
-        <div>
-          <label className="block text-sm text-bg-blue-12 mb-2">
-            Email
-          </label>
-          <input
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                message: "Enter a valid email address",
-              },
-            })}
-            placeholder="email"
-            className="w-full px-3 py-2 border border-bg-blue-12 rounded-lg focus:outline-none"
-          />
-          {errors.email && (
-            <span className="text-red-500 text-sm">
-              {errors.email.message}
-            </span>
-          )}
-        </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-4 mt-4">
         <div className="relative">
           <label className="block text-sm text-bg-blue-12 mb-2">
             Country
