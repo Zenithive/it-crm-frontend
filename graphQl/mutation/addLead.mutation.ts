@@ -8,6 +8,8 @@ export const ADD_LEAD_QUERY = gql`
       email
       leadStage
       leadType
+
+      linkedIn
       leadPriority
       leadCreatedBy {
         userID
@@ -21,8 +23,14 @@ export const ADD_LEAD_QUERY = gql`
       }
       organization {
         organizationID
+      city
+
         organizationName
+        organizationEmail
+        annualRevenue
+        organizationLinkedIn
         organizationWebsite
+        organizationLinkedIn
       }
       campaign {
         campaignID

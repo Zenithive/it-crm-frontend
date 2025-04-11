@@ -11,8 +11,15 @@ export interface LeadFormData {
     campaignName: string;
     initialContactDate: string;
     organizationName: string;
+    city: string;
+    noOfEmployees: string;
+    annualRevenue: string;
     email: string;
+    organizationEmail: string;
     country: string;
+    orgCountry: string;
+    organizationWebsite: string;
+    organizationLinkedIn: string;
     organizationID: string;
     createNewOrganization?: boolean; // Added this field
   }
@@ -37,8 +44,8 @@ export interface LeadFormData {
     register: UseFormRegister<LeadFormData>;
     errors: FieldErrors<LeadFormData>;
     watch: UseFormWatch<LeadFormData>;
-    selectedOrganization: { id: string, name: string } | null;
-    onOrganizationSelect: (id: string, name: string) => void;
+    selectedOrganization: { id: string, name: string, website: string } | null;
+    onOrganizationSelect: (id: string, name: string, website: string) => void;
     onCreateNewOrganization: () => void;
     createNewOrganization: boolean;
   }

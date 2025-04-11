@@ -56,6 +56,23 @@ export const useAddLead = () => {
     };
 
     // Modified logic for organization handling
+    // if (values.organizationID && values.organizationID.trim() !== '') {
+    //   // Use existing organization if there's a valid ID
+    //   console.log("Using existing organization with ID:", values.organizationID);
+    //   input.organizationID = values.organizationID;
+    // } else if (values.organizationName && values.organizationName.trim() !== '') {
+    //   // Create new organization if there's a name
+    //   console.log("Creating new organization with name:", values.organizationName);
+    //   input.organizationName = values.organizationName;
+    //   input.organizationWebsite = values.organizationWebsite || "";
+    //   input.organizationEmail = values.email || ""; // Using lead email if org email not provided
+    //   input.organizationLinkedIn = values.organizationLinkedIn || "";
+    //   input.city = values.city || "";
+    //   input.orgCountry = values.country || ""; // Using lead country if org country not provided
+    //   input.noOfEmployees = values.noOfEmployees || "";
+    //   input.annualRevenue = values.annualRevenue || "";
+    // }
+
     if (values.organizationID && values.organizationID.trim() !== '') {
       // Use existing organization if there's a valid ID
       console.log("Using existing organization with ID:", values.organizationID);
@@ -64,13 +81,15 @@ export const useAddLead = () => {
       // Create new organization if there's a name
       console.log("Creating new organization with name:", values.organizationName);
       input.organizationName = values.organizationName;
+      
+      // Make sure these fields are included in the payload
       input.organizationWebsite = values.organizationWebsite || "";
-      input.organizationEmail = values.email || ""; // Using lead email if org email not provided
+      input.organizationEmail = values.organizationEmail || values.email || ""; // First try org email, then lead email
       input.organizationLinkedIn = values.organizationLinkedIn || "";
       input.city = values.city || "";
-      input.orgCountry = values.country || ""; // Using lead country if org country not provided
-      input.noOfEmployees = values.noOfEmployees || "";
-      input.annualRevenue = values.annualRevenue || "";
+      input.orgCountry = values.orgCountry || values.country || ""; // First try org country, then lead country
+      input.noOfEmployees = values.noOfEmployees ? String(values.noOfEmployees) : ""; // Convert to string if it's a number
+      input.annualRevenue = values.annualRevenue ? String(values.annualRevenue) : ""; // Convert to string if it's a number
     }
 
     console.log("Final payload being sent to API:", input);

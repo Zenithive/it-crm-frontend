@@ -41,6 +41,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
       campaignName: "",
       initialContactDate: "",
       organizationName: "",
+      organizationWebsite: "",
       email: "",
       country: "",
       organizationID: "", // Added for existing organization
@@ -50,7 +51,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
 
   const [loading, setLoading] = useState(false);
   const { token, id: userID } = useSelector((state: RootState) => state.auth);
-  const [selectedOrganization, setSelectedOrganization] = useState<{ id: string, name: string } | null>(null);
+  const [selectedOrganization, setSelectedOrganization] = useState<{ id: string, name: string, website : string } | null>(null);
 
   const overallLeadData = leadId
     ? useOverallLeadsData(
@@ -74,6 +75,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
   // Watch for createNewOrganization value
   const createNewOrganization = watch("createNewOrganization");
   const organizationName = watch("organizationName");
+  const organizationWebsite = watch("organizationWebsite");
 
   useEffect(() => {
     if (leadId && !fetchLoading && !fetchError && lead) {
@@ -89,6 +91,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
       setValue("campaignName", lead.campaign?.campaignName || "");
       setValue("initialContactDate", formattedDate);
       setValue("organizationName", lead.organization?.organizationName || "");
+      setValue("organizationWebsite", lead.organization?.organizationWebsite || "");
       setValue("email", lead.email || "");
       setValue("country", lead.country || "");
       
@@ -97,7 +100,8 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
         setValue("organizationID", lead.organization.organizationID);
         setSelectedOrganization({
           id: lead.organization.organizationID,
-          name: lead.organization.organizationName
+          name: lead.organization.organizationName,
+          website: lead.organization.organizationWebsite,
         });
         setValue("createNewOrganization", false);
       }
@@ -107,9 +111,10 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
   }, [lead, fetchLoading, fetchError, setValue, leadId]);
 
   // Handle organization selection
-  const handleOrganizationSelect = (organizationID: string, organizationName: string) => {
+  const handleOrganizationSelect = (organizationID: string, organizationName: string, organizationWebsite:string) => {
     setValue("organizationID", organizationID);
-    setSelectedOrganization({ id: organizationID, name: organizationName });
+    setSelectedOrganization({ id: organizationID, name: organizationName, website: organizationWebsite });
+    setValue("organizationWebsite", organizationWebsite);
     setValue("createNewOrganization", false);
   };
 
@@ -121,6 +126,15 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
   };
 
   const onSubmit = async (data: LeadFormData) => {
+
+    console.log("Full form data in onSubmit:", data);
+  console.log("Organization specific fields:", {
+    annualRevenue: data.annualRevenue,
+    city: data.city,
+    noOfEmployees: data.noOfEmployees,
+    organizationLinkedIn: data.organizationLinkedIn,
+    organizationWebsite: data.organizationWebsite
+  });
     setLoading(true);
     try {
       if (leadId) {
@@ -176,6 +190,13 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
           else if (data.createNewOrganization && data.organizationName) {
             // Add the organization name to create a new organization
             leadData.organizationName = data.organizationName;
+            leadData.organizationWebsite = data.organizationWebsite || "";
+            leadData.organizationEmail = data.organizationEmail || data.email || "";
+            leadData.organizationLinkedIn = data.organizationLinkedIn || "";
+            leadData.city = data.city || "";
+            leadData.orgCountry = data.orgCountry || data.country || "";
+            leadData.noOfEmployees = data.noOfEmployees || "";
+            leadData.annualRevenue = data.annualRevenue || "";
           }
 
           // Add campaign ID if selected
@@ -265,7 +286,7 @@ const AddLeadModal: React.FC<AddLeadModalProps> = ({ onClose, leadId }) => {
                   errors={errors} 
                   watch={watch}
                   selectedOrganization={selectedOrganization}
-                  onOrganizationSelect={handleOrganizationSelect}
+                  onOrganizationSelect={(id: string, name: string, website: string) => handleOrganizationSelect(id, name, website)}
                   onCreateNewOrganization={handleCreateNewOrganization}
                   createNewOrganization={createNewOrganization ?? false}
                 />
