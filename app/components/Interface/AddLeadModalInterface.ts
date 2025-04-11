@@ -49,3 +49,16 @@ export interface LeadFormData {
     onCreateNewOrganization: () => void;
     createNewOrganization: boolean;
   }
+
+
+  export interface Organization {
+    id: string;
+    name: string;
+    website?: string;
+    email?: string;
+    linkedin?: string;
+    annualRevenue?: string;
+    noOfEmployees?: string;
+    city?: string;
+    country?: string;
+  }
